@@ -1,1 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
+<title>Addition Up To 20 - CBQ Interactive</title>
+
+<style>
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial, sans-serif;
+}
+
+body{
+background:linear-gradient(135deg,#ffeaa7,#81ecec);
+min-height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+padding:15px;
+}
+
+.game-container{
+width:100%;
+max-width:900px;
+background:white;
+border-radius:25px;
+padding:20px;
+box-shadow:0 10px 25px rgba(0,0,0,0.2);
+text-align:center;
+}
+
+.logo{
+width:120px;
+margin-bottom:10px;
+}
+
+h1{
+color:#2d3436;
+margin-bottom:10px;
+font-size:2rem;
+}
+
+.progress{
+font-size:1rem;
+margin-bottom:15px;
+font-weight:bold;
+color:#0984e3;
+}
+
+.question-image{
+width:100%;
+max-width:400px;
+margin:10px auto;
+display:none;
+border-radius:15px;
+}
+
+.question{
+font-size:1.2rem;
+line-height:1.6;
+margin-bottom:20px;
+color:#2d3436;
+font-weight:bold;
+}
+
+.options{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:12px;
+margin-top:15px;
+}
+
+.option-btn{
+padding:15px;
+border:none;
+border-radius:15px;
+font-size:1rem;
+cursor:pointer;
+background:#dfe6e9;
+transition:0.3s;
+font-weight:bold;
+}
+
+.option-btn:hover{
+transform:scale(1.03);
+background:#74b9ff;
+color:white;
+}
+
+.correct{
+background:#00b894 !important;
+color:white !important;
+}
+
+.wrong{
+background:#d63031 !important;
+color:white !important;
+}
+
+.explanation{
+margin-top:20px;
+padding:15px;
+background:#f1f2f6;
+border-radius:15px;
+display:none;
+font-size:1rem;
+line-height:1.5;
+}
+
+.score-screen{
+display:none;
+}
+
+.score{
+font-size:2rem;
+color:#00b894;
+margin:20px 0;
+font-weight:bold;
+}
+
+.restart-btn{
+padding:15px 30px;
+font-size:1.1rem;
+border:none;
+border-radius:15px;
+background:#6c5ce7;
+color:white;
+cursor:pointer;
+font-weight:bold;
+}
+
+.restart-btn:hover{
+background:#4834d4;
+}
+
+@media(max-width:700px){
+
+.options{
+grid-template-columns:1fr;
+}
+
+.question{
+font-size:1rem;
+}
+
+.option-btn{
+font-size:0.95rem;
+padding:14px;
+}
+
+.logo{
+width:90px;
+}
+
+h1{
+font-size:1.5rem;
+}
+
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="game-container">
+
+<div id="quiz-screen">
+
+<img src="assets/logo.png" class="logo">
+
+<h1>Addition Up To 20</h1>
+
+<div class="progress" id="progress"></div>
+
+<img id="question-image" class="question-image">
+
+<div class="question" id="question"></div>
+
+<div class="options" id="options"></div>
+
+<div class="explanation" id="explanation"></div>
+
+</div>
+
+<div class="score-screen" id="score-screen">
+
+<img src="assets/logo.png" class="logo">
+
+<h1>Great Job!</h1>
+
+<div class="score" id="final-score"></div>
+
+<button class="restart-btn" onclick="restartQuiz()">Play Again</button>
+
+</div>
+
+</div>
+
+<audio id="correctSound" src="assets/correct.mp3"></audio>
+<audio id="wrongSound" src="assets/wrong.mp3"></audio>
+
+<script>
+
+const questions = [
+
+{
+question:"Rohan has 8 pencils. His teacher gives him 1 more pencil. Rohan says he now has 10 pencils. Is he correct?",
+options:[
+"No, he has 9 pencils.",
+"No, he has 12 pencils",
+"No, he has 13 pencils",
+"Yes, he has 10 pencils"
+],
+answer:0,
+explanation:"Rohan had 8 pencils and got 1 more, so 8 + 1 = 9."
+},
+
+{
+question:"A teacher has 10 sticks in one box and 8 sticks in another box. There are 18 students. Does she have enough sticks?",
+options:[
+"Yes, she has enough",
+"No, she has 1 stick less",
+"No, she has 2 sticks less",
+"Yes, she has more than needed"
+],
+answer:0,
+explanation:"10 + 8 = 18 sticks, so she has enough sticks."
+},
+
+{
+question:"Juhi uses 5 white shells and the same number of yellow shells to make a necklace. How many shells did she use?",
+image:"assets/shells.png",
+options:[
+"7",
+"8",
+"9",
+"10"
+],
+answer:3,
+explanation:"5 white shells + 5 yellow shells = 10 shells."
+},
+
+{
+question:"A frog is on number 7 on a number line. How many jumps forward are needed to land on 10?",
+image:"assets/frog.png",
+options:[
+"3",
+"4",
+"1",
+"2"
+],
+answer:0,
+explanation:"7 → 8 → 9 → 10. The frog makes 3 jumps."
+},
+
+{
+question:"There is a 1-digit number more than 4 but less than 6. Sonam says the number is 6. Is she correct?",
+options:[
+"Yes, 6 fits the rule",
+"No, the number is 5",
+"No, the number is 4",
+"Yes, the number can be 6 or 5"
+],
+answer:1,
+explanation:"Only 5 is between 4 and 6."
+},
+
+{
+question:"Maya adds 12 + 3 and writes the answer as 14. What mistake did she make?",
+options:[
+"She added 3 tens instead of 3 ones",
+"She counted one less in the ones place",
+"She subtracted instead of adding",
+"The answer is correct"
+],
+answer:1,
+explanation:"12 + 3 = 15. She counted one less."
+},
+
+{
+question:"Who brought the same number of pebbles?",
+image:"assets/pebbles.png",
+options:[
+"Noor and Vinu",
+"Vinu and Sid",
+"Sid and Romi",
+"Romi and Noor"
+],
+answer:1,
+explanation:"Sid has 15 pebbles and Vinu also has 15 pebbles."
+},
+
+{
+question:"Team A scored 5 + 5 points. Team B scored 4 + 6 points. Which statement is true?",
+options:[
+"Team A scored more",
+"Team B scored more",
+"Both teams scored equal points",
+"Team A scored 1 more point"
+],
+answer:2,
+explanation:"Both totals are 10."
+},
+
+{
+question:"Which sum does NOT equal 15?",
+options:[
+"10 + 5",
+"12 + 3",
+"14 + 1",
+"10 + 2"
+],
+answer:3,
+explanation:"10 + 2 = 12, not 15."
+},
+
+{
+question:"12 children are already on the bus. 7 more children get in. The bus can carry 20 children. Is the driver correct that everyone gets a seat?",
+options:[
+"Yes, because 12 + 7 = 19",
+"Yes, because the bus can carry 12 children",
+"No, because 7 children are too many",
+"No, because 12 + 7 = 21"
+],
+answer:0,
+explanation:"12 + 7 = 19, so everyone gets a seat."
+},
+
+{
+question:"Ali has 11 balloons. His sister gives him 5 more and he finds 3 more. Does he have enough balloons to make 20?",
+options:[
+"Yes, exactly 20",
+"No, he has 19 balloons",
+"No, he has 16 balloons",
+"Yes, he has more than 20"
+],
+answer:1,
+explanation:"11 + 5 + 3 = 19."
+},
+
+{
+question:"Which group is the odd one out?",
+options:[
+"7 laddoos + 3 laddoos",
+"6 laddoos + 4 laddoos",
+"8 laddoos + 2 laddoos",
+"5 laddoos + 3 laddoos"
+],
+answer:3,
+explanation:"5 + 3 = 8, not 10."
+}
+
+];
+
+let currentQuestion = 0;
+let score = 0;
+
+questions.sort(()=>Math.random()-0.5);
+
+const questionEl = document.getElementById("question");
+const optionsEl = document.getElementById("options");
+const explanationEl = document.getElementById("explanation");
+const progressEl = document.getElementById("progress");
+const questionImage = document.getElementById("question-image");
+
+function loadQuestion(){
+
+const q = questions[currentQuestion];
+
+progressEl.innerHTML = `Question ${currentQuestion+1} of ${questions.length}`;
+
+questionEl.innerHTML = q.question;
+
+explanationEl.style.display = "none";
+
+if(q.image){
+questionImage.src = q.image;
+questionImage.style.display = "block";
+}else{
+questionImage.style.display = "none";
+}
+
+optionsEl.innerHTML = "";
+
+q.options.forEach((option,index)=>{
+
+const btn = document.createElement("button");
+
+btn.classList.add("option-btn");
+
+btn.innerHTML = option;
+
+btn.onclick = ()=>checkAnswer(index,btn);
+
+optionsEl.appendChild(btn);
+
+});
+
+}
+
+function checkAnswer(selected,btn){
+
+const q = questions[currentQuestion];
+
+const buttons = document.querySelectorAll(".option-btn");
+
+buttons.forEach(b=>b.disabled=true);
+
+if(selected===q.answer){
+
+btn.classList.add("correct");
+
+document.getElementById("correctSound").play();
+
+score++;
+
+confettiEffect();
+
+}else{
+
+btn.classList.add("wrong");
+
+buttons[q.answer].classList.add("correct");
+
+document.getElementById("wrongSound").play();
+
+}
+
+explanationEl.innerHTML = "<b>Explanation:</b> " + q.explanation;
+
+explanationEl.style.display = "block";
+
+setTimeout(()=>{
+
+currentQuestion++;
+
+if(currentQuestion<questions.length){
+
+loadQuestion();
+
+}else{
+
+showScore();
+
+}
+
+},2500);
+
+}
+
+function showScore(){
+
+document.getElementById("quiz-screen").style.display="none";
+
+document.getElementById("score-screen").style.display="block";
+
+document.getElementById("final-score").innerHTML =
+`You scored ${score} / ${questions.length}`;
+
+}
+
+function restartQuiz(){
+
+currentQuestion=0;
+
+score=0;
+
+questions.sort(()=>Math.random()-0.5);
+
+document.getElementById("score-screen").style.display="none";
+
+document.getElementById("quiz-screen").style.display="block";
+
+loadQuestion();
+
+}
+
+function confettiEffect(){
+
+for(let i=0;i<80;i++){
+
+let confetti=document.createElement("div");
+
+confetti.style.position="fixed";
+confetti.style.width="10px";
+confetti.style.height="10px";
+confetti.style.background=`hsl(${Math.random()*360},100%,50%)`;
+confetti.style.left=Math.random()*window.innerWidth+"px";
+confetti.style.top="-10px";
+confetti.style.borderRadius="50%";
+confetti.style.zIndex="9999";
+
+document.body.appendChild(confetti);
+
+let fall=Math.random()*3+2;
+
+confetti.animate([
+{transform:"translateY(0px)"},
+{transform:`translateY(${window.innerHeight+100}px)`}
+],{
+duration:fall*1000,
+iterations:1
+});
+
+setTimeout(()=>{
+confetti.remove();
+},4000);
+
+}
+
+}
+
+loadQuestion();
+
+</script>
+
+</body>
+</html>
