@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Addition Up To 20 - CBQ Interactive</title>
 
 <style>
+
 *{
 margin:0;
 padding:0;
@@ -21,6 +21,7 @@ display:flex;
 justify-content:center;
 align-items:center;
 padding:15px;
+overflow-x:hidden;
 }
 
 .game-container{
@@ -31,6 +32,7 @@ border-radius:25px;
 padding:20px;
 box-shadow:0 10px 25px rgba(0,0,0,0.2);
 text-align:center;
+position:relative;
 }
 
 .logo{
@@ -44,16 +46,38 @@ margin-bottom:10px;
 font-size:2rem;
 }
 
-.progress{
-font-size:1rem;
+.top-bar{
+display:flex;
+justify-content:space-between;
+align-items:center;
+gap:10px;
 margin-bottom:15px;
+flex-wrap:wrap;
+}
+
+.progress,.timer,.attempts{
+font-size:1rem;
 font-weight:bold;
+padding:8px 12px;
+border-radius:12px;
+background:#f1f2f6;
+}
+
+.progress{
 color:#0984e3;
+}
+
+.timer{
+color:#d63031;
+}
+
+.attempts{
+color:#6c5ce7;
 }
 
 .question-image{
 width:100%;
-max-width:400px;
+max-width:420px;
 margin:10px auto;
 display:none;
 border-radius:15px;
@@ -99,6 +123,13 @@ color:white !important;
 .wrong{
 background:#d63031 !important;
 color:white !important;
+}
+
+.feedback{
+margin-top:15px;
+font-size:1.1rem;
+font-weight:bold;
+min-height:28px;
 }
 
 .explanation{
@@ -160,9 +191,14 @@ h1{
 font-size:1.5rem;
 }
 
+.top-bar{
+justify-content:center;
+}
+
 }
 
 </style>
+
 </head>
 
 <body>
@@ -175,13 +211,19 @@ font-size:1.5rem;
 
 <h1>Addition Up To 20</h1>
 
+<div class="top-bar">
 <div class="progress" id="progress"></div>
+<div class="timer" id="timer">Time: 60s</div>
+<div class="attempts" id="attempts">Attempts: 2</div>
+</div>
 
 <img id="question-image" class="question-image">
 
 <div class="question" id="question"></div>
 
 <div class="options" id="options"></div>
+
+<div class="feedback" id="feedback"></div>
 
 <div class="explanation" id="explanation"></div>
 
@@ -217,7 +259,7 @@ options:[
 "Yes, he has 10 pencils"
 ],
 answer:0,
-explanation:"Rohan had 8 pencils and got 1 more, so 8 + 1 = 9."
+explanation:"Rohan had 8 pencils and got 1 more pencil. 8 + 1 = 9."
 },
 
 {
@@ -242,7 +284,7 @@ options:[
 "10"
 ],
 answer:3,
-explanation:"5 white shells + 5 yellow shells = 10 shells."
+explanation:"Juhi used 5 white shells and 5 yellow shells. 5 + 5 = 10."
 },
 
 {
@@ -279,7 +321,7 @@ options:[
 "The answer is correct"
 ],
 answer:1,
-explanation:"12 + 3 = 15. She counted one less."
+explanation:"12 + 3 = 15. Maya counted one less."
 },
 
 {
@@ -304,7 +346,7 @@ options:[
 "Team A scored 1 more point"
 ],
 answer:2,
-explanation:"Both totals are 10."
+explanation:"5 + 5 = 10 and 4 + 6 = 10."
 },
 
 {
@@ -359,6 +401,10 @@ explanation:"5 + 3 = 8, not 10."
 
 let currentQuestion = 0;
 let score = 0;
+let attemptsLeft = 2;
+let timeLeft = 60;
+let timerInterval;
+let answered = false;
 
 questions.sort(()=>Math.random()-0.5);
 
@@ -367,14 +413,29 @@ const optionsEl = document.getElementById("options");
 const explanationEl = document.getElementById("explanation");
 const progressEl = document.getElementById("progress");
 const questionImage = document.getElementById("question-image");
+const timerEl = document.getElementById("timer");
+const attemptsEl = document.getElementById("attempts");
+const feedbackEl = document.getElementById("feedback");
 
 function loadQuestion(){
+
+clearInterval(timerInterval);
+
+answered = false;
+attemptsLeft = 2;
+timeLeft = 60;
 
 const q = questions[currentQuestion];
 
 progressEl.innerHTML = `Question ${currentQuestion+1} of ${questions.length}`;
 
+timerEl.innerHTML = `Time: ${timeLeft}s`;
+
+attemptsEl.innerHTML = `Attempts: ${attemptsLeft}`;
+
 questionEl.innerHTML = q.question;
+
+feedbackEl.innerHTML = "";
 
 explanationEl.style.display = "none";
 
@@ -401,17 +462,43 @@ optionsEl.appendChild(btn);
 
 });
 
+startTimer();
+
+}
+
+function startTimer(){
+
+timerInterval = setInterval(()=>{
+
+timeLeft--;
+
+timerEl.innerHTML = `Time: ${timeLeft}s`;
+
+if(timeLeft <= 0){
+
+clearInterval(timerInterval);
+
+showCorrectAnswer("Time is up!");
+
+}
+
+},1000);
+
 }
 
 function checkAnswer(selected,btn){
+
+if(answered) return;
 
 const q = questions[currentQuestion];
 
 const buttons = document.querySelectorAll(".option-btn");
 
-buttons.forEach(b=>b.disabled=true);
+if(selected === q.answer){
 
-if(selected===q.answer){
+answered = true;
+
+clearInterval(timerInterval);
 
 btn.classList.add("correct");
 
@@ -419,19 +506,70 @@ document.getElementById("correctSound").play();
 
 score++;
 
+feedbackEl.style.color="#00b894";
+
+feedbackEl.innerHTML = "Good Job!";
+
 confettiEffect();
+
+showExplanation();
 
 }else{
 
+attemptsLeft--;
+
+attemptsEl.innerHTML = `Attempts: ${attemptsLeft}`;
+
 btn.classList.add("wrong");
 
-buttons[q.answer].classList.add("correct");
+btn.disabled = true;
 
 document.getElementById("wrongSound").play();
 
+feedbackEl.style.color="#d63031";
+
+if(attemptsLeft > 0){
+
+feedbackEl.innerHTML = "Try Again! One attempt left.";
+
+}else{
+
+showCorrectAnswer("Two attempts are over!");
+
 }
 
-explanationEl.innerHTML = "<b>Explanation:</b> " + q.explanation;
+}
+
+}
+
+function showCorrectAnswer(message){
+
+answered = true;
+
+clearInterval(timerInterval);
+
+const q = questions[currentQuestion];
+
+const buttons = document.querySelectorAll(".option-btn");
+
+buttons.forEach(b=>b.disabled=true);
+
+buttons[q.answer].classList.add("correct");
+
+feedbackEl.style.color="#d63031";
+
+feedbackEl.innerHTML = message + " Correct answer is shown.";
+
+showExplanation();
+
+}
+
+function showExplanation(){
+
+const q = questions[currentQuestion];
+
+explanationEl.innerHTML =
+"<b>Explanation:</b> " + q.explanation;
 
 explanationEl.style.display = "block";
 
@@ -439,7 +577,7 @@ setTimeout(()=>{
 
 currentQuestion++;
 
-if(currentQuestion<questions.length){
+if(currentQuestion < questions.length){
 
 loadQuestion();
 
@@ -449,11 +587,13 @@ showScore();
 
 }
 
-},2500);
+},3000);
 
 }
 
 function showScore(){
+
+clearInterval(timerInterval);
 
 document.getElementById("quiz-screen").style.display="none";
 
@@ -466,9 +606,9 @@ document.getElementById("final-score").innerHTML =
 
 function restartQuiz(){
 
-currentQuestion=0;
+currentQuestion = 0;
 
-score=0;
+score = 0;
 
 questions.sort(()=>Math.random()-0.5);
 
@@ -487,12 +627,19 @@ for(let i=0;i<80;i++){
 let confetti=document.createElement("div");
 
 confetti.style.position="fixed";
+
 confetti.style.width="10px";
+
 confetti.style.height="10px";
+
 confetti.style.background=`hsl(${Math.random()*360},100%,50%)`;
+
 confetti.style.left=Math.random()*window.innerWidth+"px";
+
 confetti.style.top="-10px";
+
 confetti.style.borderRadius="50%";
+
 confetti.style.zIndex="9999";
 
 document.body.appendChild(confetti);
