@@ -1,1 +1,631 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>CBQ Interactive - Shapes and Patterns</title>
 
+<style>
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  font-family:Arial,sans-serif;
+  background:#f3f8ff;
+  color:#1f2937;
+}
+
+.screen{
+  display:none;
+  min-height:100vh;
+  padding:16px;
+}
+
+.screen.active{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+#logoScreen{
+  background:#ffffff;
+}
+
+.logo{
+  max-width:420px;
+  width:80%;
+}
+
+.card{
+  width:100%;
+  max-width:900px;
+  background:#ffffff;
+  border-radius:24px;
+  padding:20px;
+  box-shadow:0 8px 24px rgba(0,0,0,0.16);
+}
+
+.topbar{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:10px;
+  margin-bottom:16px;
+}
+
+.badge,.sound-btn{
+  background:#e0f2fe;
+  color:#0f3f5f;
+  padding:10px;
+  border-radius:14px;
+  font-weight:bold;
+  font-size:16px;
+  text-align:center;
+}
+
+.sound-btn{
+  border:none;
+  cursor:pointer;
+}
+
+.visual-box{
+  background:#fff7ed;
+  border:2px solid #fdba74;
+  border-radius:20px;
+  padding:16px;
+  margin-bottom:16px;
+  text-align:center;
+  min-height:170px;
+}
+
+.visual-row{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:18px;
+  flex-wrap:wrap;
+  margin-bottom:10px;
+}
+
+.visual-img{
+  width:105px;
+  height:105px;
+  object-fit:contain;
+  background:white;
+  border-radius:18px;
+  padding:8px;
+  box-shadow:0 3px 10px rgba(0,0,0,0.12);
+}
+
+.visual-img.big{
+  width:150px;
+  height:120px;
+}
+
+.pattern-img{
+  width:72px;
+  height:72px;
+  object-fit:contain;
+  background:white;
+  border-radius:16px;
+  padding:8px;
+  box-shadow:0 3px 10px rgba(0,0,0,0.12);
+}
+
+.pattern-number{
+  width:72px;
+  height:72px;
+  border-radius:16px;
+  background:white;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:36px;
+  font-weight:bold;
+  color:#1f4e79;
+  box-shadow:0 3px 10px rgba(0,0,0,0.12);
+}
+
+.qmark{
+  width:72px;
+  height:72px;
+  border-radius:16px;
+  background:#1f4e79;
+  color:white;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:38px;
+  font-weight:bold;
+}
+
+.visual-text{
+  font-size:19px;
+  font-weight:bold;
+  color:#7c2d12;
+}
+
+.question{
+  font-size:24px;
+  font-weight:bold;
+  line-height:1.35;
+  margin:16px 0;
+}
+
+.options{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(220px,1fr));
+  gap:14px;
+}
+
+.option{
+  width:100%;
+  min-height:76px;
+  padding:14px 16px;
+  font-size:19px;
+  font-weight:bold;
+  line-height:1.3;
+  border:2px solid #1f4e79;
+  background:#ffffff;
+  color:#111827;
+  border-radius:16px;
+  cursor:pointer;
+  text-align:center;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  white-space:normal;
+}
+
+.option:hover{
+  background:#eef6ff;
+}
+
+.option.correct{
+  background:#d1fae5;
+  border-color:#047857;
+}
+
+.option.wrong{
+  background:#fee2e2;
+  border-color:#b91c1c;
+}
+
+.feedback{
+  min-height:34px;
+  margin-top:14px;
+  font-size:19px;
+  font-weight:bold;
+  text-align:center;
+}
+
+.controls{
+  margin-top:14px;
+  text-align:center;
+}
+
+.primary{
+  background:#1f4e79;
+  color:white;
+  border:none;
+  border-radius:14px;
+  padding:14px 28px;
+  font-size:19px;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+#nextBtn{
+  display:none;
+}
+
+.result-title{
+  font-size:34px;
+  font-weight:bold;
+  text-align:center;
+  margin-bottom:14px;
+}
+
+.result-score{
+  font-size:23px;
+  text-align:center;
+  margin-bottom:20px;
+}
+
+.confetti{
+  position:fixed;
+  width:10px;
+  height:10px;
+  top:-10px;
+  animation:fall 1.2s linear forwards;
+  pointer-events:none;
+}
+
+@keyframes fall{
+  to{
+    transform:translateY(110vh) rotate(360deg);
+    opacity:0;
+  }
+}
+
+@media(max-width:700px){
+  .card{padding:15px}
+  .topbar{grid-template-columns:1fr 1fr}
+  .question{font-size:21px}
+  .options{grid-template-columns:1fr;gap:11px}
+  .option{min-height:62px;font-size:17px;padding:12px}
+  .visual-img{width:86px;height:86px}
+  .visual-img.big{width:120px;height:95px}
+  .pattern-img,.pattern-number,.qmark{width:56px;height:56px}
+  .pattern-number{font-size:28px}
+  .visual-text{font-size:17px}
+  .primary{width:100%}
+  .badge,.sound-btn{font-size:14px}
+}
+</style>
+</head>
+
+<body>
+
+<div id="logoScreen" class="screen active">
+  <img src="assets/logo.png" alt="Innovine Solutions Logo" class="logo" />
+</div>
+
+<div id="quizScreen" class="screen">
+  <div class="card">
+    <div class="topbar">
+      <div class="badge">Question <span id="qNo">1</span>/12</div>
+      <div class="badge">Score: <span id="score">0</span></div>
+      <div class="badge">Time: <span id="timer">60</span>s</div>
+      <button class="sound-btn" onclick="toggleMute()" id="muteBtn">🔊 Sound On</button>
+    </div>
+
+    <div class="visual-box" id="visualBox"></div>
+    <div class="question" id="questionText"></div>
+    <div class="options" id="optionsBox"></div>
+    <div class="feedback" id="feedback"></div>
+
+    <div class="controls">
+      <button class="primary" id="nextBtn" onclick="nextQuestion()">Next</button>
+    </div>
+  </div>
+</div>
+
+<div id="resultScreen" class="screen">
+  <div class="card">
+    <div class="result-title" id="resultMessage"></div>
+    <div class="result-score" id="finalScore"></div>
+    <button class="primary" onclick="restartQuiz()">Play Again</button>
+  </div>
+</div>
+
+<audio id="correctSound" src="assets/correct.mp3"></audio>
+<audio id="wrongSound" src="assets/wrong.mp3"></audio>
+<audio id="clapSound" src="assets/freesound_community-claps-44774.mp3"></audio>
+
+<script>
+const questions=[
+{
+q:"Look at a door. Which shape does it resemble most?",
+visualType:"images",
+images:["door.png","rectangle.png"],
+text:"A door looks like a rectangle.",
+options:["Square","Triangle","Rectangle","Circle"],
+answer:2
+},
+{
+q:"Which of these objects has only curved lines?",
+visualType:"images",
+images:["coin.png","circle.png"],
+text:"A coin has a round curved edge.",
+options:["A ruler","A dice","A coin","A textbook"],
+answer:2
+},
+{
+q:"Reema has two shapes. Both have 4 sides and 4 corners. What are they?",
+visualType:"images",
+images:["rectangle.png","square.png"],
+text:"Both shapes have 4 sides and 4 corners.",
+options:["Triangle and Rectangle","Rectangle and Square","Square and Circle","Circle and Triangle"],
+answer:1
+},
+{
+q:"Which 3D shape is shaped like a ball and can roll easily?",
+visualType:"images",
+images:["ball.png","sphere.png"],
+text:"A ball is shaped like a sphere.",
+options:["Cube","Sphere","Cylinder","Cone"],
+answer:1
+},
+{
+q:"A party hat is an example of which 3D shape?",
+visualType:"images",
+images:["party-hat.png","cone.png"],
+text:"A party hat has a pointed top like a cone.",
+options:["Cube","Sphere","Cone","Cylinder"],
+answer:2
+},
+{
+q:"Identify the next shape in this pattern: Circle, Square, Circle, Square, ____",
+visualType:"pattern",
+items:["circle.png","square.png","circle.png","square.png","?"],
+text:"The pattern repeats circle and square.",
+options:["Triangle","Rectangle","Circle","Star"],
+answer:2
+},
+{
+q:"How many corners does a triangle have?",
+visualType:"images",
+images:["triangle.png"],
+text:"Count the corners of the triangle.",
+options:["2","3","4","0"],
+answer:1
+},
+{
+q:"Which 3D shape can both roll and slide?",
+visualType:"images",
+images:["cylinder.png"],
+text:"A cylinder rolls on its curved side and slides on its flat ends.",
+options:["Cube","Sphere","Cylinder","Pyramid"],
+answer:2
+},
+{
+q:"Look at the letter S and the letter L. Which statement is true?",
+visualType:"images",
+images:["S.png","L.png"],
+text:"S is curved. L is made of straight lines.",
+options:[
+" S is a straight line, L is a curved line.",
+"Both are made of straight lines.",
+"S is a curved line, L is made of straight lines.",
+"Both are made of curved lines."
+],
+answer:2
+},
+{
+q:"Look at the wheel and the plate. What shape do they both share?",
+visualType:"images",
+images:["wheel.png","plate.png","circle.png"],
+text:"Both are round like a circle.",
+options:["Square","Triangle","Circle","Rectangle"],
+answer:2
+},
+{
+q:"Which statement is true about a cube like a dice?",
+visualType:"images",
+images:["dice.png","cube.png"],
+text:"A cube has flat surfaces.",
+options:[
+"It has no corners.",
+"It has only curved surfaces.",
+"It has flat surfaces and can slide.",
+"It is a 2D shape."
+],
+answer:2
+},
+{
+q:"You have two circles: a small button and a large dinner plate. Which statement is correct?",
+visualType:"images",
+images:["button.png","plate.png"],
+text:"They are the same shape but different sizes.",
+options:[
+"They are different shapes because their sizes are different.",
+"They are the same shape but different sizes.",
+"The plate is a square and the button is a circle.",
+"They are exactly the same size."
+],
+answer:1
+}
+];
+
+let current=0,score=0,attempts=0,answered=false,timeLeft=60,timerInterval,muted=false;
+
+const logoScreen=document.getElementById("logoScreen");
+const quizScreen=document.getElementById("quizScreen");
+const resultScreen=document.getElementById("resultScreen");
+const qNo=document.getElementById("qNo");
+const scoreBox=document.getElementById("score");
+const timerBox=document.getElementById("timer");
+const visualBox=document.getElementById("visualBox");
+const questionText=document.getElementById("questionText");
+const optionsBox=document.getElementById("optionsBox");
+const feedback=document.getElementById("feedback");
+const nextBtn=document.getElementById("nextBtn");
+const correctSound=document.getElementById("correctSound");
+const wrongSound=document.getElementById("wrongSound");
+const clapSound=document.getElementById("clapSound");
+
+setTimeout(()=>{
+  logoScreen.classList.remove("active");
+  quizScreen.classList.add("active");
+  startQuiz();
+},5000);
+
+function startQuiz(){
+  current=0;
+  score=0;
+  timeLeft=60;
+  scoreBox.textContent=score;
+  timerBox.textContent=timeLeft;
+  loadQuestion();
+  startTimer();
+}
+
+function startTimer(){
+  clearInterval(timerInterval);
+  timerInterval=setInterval(()=>{
+    timeLeft--;
+    timerBox.textContent=timeLeft;
+    if(timeLeft<=0){
+      clearInterval(timerInterval);
+      showResult();
+    }
+  },1000);
+}
+
+function loadQuestion(){
+  attempts=0;
+  answered=false;
+  feedback.textContent="";
+  nextBtn.style.display="none";
+
+  const item=questions[current];
+  qNo.textContent=current+1;
+  questionText.textContent=item.q;
+  optionsBox.innerHTML="";
+  renderVisual(item);
+
+  item.options.forEach((option,index)=>{
+    const btn=document.createElement("button");
+    btn.className="option";
+    btn.textContent=option;
+    btn.onclick=()=>checkAnswer(btn,index);
+    optionsBox.appendChild(btn);
+  });
+}
+
+function renderVisual(item){
+  if(item.visualType==="images"){
+    let html='<div class="visual-row">';
+    item.images.forEach(img=>{
+      html+=`<img class="visual-img big" src="assets/${img}" alt="">`;
+    });
+    html+='</div>';
+    html+=`<div class="visual-text">${item.text}</div>`;
+    visualBox.innerHTML=html;
+  }
+
+  if(item.visualType==="pattern"){
+    let html='<div class="visual-row">';
+    item.items.forEach(it=>{
+      if(it==="?"){
+        html+='<div class="qmark">?</div>';
+      }else{
+        html+=`<img class="pattern-img" src="assets/${it}" alt="">`;
+      }
+    });
+    html+='</div>';
+    html+=`<div class="visual-text">${item.text}</div>`;
+    visualBox.innerHTML=html;
+  }
+
+  if(item.visualType==="numberPattern"){
+    let html='<div class="visual-row">';
+    item.items.forEach(it=>{
+      if(it==="?"){
+        html+='<div class="qmark">?</div>';
+      }else{
+        html+=`<div class="pattern-number">${it}</div>`;
+      }
+    });
+    html+='</div>';
+    html+=`<div class="visual-text">${item.text}</div>`;
+    visualBox.innerHTML=html;
+  }
+}
+
+function checkAnswer(button,selected){
+  if(answered)return;
+
+  const correctIndex=questions[current].answer;
+
+  if(selected===correctIndex){
+    answered=true;
+    score++;
+    scoreBox.textContent=score;
+    button.classList.add("correct");
+    feedback.textContent="Correct!";
+    playSound(correctSound);
+    launchConfetti();
+    disableOptions();
+    nextBtn.style.display="inline-block";
+  }else{
+    attempts++;
+    button.classList.add("wrong");
+    playSound(wrongSound);
+
+    if(attempts===1){
+      feedback.textContent="Try again.";
+      button.disabled=true;
+    }else{
+      answered=true;
+      feedback.textContent="Incorrect. The correct answer is highlighted.";
+      showCorrectAnswer();
+      disableOptions();
+      nextBtn.style.display="inline-block";
+    }
+  }
+}
+
+function showCorrectAnswer(){
+  const correctIndex=questions[current].answer;
+  document.querySelectorAll(".option")[correctIndex].classList.add("correct");
+}
+
+function disableOptions(){
+  document.querySelectorAll(".option").forEach(btn=>btn.disabled=true);
+}
+
+function nextQuestion(){
+  current++;
+  if(current<questions.length){
+    loadQuestion();
+  }else{
+    showResult();
+  }
+}
+
+function showResult(){
+  clearInterval(timerInterval);
+  quizScreen.classList.remove("active");
+  resultScreen.classList.add("active");
+
+  const percentage=(score/questions.length)*100;
+  let message="";
+
+  if(percentage>=75){
+    message="Good job";
+    launchConfetti();
+    playSound(clapSound);
+  }else if(percentage>=40){
+    message="Review this chapter and try again";
+  }else{
+    message="Let’s practise more";
+  }
+
+  document.getElementById("resultMessage").textContent=message;
+  document.getElementById("finalScore").textContent="Your Score: "+score+" out of "+questions.length;
+}
+
+function restartQuiz(){
+  resultScreen.classList.remove("active");
+  quizScreen.classList.add("active");
+  startQuiz();
+}
+
+function toggleMute(){
+  muted=!muted;
+  document.getElementById("muteBtn").textContent=muted?"🔇 Sound Off":"🔊 Sound On";
+}
+
+function playSound(sound){
+  if(muted)return;
+  sound.currentTime=0;
+  sound.play().catch(()=>{});
+}
+
+function launchConfetti(){
+  const colors=["#f59e0b","#10b981","#3b82f6","#ef4444","#8b5cf6"];
+  for(let i=0;i<30;i++){
+    const piece=document.createElement("div");
+    piece.className="confetti";
+    piece.style.left=Math.random()*100+"vw";
+    piece.style.background=colors[Math.floor(Math.random()*colors.length)];
+    piece.style.animationDuration=(Math.random()*0.8+0.8)+"s";
+    document.body.appendChild(piece);
+    setTimeout(()=>piece.remove(),1500);
+  }
+}
+</script>
+
+</body>
+</html>
