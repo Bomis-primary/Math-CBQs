@@ -1,1 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CBQ Interactive - Money</title>
 
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f4f7fb;
+  color: #1f2937;
+}
+
+.screen {
+  display: none;
+  min-height: 100vh;
+  padding: 18px;
+}
+
+.screen.active {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+#logoScreen {
+  background: white;
+}
+
+.logo {
+  max-width: 260px;
+  width: 70%;
+}
+
+.card {
+  width: 100%;
+  max-width: 760px;
+  background: white;
+  border-radius: 18px;
+  padding: 20px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+}
+
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.badge {
+  background: #e8f0fe;
+  color: #123c69;
+  padding: 8px 12px;
+  border-radius: 12px;
+}
+
+.question {
+  font-size: 24px;
+  font-weight: bold;
+  margin: 18px 0;
+  line-height: 1.35;
+}
+
+.options {
+  display: grid;
+  gap: 12px;
+}
+
+.option {
+  font-size: 20px;
+  padding: 15px;
+  border: 2px solid #1f4e79;
+  background: #ffffff;
+  border-radius: 14px;
+  cursor: pointer;
+  text-align: left;
+  min-height: 56px;
+}
+
+.option:hover {
+  background: #eef6ff;
+}
+
+.option.correct {
+  background: #d1fae5;
+  border-color: #047857;
+}
+
+.option.wrong {
+  background: #fee2e2;
+  border-color: #b91c1c;
+}
+
+.feedback {
+  min-height: 34px;
+  margin-top: 14px;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.controls {
+  margin-top: 18px;
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+button {
+  font-size: 18px;
+  border: none;
+  border-radius: 14px;
+  padding: 13px 20px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.primary {
+  background: #1f4e79;
+  color: white;
+}
+
+.secondary {
+  background: #e5e7eb;
+  color: #111827;
+}
+
+#nextBtn {
+  display: none;
+}
+
+.result-title {
+  font-size: 32px;
+  font-weight: bold;
+  margin-bottom: 12px;
+  text-align: center;
+}
+
+.result-score {
+  font-size: 22px;
+  margin-bottom: 18px;
+  text-align: center;
+}
+
+.confetti {
+  position: fixed;
+  width: 10px;
+  height: 10px;
+  top: -10px;
+  animation: fall 1.2s linear forwards;
+  pointer-events: none;
+}
+
+@keyframes fall {
+  to {
+    transform: translateY(110vh) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+@media (max-width: 600px) {
+  .question {
+    font-size: 21px;
+  }
+
+  .option {
+    font-size: 18px;
+    padding: 14px;
+  }
+
+  .topbar {
+    font-size: 16px;
+  }
+
+  button {
+    width: 100%;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div id="logoScreen" class="screen active">
+  <img src="assets/innovine-logo.png" alt="Innovine Logo" class="logo">
+</div>
+
+<div id="quizScreen" class="screen">
+  <div class="card">
+    <div class="topbar">
+      <div class="badge">Question <span id="qNo">1</span>/12</div>
+      <div class="badge">Score: <span id="score">0</span></div>
+      <div class="badge">Time: <span id="timer">60</span>s</div>
+      <button class="secondary" onclick="toggleMute()" id="muteBtn">🔊 Sound On</button>
+    </div>
+
+    <div class="question" id="questionText"></div>
+    <div class="options" id="optionsBox"></div>
+    <div class="feedback" id="feedback"></div>
+
+    <div class="controls">
+      <button class="primary" id="nextBtn" onclick="nextQuestion()">Next</button>
+    </div>
+  </div>
+</div>
+
+<div id="resultScreen" class="screen">
+  <div class="card">
+    <div class="result-title" id="resultMessage"></div>
+    <div class="result-score" id="finalScore"></div>
+    <button class="primary" onclick="restartQuiz()">Play Again</button>
+  </div>
+</div>
+
+<audio id="correctSound" src="assets/correct.mp3"></audio>
+<audio id="wrongSound" src="assets/wrong.mp3"></audio>
+
+<script>
+const questions = [
+  {
+    q: "Which of the following is the symbol for Indian Rupee?",
+    options: ["$", "£", "₹", "€"],
+    answer: 2
+  },
+  {
+    q: "If you have a ₹10 note and a ₹5 coin, how much money do you have in total?",
+    options: ["₹5", "₹10", "₹15", "₹50"],
+    answer: 2
+  },
+  {
+    q: "Which of these is the smallest value coin currently used in India?",
+    options: ["₹1", "₹2", "₹5", "₹10"],
+    answer: 0
+  },
+  {
+    q: "How many ₹10 notes do you need to make ₹50?",
+    options: ["2", "5", "10", "50"],
+    answer: 1
+  },
+  {
+    q: "A chocolate costs ₹20 and an ice cream costs ₹45. Which one is cheaper?",
+    options: ["Ice cream", "Chocolate", "Both are same", "Neither"],
+    answer: 1
+  },
+  {
+    q: "If you buy a toy for ₹30 and give a ₹50 note to the shopkeeper, how much change will you get back?",
+    options: ["₹10", "₹20", "₹30", "₹80"],
+    answer: 1
+  },
+  {
+    q: "Which note has the highest value among these?",
+    options: ["₹10", "₹20", "₹50", "₹100"],
+    answer: 3
+  },
+  {
+    q: "Two ₹50 notes together make:",
+    options: ["₹50", "₹70", "₹100", "₹150"],
+    answer: 2
+  },
+  {
+    q: "To buy a pen that costs ₹12, which coins could you use?",
+    options: [
+      "A ₹10 coin and a ₹5 coin",
+      "A ₹10 coin and a ₹2 coin",
+      "Two ₹10 coins",
+      "Five ₹1 coins"
+    ],
+    answer: 1
+  },
+  {
+    q: "Look at the price tags: Bag A = ₹85, Bag B = ₹95. Which statement is true?",
+    options: [
+      "Bag A is more expensive than Bag B.",
+      "Bag B is cheaper than Bag A.",
+      "Bag B costs more than Bag A.",
+      "They both cost the same."
+    ],
+    answer: 2
+  },
+  {
+    q: "How many ₹2 coins are needed to make ₹10?",
+    options: ["2", "10", "5", "4"],
+    answer: 2
+  },
+  {
+    q: "Rahul has three ₹20 notes. How much money does he have?",
+    options: ["₹20", "₹40", "₹60", "₹80"],
+    answer: 2
+  }
+];
+
+let current = 0;
+let score = 0;
+let attempts = 0;
+let answered = false;
+let timeLeft = 60;
+let timerInterval;
+let muted = false;
+
+const logoScreen = document.getElementById("logoScreen");
+const quizScreen = document.getElementById("quizScreen");
+const resultScreen = document.getElementById("resultScreen");
+const qNo = document.getElementById("qNo");
+const scoreBox = document.getElementById("score");
+const timerBox = document.getElementById("timer");
+const questionText = document.getElementById("questionText");
+const optionsBox = document.getElementById("optionsBox");
+const feedback = document.getElementById("feedback");
+const nextBtn = document.getElementById("nextBtn");
+const correctSound = document.getElementById("correctSound");
+const wrongSound = document.getElementById("wrongSound");
+
+setTimeout(() => {
+  logoScreen.classList.remove("active");
+  quizScreen.classList.add("active");
+  startQuiz();
+}, 5000);
+
+function startQuiz() {
+  current = 0;
+  score = 0;
+  timeLeft = 60;
+  scoreBox.textContent = score;
+  timerBox.textContent = timeLeft;
+  loadQuestion();
+  startTimer();
+}
+
+function startTimer() {
+  clearInterval(timerInterval);
+  timerInterval = setInterval(() => {
+    timeLeft--;
+    timerBox.textContent = timeLeft;
+
+    if (timeLeft <= 0) {
+      clearInterval(timerInterval);
+      showResult();
+    }
+  }, 1000);
+}
+
+function loadQuestion() {
+  attempts = 0;
+  answered = false;
+  feedback.textContent = "";
+  nextBtn.style.display = "none";
+
+  const item = questions[current];
+  qNo.textContent = current + 1;
+  questionText.textContent = item.q;
+  optionsBox.innerHTML = "";
+
+  item.options.forEach((option, index) => {
+    const btn = document.createElement("button");
+    btn.className = "option";
+    btn.textContent = option;
+    btn.onclick = () => checkAnswer(btn, index);
+    optionsBox.appendChild(btn);
+  });
+}
+
+function checkAnswer(button, selected) {
+  if (answered) return;
+
+  const correctIndex = questions[current].answer;
+
+  if (selected === correctIndex) {
+    answered = true;
+    score++;
+    scoreBox.textContent = score;
+    button.classList.add("correct");
+    feedback.textContent = "Correct!";
+    playSound(correctSound);
+    launchConfetti();
+    disableOptions();
+    nextBtn.style.display = "inline-block";
+  } else {
+    attempts++;
+    button.classList.add("wrong");
+    playSound(wrongSound);
+
+    if (attempts === 1) {
+      feedback.textContent = "Try again.";
+      button.disabled = true;
+    } else {
+      answered = true;
+      feedback.textContent = "Incorrect. The correct answer is highlighted.";
+      showCorrectAnswer();
+      disableOptions();
+      nextBtn.style.display = "inline-block";
+    }
+  }
+}
+
+function showCorrectAnswer() {
+  const correctIndex = questions[current].answer;
+  const allOptions = document.querySelectorAll(".option");
+  allOptions[correctIndex].classList.add("correct");
+}
+
+function disableOptions() {
+  const allOptions = document.querySelectorAll(".option");
+  allOptions.forEach(btn => btn.disabled = true);
+}
+
+function nextQuestion() {
+  current++;
+
+  if (current < questions.length) {
+    loadQuestion();
+  } else {
+    showResult();
+  }
+}
+
+function showResult() {
+  clearInterval(timerInterval);
+
+  quizScreen.classList.remove("active");
+  resultScreen.classList.add("active");
+
+  const percentage = (score / questions.length) * 100;
+  let message = "";
+
+  if (percentage >= 75) {
+    message = "Good job";
+    launchConfetti();
+  } else if (percentage >= 40) {
+    message = "Review this chapter and try again";
+  } else {
+    message = "Let’s practise more";
+  }
+
+  document.getElementById("resultMessage").textContent = message;
+  document.getElementById("finalScore").textContent =
+    "Your Score: " + score + " out of " + questions.length;
+}
+
+function restartQuiz() {
+  resultScreen.classList.remove("active");
+  quizScreen.classList.add("active");
+  startQuiz();
+}
+
+function toggleMute() {
+  muted = !muted;
+  document.getElementById("muteBtn").textContent = muted ? "🔇 Sound Off" : "🔊 Sound On";
+}
+
+function playSound(sound) {
+  if (muted) return;
+  sound.currentTime = 0;
+  sound.play().catch(() => {});
+}
+
+function launchConfetti() {
+  const colors = ["#f59e0b", "#10b981", "#3b82f6", "#ef4444", "#8b5cf6"];
+
+  for (let i = 0; i < 30; i++) {
+    const piece = document.createElement("div");
+    piece.className = "confetti";
+    piece.style.left = Math.random() * 100 + "vw";
+    piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+    piece.style.animationDuration = (Math.random() * 0.8 + 0.8) + "s";
+    document.body.appendChild(piece);
+
+    setTimeout(() => {
+      piece.remove();
+    }, 1500);
+  }
+}
+</script>
+
+</body>
+</html>
