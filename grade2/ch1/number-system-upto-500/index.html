@@ -1,1 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CBQ - Grade 2 Numbers</title>
 
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:Arial}
+
+body{
+  background:#f4f7ff;
+  color:#1f2937;
+}
+
+/* SPLASH */
+#splash{
+  position:fixed;
+  inset:0;
+  background:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  z-index:10;
+}
+
+#splash img{
+  width:300px;
+}
+
+/* MAIN */
+.screen{
+  display:none;
+  padding:16px;
+  min-height:100vh;
+}
+
+.screen.active{
+  display:block;
+}
+
+.card{
+  max-width:900px;
+  margin:auto;
+  background:#fff;
+  border-radius:20px;
+  padding:20px;
+  box-shadow:0 10px 25px rgba(0,0,0,0.1);
+}
+
+.top{
+  display:grid;
+  grid-template-columns:1fr 1fr 1fr;
+  gap:10px;
+  margin-bottom:15px;
+  text-align:center;
+  font-weight:bold;
+}
+
+.box{
+  background:#e8f0ff;
+  padding:10px;
+  border-radius:12px;
+}
+
+.question{
+  font-size:20px;
+  margin:15px 0;
+  font-weight:bold;
+}
+
+.options{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+}
+
+.btn{
+  padding:14px;
+  border-radius:12px;
+  border:2px solid #1f4e79;
+  background:#fff;
+  font-size:16px;
+  cursor:pointer;
+  min-height:60px;
+}
+
+.btn:hover{background:#eef5ff}
+
+.correct{background:#c8f7d5 !important}
+.wrong{background:#ffd6d6 !important}
+
+.controls{
+  margin-top:15px;
+  text-align:center;
+}
+
+button.next{
+  padding:12px 20px;
+  border:none;
+  background:#1f4e79;
+  color:#fff;
+  border-radius:10px;
+  cursor:pointer;
+}
+
+.result{
+  text-align:center;
+  font-size:22px;
+  font-weight:bold;
+}
+</style>
+</head>
+
+<body>
+
+<!-- SPLASH -->
+<div id="splash">
+  <img src="assets/innovine-logo.png">
+</div>
+
+<!-- GAME -->
+<div id="game" class="screen active">
+  <div class="card">
+
+    <div class="top">
+      <div class="box">Q: <span id="qno">1</span>/18</div>
+      <div class="box">Score: <span id="score">0</span></div>
+      <div class="box">Time: <span id="time">60</span></div>
+    </div>
+
+    <div class="question" id="question"></div>
+    <div class="options" id="options"></div>
+
+    <div class="controls">
+      <button class="next" onclick="nextQ()" id="nextBtn">Next</button>
+    </div>
+
+  </div>
+</div>
+
+<!-- RESULT -->
+<div id="result" class="screen">
+  <div class="card result" id="resultText"></div>
+</div>
+
+<audio id="correct" src="assets/correct.mp3"></audio>
+<audio id="wrong" src="assets/wrong.mp3"></audio>
+
+<script>
+
+setTimeout(()=>{
+  document.getElementById("splash").style.display="none";
+},5000);
+
+const questions = [
+{
+q:"Which number is greater: 345 or 354?",
+a:["345","354","Both","300"],
+c:1
+},
+{
+q:"Value of 5 in 352?",
+a:["5","50","500","15"],
+c:1
+},
+{
+q:"Which number is 3 hundreds 2 tens 5 ones?",
+a:["235","325","352","523"],
+c:1
+},
+{
+q:"Which number has 7 tens?",
+a:["70","17","700","107"],
+c:0
+},
+{
+q:"Which is greater?",
+a:["609","690","Both","600"],
+c:1
+},
+{
+q:"300 + 40 + 5 = ?",
+a:["345","305","350","400"],
+c:0
+},
+{
+q:"Value of 3 in 135?",
+a:["3","30","300","13"],
+c:1
+},
+{
+q:"Which is NOT a 3-digit number?",
+a:["345","567","89","901"],
+c:2
+},
+{
+q:"Number after 159?",
+a:["158","160","150","170"],
+c:1
+},
+{
+q:"Which is closest to 400?",
+a:["398","420","450","470"],
+c:0
+},
+{
+q:"Is 248 + 100 more than 300?",
+a:["Yes","No","Exact","Less"],
+c:0
+},
+{
+q:"Which is greater: 690 or 609?",
+a:["690","609","Both","600"],
+c:0
+},
+{
+q:"Which number is 4 hundreds 5 tens 5 ones?",
+a:["455","450","405","500"],
+c:0
+},
+{
+q:"Value of 7 in 372?",
+a:["7","70","700","17"],
+c:1
+},
+{
+q:"372 is greater than 350?",
+a:["Yes","No","Equal","Less"],
+c:0
+},
+{
+q:"5 hundreds 0 tens 8 ones = ?",
+a:["508","580","500","800"],
+c:0
+},
+{
+q:"What comes before 100?",
+a:["99","101","98","90"],
+c:0
+},
+{
+q:"18 + 11 = ?",
+a:["28","29","30","31"],
+c:1
+}
+];
+
+let i=0,score=0,time=60,attempt=0,locked=false;
+
+function loadQ(){
+  let q=questions[i];
+  document.getElementById("qno").innerText=i+1;
+  document.getElementById("question").innerText=q.q;
+
+  let opt="";
+  q.a.forEach((o,idx)=>{
+    opt+=`<button class="btn" onclick="check(this,${idx})">${o}</button>`;
+  });
+
+  document.getElementById("options").innerHTML=opt;
+  document.getElementById("nextBtn").style.display="none";
+  attempt=0;
+  locked=false;
+}
+
+function check(btn,ans){
+  if(locked) return;
+
+  if(ans==questions[i].c){
+    btn.classList.add("correct");
+    document.getElementById("correct").play();
+    score++;
+    document.getElementById("score").innerText=score;
+    locked=true;
+    document.getElementById("nextBtn").style.display="inline-block";
+  } else {
+    attempt++;
+    btn.classList.add("wrong");
+    document.getElementById("wrong").play();
+
+    if(attempt>=2){
+      locked=true;
+      document.getElementById("nextBtn").style.display="inline-block";
+    }
+  }
+}
+
+function nextQ(){
+  i++;
+  if(i<questions.length){
+    loadQ();
+  } else {
+    showResult();
+  }
+}
+
+function showResult(){
+  document.getElementById("game").style.display="none";
+  document.getElementById("result").style.display="block";
+
+  let percent = (score/questions.length)*100;
+
+  let msg="";
+  if(percent>=75) msg="Good job 🎉";
+  else if(percent>=40) msg="Review this chapter and try again 🙂";
+  else msg="Let’s practise more 📘";
+
+  document.getElementById("resultText").innerText =
+    `${msg}\nScore: ${score}/${questions.length}`;
+}
+
+/* TIMER */
+setInterval(()=>{
+  if(time>0){
+    time--;
+    document.getElementById("time").innerText=time;
+  } else {
+    showResult();
+  }
+},1000);
+
+loadQ();
+
+</script>
+
+</body>
+</html>
