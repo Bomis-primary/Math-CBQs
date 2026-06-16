@@ -1,1 +1,816 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grade 3 – Chapter 4: Multiplication Competency Assessment</title>
+    <style>
+        :root {
+            --primary: #0284c7;
+            --primary-hover: #0369a1;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --background: #f8fafc;
+            --surface: #ffffff;
+            --text: #1e293b;
+            --text-secondary: #475569;
+            --border: #cbd5e1;
+        }
 
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+
+        body {
+            background-color: var(--background);
+            color: var(--text);
+            line-height: 1.5;
+            padding: 2rem 1rem;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        /* 5-Second Mandatory Splash Screen */
+        #splash-screen {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: #ffffff;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.5s ease-out;
+        }
+
+        .splash-loader {
+            width: 48px;
+            height: 48px;
+            border: 5px solid #e2e8f0;
+            border-bottom-color: var(--primary);
+            border-radius: 50%;
+            animation: rotation 1s linear infinite;
+        }
+
+        @keyframes rotation {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        header {
+            background: var(--surface);
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            margin-bottom: 2rem;
+            border: 1px solid var(--border);
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .meta-info {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        .meta-info ul {
+            margin-top: 0.5rem;
+            margin-left: 1.25rem;
+        }
+
+        .header-meta-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            background: #f1f5f9;
+            padding: 0.75rem 1.2rem;
+            border-radius: 8px;
+            font-weight: 700;
+        }
+
+        .timer-badge {
+            background: #fef3c7;
+            color: #d97706;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+        }
+
+        .timer-low {
+            background: #fee2e2;
+            color: var(--danger);
+            animation: pulse 1s infinite alternate;
+        }
+
+        @keyframes pulse {
+            from { opacity: 1; } to { opacity: 0.7; }
+        }
+
+        .progress-container {
+            background: #e2e8f0;
+            height: 8px;
+            border-radius: 4px;
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            background: var(--primary);
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .quiz-card {
+            background: var(--surface);
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            margin-bottom: 1.5rem;
+            border: 1px solid var(--border);
+        }
+
+        .question-number {
+            font-weight: 700;
+            color: var(--primary);
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.5rem;
+        }
+
+        .question-text {
+            font-size: 1.15rem;
+            font-weight: 600;
+            margin-bottom: 1.25rem;
+        }
+
+        .svg-container {
+            margin-bottom: 1.5rem;
+            width: 100%;
+            background: #f8fafc;
+            border-radius: 8px;
+            border: 1px dashed var(--border);
+            padding: 10px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 0.75rem;
+        }
+
+        @media (min-width: 640px) {
+            .options-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .option-btn {
+            background: var(--surface);
+            border: 2px solid var(--border);
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: left;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            width: 100%;
+        }
+
+        .option-btn:hover:not(:disabled) {
+            border-color: var(--primary);
+            background-color: #f0f9ff;
+        }
+
+        .option-btn.selected-correct {
+            border-color: var(--success) !important;
+            background-color: #d1fae5 !important;
+            color: #065f46 !important;
+            font-weight: 700;
+        }
+
+        .option-btn.selected-wrong {
+            border-color: var(--danger) !important;
+            background-color: #fee2e2 !important;
+            color: #991b1b !important;
+        }
+
+        .feedback-box {
+            margin-top: 1.25rem;
+            padding: 1rem;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            display: none;
+        }
+
+        .feedback-box.show {
+            display: block;
+        }
+
+        .feedback-box.hint-bg {
+            background-color: #eff6ff;
+            border: 1px solid #bfdbfe;
+            color: #1e40af;
+        }
+
+        .feedback-box.correct-bg {
+            background-color: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            color: #166534;
+        }
+
+        .feedback-box.incorrect-bg {
+            background-color: #fef2f2;
+            border: 1px solid #fecaca;
+            color: #991b1b;
+        }
+
+        .explanation-text {
+            margin-top: 0.25rem;
+            font-weight: 500;
+        }
+
+        .action-container {
+            text-align: center;
+            margin-top: 1.5rem;
+        }
+
+        .action-btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.9rem 2.5rem;
+            font-size: 1.05rem;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            box-shadow: 0 4px 6px -1px rgb(2 132 199 / 0.2);
+            transition: background-color 0.2s ease;
+            width: 100%;
+        }
+
+        .action-btn:hover {
+            background-color: var(--primary-hover);
+        }
+
+        #results-card {
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            border: 2px solid #bae6fd;
+            text-align: center;
+            padding: 3rem 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            margin-bottom: 1.5rem;
+            display: none;
+        }
+
+        .score-display {
+            font-size: 3.5rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin: 1rem 0;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            background: var(--surface);
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            border: 1px solid var(--border);
+            margin-top: 2rem;
+            padding: 1.5rem;
+        }
+
+        .table-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--text-secondary);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 0.9rem;
+        }
+
+        th, td {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        th {
+            background-color: #f1f5f9;
+            color: var(--text-secondary);
+            font-weight: 600;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+
+<div id="splash-screen">
+    <h1 style="margin-bottom: 10px; color: var(--primary);">Innovine Assessment Engine</h1>
+    <div class="splash-loader"></div>
+    <p style="margin-top: 15px; color: var(--text-secondary); font-weight: 500;">Loading Chapter 4: Multiplication Matrix...</p>
+</div>
+
+<!-- Audio Assets placeholders -->
+<audio id="audio-correct" src="assets/correct.mp3" preload="auto"></audio>
+<audio id="audio-wrong" src="assets/wrong.mp3" preload="auto"></audio>
+
+<div class="container">
+    <header>
+        <h1>Grade 3 – Chapter 4: Multiplication (CBQ Master Edition)</h1>
+        <div class="meta-info">
+            <strong>Active Cognitive Pillars:</strong>
+            <ul>
+                <li>Distinguishing repeated grouping models vs. arithmetic sums.</li>
+                <li>Analyzing multi-digit standard column distribution laws and regrouping limits.</li>
+                <li>Identifying structural mathematical errors and property invariants.</li>
+                <li>Evaluating real-world scaled arrays and multi-step data matrices.</li>
+            </ul>
+        </div>
+    </header>
+
+    <div id="quiz-workspace">
+        <div class="header-meta-row">
+            <div>Progress Matrix: Slot <span id="current-q-label">1</span> / 20</div>
+            <div id="timer-display" class="timer-badge">60s</div>
+        </div>
+        <div class="progress-container">
+            <div id="progress-indicator" class="progress-bar"></div>
+        </div>
+
+        <div class="quiz-card">
+            <div class="question-number" id="q-number-hdr">Question 1</div>
+            <div class="question-text" id="q-text-container">Loading question structure...</div>
+            
+            <div class="svg-container hidden" id="q-svg-container"></div>
+
+            <div class="options-grid" id="q-options-grid"></div>
+            
+            <div class="feedback-box" id="q-feedback-box"></div>
+            
+            <div class="action-container hidden" id="q-action-container">
+                <button type="button" class="action-btn" id="next-btn" onclick="quizEngine.advanceQuestion()">Commit Target & Advance</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="results-card">
+        <h2>Multiplication Analytical Dashboard Complete!</h2>
+        <div class="score-display" id="final-score-text">0 / 20</div>
+        <p id="final-percentage-text" style="font-size: 1.2rem; font-weight: 600; color: var(--text-secondary);"></p>
+        <p id="performance-descriptor" style="margin-top: 1rem; font-weight: 500;"></p>
+    </div>
+
+    <!-- Verification Table Blueprint -->
+    <div class="table-container">
+        <div class="table-title">Quality Mapping Matrix Verification Table</div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Q No.</th>
+                    <th>LO Covered</th>
+                    <th>Draft Reference</th>
+                    <th>Competency Strategy Tested</th>
+                    <th>Difficulty</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td>Q1</td><td>LO 2: Equal Groups</td><td>Draft Q1 (Apple counts)</td><td>Mapping structural equal-group boundaries vs total accumulation</td><td>Simple Visual</td></tr>
+                <tr><td>Q2</td><td>LO 1: Array Mechanics</td><td>Draft Q2 (Array layout)</td><td>Decomposing dimension properties (Rows &times; Columns)</td><td>Simple Visual</td></tr>
+                <tr><td>Q3</td><td>LO 2: Structure Representation</td><td>Draft Q3 (Box match)</td><td>Differentiating factor order properties from addend pools</td><td>Simple Visual</td></tr>
+                <tr><td>Q4</td><td>LO 2: Equal Groups</td><td>Draft Q4 (Star pairs)</td><td>Decoding structural size patterns across group elements</td><td>Simple Visual</td></tr>
+                <tr><td>Q5</td><td>LO 1: Multiplier Rules</td><td>Draft Q5 (4&times;3=7 mistake)</td><td>Debugging addition vs multiplication operations</td><td>Simple Visual</td></tr>
+                <tr><td>Q6</td><td>LO 2: Repeated Addition</td><td>Draft Q6 (3&times;5=3+5)</td><td>Isolating cross-functional operator properties</td><td>Simple Visual</td></tr>
+                <tr><td>Q7</td><td>LO 2: Repeated Addition</td><td>Draft Q7 (Repeated sum 4&times;3)</td><td>Identifying correct addend counts via multi-set expansion</td><td>Reasoning</td></tr>
+                <tr><td>Q8</td><td>LO 1: Table Patterns</td><td>Draft Q8 (Fact truth)</td><td>Evaluating product validation boundaries across distinct choices</td><td>Reasoning</td></tr>
+                <tr><td>Q9</td><td>LO 1: Comparative Structures</td><td>Draft Q9 (Group A vs B)</td><td>Analyzing multi-set products to discover scale relationships</td><td>Reasoning</td></tr>
+                <tr><td>Q10</td><td>LO 1: Property Application</td><td>Draft Q10 (Group A items)</td><td>Isolating isolated factor boundaries from comparative matrices</td><td>Reasoning</td></tr>
+                <tr><td>Q11</td><td>LO 3: Matrix Grid Scaling</td><td>Draft Q11 (Row alignment)</td><td>Synthesizing raw row dimensions into balanced product results</td><td>Reasoning</td></tr>
+                <tr><td>Q12</td><td>LO 6: Threshold Mechanics</td><td>Draft Q12 (Marble bag limit)</td><td>Validating calculated totals against structured boundary limits</td><td>Reasoning</td></tr>
+                <tr><td>Q13</td><td>LO 6: Capacity Tracking</td><td>Draft Q13 (Shop pack count)</td><td>Applying inequalities to product properties</td><td>Reasoning</td></tr>
+                <tr><td>Q14</td><td>LO 1: Missing Factor Puzzle</td><td>Draft Q14 (Missing multiplier)</td><td>Deducing unknown scalar multipliers via reverse algebraic steps</td><td>Reasoning</td></tr>
+                <tr><td>Q15</td><td>LO 1: Fact Decomposition</td><td>Draft Q15 (Target 18 paths)</td><td>Discovering multiple prime factor combination sets for target products</td><td>Challenge</td></tr>
+                <tr><td>Q16</td><td>LO 2: Syntactic Structuring</td><td>Draft Q16 (Not an equation)</td><td>Isolating expressions without relational equivalence markers</td><td>Challenge</td></tr>
+                <tr><td>Q17</td><td>LO 6: Layout Architecture</td><td>Draft Q17 (Chair row model)</td><td>Converting unstructured storage layouts into complete arrays</td><td>Challenge</td></tr>
+                <tr><td>Q18</td><td>LO 6: Boundary Evaluation</td><td>Draft Q18 (Chair limit check)</td><td>Evaluating dimensional layouts relative to system criteria</td><td>Challenge</td></tr>
+                <tr><td>Q19</td><td>LO 6: Multi-Stage Tracking</td><td>Draft Q19 (Add 6 more items)</td><td>Executing complex multi-step models: $ (A \times B) + C $</td><td>Challenge</td></tr>
+                <tr><td>Q20</td><td>LO 5: Shifting Base Parameters</td><td>Draft Q20 (Scale to 40)</td><td>Isolating algebraic variable functions using division inverses</td><td>Challenge</td></tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    const assessmentDataset = [
+        {
+            type: "visual",
+            lo: "LO 2: Equal Group Analysis",
+            question: "[Picture: 4 boxes with 6 items each] Examine the sorting configuration below. Which mathematical statement represents the total item capacity without counting objects one-by-one?",
+            svg: `<svg viewBox="0 0 600 130" width="100%"><rect width="600" height="130" fill="#f8fafc" rx="8" stroke="#cbd5e1"/><g transform="translate(20,20)"><rect width="110" height="90" fill="none" stroke="#0284c7" stroke-width="2" rx="6"/><circle cx="30" cy="30" r="10" fill="#f43f5e"/><circle cx="55" cy="30" r="10" fill="#f43f5e"/><circle cx="80" cy="30" r="10" fill="#f43f5e"/><circle cx="30" cy="65" r="10" fill="#f43f5e"/><circle cx="55" cy="65" r="10" fill="#f43f5e"/><circle cx="80" cy="65" r="10" fill="#f43f5e"/></g><g transform="translate(160,20)"><rect width="110" height="90" fill="none" stroke="#0284c7" stroke-width="2" rx="6"/><circle cx="30" cy="30" r="10" fill="#f43f5e"/><circle cx="55" cy="30" r="10" fill="#f43f5e"/><circle cx="80" cy="30" r="10" fill="#f43f5e"/><circle cx="30" cy="65" r="10" fill="#f43f5e"/><circle cx="55" cy="65" r="10" fill="#f43f5e"/><circle cx="80" cy="65" r="10" fill="#f43f5e"/></g><g transform="translate(300,20)"><rect width="110" height="90" fill="none" stroke="#0284c7" stroke-width="2" rx="6"/><circle cx="30" cy="30" r="10" fill="#f43f5e"/><circle cx="55" cy="30" r="10" fill="#f43f5e"/><circle cx="80" cy="30" r="10" fill="#f43f5e"/><circle cx="30" cy="65" r="10" fill="#f43f5e"/><circle cx="55" cy="65" r="10" fill="#f43f5e"/><circle cx="80" cy="65" r="10" fill="#f43f5e"/></g><g transform="translate(440,20)"><rect width="110" height="90" fill="none" stroke="#0284c7" stroke-width="2" rx="6"/><circle cx="30" cy="30" r="10" fill="#f43f5e"/><circle cx="55" cy="30" r="10" fill="#f43f5e"/><circle cx="80" cy="30" r="10" fill="#f43f5e"/><circle cx="30" cy="65" r="10" fill="#f43f5e"/><circle cx="55" cy="65" r="10" fill="#f43f5e"/><circle cx="80" cy="65" r="10" fill="#f43f5e"/></g></svg>`,
+            options: ["a) 4 + 6", "b) 6 + 6 + 6 + 6 + 6 + 6", "c) 4 × 6", "d) 4 × 4 × 4 × 4"],
+            answer: 2,
+            hint: "Count the total number of blue boxes, then find out how many red dots are nested inside each individual container.",
+            explanation: "Multiplication maps equal sets. There are 4 distinct groups, and each contains exactly 6 units, which is structured as 4 × 6 = 24."
+        },
+        {
+            type: "visual",
+            lo: "LO 1: Array Dimensionality",
+            question: "[Picture: grid array of 3 rows and 5 columns] An automated machine arranges items into the grid pattern below. What is the standard configuration formula used to find the total area capacity?",
+            svg: `<svg viewBox="0 0 400 160" width="100%"><rect width="400" height="160" fill="#f8fafc" rx="8" stroke="#cbd5e1"/><g transform="translate(60, 25)"><circle cx="30" cy="20" r="12" fill="#10b981"/><circle cx="80" cy="20" r="12" fill="#10b981"/><circle cx="130" cy="20" r="12" fill="#10b981"/><circle cx="180" cy="20" r="12" fill="#10b981"/><circle cx="230" cy="20" r="12" fill="#10b981"/><circle cx="30" cy="60" r="12" fill="#10b981"/><circle cx="80" cy="60" r="12" fill="#10b981"/><circle cx="130" cy="60" r="12" fill="#10b981"/><circle cx="180" cy="60" r="12" fill="#10b981"/><circle cx="230" cy="60" r="12" fill="#10b981"/><circle cx="30" cy="100" r="12" fill="#10b981"/><circle cx="80" cy="100" r="12" fill="#10b981"/><circle cx="130" cy="100" r="12" fill="#10b981"/><circle cx="180" cy="100" r="12" fill="#10b981"/><circle cx="230" cy="100" r="12" fill="#10b981"/></g></svg>`,
+            options: ["a) 3 + 5", "b) 3 × 5", "c) 5 + 5 + 5 + 5 + 5", "d) 3 × 3 × 3"],
+            answer: 1,
+            hint: "Look at the horizontal structure lines (rows) vs vertical tracks (columns). Multiply rows by columns.",
+            explanation: "Arrays are mapped as (Rows) × (Columns). This layout shows 3 horizontal rows containing 5 items each, translating to 3 × 5 = 15."
+        },
+        {
+            type: "visual",
+            lo: "LO 2: Equal Set Representation",
+            question: "[Picture: 5 storage frames with 4 items each] Which mathematical expressions correctly describe this structural model?",
+            svg: `<svg viewBox="0 0 550 120" width="100%"><rect width="550" height="120" fill="#f8fafc" rx="8" stroke="#cbd5e1"/><g fill="#f59e0b"><circle cx="40" cy="40" r="10"/><circle cx="70" cy="40" r="10"/><circle cx="40" cy="80" r="10"/><circle cx="70" cy="80" r="10"/><path d="M20,15 H90 V105 H20 Z" fill="none" stroke="#64748b" stroke-width="2"/><circle cx="150" cy="40" r="10"/><circle cx="180" cy="40" r="10"/><circle cx="150" cy="80" r="10"/><circle cx="180" cy="80" r="10"/><path d="M130,15 H200 V105 H130 Z" fill="none" stroke="#64748b" stroke-width="2"/><circle cx="260" cy="40" r="10"/><circle cx="290" cy="40" r="10"/><circle cx="260" cy="80" r="10"/><circle cx="290" cy="80" r="10"/><path d="M240,15 H310 V105 H240 Z" fill="none" stroke="#64748b" stroke-width="2"/><circle cx="370" cy="40" r="10"/><circle cx="400" cy="40" r="10"/><circle cx="370" cy="80" r="10"/><circle cx="400" cy="80" r="10"/><path d="M350,15 H420 V105 H350 Z" fill="none" stroke="#64748b" stroke-width="2"/><circle cx="480" cy="40" r="10"/><circle cx="510" cy="40" r="10"/><circle cx="480" cy="80" r="10"/><circle cx="510" cy="80" r="10"/><path d="M460,15 H530 V105 H460 Z" fill="none" stroke="#64748b" stroke-width="2"/></g></svg>`,
+            options: ["a) 5 + 4", "b) 5 × 4", "c) 4 × 4 × 4 × 4 × 4", "d) 5 × 5 × 5 × 5"],
+            answer: 1,
+            hint: "The boxes define our multiplier group count. Count the frames, then multiply by the constant elements inside one frame.",
+            explanation: "There are 5 separate bounding containers with 4 dots in each box. This is explicitly calculated as 5 groups of 4, or 5 × 4."
+        },
+        {
+            type: "visual",
+            lo: "LO 2: Segment Calibration",
+            question: "[Picture: Number line scale mapping 6 skips of 2 units] A tracker moves along this scale using fixed intervals. Which quantitative statement describes the endpoint location?",
+            svg: `<svg viewBox="0 0 600 130" width="100%"><rect width="600" height="130" fill="#f8fafc" rx="8" stroke="#cbd5e1"/><line x1="30" y1="90" x2="570" y2="90" stroke="#475569" stroke-width="3"/><path d="M 30 90 Q 72 40 115 90 Q 157 40 200 90 Q 242 40 285 90 Q 327 40 370 90 Q 412 40 455 90 Q 497 40 540 90" fill="none" stroke="#ef4444" stroke-width="2.5"/><circle cx="30" cy="90" r="4" fill="#1e293b"/><circle cx="115" cy="90" r="4" fill="#1e293b"/><circle cx="200" cy="90" r="4" fill="#1e293b"/><circle cx="285" cy="90" r="4" fill="#1e293b"/><circle cx="370" cy="90" r="4" fill="#1e293b"/><circle cx="455" cy="90" r="4" fill="#1e293b"/><circle cx="540" cy="90" r="4" fill="#1e293b"/><text x="30" y="115" font-family="sans-serif" font-size="12" text-anchor="middle">0</text><text x="115" y="115" font-family="sans-serif" font-size="12" text-anchor="middle">2</text><text x="200" y="115" font-family="sans-serif" font-size="12" text-anchor="middle">4</text><text x="540" y="115" font-family="sans-serif" font-size="12" font-weight="bold" text-anchor="middle">12</text></svg>`,
+            options: ["a) 6 jumps of 2 units equals 12", "b) 6 jumps plus 2 units equals 8", "c) 2 jumps of 6 units equals 12", "d) 6 jumps divided by 2 equals 3"],
+            answer: 0,
+            hint: "Count how many curved arrows are shown, then check the size of each jump along the scale.",
+            explanation: "The tracking model shows 6 distinct hops, with each hop covering exactly 2 units. This creates the multiplication sentence: 6 × 2 = 12."
+        },
+        {
+            type: "visual",
+            lo: "LO 1: Conceptual Error Auditing",
+            question: "[Picture: Balance scale showing 4 &times; 3 on one side and 7 on the other] A student claims that the scale below is perfectly balanced. What error did they make in analyzing the operations?",
+            svg: `<svg viewBox="0 0 400 150" width="100%"><rect width="400" height="150" fill="#f8fafc" rx="8" stroke="#cbd5e1"/><polygon points="200,90 185,130 215,130" fill="#475569"/><line x1="100" y1="90" x2="300" y2="90" stroke="#1e293b" stroke-width="4"/><g transform="translate(60,40)"><rect width="70" height="40" fill="#0284c7" rx="4"/><text x="35" y="25" fill="#fff" font-weight="bold" text-anchor="middle">4 × 3</text></g><g transform="translate(270,40)"><rect width="70" height="40" fill="#ef4444" rx="4"/><text x="35" y="25" fill="#fff" font-weight="bold" text-anchor="middle">7</text></g></svg>`,
+            options: ["a) They treated the multiplication sign as an addition sign.", "b) They multiplied 4 by itself three times.", "c) They subtracted 3 from 4.", "d) They misread the digit 3 as a 4."],
+            answer: 0,
+            hint: "Look closely at the expression 4 × 3. If you combine 4 and 3 to get 7, which operation did you accidentally use?",
+            explanation: "The student added $4 + 3 = 7$ instead of evaluating groups. $4 \times 3$ means four groups of three, which equals 12."
+        },
+        {
+            type: "visual",
+            lo: "LO 2: Operator Property Analysis",
+            question: "[Picture: Statement showing 3 &times; 5 = 3 + 5] A student wrote the relationship shown below on the board. Why is this math identity statement incorrect?",
+            svg: `<svg viewBox="0 0 400 100" width="100%"><rect width="400" height="100" fill="#f8fafc" rx="8" stroke="#cbd5e1"/><text x="200" y="60" font-family="monospace" font-size="28" font-weight="bold" fill="#b91c1c" text-anchor="middle">3 × 5 = 3 + 5</text></svg>`,
+            options: ["a) Multiplication means repeated addition, so it should be five 3s added together.", "b) The left side equals 8 and the right side equals 15.", "c) The plus symbol and the multiplication symbol have the exact same function.", "d) You must multiply 3 by itself five times over."],
+            answer: 0,
+            hint: "Multiplication means scaling things up by adding groups, whereas addition simply joins two separate numbers.",
+            explanation: "3 × 5 represents 3 added to itself 5 times over ($3+3+3+3+3 = 15$). It is completely different from the simple sum $3+5 = 8$."
+        },
+        {
+            type: "text",
+            lo: "LO 2: Repeated Addition Models",
+            question: "An automated processing script runs the command 4 × 3. Which repeated addition sequence executes the exact same structural data value?",
+            options: ["a) 3 + 3 + 3 + 3", "b) 4 + 3", "c) 4 + 4 + 4 + 4", "d) 3 + 4 + 3"],
+            answer: 0,
+            hint: "The expression 4 × 3 means you have 4 groups of the number 3.",
+            explanation: "4 × 3 means 4 groups of 3, which expands out to the sequence: 3 + 3 + 3 + 3."
+        },
+        {
+            type: "text",
+            lo: "LO 1: Fact Matrix Verification",
+            question: "You are checking a calculation data sheet for errors. Which of the following multiplication statements is completely correct?",
+            options: ["a) 6 × 4 = 20", "b) 5 × 3 = 15", "c) 7 × 2 = 18", "d) 4 × 4 = 12"],
+            answer: 1,
+            hint: "Test the product tables: count by 5s three times to see if it reaches the target value.",
+            explanation: "5 × 3 = 15 is correct. The other choices are mathematically incorrect ($6 \times 4 = 24$, $7 \times 2 = 14$, $4 \times 4 = 16$)."
+        },
+        {
+            type: "text",
+            lo: "LO 1: Comparative Value Scale",
+            question: "Data Matrix A stores values as 4 × 5. Data Matrix B stores values as 3 × 6. If you compare their total outputs, which statement is true?",
+            options: ["a) Matrix A's total is larger than Matrix B's total.", "b) Matrix B's total is larger than Matrix A's total.", "c) Both data matrices possess equal value parameters.", "d) Matrix A holds less capacity than Matrix B."],
+            answer: 0,
+            hint: "Find the product of 4 × 5 first, then find the product of 3 × 6, and compare the two results.",
+            explanation: "Matrix A = 4 × 5 = 20. Matrix B = 3 × 6 = 18. Comparing the two shows that 20 is greater than 18, so Matrix A is larger."
+        },
+        {
+            type: "text",
+            lo: "LO 1: Identity Evaluation",
+            question: "Using the data parameters from the previous question, what is the exact output score of Data Matrix A?",
+            options: ["a) 20", "b) 18", "c) 24", "d) 15"],
+            answer: 0,
+            hint: "Calculate the value of four groups of five.",
+            explanation: "Data Matrix A represents 4 × 5. Counting by fives four times ($5, 10, 15, 20$) gives an exact total of 20."
+        },
+        {
+            type: "text",
+            lo: "LO 3: Matrix Grid Scaling",
+            question: "A solar panel grid has 5 horizontal rows, and each row contains 4 active energy cells. What is the total cell count across this setup?",
+            options: ["a) 20 cells", "b) 25 cells", "c) 15 cells", "d) 10 cells"],
+            answer: 0,
+            hint: "Multiply the total number of rows by the number of energy cells in each row.",
+            explanation: "The grid can be modeled as 5 rows × 4 cells per row. $5 \times 4 = 20$, giving a total of 20 cells."
+        },
+        {
+            type: "text",
+            lo: "LO 6: Threshold Boundaries",
+            question: "An engineer has 6 bags of components, with each bag containing exactly 5 items. They need more than 25 components for an assembly. Do they have enough?",
+            options: ["a) Yes, because they have a total of 30 items, which is greater than 25.", "b) No, because they have exactly 24 items, which is less than 25.", "c) No, because they have exactly 25 items.", "d) Yes, because any 6 bags will always pass the limit."],
+            answer: 0,
+            hint: "Multiply 6 by 5 to find the total number of components they have, then compare that number to 25.",
+            explanation: "6 bags × 5 items per bag = 30 components. Since 30 is greater than 25, they have enough components for the assembly."
+        },
+        {
+            type: "text",
+            lo: "LO 6: Capacity Allocation",
+            question: "A shipping hub packs 4 heavy boxes with 8 retail kits in each box. To fulfill an order, they must deliver more than 30 kits. Does this batch meet the requirement?",
+            options: ["a) Yes, because 4 × 8 = 32, which is greater than 30.", "b) No, because 4 × 8 = 28, which is less than 30.", "c) No, because the batch contains exactly 30 items.", "d) Yes, because 4 boxes always match any target order size."],
+            answer: 0,
+            hint: "Calculate the total number of kits by multiplying 4 boxes by 8 items, then check if it is greater than 30.",
+            explanation: "4 boxes × 8 items per box = 32 kits. Since 32 is greater than 30, this batch successfully meets the order requirements."
+        },
+        {
+            type: "text",
+            lo: "LO 1: Missing Factor Optimization",
+            question: "A missing data entry satisfies the equation: [Box] × 5 = 25. What value must be placed in the box to keep the system balanced?",
+            options: ["a) 5", "b) 4", "c) 6", "d) 3"],
+            answer: 0,
+            hint: "Think about your multiplication tables: what number multiplied by 5 gives a result of 25?",
+            explanation: "Using inverse operations, $25 \div 5 = 5$. This means the missing factor is 5, since 5 × 5 = 25."
+        },
+        {
+            type: "text",
+            lo: "LO 1: Fact Decomposition",
+            question: "A server needs to generate an output value of exactly 18. Which operation code will generate this result?",
+            options: ["a) 3 × 6", "b) 2 × 6", "c) 4 × 3", "d) 5 × 2"],
+            answer: 0,
+            hint: "Test the choices: multiply the factors in each option to see which one equals 18.",
+            explanation: "3 × 6 = 18. The other options give different results ($2 \times 6 = 12$, $4 \times 3 = 12$, $5 \times 2 = 10$)."
+        },
+        {
+            type: "text",
+            lo: "LO 2: Syntactic Identification",
+            question: "Which of the following does NOT represent a multiplication sentence?",
+            options: ["a) 4 × 3", "b) 5 × 2", "c) 3 + 3 + 3", "d) 6 × 1"],
+            answer: 2,
+            hint: "Look for the expression that uses an addition operator (+) instead of a multiplication operator (×).",
+            explanation: "3 + 3 + 3 is an addition expression. While it has the same value as 3 × 3, it is not written as a multiplication sentence."
+        },
+        {
+            type: "text",
+            lo: "LO 6: Array Architecture",
+            question: "An auditorium configures its seating plan into 6 rows, with each row containing exactly 5 chairs. What is the total seating capacity?",
+            options: ["a) 30 chairs", "b) 25 chairs", "c) 35 chairs", "d) 20 chairs"],
+            answer: 0,
+            hint: "Multiply the number of horizontal rows by the number of chairs in each row to find the total.",
+            explanation: "The setup forms a 6 × 5 array. Multiplying 6 rows by 5 chairs per row gives a total capacity of 30 chairs."
+        },
+        {
+            type: "text",
+            lo: "LO 6: Boundary Validation Matrix",
+            question: "Using the auditorium seating data from the previous question, is the total seating capacity strictly greater than 25 seats?",
+            options: ["a) Yes, because 30 is greater than 25.", "b) No, because it matches 25 exactly.", "c) No, because the capacity is less than 20.", "d) No, because there are only 6 rows available."],
+            answer: 0,
+            hint: "Take the total seating capacity of 30 from the previous question and compare it to the target number 25.",
+            explanation: "Yes, the total capacity is 30 chairs. When you compare 30 to 25, 30 is greater, so it easily passes the threshold."
+        },
+        {
+            type: "text",
+            lo: "LO 6: Multi-Stage Tracking",
+            question: "A factory line processes 4 batches of 6 items each. Before shipping, workers add 6 extra items to the total pool. How many items are in the final shipment?",
+            options: ["a) 30 items", "b) 24 items", "c) 28 items", "d) 32 items"],
+            answer: 0,
+            hint: "First calculate the items in the main batches by multiplying 4 by 6. Then add the 6 extra items to that result.",
+            explanation: "The initial batch total is 4 × 6 = 24 items. Adding the 6 extra items ($24 + 6$) brings the final total to 30 items."
+        },
+        {
+            type: "text",
+            lo: "LO 5: Scale Parameter Matching",
+            question: "A number is scaled up by a factor of 5 to reach a target value of 40. What was the original starting number?",
+            options: ["a) 8", "b) 6", "c) 5", "d) 7"],
+            answer: 0,
+            hint: "Find the missing number in the equation: [Number] × 5 = 40. You can solve this by dividing 40 by 5.",
+            explanation: "Using inverse operations, $40 \div 5 = 8$. This means the original number is 8, since 8 × 5 = 40."
+        }
+    ];
+
+    class MultiplicationQuizEngine {
+        constructor(dataset) {
+            this.dataset = dataset;
+            this.currentIndex = 0;
+            this.score = 0;
+            this.attempts = 0;
+            this.timeLeft = 60;
+            this.timerInterval = null;
+        }
+
+        init() {
+            setTimeout(() => {
+                const splash = document.getElementById('splash-screen');
+                splash.style.opacity = 0;
+                setTimeout(() => splash.classList.add('hidden'), 500);
+                this.loadCurrentQuestion();
+            }, 5000);
+        }
+
+        loadCurrentQuestion() {
+            this.attempts = 0;
+            this.timeLeft = 60;
+            
+            document.getElementById('q-feedback-box').className = "feedback-box";
+            document.getElementById('q-feedback-box').style.display = "none";
+            document.getElementById('q-action-container').classList.add('hidden');
+            
+            const qData = this.dataset[this.currentIndex];
+            
+            document.getElementById('current-q-label').innerText = this.currentIndex + 1;
+            document.getElementById('q-number-hdr').innerText = `Question ${this.currentIndex + 1}`;
+            document.getElementById('q-text-container').innerText = qData.question;
+
+            const progressPercentage = (this.currentIndex / this.dataset.length) * 100;
+            document.getElementById('progress-indicator').style.width = `${progressPercentage}%`;
+
+            const svgBox = document.getElementById('q-svg-container');
+            if (qData.type === "visual" && qData.svg) {
+                svgBox.innerHTML = qData.svg;
+                svgBox.classList.remove('hidden');
+            } else {
+                svgBox.classList.add('hidden');
+                svgBox.innerHTML = '';
+            }
+
+            const optionsGrid = document.getElementById('q-options-grid');
+            optionsGrid.innerHTML = '';
+
+            qData.options.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.type = "button";
+                btn.className = "option-btn";
+                btn.innerText = opt;
+                btn.onclick = () => this.evaluateSelection(idx, btn);
+                optionsGrid.appendChild(btn);
+            });
+
+            this.launchTimer();
+        }
+
+        launchTimer() {
+            clearInterval(this.timerInterval);
+            this.refreshTimerUI();
+
+            this.timerInterval = setInterval(() => {
+                this.timeLeft--;
+                this.refreshTimerUI();
+
+                if (this.timeLeft <= 0) {
+                    clearInterval(this.timerInterval);
+                    this.triggerTimeOut();
+                }
+            }, 1000);
+        }
+
+        refreshTimerUI() {
+            const timerBadge = document.getElementById('timer-display');
+            timerBadge.innerText = `${this.timeLeft}s`;
+            if (this.timeLeft <= 15) {
+                timerBadge.classList.add('timer-low');
+            } else {
+                timerBadge.classList.remove('timer-low');
+            }
+        }
+
+        evaluateSelection(selectedIdx, clickedBtn) {
+            const qData = this.dataset[this.currentIndex];
+            this.attempts++;
+
+            if (selectedIdx === qData.answer) {
+                clearInterval(this.timerInterval);
+                this.playAudioFeedback('audio-correct');
+                clickedBtn.classList.add('selected-correct');
+                this.lockOptions();
+                
+                if (this.attempts === 1) {
+                    this.score++;
+                }
+
+                const fb = document.getElementById('q-feedback-box');
+                fb.className = "feedback-box show correct-bg";
+                fb.innerHTML = `<strong>✓ Section Complete!</strong><div class="explanation-text">${qData.explanation}</div>`;
+                document.getElementById('q-action-container').classList.remove('hidden');
+            } else {
+                this.playAudioFeedback('audio-wrong');
+                clickedBtn.classList.add('selected-wrong');
+                clickedBtn.disabled = true;
+
+                if (this.attempts === 1) {
+                    const fb = document.getElementById('q-feedback-box');
+                    fb.className = "feedback-box show hint-bg";
+                    fb.innerHTML = `<strong>💡 Hint Matrix:</strong> <span class="explanation-text">${qData.hint}</span>`;
+                } else {
+                    clearInterval(this.timerInterval);
+                    this.lockOptions();
+                    this.exposeCorrectAnswer();
+                    document.getElementById('q-action-container').classList.remove('hidden');
+                }
+            }
+        }
+
+        triggerTimeOut() {
+            this.lockOptions();
+            this.exposeCorrectAnswer();
+            document.getElementById('q-action-container').classList.remove('hidden');
+        }
+
+        exposeCorrectAnswer() {
+            const qData = this.dataset[this.currentIndex];
+            const buttons = document.getElementsByClassName('option-btn');
+            if (buttons[qData.answer]) {
+                buttons[qData.answer].classList.add('selected-correct');
+            }
+
+            const fb = document.getElementById('q-feedback-box');
+            fb.className = "feedback-box show incorrect-bg";
+            fb.innerHTML = `<strong>⚡ Logic Breakdown:</strong><div class="explanation-text">${qData.explanation}</div>`;
+        }
+
+        lockOptions() {
+            const buttons = document.getElementsByClassName('option-btn');
+            for (let btn of buttons) {
+                btn.disabled = true;
+            }
+        }
+
+        playAudioFeedback(elementId) {
+            const audio = document.getElementById(elementId);
+            if (audio) {
+                audio.currentTime = 0;
+                audio.play().catch(() => {});
+            }
+        }
+
+        advanceQuestion() {
+            this.currentIndex++;
+            if (this.currentIndex < this.dataset.length) {
+                this.loadCurrentQuestion();
+            } else {
+                this.renderFinalDashboard();
+            }
+        }
+
+        renderFinalDashboard() {
+            document.getElementById('quiz-workspace').classList.add('hidden');
+            
+            const resultsCard = document.getElementById('results-card');
+            resultsCard.style.display = "block";
+            
+            document.getElementById('final-score-text').innerText = `${this.score} / ${this.dataset.length}`;
+            const percentage = Math.round((this.score / this.dataset.length) * 100);
+            document.getElementById('final-percentage-text').innerText = `Engine Accuracy: ${percentage}%`;
+
+            const desc = document.getElementById('performance-descriptor');
+            if (percentage >= 80) {
+                desc.innerText = "🌟 Master Tier achieved! You have complete fluency in arrays, properties, and scalar products.";
+                desc.style.color = "#047857";
+            } else if (percentage >= 50) {
+                desc.innerText = "👍 Competent Core! Good operational skills. Review items requiring hints to reach full mastery.";
+                desc.style.color = "#b45309";
+            } else {
+                desc.innerText = "🔄 Review Loop Recommended! Practise grouping models and array dimensions to strengthen your foundations.";
+                desc.style.color = "#b91c1c";
+            }
+
+            window.scrollTo({ top: resultsCard.offsetTop - 20, behavior: 'smooth' });
+        }
+    }
+
+    const quizEngine = new MultiplicationQuizEngine(assessmentDataset);
+    window.onload = () => quizEngine.init();
+</script>
+</body>
+</html>
