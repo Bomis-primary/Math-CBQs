@@ -1,1 +1,840 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grade 3 – Chapter 3: Subtraction up to 9999 Interactive</title>
+    <style>
+        :root {
+            --primary: #0284c7;
+            --primary-hover: #0369a1;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --background: #f8fafc;
+            --surface: #ffffff;
+            --text: #1e293b;
+            --text-secondary: #475569;
+            --border: #cbd5e1;
+        }
 
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+
+        body {
+            background-color: var(--background);
+            color: var(--text);
+            line-height: 1.5;
+            padding: 2rem 1rem;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        /* 5-Second Mandatory Brand Guardrail Splash Screen */
+        #splash-screen {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: #ffffff;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.5s ease-out;
+        }
+
+        #splash-screen img {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 24px;
+        }
+
+        .splash-loader {
+            width: 48px;
+            height: 48px;
+            border: 5px solid #e2e8f0;
+            border-bottom-color: var(--primary);
+            border-radius: 50%;
+            animation: rotation 1s linear infinite;
+        }
+
+        @keyframes rotation {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        header {
+            background: var(--surface);
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            margin-bottom: 2rem;
+            border: 1px solid var(--border);
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .meta-info {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        .meta-info ul {
+            margin-top: 0.5rem;
+            margin-left: 1.25rem;
+        }
+
+        .header-meta-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            background: #f1f5f9;
+            padding: 0.75rem 1.2rem;
+            border-radius: 8px;
+            font-weight: 700;
+        }
+
+        .timer-badge {
+            background: #fef3c7;
+            color: #d97706;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+        }
+
+        .timer-low {
+            background: #fee2e2;
+            color: var(--danger);
+            animation: pulse 1s infinite alternate;
+        }
+
+        @keyframes pulse {
+            from { opacity: 1; } to { opacity: 0.7; }
+        }
+
+        .progress-container {
+            background: #e2e8f0;
+            height: 8px;
+            border-radius: 4px;
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            background: var(--primary);
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .quiz-card {
+            background: var(--surface);
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            margin-bottom: 1.5rem;
+            border: 1px solid var(--border);
+        }
+
+        .question-number {
+            font-weight: 700;
+            color: var(--primary);
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.5rem;
+        }
+
+        .question-text {
+            font-size: 1.15rem;
+            font-weight: 600;
+            margin-bottom: 1.25rem;
+        }
+
+        .svg-container {
+            margin-bottom: 1.5rem;
+            width: 100%;
+            background: #f8fafc;
+            border-radius: 8px;
+            border: 1px dashed var(--border);
+            padding: 10px;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 0.75rem;
+        }
+
+        @media (min-width: 640px) {
+            .options-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .option-btn {
+            background: var(--surface);
+            border: 2px solid var(--border);
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: left;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            width: 100%;
+        }
+
+        .option-btn:hover:not(:disabled) {
+            border-color: var(--primary);
+            background-color: #f0f9ff;
+        }
+
+        .option-btn.selected-correct {
+            border-color: var(--success) !important;
+            background-color: #d1fae5 !important;
+            color: #065f46 !important;
+            font-weight: 700;
+        }
+
+        .option-btn.selected-wrong {
+            border-color: var(--danger) !important;
+            background-color: #fee2e2 !important;
+            color: #991b1b !important;
+        }
+
+        .feedback-box {
+            margin-top: 1.25rem;
+            padding: 1rem;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            display: none;
+        }
+
+        .feedback-box.show {
+            display: block;
+        }
+
+        .feedback-box.hint-bg {
+            background-color: #eff6ff;
+            border: 1px solid #bfdbfe;
+            color: #1e40af;
+        }
+
+        .feedback-box.correct-bg {
+            background-color: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            color: #166534;
+        }
+
+        .feedback-box.incorrect-bg {
+            background-color: #fef2f2;
+            border: 1px solid #fecaca;
+            color: #991b1b;
+        }
+
+        .explanation-text {
+            margin-top: 0.25rem;
+            font-weight: 500;
+        }
+
+        .action-container {
+            text-align: center;
+            margin-top: 1.5rem;
+        }
+
+        .action-btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.9rem 2.5rem;
+            font-size: 1.05rem;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            box-shadow: 0 4px 6px -1px rgb(2 132 199 / 0.2);
+            transition: background-color 0.2s ease;
+            width: 100%;
+        }
+
+        .action-btn:hover {
+            background-color: var(--primary-hover);
+        }
+
+        #results-card {
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            border: 2px solid #bae6fd;
+            text-align: center;
+            padding: 3rem 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            margin-bottom: 1.5rem;
+            display: none;
+        }
+
+        .score-display {
+            font-size: 3.5rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin: 1rem 0;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            background: var(--surface);
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            border: 1px solid var(--border);
+            margin-top: 2rem;
+            padding: 1.5rem;
+        }
+
+        .table-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--text-secondary);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 0.9rem;
+        }
+
+        th, td {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        th {
+            background-color: #f1f5f9;
+            color: var(--text-secondary);
+            font-weight: 600;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+
+<div id="splash-screen">
+    <img src="assets/innovine-logo.png" alt="Innovine Logo" onerror="this.style.display='none'; document.getElementById('alt-logo').style.display='block';">
+    <h1 id="alt-logo" style="display:none; margin-bottom: 20px;">Innovine</h1>
+    <div class="splash-loader"></div>
+    <p style="margin-top: 15px; color: var(--text-secondary); font-weight: 500;">Preparing Subtraction Assessment...</p>
+</div>
+
+<audio id="audio-correct" src="assets/correct.mp3" preload="auto"></audio>
+<audio id="audio-wrong" src="assets/wrong.mp3" preload="auto"></audio>
+
+<div class="container">
+    <header>
+        <h1>Grade 3 – Chapter 3: Subtraction up to 9999</h1>
+        <div class="meta-info">
+            <strong>Core Chapter Competencies Covered:</strong>
+            <ul>
+                <li>Isolate roles of structural mechanics (Minuend, Subtrahend, Difference).</li>
+                <li>Recall operational invariants of subtraction (Zero property, Self-deduction property).</li>
+                <li>Execute multi-digit static column subtraction without borrowing configurations.</li>
+                <li>Compute and verify multi-column subtraction requiring dynamic borrowing transformations.</li>
+                <li>Analyze mathematical configurations to debug student computation matrix errors.</li>
+                <li>Formulate complex multi-step reasoning pathways using cross-functional data fields.</li>
+            </ul>
+        </div>
+    </header>
+
+    <div id="quiz-workspace">
+        <div class="header-meta-row">
+            <div>Progress: Question <span id="current-q-label">1</span> / 20</div>
+            <div id="timer-display" class="timer-badge">60s</div>
+        </div>
+        <div class="progress-container">
+            <div id="progress-indicator" class="progress-bar"></div>
+        </div>
+
+        <div class="quiz-card">
+            <div class="question-number" id="q-number-hdr">Question 1</div>
+            <div class="question-text" id="q-text-container">Loading...</div>
+            
+            <div class="svg-container hidden" id="q-svg-container"></div>
+
+            <div class="options-grid" id="q-options-grid"></div>
+            
+            <div class="feedback-box" id="q-feedback-box"></div>
+            
+            <div class="action-container hidden" id="q-action-container">
+                <button type="button" class="action-btn" id="next-btn" onclick="quizEngine.advanceQuestion()">Continue to Next Step</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="results-card">
+        <h2>Chapter Assessment Complete!</h2>
+        <div class="score-display" id="final-score-text">0 / 20</div>
+        <p id="final-percentage-text" style="font-size: 1.2rem; font-weight: 600; color: var(--text-secondary);"></p>
+        <p id="performance-descriptor" style="margin-top: 1rem; font-weight: 500;"></p>
+    </div>
+
+    <div class="table-container">
+        <div class="table-title">Quality Verification Matrix Dashboard</div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Q No.</th>
+                    <th>LO Covered</th>
+                    <th>Type</th>
+                    <th>Competency Tested</th>
+                    <th>Difficulty</th>
+                    <th>Visual</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td>Q1</td><td>Structural Terms</td><td>Visual Interpretation</td><td>Isolating Minuend elements on an abacus</td><td>Simple Visual</td><td>Yes</td></tr>
+                <tr><td>Q2</td><td>Structural Terms</td><td>Visual Interpretation</td><td>Differentiating Subtrahend elements in models</td><td>Simple Visual</td><td>Yes</td></tr>
+                <tr><td>Q3</td><td>No Borrowing</td><td>Visual Interpretation</td><td>Interpreting base-10 static column state reductions</td><td>Simple Visual</td><td>Yes</td></tr>
+                <tr><td>Q4</td><td>Borrowing Logic</td><td>Visual Interpretation</td><td>Mapping backward leaps onto interactive number lines</td><td>Simple Visual</td><td>Yes</td></tr>
+                <tr><td>Q5</td><td>Subtraction Rules</td><td>Visual Interpretation</td><td>Identifying zero-identity transformations on scales</td><td>Simple Visual</td><td>Yes</td></tr>
+                <tr><td>Q6</td><td>Borrowing Logic</td><td>Visual Interpretation</td><td>Validating missing column digits with regroup tags</td><td>Simple Visual</td><td>Yes</td></tr>
+                <tr><td>Q7</td><td>Borrowing Logic</td><td>Error Detection</td><td>Debugging missing base-10 trade registers</td><td>Reasoning</td><td>No</td></tr>
+                <tr><td>Q8</td><td>Structural Terms</td><td>Error Detection</td><td>Identifying mixed up Minuend/Subtrahend positions</td><td>Reasoning</td><td>No</td></tr>
+                <tr><td>Q9</td><td>Subtraction Rules</td><td>Error Detection</td><td>Isolating broken self-deduction identity rules</td><td>Reasoning</td><td>No</td></tr>
+                <tr><td>Q10</td><td>No Borrowing</td><td>Inference Reasoning</td><td>Predicting odd/even results from specific differences</td><td>Reasoning</td><td>No</td></tr>
+                <tr><td>Q11</td><td>Borrowing Logic</td><td>Inference Reasoning</td><td>Abstract column capacity limit verification testing</td><td>Reasoning</td><td>No</td></tr>
+                <tr><td>Q12</td><td>Subtraction Rules</td><td>Inference Reasoning</td><td>Order property limits verification mapping</td><td>Reasoning</td><td>No</td></tr>
+                <tr><td>Q13</td><td>Borrowing Logic</td><td>Inference Reasoning</td><td>Reversing placeholder parameters via operations</td><td>Reasoning</td><td>No</td></tr>
+                <tr><td>Q14</td><td>Borrowing Logic</td><td>Inference Reasoning</td><td>Isolating which specific column requires a borrow step</td><td>Reasoning</td><td>No</td></tr>
+                <tr><td>Q15</td><td>Borrowing Logic</td><td>Applied Decision</td><td>Multi-tier inventory optimization problems</td><td>Challenge</td><td>No</td></tr>
+                <tr><td>Q16</td><td>Borrowing Logic</td><td>Applied Decision</td><td>Evaluating targets against capacity thresholds</td><td>Challenge</td><td>No</td></tr>
+                <tr><td>Q17</td><td>Borrowing Logic</td><td>Applied Decision</td><td>Tracking shifting values through cascading registers</td><td>Challenge</td><td>No</td></tr>
+                <tr><td>Q18</td><td>No Borrowing</td><td>Applied Decision</td><td>Compiling layered numerical log record data</td><td>Challenge</td><td>No</td></tr>
+                <tr><td>Q19</td><td>Borrowing Logic</td><td>Applied Decision</td><td>Managing multi-step capacity allocation limits</td><td>Challenge</td><td>No</td></tr>
+                <tr><td>Q20</td><td>Borrowing Logic</td><td>Applied Decision</td><td>Multi-tier distance calibration operations</td><td>Challenge</td><td>No</td></tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    // Configured assessment vectors explicitly generated around subtraction guidelines
+    const assessmentDataset = [
+        {
+            type: "visual",
+            lo: "Structural Terms",
+            question: "Look at the original abacus configuration below. If we subtract beads to find a difference, which structural term represents this initial total amount before any beads are crossed out?",
+            svg: `<svg viewBox="0 0 800 200" width="100%"><rect width="800" height="200" fill="#f8fafc" rx="12" stroke="#cbd5e1" stroke-width="2"/><line x1="200" y1="40" x2="200" y2="160" stroke="#475569" stroke-width="4"/><line x1="400" y1="40" x2="400" y2="160" stroke="#475569" stroke-width="4"/><line x1="600" y1="40" x2="600" y2="160" stroke="#475569" stroke-width="4"/><line x1="100" y1="160" x2="700" y2="160" stroke="#1e293b" stroke-width="6"/><circle cx="200" cy="140" r="12" fill="#3b82f6"/><circle cx="200" cy="115" r="12" fill="#3b82f6"/><circle cx="400" cy="140" r="12" fill="#3b82f6"/><circle cx="400" cy="115" r="12" fill="#3b82f6"/><circle cx="400" cy="90" r="12" fill="#3b82f6"/><circle cx="600" cy="140" r="12" fill="#3b82f6"/><text x="200" y="190" font-family="sans-serif" font-weight="bold" fill="#64748b" text-anchor="middle">Hundreds (2)</text><text x="400" y="190" font-family="sans-serif" font-weight="bold" fill="#64748b" text-anchor="middle">Tens (3)</text><text x="600" y="190" font-family="sans-serif" font-weight="bold" fill="#64748b" text-anchor="middle">Ones (1)</text></svg>`,
+            options: ["a) Subtrahend", "b) Minuend", "c) Difference", "d) Addend"],
+            answer: 1,
+            hint: "Think about the vocabulary terms. The starting number that you take away from is always called the 'Minuend'.",
+            explanation: "The starting amount from which another value is subtracted is the Minuend. Here, 231 acts as the Minuend."
+        },
+        {
+            type: "visual",
+            lo: "Structural Terms",
+            question: "In the base-10 visual workspace shown below, a student crosses out 1 hundred block and 2 tens blocks. What math role describes the amount being removed?",
+            svg: `<svg viewBox="0 0 800 180" width="100%"><rect width="800" height="180" fill="#f8fafc" rx="12" stroke="#cbd5e1" stroke-width="2"/><g transform="translate(100, 30)"><rect width="100" height="100" fill="#cbd5e1" stroke="#475569" stroke-width="2"/><line x1="0" y1="30" x2="100" y2="130" stroke="#ef4444" stroke-width="4"/><line x1="100" y1="30" x2="0" y2="130" stroke="#ef4444" stroke-width="4"/></g><g transform="translate(300, 30)"><rect width="20" height="100" fill="#cbd5e1" stroke="#475569" stroke-width="2"/><line x1="0" y1="0" x2="20" y2="100" stroke="#ef4444" stroke-width="3"/></g><g transform="translate(340, 30)"><rect width="20" height="100" fill="#cbd5e1" stroke="#475569" stroke-width="2"/><line x1="0" y1="0" x2="20" y2="100" stroke="#ef4444" stroke-width="3"/></g><text x="500" y="90" font-family="sans-serif" font-size="18" font-weight="bold" fill="#1e293b">Amount taken away = 120</text></svg>`,
+            options: ["a) Minuend", "b) Remainder", "c) Subtrahend", "d) Total"],
+            answer: 2,
+            hint: "The number or component that is explicitly subtracted or taken away is defined as the Subtrahend.",
+            explanation: "The value crossed out or taken away is the Subtrahend. The remaining blocks will represent the difference."
+        },
+        {
+            type: "visual",
+            lo: "No Borrowing",
+            question: "Look at the static column deduction workspace below. What is the value of the final remaining difference once processing is complete?",
+            svg: `<svg viewBox="0 0 800 200" width="100%"><rect width="800" height="200" fill="#f8fafc" rx="12" stroke="#cbd5e1" stroke-width="2"/><g transform="translate(350, 20)"><text x="0" y="30" font-family="monospace" font-size="24" font-weight="bold" fill="#64748b">H</text><text x="40" y="30" font-family="monospace" font-size="24" font-weight="bold" fill="#64748b">T</text><text x="80" y="30" font-family="monospace" font-size="24" font-weight="bold" fill="#64748b">O</text><text x="0" y="70" font-family="monospace" font-size="26" font-weight="bold" fill="#1e293b">5</text><text x="40" y="70" font-family="monospace" font-size="26" font-weight="bold" fill="#1e293b">8</text><text x="80" y="70" font-family="monospace" font-size="26" font-weight="bold" fill="#1e293b">7</text><text x="-30" y="110" font-family="monospace" font-size="26" font-weight="bold" fill="#ef4444">-</text><text x="0" y="110" font-family="monospace" font-size="26" font-weight="bold" fill="#1e293b">2</text><text x="40" y="110" font-family="monospace" font-size="26" font-weight="bold" fill="#1e293b">5</text><text x="80" y="110" font-family="monospace" font-size="26" font-weight="bold" fill="#1e293b">3</text><line x1="-40" y1="135" x2="120" y2="135" stroke="#475569" stroke-width="2"/><text x="0" y="175" font-family="monospace" font-size="26" font-weight="bold" fill="#0284c7">?</text><text x="40" y="175" font-family="monospace" font-size="26" font-weight="bold" fill="#0284c7">?</text><text x="80" y="175" font-family="monospace" font-size="26" font-weight="bold" fill="#0284c7">?</text></g></svg>`,
+            options: ["a) 334", "b) 324", "c) 734", "d) 332"],
+            answer: 0,
+            hint: "Perform subtraction column-by-column from right to left: 7-3, then 8-5, then 5-2.",
+            explanation: "Subtracting each place value independently yields: Ones (7 - 3 = 4), Tens (8 - 5 = 3), Hundreds (5 - 2 = 3). The result is 334."
+        },
+        {
+            type: "visual",
+            lo: "Borrowing Logic",
+            question: "Look at the path mapped on this backward-counting number line. What is the value of the target milestone marked by the question mark?",
+            svg: `<svg viewBox="0 0 800 160" width="100%"><rect width="800" height="160" fill="#f8fafc" rx="12" stroke="#cbd5e1" stroke-width="2"/><line x1="80" y1="100" x2="720" y2="100" stroke="#334155" stroke-width="3"/><path d="M 650 100 Q 525 30 400 100" fill="none" stroke="#ef4444" stroke-width="2.5"/><polygon points="400,100 415,90 410,105" fill="#ef4444"/><text x="525" y="45" font-family="sans-serif" font-weight="bold" fill="#b91c1c" text-anchor="middle">-150</text><line x1="650" y1="85" x2="650" y2="115" stroke="#334155" stroke-width="2"/><text x="650" y="140" font-family="sans-serif" font-weight="bold" fill="#1e293b" text-anchor="middle">3100</text><line x1="400" y1="85" x2="400" y2="115" stroke="#0284c7" stroke-width="3"/><text x="400" y="140" font-family="sans-serif" font-weight="black" fill="#0369a1" text-anchor="middle">?</text></svg>`,
+            options: ["a) 3050", "b) 2950", "c) 2850", "d) 3000"],
+            answer: 1,
+            hint: "Count backward from 3100 by breaking it down: subtracting 100 leaves 3000, and subtracting another 50 triggers regrouping.",
+            explanation: "3100 - 150 require borrowing from the thousands place to manage the hundreds column, resulting in 2950."
+        },
+        {
+            type: "visual",
+            lo: "Subtraction Rules",
+            question: "Based on the operational property holding this balance scale in a locked state, what must be the value hidden inside the locked vault card?",
+            svg: `<svg viewBox="0 0 800 180" width="100%"><rect width="800" height="180" fill="#f8fafc" rx="12" stroke="#cbd5e1" stroke-width="2"/><polygon points="400,130 380,160 420,160" fill="#475569"/><line x1="200" y1="130" x2="600" y2="130" stroke="#334155" stroke-width="4"/><g transform="translate(220, 70)"><rect width="120" height="60" fill="#0284c7" rx="6"/><text x="60" y="38" font-family="sans-serif" font-weight="bold" fill="#ffffff" text-anchor="middle">4520 - 0</text></g><g transform="translate(460, 70)"><rect width="120" height="60" fill="#f59e0b" rx="6"/><text x="60" y="38" font-family="sans-serif" font-weight="bold" fill="#ffffff" text-anchor="middle">?</text></g></svg>`,
+            options: ["a) 0", "b) 1", "c) 4520", "d) 4519"],
+            answer: 2,
+            hint: "Recall the property of subtracting zero: when you take away absolutely nothing from a number, what happens to its identity?",
+            explanation: "Subtracting zero from any number leaves that value unchanged. This confirms the identity rule: 4520 - 0 = 4520."
+        },
+        {
+            type: "visual",
+            lo: "Borrowing Logic",
+            question: "Which missing digit belongs inside the highlighted alert square to make this column subtraction accurate?",
+            svg: `<svg viewBox="0 0 800 220" width="100%"><rect width="800" height="220" fill="#f8fafc" rx="12" stroke="#cbd5e1" stroke-width="2"/><g transform="translate(360, 20)"><text x="0" y="30" font-family="monospace" font-size="24" font-weight="bold" fill="#64748b">H</text><text x="40" y="30" font-family="monospace" font-size="24" font-weight="bold" fill="#64748b">T</text><text x="80" y="30" font-family="monospace" font-size="24" font-weight="bold" fill="#64748b">O</text><text x="0" y="70" font-family="monospace" font-size="26" font-weight="bold" fill="#1e293b">6</text><text x="40" y="70" font-family="monospace" font-size="26" font-weight="bold" fill="#1e293b">2</text><text x="80" y="70" font-family="monospace" font-size="26" font-weight="bold" fill="#1e293b">5</text><text x="-30" y="110" font-family="monospace" font-size="26" font-weight="bold" fill="#475569">-</text><text x="0" y="110" font-family="monospace" font-size="26" font-weight="bold" fill="#1e293b">3</text><text x="40" y="110" font-family="monospace" font-size="26" font-weight="bold" fill="#1e293b">4</text><text x="80" y="110" font-family="monospace" font-size="26" font-weight="bold" fill="#1e293b">2</text><line x1="-40" y1="135" x2="120" y2="135" stroke="#475569" stroke-width="2"/><text x="0" y="180" font-family="monospace" font-size="26" font-weight="bold" fill="#1e293b">2</text><rect x="35" y="152" width="30" height="34" fill="none" stroke="#f59e0b" stroke-width="3" rx="4"/><text x="50" y="178" font-family="monospace" font-size="24" font-weight="bold" fill="#d97706" text-anchor="middle">?</text><text x="80" y="180" font-family="monospace" font-size="26" font-weight="bold" fill="#1e293b">3</text></g></svg>`,
+            options: ["a) 8", "b) 7", "c) 2", "d) 6"],
+            answer: 0,
+            hint: "In the tens place, you must evaluate 2 - 4. Since you cannot subtract 4 from 2, borrow 1 hundred from the 6, making the calculation 12 - 4.",
+            explanation: "After borrowing 1 hundred for the tens column, the calculation becomes 12 tens - 4 tens = 8 tens. The hundreds column is left with 5 - 3 = 2."
+        },
+        {
+            type: "text",
+            lo: "Borrowing Logic",
+            question: "A student attempted to compute 4352 - 1271 and arrived at a difference of 3121. What structural error did they make in their matrix execution?",
+            options: ["a) They subtracted smaller numbers from larger numbers upside down in the tens column.", "b) They forgot to subtract from the thousands column.", "c) They added the values instead of subtracting them.", "d) They made an error calculating the ones place column."],
+            answer: 0,
+            hint: "Look at the tens column: the problem states 5 - 7. If a student simply writes 2, they calculated 7 - 5 instead of borrowing from the hundreds column.",
+            explanation: "The student calculated 7 - 5 = 2 in the tens column instead of borrowing properly from the hundreds column to compute 15 - 7 = 8."
+        },
+        {
+            type: "text",
+            lo: "Structural Terms",
+            question: "An equation layout is configured as follows: 8400 - ____ = 6100. If the structural framework requires solving for the missing slot, which variable role is currently empty?",
+            options: ["a) Minuend", "b) Difference", "c) Subtrahend", "d) Total"],
+            answer: 2,
+            hint: "In the base subtraction model (Minuend - Subtrahend = Difference), identify which component is missing from the middle position.",
+            explanation: "The value subtracted from the initial total is defined as the Subtrahend. It can be found by subtracting 6100 from 8400."
+        },
+        {
+            type: "text",
+            lo: "Subtraction Rules",
+            question: "A workbook claims: 'When evaluating any problem where the Minuend is exactly identical to the Subtrahend, the difference is always equal to 1.' What makes this claim false?",
+            options: ["a) The difference must equal the original number.", "b) Deducting a number completely from itself leaves a remainder of exactly 0.", "c) It is only true if both numbers are odd values.", "d) The values should be combined instead."],
+            answer: 1,
+            hint: "If you have 545 items and someone takes away all 545 items, how many items do you have left over?",
+            explanation: "According to the self-deduction property of subtraction, taking a number away from itself leaves a difference of exactly 0 (e.g., 545 - 545 = 0)."
+        },
+        {
+            type: "text",
+            lo: "No Borrowing",
+            question: "If you subtract a 3-digit number ending in a 4 from another 3-digit number ending in an 8 without any column borrowing steps, what kind of number must the ones digit of the difference be?",
+            options: ["a) It must be an odd number.", "b) It must be exactly 0.", "c) It must be an even number.", "d) It cannot be determined."],
+            answer: 2,
+            hint: "Subtract the ones place values directly: 8 minus 4. Is that resulting value odd or even?",
+            explanation: "The ones column calculation is 8 - 4 = 4. Since 4 is an even number, the final difference will always end in an even digit."
+        },
+        {
+            type: "text",
+            lo: "Borrowing Logic",
+            question: "You have a configuration with 0 tens blocks and need to subtract 5 tens blocks. Which statement correctly maps the structural base-10 borrowing procedure?",
+            options: ["a) Borrow 1 hundred from the hundreds column and convert it into 10 tens blocks.", "b) Switch the positions to subtract 0 from 5 directly.", "c) Skip the tens column entirely and move to the thousands place.", "d) Convert 1 ones block into 10 tens blocks instead."],
+            answer: 0,
+            hint: "When a target column value is insufficient, you must trade 1 unit from the larger place value column immediately to its left.",
+            explanation: "To get more tens blocks, you must borrow 1 hundred block from the column to the left, which is equal to 10 tens blocks."
+        },
+        {
+            type: "text",
+            lo: "Subtraction Rules",
+            question: "A student states: 'Since 300 + 500 is equal to 500 + 300, then 500 - 300 must be equal to 300 - 500.' Why is this reasoning incorrect for subtraction?",
+            options: ["a) Subtraction does not follow the order property (commutative property).", "b) The numbers must be doubled first.", "c) Subtraction only works if the first number is zero.", "d) The sums are completely different."],
+            answer: 0,
+            hint: "Can you take away 500 objects if you only have 300 objects to start with? Does order matter?",
+            explanation: "Unlike addition, subtraction does not possess the Order Property. Changing the position of the values yields completely different results."
+        },
+        {
+            type: "text",
+            lo: "Borrowing Logic",
+            question: "If [Card A] - 1200 = 4500, what operational calculation must be deployed to recover the initial value of Card A?",
+            options: ["a) Subtract 4500 from 1200.", "b) Add 4500 and 1200 together.", "c) Subtract 1200 from 4500.", "d) Reset the parameters to zero."],
+            answer: 1,
+            hint: "To find the missing starting value (Minuend), reverse the subtraction by adding the Subtrahend to the Difference.",
+            explanation: "The inverse of subtraction is addition. Adding the part removed to the remaining difference recovers the original total: 4500 + 1200 = 5700."
+        },
+        {
+            type: "text",
+            lo: "Borrowing Logic",
+            question: "In the horizontal subtraction puzzle 4528 - 2381, which specific place-value column triggers an active borrowing transformation step?",
+            options: ["a) Ones column", "b) Tens column", "c) Hundreds column", "d) Thousands column"],
+            answer: 1,
+            hint: "Compare each column from right to left: Ones (8-1), Tens (2-8), Hundreds (5-3), Thousands (4-2). Which column has a top number smaller than the bottom number?",
+            explanation: "In the tens place, you cannot subtract 8 tens from 2 tens without borrowing 1 hundred from the hundreds column to make it 12 - 8."
+        },
+        {
+            type: "text",
+            lo: "Borrowing Logic",
+            question: "A fulfillment center holds 3,450 processing containers. In the morning shift, they dispatch 1,280 units. In the afternoon shift, they dispatch another 950 units. How many containers remain?",
+            options: ["a) 1,220 containers", "b) 2,170 containers", "c) 1,120 containers", "d) 1,320 containers"],
+            answer: 0,
+            hint: "First, add the two dispatched quantities together (1280 + 950). Then, subtract that total from the initial 3450 containers.",
+            explanation: "Total dispatched units equal 1280 + 950 = 2230. Subtracting this from the initial stock yields: 3450 - 2230 = 1220 containers remaining."
+        },
+        {
+            type: "text",
+            lo: "Borrowing Logic",
+            question: "An water management system contains 5,200 liters of water. To avoid a critical system alert, the remaining volume must stay above a 2,500-liter threshold milestone. If engineers drain 2,750 liters, does the system trigger the alert?",
+            options: ["a) No, because exactly 2,550 liters remain.", "b) Yes, because remaining water drops to 2,450 liters, which is below the threshold.", "c) No, because exactly 2,600 liters remain.", "d) Yes, because remaining water drops to 2,350 liters."],
+            answer: 1,
+            hint: "Calculate the remaining water volume by subtracting 2750 from 5200. Check if that remaining value is less than 2500.",
+            explanation: "5200 - 2750 = 2450 liters. Since 2450 is less than the required 2500-liter safety threshold, the system triggers the alert."
+        },
+        {
+            type: "text",
+            lo: "Borrowing Logic",
+            question: "A data server network is tracking three operational routing logs. Log A starts with 8,500 points. Step 1 subtracts 2,600 points from Log A. Step 2 subtracts an additional 1,850 points from that remaining value. What is the final balanced score of Log A?",
+            options: ["a) 4,150 points", "b) 4,050 points", "c) 5,900 points", "d) 4,250 points"],
+            answer: 0,
+            hint: "Perform the calculations in sequence: first compute 8500 - 2600. Then, take away 1850 from the result of that first step.",
+            explanation: "Step 1: 8500 - 2600 = 5900 points. Step 2: 5900 - 1850 = 4150 points. This requires careful multi-column borrowing processing."
+        },
+        {
+            type: "text",
+            lo: "No Borrowing",
+            question: "A digital inventory system recorded 4,895 entries on Friday. Over the weekend, data agents archived 2,342 entries without requiring any column borrowing. How many active entries remain on the live dashboard?",
+            options: ["a) 2,553 entries", "b) 2,543 entries", "c) 2,453 entries", "d) 2,555 entries"],
+            answer: 0,
+            hint: "Perform clean column subtraction since every single digit in the minuend is larger than its corresponding digit in the subtrahend.",
+            explanation: "Subtracting each column independently from right to left gives: 5-2=3, 9-4=5, 8-3=5, 4-2=2. This results in exactly 2553."
+        },
+        {
+            type: "text",
+            lo: "Borrowing Logic",
+            question: "A cargo plane has a maximum weight capacity allowance of 9,000 kilograms. It is currently loaded with 4,250 kg of machinery and 2,800 kg of diagnostic tools. How much additional weight can be added before reaching the limit?",
+            options: ["a) 2,050 kg", "b) 1,950 kg", "c) 2,150 kg", "d) 1,850 kg"],
+            answer: 1,
+            hint: "Combine the weights of the machinery and tools first (4250 + 2800). Subtract that combined weight from the maximum cargo capacity of 9000.",
+            explanation: "The current total load is 4250 + 2800 = 7050 kg. The remaining capacity is calculated as 9000 - 7050 = 1950 kg."
+        },
+        {
+            type: "text",
+            lo: "Borrowing Logic",
+            question: "A marathon track maps a total distance of 7,500 meters. A runner completes 2,800 meters during interval 1, and covers 3,150 meters during interval 2. How many meters remain to reach the finish line?",
+            options: ["a) 1,650 meters", "b) 1,550 meters", "c) 1,450 meters", "d) 1,750 meters"],
+            answer: 1,
+            hint: "Add the distances from interval 1 and interval 2 together. Deduct this combined distance from the total marathon track length of 7500.",
+            explanation: "Total distance covered so far is 2800 + 3150 = 5950 meters. The distance remaining is 7500 - 5950 = 1550 meters."
+        }
+    ];
+
+    class SubtractionQuizEngine {
+        constructor(dataset) {
+            this.dataset = dataset;
+            this.currentIndex = 0;
+            this.score = 0;
+            this.attempts = 0;
+            this.timeLeft = 60;
+            this.timerInterval = null;
+            this.selections = {};
+        }
+
+        init() {
+            // Strict 5-second brand introduction countdown rule
+            setTimeout(() => {
+                const splash = document.getElementById('splash-screen');
+                splash.style.opacity = 0;
+                setTimeout(() => splash.classList.add('hidden'), 5000);
+                this.loadCurrentQuestion();
+            }, 5000);
+        }
+
+        loadCurrentQuestion() {
+            this.attempts = 0;
+            this.timeLeft = 60;
+            
+            // Clean workspace containers
+            document.getElementById('q-feedback-box').className = "feedback-box";
+            document.getElementById('q-feedback-box').style.display = "none";
+            document.getElementById('q-action-container').classList.add('hidden');
+            
+            const qData = this.dataset[this.currentIndex];
+            
+            // Live state updates
+            document.getElementById('current-q-label').innerText = this.currentIndex + 1;
+            document.getElementById('q-number-hdr').innerText = `Question ${this.currentIndex + 1}`;
+            document.getElementById('q-text-container').innerText = qData.question;
+
+            // Track operational timeline progress
+            const progressPercentage = (this.currentIndex / this.dataset.length) * 100;
+            document.getElementById('progress-indicator').style.width = `${progressPercentage}%`;
+
+            // Render visual media elements dynamically if configured
+            const svgBox = document.getElementById('q-svg-container');
+            if (qData.type === "visual" && qData.svg) {
+                svgBox.innerHTML = qData.svg;
+                svgBox.classList.remove('hidden');
+            } else {
+                svgBox.classList.add('hidden');
+                svgBox.innerHTML = '';
+            }
+
+            // Render response choices
+            const optionsGrid = document.getElementById('q-options-grid');
+            optionsGrid.innerHTML = '';
+
+            qData.options.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.type = "button";
+                btn.className = "option-btn";
+                btn.innerText = opt;
+                btn.onclick = () => this.evaluateSelection(idx, btn);
+                optionsGrid.appendChild(btn);
+            });
+
+            this.launchTimer();
+        }
+
+        launchTimer() {
+            clearInterval(this.timerInterval);
+            this.refreshTimerUI();
+
+            this.timerInterval = setInterval(() => {
+                this.timeLeft--;
+                this.refreshTimerUI();
+
+                if (this.timeLeft <= 0) {
+                    clearInterval(this.timerInterval);
+                    this.triggerTimeOut();
+                }
+            }, 1000);
+        }
+
+        refreshTimerUI() {
+            const timerBadge = document.getElementById('timer-display');
+            timerBadge.innerText = `${this.timeLeft}s`;
+            if (this.timeLeft <= 15) {
+                timerBadge.classList.add('timer-low');
+            } else {
+                timerBadge.classList.remove('timer-low');
+            }
+        }
+
+        evaluateSelection(selectedIdx, clickedBtn) {
+            const qData = this.dataset[this.currentIndex];
+            this.attempts++;
+
+            if (selectedIdx === qData.answer) {
+                // Success pathway
+                clearInterval(this.timerInterval);
+                this.playAudioFeedback('audio-correct');
+                clickedBtn.classList.add('selected-correct');
+                this.lockOptions();
+                
+                if (this.attempts === 1) {
+                    this.score++;
+                }
+
+                const fb = document.getElementById('q-feedback-box');
+                fb.className = "feedback-box show correct-bg";
+                fb.innerHTML = `<strong>✓ Correct!</strong><div class="explanation-text">${qData.explanation}</div>`;
+                document.getElementById('q-action-container').classList.remove('hidden');
+            } else {
+                // Failure pathway
+                this.playAudioFeedback('audio-wrong');
+                clickedBtn.classList.add('selected-wrong');
+                clickedBtn.disabled = true;
+
+                if (this.attempts === 1) {
+                    // Sandbox attempt: display structured clue hint
+                    const fb = document.getElementById('q-feedback-box');
+                    fb.className = "feedback-box show hint-bg";
+                    fb.innerHTML = `<strong>💡 Try Again:</strong> <span class="explanation-text">${qData.hint}</span>`;
+                } else {
+                    // Maximum limit exceeded pathway
+                    clearInterval(this.timerInterval);
+                    this.lockOptions();
+                    this.exposeCorrectAnswer();
+                    document.getElementById('q-action-container').classList.remove('hidden');
+                }
+            }
+        }
+
+        triggerTimeOut() {
+            this.lockOptions();
+            this.exposeCorrectAnswer();
+            document.getElementById('q-action-container').classList.remove('hidden');
+        }
+
+        exposeCorrectAnswer() {
+            const qData = this.dataset[this.currentIndex];
+            const buttons = document.getElementsByClassName('option-btn');
+            if (buttons[qData.answer]) {
+                buttons[qData.answer].classList.add('selected-correct');
+            }
+
+            const fb = document.getElementById('q-feedback-box');
+            fb.className = "feedback-box show incorrect-bg";
+            fb.innerHTML = `<strong>⚡ Assessment Note:</strong><div class="explanation-text">${qData.explanation}</div>`;
+        }
+
+        lockOptions() {
+            const buttons = document.getElementsByClassName('option-btn');
+            for (let btn of buttons) {
+                btn.disabled = true;
+            }
+        }
+
+        playAudioFeedback(elementId) {
+            const audio = document.getElementById(elementId);
+            if (audio) {
+                audio.currentTime = 0;
+                audio.play().catch(() => {});
+            }
+        }
+
+        advanceQuestion() {
+            this.currentIndex++;
+            if (this.currentIndex < this.dataset.length) {
+                this.loadCurrentQuestion();
+            } else {
+                this.renderFinalDashboard();
+            }
+        }
+
+        renderFinalDashboard() {
+            document.getElementById('quiz-workspace').classList.add('hidden');
+            
+            const resultsCard = document.getElementById('results-card');
+            resultsCard.style.display = "block";
+            
+            document.getElementById('final-score-text').innerText = `${this.score} / ${this.dataset.length}`;
+            const percentage = Math.round((this.score / this.dataset.length) * 100);
+            document.getElementById('final-percentage-text').innerText = `Score Percentage: ${percentage}%`;
+
+            const desc = document.getElementById('performance-descriptor');
+            if (percentage >= 80) {
+                desc.innerText = "🌟 Outstanding! You have mastered subtraction mechanics and base-10 borrowing rules.";
+                desc.style.color = "#047857";
+            } else if (percentage >= 50) {
+                desc.innerText = "👍 Good effort! Review the questions where you used hints to achieve full mastery.";
+                desc.style.color = "#b45309";
+            } else {
+                desc.innerText = "🔄 Keep practising! Work on column regrouping and place value trades to improve your score.";
+                desc.style.color = "#b91c1c";
+            }
+
+            window.scrollTo({ top: resultsCard.offsetTop - 20, behavior: 'smooth' });
+        }
+    }
+
+    // Initialize application instance on runtime ready
+    const quizEngine = new SubtractionQuizEngine(assessmentDataset);
+    window.onload = () => quizEngine.init();
+</script>
+
+</body>
+</html>
