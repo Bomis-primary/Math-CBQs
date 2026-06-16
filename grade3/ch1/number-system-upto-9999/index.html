@@ -1,309 +1,855 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CBQ - Number System up to 9999</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grade 3 – Chapter 1: Number System up to 9999 Assessment</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --success: #10b981;
+            --danger: #ef4444;
+            --background: #f8fafc;
+            --surface: #ffffff;
+            --text: #1e293b;
+            --text-secondary: #475569;
+            --border: #cbd5e1;
+        }
 
-<style>
-*{box-sizing:border-box;margin:0;padding:0;font-family:Arial}
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
 
-body{
-  background:#f5f7ff;
-  color:#1f2937;
-}
+        body {
+            background-color: var(--background);
+            color: var(--text);
+            line-height: 1.5;
+            padding: 2rem 1rem;
+        }
 
-/* SPLASH */
-#splash{
-  position:fixed;
-  inset:0;
-  background:#fff;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  z-index:10;
-}
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
 
-#splash img{width:320px}
+        header {
+            background: var(--surface);
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            margin-bottom: 2rem;
+            border: 1px solid var(--border);
+        }
 
-/* SCREEN */
-.screen{display:none;min-height:100vh;padding:16px}
-.screen.active{display:block}
+        h1 {
+            font-size: 1.8rem;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
 
-.card{
-  max-width:900px;
-  margin:auto;
-  background:#fff;
-  padding:20px;
-  border-radius:20px;
-  box-shadow:0 10px 25px rgba(0,0,0,0.1);
-}
+        .meta-info {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
 
-/* TOP */
-.top{
-  display:grid;
-  grid-template-columns:1fr 1fr 1fr;
-  gap:10px;
-  text-align:center;
-  font-weight:bold;
-  margin-bottom:15px;
-}
+        .meta-info ul {
+            margin-top: 0.5rem;
+            margin-left: 1.25rem;
+        }
 
-.box{
-  background:#e8f0ff;
-  padding:10px;
-  border-radius:12px;
-}
+        .quiz-card {
+            background: var(--surface);
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            margin-bottom: 1.5rem;
+            border: 1px solid var(--border);
+        }
 
-/* VISUAL */
-.visual{
-  background:#fff7ed;
-  border-radius:16px;
-  padding:18px;
-  text-align:center;
-  font-size:26px;
-  margin-bottom:12px;
-  line-height:1.6;
-  border:2px dashed #fdba74;
-}
+        .question-number {
+            font-weight: 700;
+            color: var(--primary);
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.5rem;
+        }
 
-.question{
-  font-size:18px;
-  font-weight:bold;
-  margin:10px 0 15px;
-}
+        .question-text {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 1.25rem;
+        }
 
-/* OPTIONS */
-.options{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:12px;
-}
+        .svg-container {
+            margin-bottom: 1.5rem;
+            width: 100%;
+        }
 
-.btn{
-  padding:14px;
-  border-radius:12px;
-  border:2px solid #1f4e79;
-  background:#fff;
-  font-size:16px;
-  min-height:60px;
-  cursor:pointer;
-}
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 0.75rem;
+        }
 
-.btn:hover{background:#eef5ff}
+        @media (min-width: 640px) {
+            .options-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
 
-.correct{background:#c8f7d5 !important}
-.wrong{background:#ffd6d6 !important}
+        .option-btn {
+            background: var(--surface);
+            border: 2px solid var(--border);
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: left;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+        }
 
-/* NEXT */
-.next{
-  margin-top:15px;
-  padding:12px 20px;
-  background:#1f4e79;
-  color:#fff;
-  border:none;
-  border-radius:10px;
-}
+        .option-btn:hover {
+            border-color: var(--primary);
+            background-color: #eff6ff;
+        }
 
-/* RESULT */
-.result{
-  text-align:center;
-  font-size:22px;
-  font-weight:bold;
-}
-</style>
+        .option-btn.selected {
+            border-color: var(--primary);
+            background-color: #dbeafe;
+            color: #1e40af;
+        }
+
+        .option-btn.correct {
+            border-color: var(--success);
+            background-color: #d1fae5;
+            color: #065f46;
+        }
+
+        .option-btn.incorrect {
+            border-color: var(--danger);
+            background-color: #fee2e2;
+            color: #991b1b;
+        }
+
+        .feedback-box {
+            margin-top: 1.25rem;
+            padding: 1rem;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            display: none;
+        }
+
+        .feedback-box.show {
+            display: block;
+        }
+
+        .feedback-box.correct-bg {
+            background-color: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            color: #166534;
+        }
+
+        .feedback-box.incorrect-bg {
+            background-color: #fef2f2;
+            border: 1px solid #fecaca;
+            color: #991b1b;
+        }
+
+        .explanation-text {
+            margin-top: 0.25rem;
+            font-weight: 500;
+        }
+
+        .submit-container {
+            text-align: center;
+            margin: 2.5rem 0;
+        }
+
+        .action-btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 1rem 2.5rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            box-shadow: 0 4px 6px -1px rgb(37 99 235 / 0.2);
+            transition: background-color 0.2s ease;
+        }
+
+        .action-btn:hover {
+            background-color: var(--primary-hover);
+        }
+
+        #results-card {
+            background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+            border: 2px solid #bfdbfe;
+            display: none;
+            text-align: center;
+            padding: 3rem 2rem;
+        }
+
+        .score-display {
+            font-size: 3.5rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin: 1rem 0;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            background: var(--surface);
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            border: 1px solid var(--border);
+            margin-top: 2rem;
+            padding: 1.5rem;
+        }
+
+        .table-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--text-secondary);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 0.9rem;
+        }
+
+        th, td {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        th {
+            background-color: #f1f5f9;
+            color: var(--text-secondary);
+            font-weight: 600;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+    </style>
 </head>
-
 <body>
 
-<!-- SPLASH -->
-<div id="splash">
-  <img src="assets/innovine-logo.png">
-</div>
+<div class="container">
+    <header>
+        <h1>Grade 3 – Chapter 1: Number System up to 9999</h1>
+        <div class="meta-info">
+            <strong>Learning Outcomes Covered:</strong>
+            <ul>
+                <li>Count and represent 3-digit and 4-digit numbers using positional concrete models (blocks, tokens, abacus).</li>
+                <li>Locate, read, and place numerical values on scaled or open number lines.</li>
+                <li>Partition multidigit values into expanded structural notations to diagnose numerical errors.</li>
+                <li>Compare, rank, and sequence numeric arrays using mathematical relational logic.</li>
+            </ul>
+        </div>
+    </header>
 
-<!-- GAME -->
-<div id="game" class="screen active">
-  <div class="card">
+    <div id="quiz-form">
+        <div class="quiz-card" id="q1-card">
+            <div class="question-number">Question 1</div>
+            <div class="question-text">1. Which number is shown?</div>
+            <div class="svg-container">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 280" width="100%">
+                  <rect width="800" height="280" fill="#f8fafc" rx="12" stroke="#cbd5e1" stroke-width="2"/>
+                  <defs>
+                    <g id="cube-q1">
+                      <polygon points="0,10 10,10 10,0 0,0" fill="#38bdf8" stroke="#0369a1" stroke-width="0.8"/>
+                      <polygon points="10,10 14,5 14,0 10,0" fill="#0284c7" stroke="#0369a1" stroke-width="0.8"/>
+                      <polygon points="0,0 10,0 14,5 4,5" fill="#7dd3fc" stroke="#0369a1" stroke-width="0.8"/>
+                    </g>
+                    <g id="rod-q1">
+                      <g transform="translate(0,90)"><use href="#cube-q1"/></g>
+                      <g transform="translate(0,80)"><use href="#cube-q1"/></g>
+                      <g transform="translate(0,70)"><use href="#cube-q1"/></g>
+                      <g transform="translate(0,60)"><use href="#cube-q1"/></g>
+                      <g transform="translate(0,50)"><use href="#cube-q1"/></g>
+                      <g transform="translate(0,40)"><use href="#cube-q1"/></g>
+                      <g transform="translate(0,30)"><use href="#cube-q1"/></g>
+                      <g transform="translate(0,20)"><use href="#cube-q1"/></g>
+                      <g transform="translate(0,10)"><use href="#cube-q1"/></g>
+                      <g transform="translate(0,0)"><use href="#cube-q1"/></g>
+                    </g>
+                    <g id="flat-q1">
+                      <g transform="translate(0,0)"><use href="#rod-q1"/></g>
+                      <g transform="translate(10,0)"><use href="#rod-q1"/></g>
+                      <g transform="translate(20,0)"><use href="#rod-q1"/></g>
+                      <g transform="translate(30,0)"><use href="#rod-q1"/></g>
+                      <g transform="translate(40,0)"><use href="#rod-q1"/></g>
+                      <g transform="translate(50,0)"><use href="#rod-q1"/></g>
+                      <g transform="translate(60,0)"><use href="#rod-q1"/></g>
+                      <g transform="translate(72,0)"><use href="#rod-q1"/></g>
+                      <g transform="translate(82,0)"><use href="#rod-q1"/></g>
+                      <g transform="translate(92,0)"><use href="#rod-q1"/></g>
+                    </g>
+                  </defs>
+                  <g transform="translate(40, 40)">
+                    <rect width="210" height="180" fill="#ffffff" rx="8" stroke="#e2e8f0" stroke-width="1"/>
+                    <text x="105" y="30" font-family="system-ui, sans-serif" font-size="16" font-weight="600" fill="#475569" text-anchor="middle">Hundreds</text>
+                    <g transform="translate(35, 60)"><use href="#flat-q1"/></g>
+                    <g transform="translate(55, 75)"><use href="#flat-q1"/></g>
+                    <g transform="translate(75, 90)"><use href="#flat-q1"/></g>
+                  </g>
+                  <g transform="translate(295, 40)">
+                    <rect width="210" height="180" fill="#ffffff" rx="8" stroke="#e2e8f0" stroke-width="1"/>
+                    <text x="105" y="30" font-family="system-ui, sans-serif" font-size="16" font-weight="600" fill="#475569" text-anchor="middle">Tens</text>
+                    <g transform="translate(35, 50)"><use href="#rod-q1"/></g>
+                    <g transform="translate(75, 50)"><use href="#rod-q1"/></g>
+                    <g transform="translate(115, 50)"><use href="#rod-q1"/></g>
+                    <g transform="translate(155, 50)"><use href="#rod-q1"/></g>
+                  </g>
+                  <g transform="translate(550, 40)">
+                    <rect width="210" height="180" fill="#ffffff" rx="8" stroke="#e2e8f0" stroke-width="1"/>
+                    <text x="105" y="30" font-family="system-ui, sans-serif" font-size="16" font-weight="600" fill="#475569" text-anchor="middle">Ones</text>
+                    <g transform="translate(45, 60)"><use href="#cube-q1"/></g>
+                    <g transform="translate(45, 100)"><use href="#cube-q1"/></g>
+                    <g transform="translate(45, 140)"><use href="#cube-q1"/></g>
+                    <g transform="translate(135, 60)"><use href="#cube-q1"/></g>
+                    <g transform="translate(135, 100)"><use href="#cube-q1"/></g>
+                    <g transform="translate(135, 140)"><use href="#cube-q1"/></g>
+                  </g>
+                </svg>
+            </div>
+            <div class="options-grid">
+                <button type="button" class="option-btn" onclick="selectOption(1, 'a')">a) 346</button>
+                <button type="button" class="option-btn" onclick="selectOption(1, 'b')">b) 436</button>
+                <button type="button" class="option-btn" onclick="selectOption(1, 'c')">c) 364</button>
+                <button type="button" class="option-btn" onclick="selectOption(1, 'd')">d) 306</button>
+            </div>
+            <div class="feedback-box" id="feedback-1"></div>
+        </div>
 
-    <div class="top">
-      <div class="box">Q: <span id="qno">1</span>/10</div>
-      <div class="box">Score: <span id="score">0</span></div>
-      <div class="box">Time: <span id="time">60</span></div>
+        <div class="quiz-card" id="q2-card">
+            <div class="question-number">Question 2</div>
+            <div class="question-text">2. Which number is marked?</div>
+            <div class="svg-container">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 180" width="100%">
+                  <rect width="800" height="180" fill="#f8fafc" rx="12" stroke="#cbd5e1" stroke-width="2"/>
+                  <line x1="100" y1="100" x2="700" y2="100" stroke="#334155" stroke-width="3" stroke-linecap="round"/>
+                  <polygon points="90,100 105,92 105,108" fill="#334155"/>
+                  <polygon points="710,100 695,92 695,108" fill="#334155"/>
+                  <line x1="150" y1="85" x2="150" y2="115" stroke="#334155" stroke-width="3"/>
+                  <text x="150" y="145" font-family="system-ui, sans-serif" font-size="18" font-weight="bold" fill="#1e293b" text-anchor="middle">200</text>
+                  <line x1="650" y1="85" x2="650" y2="115" stroke="#334155" stroke-width="3"/>
+                  <text x="650" y="145" font-family="system-ui, sans-serif" font-size="18" font-weight="bold" fill="#1e293b" text-anchor="middle">300</text>
+                  <line x1="400" y1="85" x2="400" y2="115" stroke="#0284c7" stroke-width="3"/>
+                  <circle cx="400" cy="100" r="10" fill="#0ea5e9" stroke="#0284c7" stroke-width="2"/>
+                  <text x="400" y="65" font-family="system-ui, sans-serif" font-size="20" font-weight="900" fill="#0369a1" text-anchor="middle">?</text>
+                </svg>
+            </div>
+            <div class="options-grid">
+                <button type="button" class="option-btn" onclick="selectOption(2, 'a')">a) 240</button>
+                <button type="button" class="option-btn" onclick="selectOption(2, 'b')">b) 250</button>
+                <button type="button" class="option-btn" onclick="selectOption(2, 'c')">c) 260</button>
+                <button type="button" class="option-btn" onclick="selectOption(2, 'd')">d) 270</button>
+            </div>
+            <div class="feedback-box" id="feedback-2"></div>
+        </div>
+
+        <div class="quiz-card" id="q3-card">
+            <div class="question-number">Question 3</div>
+            <div class="question-text">3. Which statement is correct?</div>
+            <div class="svg-container">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 220" width="100%">
+                  <rect width="800" height="220" fill="#f8fafc" rx="12" stroke="#cbd5e1" stroke-width="2"/>
+                  <defs>
+                    <g id="coin-q3">
+                      <ellipse cx="40" cy="6" rx="40" ry="6" fill="#f59e0b" stroke="#b45309" stroke-width="1"/>
+                      <rect x="0" y="6" width="80" height="5" fill="#d97706" stroke="#b45309" stroke-width="1"/>
+                      <ellipse cx="40" cy="11" rx="40" ry="6" fill="#d97706" stroke="#b45309" stroke-width="1"/>
+                    </g>
+                  </defs>
+                  <g transform="translate(180, 25)">
+                    <text x="40" y="170" font-family="system-ui, sans-serif" font-size="16" font-weight="bold" fill="#475569" text-anchor="middle">Stack A</text>
+                    <g transform="translate(0,110)"><use href="#coin-q3"/></g>
+                    <g transform="translate(0,100)"><use href="#coin-q3"/></g>
+                    <g transform="translate(0,90)"><use href="#coin-q3"/></g>
+                    <g transform="translate(0,80)"><use href="#coin-q3"/></g>
+                    <g transform="translate(0,70)"><use href="#coin-q3"/></g>
+                    <g transform="translate(0,60)"><use href="#coin-q3"/></g>
+                    <g transform="translate(0,50)"><use href="#coin-q3"/></g>
+                    <g transform="translate(0,40)"><use href="#coin-q3"/></g>
+                  </g>
+                  <g transform="translate(500, 25)">
+                    <text x="40" y="170" font-family="system-ui, sans-serif" font-size="16" font-weight="bold" fill="#475569" text-anchor="middle">Stack B</text>
+                    <g transform="translate(0,110)"><use href="#coin-q3"/></g>
+                    <g transform="translate(0,100)"><use href="#coin-q3"/></g>
+                    <g transform="translate(0,90)"><use href="#coin-q3"/></g>
+                    <g transform="translate(0,80)"><use href="#coin-q3"/></g>
+                    <g transform="translate(0,70)"><use href="#coin-q3"/></g>
+                    <g transform="translate(0,60)"><use href="#coin-q3"/></g>
+                  </g>
+                </svg>
+            </div>
+            <div class="options-grid">
+                <button type="button" class="option-btn" onclick="selectOption(3, 'a')">a) Both equal</button>
+                <button type="button" class="option-btn" onclick="selectOption(3, 'b')">b) First stack has more</button>
+                <button type="button" class="option-btn" onclick="selectOption(3, 'c')">c) Second stack has more</button>
+                <button type="button" class="option-btn" onclick="selectOption(3, 'd')">d) Both have less than 20</button>
+            </div>
+            <div class="feedback-box" id="feedback-3"></div>
+        </div>
+
+        <div class="quiz-card" id="q4-card">
+            <div class="question-number">Question 4</div>
+            <div class="question-text">4. Which is the expanded form?</div>
+            <div class="svg-container">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 240" width="100%">
+                  <rect width="800" height="240" fill="#f8fafc" rx="12" stroke="#cbd5e1" stroke-width="2"/>
+                  <defs>
+                    <g id="cube-q4">
+                      <polygon points="0,8 8,8 8,0 0,0" fill="#a855f7" stroke="#6b21a8" stroke-width="0.8"/>
+                      <polygon points="8,8 11,4 11,0 8,0" fill="#9333ea" stroke="#6b21a8" stroke-width="0.8"/>
+                      <polygon points="0,0 8,0 11,4 3,4" fill="#c084fc" stroke="#6b21a8" stroke-width="0.8"/>
+                    </g>
+                    <g id="rod-q4">
+                      <g transform="translate(0,72)"><use href="#cube-q4"/></g>
+                      <g transform="translate(0,64)"><use href="#cube-q4"/></g>
+                      <g transform="translate(0,56)"><use href="#cube-q4"/></g>
+                      <g transform="translate(0,48)"><use href="#cube-q4"/></g>
+                      <g transform="translate(0,40)"><use href="#cube-q4"/></g>
+                      <g transform="translate(0,32)"><use href="#cube-q4"/></g>
+                      <g transform="translate(0,24)"><use href="#cube-q4"/></g>
+                      <g transform="translate(0,16)"><use href="#cube-q4"/></g>
+                      <g transform="translate(0,8)"><use href="#cube-q4"/></g>
+                      <g transform="translate(0,0)"><use href="#cube-q4"/></g>
+                    </g>
+                    <g id="flat-q4">
+                      <g transform="translate(0,0)"><use href="#rod-q4"/></g>
+                      <g transform="translate(8,0)"><use href="#rod-q4"/></g>
+                      <g transform="translate(16,0)"><use href="#rod-q4"/></g>
+                      <g transform="translate(24,0)"><use href="#rod-q4"/></g>
+                      <g transform="translate(32,0)"><use href="#rod-q4"/></g>
+                      <g transform="translate(40,0)"><use href="#rod-q4"/></g>
+                      <g transform="translate(48,0)"><use href="#rod-q4"/></g>
+                      <g transform="translate(56,0)"><use href="#rod-q4"/></g>
+                      <g transform="translate(64,0)"><use href="#rod-q4"/></g>
+                      <g transform="translate(72,0)"><use href="#rod-q4"/></g>
+                    </g>
+                  </defs>
+                  <g transform="translate(40, 50)">
+                    <g transform="translate(0,0)"><use href="#flat-q4"/></g>
+                    <g transform="translate(20,15)"><use href="#flat-q4"/></g>
+                    <g transform="translate(40,30)"><use href="#flat-q4"/></g>
+                    <g transform="translate(60,45)"><use href="#flat-q4"/></g>
+                  </g>
+                  <g transform="translate(320, 60)">
+                    <g transform="translate(0,10)"><use href="#rod-q4"/></g>
+                    <g transform="translate(22,10)"><use href="#rod-q4"/></g>
+                    <g transform="translate(44,10)"><use href="#rod-q4"/></g>
+                    <g transform="translate(66,10)"><use href="#rod-q4"/></g>
+                    <g transform="translate(88,10)"><use href="#rod-q4"/></g>
+                    <g transform="translate(110,10)"><use href="#rod-q4"/></g>
+                    <g transform="translate(132,10)"><use href="#rod-q4"/></g>
+                    <g transform="translate(154,10)"><use href="#rod-q4"/></g>
+                  </g>
+                  <g transform="translate(640, 100)">
+                    <g transform="translate(0,0)"><use href="#cube-q4"/></g>
+                    <g transform="translate(25,15)"><use href="#cube-q4"/></g>
+                  </g>
+                </svg>
+            </div>
+            <div class="options-grid">
+                <button type="button" class="option-btn" onclick="selectOption(4, 'a')">a) 400 + 80 + 2</button>
+                <button type="button" class="option-btn" onclick="selectOption(4, 'b')">b) 40 + 80 + 2</button>
+                <button type="button" class="option-btn" onclick="selectOption(4, 'c')">c) 400 + 8 + 2</button>
+                <button type="button" class="option-btn" onclick="selectOption(4, 'd')">d) 480 + 2 + 2</button>
+            </div>
+            <div class="feedback-box" id="feedback-4"></div>
+        </div>
+
+        <div class="quiz-card" id="q5-card">
+            <div class="question-number">Question 5</div>
+            <div class="question-text">5. Which is in the middle when ordered?</div>
+            <div class="svg-container">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 160" width="100%">
+                  <rect width="800" height="160" fill="#f8fafc" rx="12" stroke="#cbd5e1" stroke-width="2"/>
+                  <g transform="translate(100, 35)">
+                    <rect width="140" height="90" fill="#10b981" rx="8" stroke="#047857" stroke-width="1.5"/>
+                    <text x="70" y="55" font-family="system-ui, sans-serif" font-size="28" font-weight="bold" fill="#ffffff" text-anchor="middle" dominant-baseline="middle">245</text>
+                  </g>
+                  <g transform="translate(330, 35)">
+                    <rect width="140" height="90" fill="#ef4444" rx="8" stroke="#b91c1c" stroke-width="1.5"/>
+                    <text x="70" y="55" font-family="system-ui, sans-serif" font-size="28" font-weight="bold" fill="#ffffff" text-anchor="middle" dominant-baseline="middle">254</text>
+                  </g>
+                  <g transform="translate(560, 35)">
+                    <rect width="140" height="90" fill="#3b82f6" rx="8" stroke="#1d4ed8" stroke-width="1.5"/>
+                    <text x="70" y="55" font-family="system-ui, sans-serif" font-size="28" font-weight="bold" fill="#ffffff" text-anchor="middle" dominant-baseline="middle">235</text>
+                  </g>
+                </svg>
+            </div>
+            <div class="options-grid">
+                <button type="button" class="option-btn" onclick="selectOption(5, 'a')">a) 235</button>
+                <button type="button" class="option-btn" onclick="selectOption(5, 'b')">b) 245</button>
+                <button type="button" class="option-btn" onclick="selectOption(5, 'c')">c) 254</button>
+                <button type="button" class="option-btn" onclick="selectOption(5, 'd')">d) 225</button>
+            </div>
+            <div class="feedback-box" id="feedback-5"></div>
+        </div>
+
+        <div class="quiz-card" id="q6-card">
+            <div class="question-number">Question 6</div>
+            <div class="question-text">6. Which number is shown?</div>
+            <div class="svg-container">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 260" width="100%">
+                  <rect width="800" height="260" fill="#f8fafc" rx="12" stroke="#cbd5e1" stroke-width="2"/>
+                  <rect x="220" y="190" width="360" height="20" fill="#475569" rx="4"/>
+                  <line x1="310" y1="60" x2="310" y2="190" stroke="#94a3b8" stroke-width="6" stroke-linecap="round"/>
+                  <line x1="400" y1="60" x2="400" y2="190" stroke="#94a3b8" stroke-width="6" stroke-linecap="round"/>
+                  <line x1="490" y1="60" x2="490" y2="190" stroke="#94a3b8" stroke-width="6" stroke-linecap="round"/>
+                  <text x="310" y="235" font-family="system-ui, sans-serif" font-size="16" font-weight="bold" fill="#475569" text-anchor="middle">H</text>
+                  <text x="400" y="235" font-family="system-ui, sans-serif" font-size="16" font-weight="bold" fill="#475569" text-anchor="middle">T</text>
+                  <text x="490" y="235" font-family="system-ui, sans-serif" font-size="16" font-weight="bold" fill="#475569" text-anchor="middle">O</text>
+                  <defs>
+                    <ellipse id="abacus-bead" cx="0" cy="0" rx="18" ry="9" fill="#f43f5e" stroke="#9f1239" stroke-width="1.5"/>
+                  </defs>
+                  <use href="#abacus-bead" x="310" y="181"/>
+                  <use href="#abacus-bead" x="310" y="163"/>
+                  <use href="#abacus-bead" x="400" y="181"/>
+                  <use href="#abacus-bead" x="400" y="163"/>
+                  <use href="#abacus-bead" x="400" y="145"/>
+                  <use href="#abacus-bead" x="400" y="127"/>
+                  <use href="#abacus-bead" x="400" y="109"/>
+                  <use href="#abacus-bead" x="490" y="181"/>
+                  <use href="#abacus-bead" x="490" y="163"/>
+                  <use href="#abacus-bead" x="490" y="145"/>
+                </svg>
+            </div>
+            <div class="options-grid">
+                <button type="button" class="option-btn" onclick="selectOption(6, 'a')">a) 253</button>
+                <button type="button" class="option-btn" onclick="selectOption(6, 'b')">b) 523</button>
+                <button type="button" class="option-btn" onclick="selectOption(6, 'c')">c) 235</button>
+                <button type="button" class="option-btn" onclick="selectOption(6, 'd')">d) 532</button>
+            </div>
+            <div class="feedback-box" id="feedback-6"></div>
+        </div>
+
+        <div class="quiz-card" id="q7-card">
+            <div class="question-number">Question 7</div>
+            <div class="question-text">7. Table: A-245, B-265, C-255. Who has second highest?</div>
+            <div class="options-grid">
+                <button type="button" class="option-btn" onclick="selectOption(7, 'a')">a) A</button>
+                <button type="button" class="option-btn" onclick="selectOption(7, 'b')">b) B</button>
+                <button type="button" class="option-btn" onclick="selectOption(7, 'c')">c) C</button>
+                <button type="button" class="option-btn" onclick="selectOption(7, 'd')">d) All equal</button>
+            </div>
+            <div class="feedback-box" id="feedback-7"></div>
+        </div>
+
+        <div class="quiz-card" id="q8-card">
+            <div class="question-number">Question 8</div>
+            <div class="question-text">8. Numbers: 340, 304, 430. Which is smallest?</div>
+            <div class="options-grid">
+                <button type="button" class="option-btn" onclick="selectOption(8, 'a')">a) 430</button>
+                <button type="button" class="option-btn" onclick="selectOption(8, 'b')">b) 340</button>
+                <button type="button" class="option-btn" onclick="selectOption(8, 'c')">c) 304</button>
+                <button type="button" class="option-btn" onclick="selectOption(8, 'd')">d) All equal</button>
+            </div>
+            <div class="feedback-box" id="feedback-8"></div>
+        </div>
+
+        <div class="quiz-card" id="q9-card">
+            <div class="question-number">Question 9</div>
+            <div class="question-text">9. Boxes: 150,180,170. Which is between 160 and 180?</div>
+            <div class="options-grid">
+                <button type="button" class="option-btn" onclick="selectOption(9, 'a')">a) Box1</button>
+                <button type="button" class="option-btn" onclick="selectOption(9, 'b')">b) Box2</button>
+                <button type="button" class="option-btn" onclick="selectOption(9, 'c')">c) Box3</button>
+                <button type="button" class="option-btn" onclick="selectOption(9, 'd')">d) None</button>
+            </div>
+            <div class="feedback-box" id="feedback-9"></div>
+        </div>
+
+        <div class="quiz-card" id="q10-card">
+            <div class="question-number">Question 10</div>
+            <div class="question-text">10. 507 = 5 tens + 7 ones. What is wrong?</div>
+            <div class="options-grid">
+                <button type="button" class="option-btn" onclick="selectOption(10, 'a')">a) Hundreds missing</button>
+                <button type="button" class="option-btn" onclick="selectOption(10, 'b')">b) Tens wrong</button>
+                <button type="button" class="option-btn" onclick="selectOption(10, 'c')">c) Ones wrong</button>
+                <button type="button" class="option-btn" onclick="selectOption(10, 'd')">d) No mistake</button>
+            </div>
+            <div class="feedback-box" id="feedback-10"></div>
+        </div>
+
+        <div class="quiz-card" id="q11-card">
+            <div class="question-number">Question 11</div>
+            <div class="question-text">11. An expression states: 356 &gt; 365. What makes this comparison wrong?</div>
+            <div class="options-grid">
+                <button type="button" class="option-btn" onclick="selectOption(11, 'a')">a) Tens wrong</button>
+                <button type="button" class="option-btn" onclick="selectOption(11, 'b')">b) Hundreds wrong</button>
+                <button type="button" class="option-btn" onclick="selectOption(11, 'c')">c) Ones wrong</button>
+                <button type="button" class="option-btn" onclick="selectOption(11, 'd')">d) No mistake</button>
+            </div>
+            <div class="feedback-box" id="feedback-11"></div>
+        </div>
+
+        <div class="quiz-card" id="q12-card">
+            <div class="question-number">Question 12</div>
+            <div class="question-text">12. An equation reads: 432 = 400 + 20 + 3. What is wrong with it?</div>
+            <div class="options-grid">
+                <button type="button" class="option-btn" onclick="selectOption(12, 'a')">a) Tens incorrect</button>
+                <button type="button" class="option-btn" onclick="selectOption(12, 'b')">b) Ones incorrect</button>
+                <button type="button" class="option-btn" onclick="selectOption(12, 'c')">c) Tens and ones incorrect</button>
+                <button type="button" class="option-btn" onclick="selectOption(12, 'd')">d) No mistake</button>
+            </div>
+            <div class="feedback-box" id="feedback-12"></div>
+        </div>
+
+        <div class="quiz-card" id="q13-card">
+            <div class="question-number">Question 13</div>
+            <div class="question-text">13. Which number does NOT belong with the others in this group? 345, 354, 435, 34</div>
+            <div class="options-grid">
+                <button type="button" class="option-btn" onclick="selectOption(13, 'a')">a) 345</button>
+                <button type="button" class="option-btn" onclick="selectOption(13, 'b')">b) 354</button>
+                <button type="button" class="option-btn" onclick="selectOption(13, 'c')">c) 435</button>
+                <button type="button" class="option-btn" onclick="selectOption(13, 'd')">d) 34</button>
+            </div>
+            <div class="feedback-box" id="feedback-13"></div>
+        </div>
+
+        <div class="quiz-card" id="q14-card">
+            <div class="question-number">Question 14</div>
+            <div class="question-text">14. Which representation does NOT belong with the others?</div>
+            <div class="options-grid">
+                <button type="button" class="option-btn" onclick="selectOption(14, 'a')">a) 200 + 30 + 5</button>
+                <button type="button" class="option-btn" onclick="selectOption(14, 'b')">b) 235</button>
+                <button type="button" class="option-btn" onclick="selectOption(14, 'c')">c) 2H 3T 5O</button>
+                <button type="button" class="option-btn" onclick="selectOption(14, 'd')">d) 2035</button>
+            </div>
+            <div class="feedback-box" id="feedback-14"></div>
+        </div>
+
+        <div class="quiz-card" id="q15-card">
+            <div class="question-number">Question 15</div>
+            <div class="question-text">15. Which number is greater than 450?</div>
+            <div class="options-grid">
+                <button type="button" class="option-btn" onclick="selectOption(15, 'a')">a) 445</button>
+                <button type="button" class="option-btn" onclick="selectOption(15, 'b')">b) 452</button>
+                <button type="button" class="option-btn" onclick="selectOption(15, 'c')">c) 449</button>
+                <button type="button" class="option-btn" onclick="selectOption(15, 'd')">d) 440</button>
+            </div>
+            <div class="feedback-box" id="feedback-15"></div>
+        </div>
+
+        <div class="quiz-card" id="q16-card">
+            <div class="question-number">Question 16</div>
+            <div class="question-text">16. Which number lies between 300 and 350?</div>
+            <div class="options-grid">
+                <button type="button" class="option-btn" onclick="selectOption(16, 'a')">a) 299</button>
+                <button type="button" class="option-btn" onclick="selectOption(16, 'b')">b) 351</button>
+                <button type="button" class="option-btn" onclick="selectOption(16, 'c')">c) 325</button>
+                <button type="button" class="option-btn" onclick="selectOption(16, 'd')">d) 360</button>
+            </div>
+            <div class="feedback-box" id="feedback-16"></div>
+        </div>
+
+        <div class="quiz-card" id="q17-card">
+            <div class="question-number">Question 17</div>
+            <div class="question-text">17. A mystery number has exactly 6 hundreds and 2 tens. Which of the following is correct?</div>
+            <div class="options-grid">
+                <button type="button" class="option-btn" onclick="selectOption(17, 'a')">a) 620</button>
+                <button type="button" class="option-btn" onclick="selectOption(17, 'b')">b) 602</button>
+                <button type="button" class="option-btn" onclick="selectOption(17, 'c')">c) 260</button>
+                <button type="button" class="option-btn" onclick="selectOption(17, 'd')">d) 206</button>
+            </div>
+            <div class="feedback-box" id="feedback-17"></div>
+        </div>
+
+        <div class="quiz-card" id="q18-card">
+            <div class="question-number">Question 18</div>
+            <div class="question-text">18. A local shop sold 320 items on Monday, and then 340 items on Tuesday. Did the total sales increase from Monday to Tuesday?</div>
+            <div class="options-grid">
+                <button type="button" class="option-btn" onclick="selectOption(18, 'a')">a) Yes</button>
+                <button type="button" class="option-btn" onclick="selectOption(18, 'b')">b) No</button>
+                <button type="button" class="option-btn" onclick="selectOption(18, 'c')">c) Same</button>
+                <button type="button" class="option-btn" onclick="selectOption(18, 'd')">d) Cannot say</button>
+            </div>
+            <div class="feedback-box" id="feedback-18"></div>
+        </div>
+
+        <div class="quiz-card" id="q19-card">
+            <div class="question-number">Question 19</div>
+            <div class="question-text">19. A school library had 200 books and added 150 more to its collection. What is the total number of books now?</div>
+            <div class="options-grid">
+                <button type="button" class="option-btn" onclick="selectOption(19, 'a')">a) 300</button>
+                <button type="button" class="option-btn" onclick="selectOption(19, 'b')">b) 350</button>
+                <button type="button" class="option-btn" onclick="selectOption(19, 'c')">c) 250</button>
+                <button type="button" class="option-btn" onclick="selectOption(19, 'd')">d) 400</button>
+            </div>
+            <div class="feedback-box" id="feedback-19"></div>
+        </div>
+
+        <div class="quiz-card" id="q20-card">
+            <div class="question-number">Question 20</div>
+            <div class="question-text">20. Using the same library data from Question 19, is the total number of books more than 300?</div>
+            <div class="options-grid">
+                <button type="button" class="option-btn" onclick="selectOption(20, 'a')">a) Yes</button>
+                <button type="button" class="option-btn" onclick="selectOption(20, 'b')">b) No</button>
+                <button type="button" class="option-btn" onclick="selectOption(20, 'c')">c) Exactly 300</button>
+                <button type="button" class="option-btn" onclick="selectOption(20, 'd')">d) Less than 200</button>
+            </div>
+            <div class="feedback-box" id="feedback-20"></div>
+        </div>
+
+        <div class="submit-container">
+            <button type="button" class="action-btn" id="submit-btn" onclick="evaluateQuiz()">Submit Assessment</button>
+        </div>
     </div>
 
-    <div id="visual" class="visual"></div>
+    <div class="quiz-card" id="results-card">
+        <h2>Assessment Complete!</h2>
+        <div class="score-display" id="score-text">0 / 20</div>
+        <p id="percentage-text" style="font-size: 1.2rem; font-weight: 600; color: var(--text-secondary);"></p>
+    </div>
 
-    <div class="question" id="question"></div>
-
-    <div class="options" id="options"></div>
-
-    <button class="next" onclick="nextQ()" id="nextBtn">Next</button>
-
-  </div>
+    <div class="table-container">
+        <div class="table-title">Quality Verification & Blueprints</div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Q No.</th>
+                    <th>LO Covered</th>
+                    <th>Type</th>
+                    <th>Competency Tested</th>
+                    <th>Difficulty</th>
+                    <th>Visual</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td>Q1</td><td>LO 1</td><td>Visual Interpretation</td><td>Positional structural decoding</td><td>Simple Visual</td><td>Yes</td></tr>
+                <tr><td>Q2</td><td>LO 2</td><td>Visual Interpretation</td><td>Midpoint boundary estimation</td><td>Simple Visual</td><td>Yes</td></tr>
+                <tr><td>Q3</td><td>LO 4</td><td>Visual Interpretation</td><td>Quantitative value estimation</td><td>Simple Visual</td><td>Yes</td></tr>
+                <tr><td>Q4</td><td>LO 3</td><td>Visual Interpretation</td><td>Converting visual models to math form</td><td>Simple Visual</td><td>Yes</td></tr>
+                <tr><td>Q5</td><td>LO 4</td><td>Visual Interpretation</td><td>Array median index checking</td><td>Simple Visual</td><td>Yes</td></tr>
+                <tr><td>Q6</td><td>LO 1</td><td>Visual Interpretation</td><td>Decoding an abacus column model</td><td>Simple Visual</td><td>Yes</td></tr>
+                <tr><td>Q7</td><td>LO 4</td><td>Inference Reasoning</td><td>Cross-set array rank filtering</td><td>Reasoning</td><td>No</td></tr>
+                <tr><td>Q8</td><td>LO 4</td><td>Inference Reasoning</td><td>Multi-digit minimum indexing</td><td>Reasoning</td><td>No</td></tr>
+                <tr><td>Q9</td><td>LO 2</td><td>Inference Reasoning</td><td>Range boundary validation</td><td>Reasoning</td><td>No</td></tr>
+                <tr><td>Q10</td><td>LO 3</td><td>Error Detection</td><td>Isolating missing value positions</td><td>Reasoning</td><td>No</td></tr>
+                <tr><td>Q11</td><td>LO 4</td><td>Error Detection</td><td>Pinpointing failed comparison logic</td><td>Reasoning</td><td>No</td></tr>
+                <tr><td>Q12</td><td>LO 3</td><td>Error Detection</td><td>Checking swapped place-value digits</td><td>Reasoning</td><td>No</td></tr>
+                <tr><td>Q13</td><td>LO 1</td><td>Inference Reasoning</td><td>Structural category mismatching</td><td>Reasoning</td><td>No</td></tr>
+                <tr><td>Q14</td><td>LO 3</td><td>Inference Reasoning</td><td>Notation translation analysis</td><td>Reasoning</td><td>No</td></tr>
+                <tr><td>Q15</td><td>LO 4</td><td>Applied Decision</td><td>Value filtering under conditions</td><td>Challenge</td><td>No</td></tr>
+                <tr><td>Q16</td><td>LO 2</td><td>Applied Decision</td><td>Range intersection safety checks</td><td>Challenge</td><td>No</td></tr>
+                <tr><td>Q17</td><td>LO 1</td><td>Applied Decision</td><td>Number assembly from positional clues</td><td>Challenge</td><td>No</td></tr>
+                <tr><td>Q18</td><td>LO 4</td><td>Applied Decision</td><td>Trend direction verification logic</td><td>Challenge</td><td>No</td></tr>
+                <tr><td>Q19</td><td>LO 1</td><td>Applied Decision</td><td>Parameter updating across states</td><td>Challenge</td><td>No</td></tr>
+                <tr><td>Q20</td><td>LO 4</td><td>Applied Decision</td><td>Multi-step milestone validation checking</td><td>Challenge</td><td>No</td></tr>
+            </tbody>
+        </table>
+    </div>
 </div>
-
-<!-- RESULT -->
-<div id="result" class="screen">
-  <div class="card result" id="resultText"></div>
-</div>
-
-<audio id="correct" src="assets/correct.mp3"></audio>
-<audio id="wrong" src="assets/wrong.mp3"></audio>
 
 <script>
+    const quizMetadata = {
+        1: { correct: 'a', explanation: "The base-ten grouping shows 3 hundreds flats (300), 4 tens rods (40), and 6 single cubes (6), representing the number 346." },
+        2: { correct: 'b', explanation: "The highlighted tick position marks the midpoint line perfectly centered between 200 and 300, which is 250." },
+        3: { correct: 'b', explanation: "Comparing Stack A (30 coins) against Stack B (25 coins) shows that Stack A has a higher quantity." },
+        4: { correct: 'a', explanation: "The blocks configuration reads as 4 hundreds (400) + 8 tens (80) + 2 ones (2)." },
+        5: { correct: 'b', explanation: "Sorting the numbers from smallest to largest gives: 235, 245, 254. The number 245 is in the middle." },
+        6: { correct: 'a', explanation: "Translating the spikes from left to right gives 2 Hundreds, 5 Tens, 3 Ones, which reads as 253." },
+        7: { correct: 'c', explanation: "Ranking values in order yields 265 (Highest) > 255 (Second Highest) > 245 (Lowest)." },
+        8: { correct: 'c', explanation: "Comparing the values shows that 304 is less than 340 and 430." },
+        9: { correct: 'c', explanation: "170 is the only value satisfying the linear range bounds condition 160 < 170 < 180." },
+        10: { correct: 'a', explanation: "The number 507 contains 5 hundreds, 0 tens, and 7 ones. The value configuration entirely skipped the hundreds placeholder position." },
+        11: { correct: 'a', explanation: "At the tens location, 5 tens is smaller than 6 tens (50 < 60), making the expression 356 > 365 false." },
+        12: { correct: 'c', explanation: "The correct expansion is 400 + 30 + 2. The given equation swapped both place values." },
+        13: { correct: 'd', explanation: "345, 354, and 435 are 3-digit numbers, while 34 is a 2-digit number." },
+        14: { correct: 'd', explanation: "Options a, b, and c represent 235. Option d represents a completely different value (2035)." },
+        15: { correct: 'b', explanation: "452 is the only value in the list that is larger than 450." },
+        16: { correct: 'c', explanation: "325 falls within the strict boundaries of 300 and 350." },
+        17: { correct: 'a', explanation: "Assembling 6 hundreds (600) and 2 tens (20) gives 620." },
+        18: { correct: 'a', explanation: "Comparing values confirms 340 > 320, verifying an increase." },
+        19: { correct: 'b', explanation: "200 + 150 = 350." },
+        20: { correct: 'a', explanation: "Since the calculated collection size is 350, it satisfies the condition 350 > 300." }
+    };
 
-/* SPLASH */
-setTimeout(()=>{
-  document.getElementById("splash").style.display="none";
-},5000);
+    let selections = {};
 
-/* PICTORIAL QUESTIONS */
-const questions=[
-{
-visual:"🟦🟦🟦🟦  🟩🟩🟩  ⚪⚪⚪",
-q:"What number is shown?",
-a:["343","433","334","443"],
-c:0
-},
-{
-visual:"🏦 7 Hundreds | 2 Tens | 5 Ones",
-q:"Identify the number",
-a:["725","752","275","572"],
-c:0
-},
-{
-visual:"📦 900 + 80 + 4",
-q:"Which number is this?",
-a:["984","948","894","849"],
-c:0
-},
-{
-visual:"🔢 3H 9T 1O",
-q:"What number is represented?",
-a:["391","319","931","139"],
-c:0
-},
-{
-visual:"⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛ (10 tens) + 4 ones",
-q:"Find number",
-a:["104","114","1004","140"],
-c:3
-},
-{
-visual:"🧮 4 hundreds + 0 tens + 9 ones",
-q:"Number is:",
-a:["409","490","940","904"],
-c:0
-},
-{
-visual:"📊 1 thousand + 2 hundreds + 3 tens + 4 ones",
-q:"Find number",
-a:["1234","1324","1243","1423"],
-c:0
-},
-{
-visual:"🏷️ 800 + 60 + 7",
-q:"What number is shown?",
-a:["867","876","786","768"],
-c:0
-},
-{
-visual:"🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵 (1000 group) + 2 hundreds",
-q:"Number is:",
-a:["1200","1002","1020","2000"],
-c:0
-},
-{
-visual:"🧱 6H 4T 2O",
-q:"Choose correct number",
-a:["642","624","462","426"],
-c:0
-}
-];
-
-let i=0,score=0,time=60,attempt=0,lock=false;
-
-/* LOAD */
-function load(){
-  let q=questions[i];
-
-  document.getElementById("qno").innerText=i+1;
-  document.getElementById("visual").innerText=q.visual;
-  document.getElementById("question").innerText=q.q;
-
-  let html="";
-  q.a.forEach((o,idx)=>{
-    html+=`<button class="btn" onclick="check(this,${idx})">${o}</button>`;
-  });
-
-  document.getElementById("options").innerHTML=html;
-  document.getElementById("nextBtn").style.display="none";
-
-  attempt=0;
-  lock=false;
-}
-
-/* CHECK */
-function check(btn,ans){
-  if(lock) return;
-
-  if(ans==questions[i].c){
-    btn.classList.add("correct");
-    document.getElementById("correct").play();
-    score++;
-    document.getElementById("score").innerText=score;
-    lock=true;
-    document.getElementById("nextBtn").style.display="inline-block";
-  } else {
-    attempt++;
-    btn.classList.add("wrong");
-    document.getElementById("wrong").play();
-
-    if(attempt>=2){
-      lock=true;
-      document.getElementById("nextBtn").style.display="inline-block";
+    function selectOption(qNum, choice) {
+        selections[qNum] = choice;
+        const card = document.getElementById(`q${qNum}-card`);
+        const buttons = card.getElementsByClassName('option-btn');
+        
+        for (let btn of buttons) {
+            if (btn.getAttribute('onclick').includes(`'${choice}'`)) {
+                btn.classList.add('selected');
+            } else {
+                btn.classList.remove('selected');
+            }
+        }
     }
-  }
-}
 
-/* NEXT */
-function nextQ(){
-  i++;
-  if(i<questions.length){
-    load();
-  } else {
-    show();
-  }
-}
+    function evaluateQuiz() {
+        let unanswered = [];
+        for (let i = 1; i <= 20; i++) {
+            if (!selections[i]) unanswered.push(i);
+        }
 
-/* RESULT */
-function show(){
-  document.getElementById("game").style.display="none";
-  document.getElementById("result").style.display="block";
+        if (unanswered.length > 0) {
+            alert(`Please complete all questions before submitting. Missing fields on Questions: ${unanswered.join(', ')}`);
+            return;
+        }
 
-  let percent=(score/questions.length)*100;
+        let score = 0;
 
-  let msg="";
-  if(percent>=75) msg="Good job 🎉";
-  else if(percent>=40) msg="Review this chapter 🙂";
-  else msg="Let’s practise more 📘";
+        for (let i = 1; i <= 20; i++) {
+            const currentSelection = selections[i];
+            const correctOption = quizMetadata[i].correct;
+            const card = document.getElementById(`q${i}-card`);
+            const buttons = card.getElementsByClassName('option-btn');
+            const feedbackBox = document.getElementById(`feedback-${i}`);
 
-  document.getElementById("resultText").innerText =
-    `${msg}\nScore: ${score}/${questions.length}`;
-}
+            for (let btn of buttons) {
+                btn.disabled = true;
+                btn.classList.remove('selected');
+                
+                if (btn.getAttribute('onclick').includes(`'${correctOption}'`)) {
+                    btn.classList.add('correct');
+                } else if (btn.getAttribute('onclick').includes(`'${currentSelection}'`) && currentSelection !== correctOption) {
+                    btn.classList.add('incorrect');
+                }
+            }
 
-/* TIMER */
-setInterval(()=>{
-  if(time>0){
-    time--;
-    document.getElementById("time").innerText=time;
-  } else {
-    show();
-  }
-},1000);
+            feedbackBox.classList.add('show');
+            if (currentSelection === correctOption) {
+                score++;
+                feedbackBox.className = "feedback-box show correct-bg";
+                feedbackBox.innerHTML = `<strong>✓ Correct!</strong><div class="explanation-text">${quizMetadata[i].explanation}</div>`;
+            } else {
+                feedbackBox.className = "feedback-box show incorrect-bg";
+                feedbackBox.innerHTML = `<strong>✗ Incorrect</strong> (You selected ${currentSelection.toUpperCase()})<div class="explanation-text">${quizMetadata[i].explanation}</div>`;
+            }
+        }
 
-load();
-
+        document.getElementById('submit-btn').style.display = 'none';
+        const resultsCard = document.getElementById('results-card');
+        resultsCard.style.display = 'block';
+        document.getElementById('score-text').innerText = `${score} / 20`;
+        
+        const percentage = Math.round((score / 20) * 100);
+        document.getElementById('percentage-text').innerText = `Score Percentage: ${percentage}%`;
+        
+        window.scrollTo({ top: resultsCard.offsetTop - 40, behavior: 'smooth' });
+    }
 </script>
 
 </body>
