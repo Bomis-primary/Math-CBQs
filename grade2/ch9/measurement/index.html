@@ -1,1 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CBQ - Measurements</title>
 
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:Arial}
+
+body{
+  background:#f4f7ff;
+  color:#1f2937;
+}
+
+/* SPLASH */
+#splash{
+  position:fixed;
+  inset:0;
+  background:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  z-index:10;
+}
+
+#splash img{
+  width:300px;
+}
+
+/* SCREEN */
+.screen{
+  display:none;
+  min-height:100vh;
+  padding:16px;
+}
+
+.screen.active{
+  display:block;
+}
+
+.card{
+  max-width:900px;
+  margin:auto;
+  background:#fff;
+  padding:20px;
+  border-radius:20px;
+  box-shadow:0 10px 25px rgba(0,0,0,0.1);
+}
+
+/* TOP */
+.top{
+  display:grid;
+  grid-template-columns:1fr 1fr 1fr;
+  gap:10px;
+  margin-bottom:15px;
+  text-align:center;
+  font-weight:bold;
+}
+
+.box{
+  background:#e8f0ff;
+  padding:10px;
+  border-radius:12px;
+}
+
+/* QUESTION */
+.question{
+  font-size:20px;
+  font-weight:bold;
+  margin:15px 0;
+}
+
+/* OPTIONS */
+.options{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+}
+
+.btn{
+  padding:14px;
+  border-radius:12px;
+  border:2px solid #1f4e79;
+  background:#fff;
+  font-size:16px;
+  cursor:pointer;
+  min-height:60px;
+}
+
+.btn:hover{background:#eef5ff}
+
+.correct{background:#c8f7d5 !important}
+.wrong{background:#ffd6d6 !important}
+
+/* NEXT */
+.next{
+  margin-top:15px;
+  padding:12px 20px;
+  background:#1f4e79;
+  color:#fff;
+  border:none;
+  border-radius:10px;
+  cursor:pointer;
+}
+
+/* RESULT */
+.result{
+  text-align:center;
+  font-size:22px;
+  font-weight:bold;
+}
+</style>
+</head>
+
+<body>
+
+<!-- SPLASH -->
+<div id="splash">
+  <img src="assets/innovine-logo.png">
+</div>
+
+<!-- GAME -->
+<div id="game" class="screen active">
+  <div class="card">
+
+    <div class="top">
+      <div class="box">Q: <span id="qno">1</span>/18</div>
+      <div class="box">Score: <span id="score">0</span></div>
+      <div class="box">Time: <span id="time">60</span></div>
+    </div>
+
+    <div class="question" id="question"></div>
+    <div class="options" id="options"></div>
+
+    <button class="next" onclick="nextQ()" id="nextBtn">Next</button>
+
+  </div>
+</div>
+
+<!-- RESULT -->
+<div id="result" class="screen">
+  <div class="card result" id="resultText"></div>
+</div>
+
+<audio id="correct" src="assets/correct.mp3"></audio>
+<audio id="wrong" src="assets/wrong.mp3"></audio>
+
+<script>
+
+/* SPLASH */
+setTimeout(()=>{
+  document.getElementById("splash").style.display="none";
+},5000);
+
+/* QUESTIONS */
+const questions=[
+{
+q:"12 cm pencil vs 10 cm crayon?",
+a:["Yes","No","Equal","Crayon longer"],
+c:0
+},
+{
+q:"Which measures length?",
+a:["Scale","Ruler","Cup","Spoon"],
+c:1
+},
+{
+q:"Weight measured using ruler?",
+a:["Correct","Wrong","Same","Unknown"],
+c:1
+},
+{
+q:"15 cm ribbon vs need 12 cm?",
+a:["Longer","Shorter","Exact","Less"],
+c:0
+},
+{
+q:"Which is heavier?",
+a:["Book","Pencil","Same","Pencil"],
+c:0
+},
+{
+q:"2 kg vs 1 kg bag?",
+a:["First heavier","Second","Same","Both 1kg"],
+c:0
+},
+{
+q:"1 kg > 2 kg?",
+a:["Wrong","Correct","Equal","True"],
+c:0
+},
+{
+q:"A=2kg, B=1kg lighter?",
+a:["A","B","Same","A lighter"],
+c:1
+},
+{
+q:"Which holds more water?",
+a:["Cup","Jug","Same","Bottle"],
+c:1
+},
+{
+q:"NOT weight tool?",
+a:["Ruler","Scale","Balance","Weights"],
+c:0
+},
+{
+q:"Cup vs jug?",
+a:["Cup","Jug","Same","Cup more"],
+c:1
+},
+{
+q:"Stone vs feather?",
+a:["Stone","Feather","Same","Feather"],
+c:0
+},
+{
+q:"3L - 1L - 1L = ?",
+a:["1L","2L","0L","3L"],
+c:0
+},
+{
+q:"5L bucket, 2L used > half left?",
+a:["Yes","No","Half","Less"],
+c:0
+},
+{
+q:"Is 3L left?",
+a:["Yes","No","More","Less"],
+c:0
+},
+{
+q:"20cm - 5cm - 5cm > 10cm?",
+a:["Yes","No","15cm","5cm"],
+c:1
+},
+{
+q:"4L + 6L = ?",
+a:["10L","8L","12L","14L"],
+c:0
+}
+];
+
+let i=0,score=0,time=60,attempt=0,lock=false;
+
+function load(){
+  let q=questions[i];
+  document.getElementById("qno").innerText=i+1;
+  document.getElementById("question").innerText=q.q;
+
+  let html="";
+  q.a.forEach((o,idx)=>{
+    html+=`<button class="btn" onclick="check(this,${idx})">${o}</button>`;
+  });
+
+  document.getElementById("options").innerHTML=html;
+  document.getElementById("nextBtn").style.display="none";
+
+  attempt=0;
+  lock=false;
+}
+
+function check(btn,ans){
+  if(lock) return;
+
+  if(ans==questions[i].c){
+    btn.classList.add("correct");
+    document.getElementById("correct").play();
+    score++;
+    document.getElementById("score").innerText=score;
+    lock=true;
+    document.getElementById("nextBtn").style.display="inline-block";
+  } else {
+    attempt++;
+    btn.classList.add("wrong");
+    document.getElementById("wrong").play();
+
+    if(attempt>=2){
+      lock=true;
+      document.getElementById("nextBtn").style.display="inline-block";
+    }
+  }
+}
+
+function nextQ(){
+  i++;
+  if(i<questions.length){
+    load();
+  } else {
+    show();
+  }
+}
+
+function show(){
+  document.getElementById("game").style.display="none";
+  document.getElementById("result").style.display="block";
+
+  let percent=(score/questions.length)*100;
+
+  let msg="";
+  if(percent>=75) msg="Good job 🎉";
+  else if(percent>=40) msg="Review this chapter 🙂";
+  else msg="Let’s practise more 📘";
+
+  document.getElementById("resultText").innerText =
+    `${msg}\nScore: ${score}/${questions.length}`;
+}
+
+setInterval(()=>{
+  if(time>0){
+    time--;
+    document.getElementById("time").innerText=time;
+  } else {
+    show();
+  }
+},1000);
+
+load();
+
+</script>
+
+</body>
+</html>
