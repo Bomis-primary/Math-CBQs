@@ -1,1 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CBQ - Division</title>
 
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:Arial}
+
+body{
+  background:#f4f7ff;
+  color:#1f2937;
+}
+
+/* SPLASH */
+#splash{
+  position:fixed;
+  inset:0;
+  background:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  z-index:10;
+}
+
+#splash img{
+  width:300px;
+}
+
+/* SCREEN */
+.screen{
+  display:none;
+  min-height:100vh;
+  padding:16px;
+}
+
+.screen.active{
+  display:block;
+}
+
+.card{
+  max-width:900px;
+  margin:auto;
+  background:#fff;
+  padding:20px;
+  border-radius:20px;
+  box-shadow:0 10px 25px rgba(0,0,0,0.1);
+}
+
+/* TOP */
+.top{
+  display:grid;
+  grid-template-columns:1fr 1fr 1fr;
+  gap:10px;
+  margin-bottom:15px;
+  text-align:center;
+  font-weight:bold;
+}
+
+.box{
+  background:#e8f0ff;
+  padding:10px;
+  border-radius:12px;
+}
+
+/* QUESTION */
+.question{
+  font-size:20px;
+  font-weight:bold;
+  margin:15px 0;
+}
+
+/* OPTIONS */
+.options{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+}
+
+.btn{
+  padding:14px;
+  border-radius:12px;
+  border:2px solid #1f4e79;
+  background:#fff;
+  font-size:16px;
+  cursor:pointer;
+  min-height:60px;
+}
+
+.btn:hover{background:#eef5ff}
+
+.correct{background:#c8f7d5 !important}
+.wrong{background:#ffd6d6 !important}
+
+/* NEXT */
+.next{
+  margin-top:15px;
+  padding:12px 20px;
+  background:#1f4e79;
+  color:#fff;
+  border:none;
+  border-radius:10px;
+  cursor:pointer;
+}
+
+/* RESULT */
+.result{
+  text-align:center;
+  font-size:22px;
+  font-weight:bold;
+}
+</style>
+</head>
+
+<body>
+
+<!-- SPLASH -->
+<div id="splash">
+  <img src="assets/innovine-logo.png">
+</div>
+
+<!-- GAME -->
+<div id="game" class="screen active">
+  <div class="card">
+
+    <div class="top">
+      <div class="box">Q: <span id="qno">1</span>/18</div>
+      <div class="box">Score: <span id="score">0</span></div>
+      <div class="box">Time: <span id="time">60</span></div>
+    </div>
+
+    <div class="question" id="question"></div>
+    <div class="options" id="options"></div>
+
+    <button class="next" onclick="nextQ()" id="nextBtn">Next</button>
+
+  </div>
+</div>
+
+<!-- RESULT -->
+<div id="result" class="screen">
+  <div class="card result" id="resultText"></div>
+</div>
+
+<audio id="correct" src="assets/correct.mp3"></audio>
+<audio id="wrong" src="assets/wrong.mp3"></audio>
+
+<script>
+
+/* SPLASH */
+setTimeout(()=>{
+  document.getElementById("splash").style.display="none";
+},5000);
+
+/* QUESTIONS */
+const questions=[
+{
+q:"20 pencils shared among 4 students. Enough?",
+a:["Yes, more","Yes, exactly","No","Each gets 4"],
+c:0
+},
+{
+q:"Which shows division?",
+a:["5+5+5","15 ÷ 3","3×5","5+3"],
+c:1
+},
+{
+q:"12 ÷ 3 = 5. Mistake?",
+a:["Wrong fact","Correct","Too small","No error"],
+c:0
+},
+{
+q:"24 biscuits ÷ 6 children?",
+a:["Enough","Not enough","Exactly 4","Each gets 4"],
+c:0
+},
+{
+q:"Which is equal sharing?",
+a:["10÷2","10+2","10×2","10-2"],
+c:0
+},
+{
+q:"18 chocolates ÷ 3 = ?",
+a:["6","5","7","4"],
+c:0
+},
+{
+q:"15 ÷ 5 means?",
+a:["5+5","15 groups","Equal sharing","15×5"],
+c:2
+},
+{
+q:"4 children × 3 fruits each?",
+a:["12","10","8","14"],
+c:0
+},
+{
+q:"Which division is correct?",
+a:["12÷4","4÷12","12+4","4×12"],
+c:0
+},
+{
+q:"30 candies ÷ 5 children?",
+a:["Enough","Not enough","Exactly 5","Each gets 5"],
+c:0
+},
+{
+q:"Which is NOT division?",
+a:["12÷3","15÷5","20÷4","3×4"],
+c:3
+},
+{
+q:"12 balls ÷ 3 groups?",
+a:["4","3","5","6"],
+c:0
+},
+{
+q:"15 apples ÷ 5 baskets?",
+a:["3","2","5","4"],
+c:0
+},
+{
+q:"20 pencils ÷ 4 boxes + 2 each?",
+a:["7","6","5","8"],
+c:0
+},
+{
+q:"24 notebooks ÷ 6 students?",
+a:["4","3","5","6"],
+c:0
+},
+{
+q:"At least 5 notebooks each?",
+a:["Yes","No","Exactly 3","4"],
+c:1
+},
+{
+q:"36 chairs ÷ 6 rows − 6 chairs?",
+a:["More than 4","Less than 4","Exactly 4","6"],
+c:1
+},
+{
+q:"20 candies shared, 4 kept?",
+a:["Each gets 5","Less","More","4 each"],
+c:0
+}
+];
+
+let i=0,score=0,time=60,attempt=0,lock=false;
+
+function load(){
+  let q=questions[i];
+  document.getElementById("qno").innerText=i+1;
+  document.getElementById("question").innerText=q.q;
+
+  let html="";
+  q.a.forEach((o,idx)=>{
+    html+=`<button class="btn" onclick="check(this,${idx})">${o}</button>`;
+  });
+
+  document.getElementById("options").innerHTML=html;
+  document.getElementById("nextBtn").style.display="none";
+
+  attempt=0;
+  lock=false;
+}
+
+function check(btn,ans){
+  if(lock) return;
+
+  if(ans==questions[i].c){
+    btn.classList.add("correct");
+    document.getElementById("correct").play();
+    score++;
+    document.getElementById("score").innerText=score;
+    lock=true;
+    document.getElementById("nextBtn").style.display="inline-block";
+  } else {
+    attempt++;
+    btn.classList.add("wrong");
+    document.getElementById("wrong").play();
+
+    if(attempt>=2){
+      lock=true;
+      document.getElementById("nextBtn").style.display="inline-block";
+    }
+  }
+}
+
+function nextQ(){
+  i++;
+  if(i<questions.length){
+    load();
+  } else {
+    show();
+  }
+}
+
+function show(){
+  document.getElementById("game").style.display="none";
+  document.getElementById("result").style.display="block";
+
+  let percent=(score/questions.length)*100;
+
+  let msg="";
+  if(percent>=75) msg="Good job 🎉";
+  else if(percent>=40) msg="Review this chapter 🙂";
+  else msg="Let’s practise more 📘";
+
+  document.getElementById("resultText").innerText =
+    `${msg}\nScore: ${score}/${questions.length}`;
+}
+
+setInterval(()=>{
+  if(time>0){
+    time--;
+    document.getElementById("time").innerText=time;
+  } else {
+    show();
+  }
+},1000);
+
+load();
+
+</script>
+
+</body>
+</html>
