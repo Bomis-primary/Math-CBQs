@@ -1,1 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CBQ - Multiplication</title>
 
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:Arial}
+
+body{
+  background:#f4f7ff;
+  color:#1f2937;
+}
+
+/* SPLASH */
+#splash{
+  position:fixed;
+  inset:0;
+  background:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  z-index:10;
+}
+
+#splash img{
+  width:300px;
+}
+
+/* SCREEN */
+.screen{
+  display:none;
+  min-height:100vh;
+  padding:16px;
+}
+
+.screen.active{
+  display:block;
+}
+
+.card{
+  max-width:900px;
+  margin:auto;
+  background:#fff;
+  padding:20px;
+  border-radius:20px;
+  box-shadow:0 10px 25px rgba(0,0,0,0.1);
+}
+
+/* TOP */
+.top{
+  display:grid;
+  grid-template-columns:1fr 1fr 1fr;
+  gap:10px;
+  margin-bottom:15px;
+  text-align:center;
+  font-weight:bold;
+}
+
+.box{
+  background:#e8f0ff;
+  padding:10px;
+  border-radius:12px;
+}
+
+/* QUESTION */
+.question{
+  font-size:20px;
+  font-weight:bold;
+  margin:15px 0;
+}
+
+/* OPTIONS */
+.options{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+}
+
+.btn{
+  padding:14px;
+  border-radius:12px;
+  border:2px solid #1f4e79;
+  background:#fff;
+  font-size:16px;
+  cursor:pointer;
+  min-height:60px;
+}
+
+.btn:hover{background:#eef5ff}
+
+.correct{background:#c8f7d5 !important}
+.wrong{background:#ffd6d6 !important}
+
+/* NEXT */
+.next{
+  margin-top:15px;
+  padding:12px 20px;
+  background:#1f4e79;
+  color:#fff;
+  border:none;
+  border-radius:10px;
+  cursor:pointer;
+}
+
+/* RESULT */
+.result{
+  text-align:center;
+  font-size:22px;
+  font-weight:bold;
+}
+</style>
+</head>
+
+<body>
+
+<!-- SPLASH -->
+<div id="splash">
+  <img src="assets/innovine-logo.png">
+</div>
+
+<!-- GAME -->
+<div id="game" class="screen active">
+  <div class="card">
+
+    <div class="top">
+      <div class="box">Q: <span id="qno">1</span>/18</div>
+      <div class="box">Score: <span id="score">0</span></div>
+      <div class="box">Time: <span id="time">60</span></div>
+    </div>
+
+    <div class="question" id="question"></div>
+    <div class="options" id="options"></div>
+
+    <button class="next" onclick="nextQ()" id="nextBtn">Next</button>
+
+  </div>
+</div>
+
+<!-- RESULT -->
+<div id="result" class="screen">
+  <div class="card result" id="resultText"></div>
+</div>
+
+<audio id="correct" src="assets/correct.mp3"></audio>
+<audio id="wrong" src="assets/wrong.mp3"></audio>
+
+<script>
+
+/* SPLASH */
+setTimeout(()=>{
+  document.getElementById("splash").style.display="none";
+},5000);
+
+/* QUESTIONS */
+const questions=[
+{
+q:"4 rows with 5 chairs each. Do they have enough chairs for 18 students?",
+a:["Yes, more than needed","Yes, exactly 18","No, less than needed","Exactly 20"],
+c:0
+},
+{
+q:"Which shows 3 x 6?",
+a:["6+6+6","3+3+3+3+3+3","6+3","6+6"],
+c:0
+},
+{
+q:"4 x 5 = 25. What is mistake?",
+a:["Used addition","Fact incorrect","Extra group","No mistake"],
+c:1
+},
+{
+q:"7 baskets × 3 apples. Enough for 20 apples?",
+a:["Yes, more","Yes, exactly","No, less","Exactly 21"],
+c:0
+},
+{
+q:"Which shows equal groups?",
+a:["2+3+4","5+5+5","6+7","3+4+5"],
+c:1
+},
+{
+q:"8 pencils in 3 boxes = ?",
+a:["24","23","25","20"],
+c:0
+},
+{
+q:"3 groups of 4 means?",
+a:["3+4","4+4+4","3×4","Both b and c"],
+c:3
+},
+{
+q:"5+5+5 = ?",
+a:["15","10","20","25"],
+c:0
+},
+{
+q:"3×5 or 5×3 correct?",
+a:["3×5","5×3","Both","None"],
+c:2
+},
+{
+q:"6 plates × 4 biscuits. More than 20?",
+a:["Yes","No","Exactly 20","Exactly 24"],
+c:0
+},
+{
+q:"Which does NOT equal 12?",
+a:["3×4","4+4+4","2×6","5+5+5"],
+c:3
+},
+{
+q:"3 rows of 4 stars = ?",
+a:["3×4","4×3","Both","3+4"],
+c:2
+},
+{
+q:"5 baskets × 2 oranges = ?",
+a:["10","12","8","15"],
+c:0
+},
+{
+q:"4 packets × 5 pencils + 4 pencils = ?",
+a:["24","20","25","30"],
+c:0
+},
+{
+q:"4 rows × 6 plants. More than 20?",
+a:["Yes","No","Exactly 20","24 but not more"],
+c:0
+},
+{
+q:"At least 25 plants, 24 available?",
+a:["Yes","No","Enough","Exactly"],
+c:1
+},
+{
+q:"5 rows × 7 chairs − 5 chairs = ?",
+a:["30","35","40","25"],
+c:0
+},
+{
+q:"3×8 + 2×5 = ?",
+a:["34","30","32","36"],
+c:0
+}
+];
+
+let i=0,score=0,time=60,attempt=0,lock=false;
+
+function load(){
+  let q=questions[i];
+  document.getElementById("qno").innerText=i+1;
+  document.getElementById("question").innerText=q.q;
+
+  let html="";
+  q.a.forEach((o,idx)=>{
+    html+=`<button class="btn" onclick="check(this,${idx})">${o}</button>`;
+  });
+
+  document.getElementById("options").innerHTML=html;
+  document.getElementById("nextBtn").style.display="none";
+
+  attempt=0;
+  lock=false;
+}
+
+function check(btn,ans){
+  if(lock) return;
+
+  if(ans==questions[i].c){
+    btn.classList.add("correct");
+    document.getElementById("correct").play();
+    score++;
+    document.getElementById("score").innerText=score;
+    lock=true;
+    document.getElementById("nextBtn").style.display="inline-block";
+  } else {
+    attempt++;
+    btn.classList.add("wrong");
+    document.getElementById("wrong").play();
+
+    if(attempt>=2){
+      lock=true;
+      document.getElementById("nextBtn").style.display="inline-block";
+    }
+  }
+}
+
+function nextQ(){
+  i++;
+  if(i<questions.length){
+    load();
+  } else {
+    show();
+  }
+}
+
+function show(){
+  document.getElementById("game").style.display="none";
+  document.getElementById("result").style.display="block";
+
+  let percent=(score/questions.length)*100;
+
+  let msg="";
+  if(percent>=75) msg="Good job 🎉";
+  else if(percent>=40) msg="Review this chapter 🙂";
+  else msg="Let’s practise more 📘";
+
+  document.getElementById("resultText").innerText =
+    `${msg}\nScore: ${score}/${questions.length}`;
+}
+
+setInterval(()=>{
+  if(time>0){
+    time--;
+    document.getElementById("time").innerText=time;
+  } else {
+    show();
+  }
+},1000);
+
+load();
+
+</script>
+
+</body>
+</html>
