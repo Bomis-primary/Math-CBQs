@@ -1,1 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CBQ - Number System up to 9999</title>
 
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:Arial}
+
+body{
+  background:#f5f7ff;
+  color:#1f2937;
+}
+
+/* SPLASH */
+#splash{
+  position:fixed;
+  inset:0;
+  background:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  z-index:10;
+}
+
+#splash img{width:320px}
+
+/* SCREEN */
+.screen{display:none;min-height:100vh;padding:16px}
+.screen.active{display:block}
+
+.card{
+  max-width:900px;
+  margin:auto;
+  background:#fff;
+  padding:20px;
+  border-radius:20px;
+  box-shadow:0 10px 25px rgba(0,0,0,0.1);
+}
+
+/* TOP */
+.top{
+  display:grid;
+  grid-template-columns:1fr 1fr 1fr;
+  gap:10px;
+  text-align:center;
+  font-weight:bold;
+  margin-bottom:15px;
+}
+
+.box{
+  background:#e8f0ff;
+  padding:10px;
+  border-radius:12px;
+}
+
+/* VISUAL */
+.visual{
+  background:#fff7ed;
+  border-radius:16px;
+  padding:18px;
+  text-align:center;
+  font-size:26px;
+  margin-bottom:12px;
+  line-height:1.6;
+  border:2px dashed #fdba74;
+}
+
+.question{
+  font-size:18px;
+  font-weight:bold;
+  margin:10px 0 15px;
+}
+
+/* OPTIONS */
+.options{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+}
+
+.btn{
+  padding:14px;
+  border-radius:12px;
+  border:2px solid #1f4e79;
+  background:#fff;
+  font-size:16px;
+  min-height:60px;
+  cursor:pointer;
+}
+
+.btn:hover{background:#eef5ff}
+
+.correct{background:#c8f7d5 !important}
+.wrong{background:#ffd6d6 !important}
+
+/* NEXT */
+.next{
+  margin-top:15px;
+  padding:12px 20px;
+  background:#1f4e79;
+  color:#fff;
+  border:none;
+  border-radius:10px;
+}
+
+/* RESULT */
+.result{
+  text-align:center;
+  font-size:22px;
+  font-weight:bold;
+}
+</style>
+</head>
+
+<body>
+
+<!-- SPLASH -->
+<div id="splash">
+  <img src="assets/innovine-logo.png">
+</div>
+
+<!-- GAME -->
+<div id="game" class="screen active">
+  <div class="card">
+
+    <div class="top">
+      <div class="box">Q: <span id="qno">1</span>/10</div>
+      <div class="box">Score: <span id="score">0</span></div>
+      <div class="box">Time: <span id="time">60</span></div>
+    </div>
+
+    <div id="visual" class="visual"></div>
+
+    <div class="question" id="question"></div>
+
+    <div class="options" id="options"></div>
+
+    <button class="next" onclick="nextQ()" id="nextBtn">Next</button>
+
+  </div>
+</div>
+
+<!-- RESULT -->
+<div id="result" class="screen">
+  <div class="card result" id="resultText"></div>
+</div>
+
+<audio id="correct" src="assets/correct.mp3"></audio>
+<audio id="wrong" src="assets/wrong.mp3"></audio>
+
+<script>
+
+/* SPLASH */
+setTimeout(()=>{
+  document.getElementById("splash").style.display="none";
+},5000);
+
+/* PICTORIAL QUESTIONS */
+const questions=[
+{
+visual:"🟦🟦🟦🟦  🟩🟩🟩  ⚪⚪⚪",
+q:"What number is shown?",
+a:["343","433","334","443"],
+c:0
+},
+{
+visual:"🏦 7 Hundreds | 2 Tens | 5 Ones",
+q:"Identify the number",
+a:["725","752","275","572"],
+c:0
+},
+{
+visual:"📦 900 + 80 + 4",
+q:"Which number is this?",
+a:["984","948","894","849"],
+c:0
+},
+{
+visual:"🔢 3H 9T 1O",
+q:"What number is represented?",
+a:["391","319","931","139"],
+c:0
+},
+{
+visual:"⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛ (10 tens) + 4 ones",
+q:"Find number",
+a:["104","114","1004","140"],
+c:3
+},
+{
+visual:"🧮 4 hundreds + 0 tens + 9 ones",
+q:"Number is:",
+a:["409","490","940","904"],
+c:0
+},
+{
+visual:"📊 1 thousand + 2 hundreds + 3 tens + 4 ones",
+q:"Find number",
+a:["1234","1324","1243","1423"],
+c:0
+},
+{
+visual:"🏷️ 800 + 60 + 7",
+q:"What number is shown?",
+a:["867","876","786","768"],
+c:0
+},
+{
+visual:"🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵 (1000 group) + 2 hundreds",
+q:"Number is:",
+a:["1200","1002","1020","2000"],
+c:0
+},
+{
+visual:"🧱 6H 4T 2O",
+q:"Choose correct number",
+a:["642","624","462","426"],
+c:0
+}
+];
+
+let i=0,score=0,time=60,attempt=0,lock=false;
+
+/* LOAD */
+function load(){
+  let q=questions[i];
+
+  document.getElementById("qno").innerText=i+1;
+  document.getElementById("visual").innerText=q.visual;
+  document.getElementById("question").innerText=q.q;
+
+  let html="";
+  q.a.forEach((o,idx)=>{
+    html+=`<button class="btn" onclick="check(this,${idx})">${o}</button>`;
+  });
+
+  document.getElementById("options").innerHTML=html;
+  document.getElementById("nextBtn").style.display="none";
+
+  attempt=0;
+  lock=false;
+}
+
+/* CHECK */
+function check(btn,ans){
+  if(lock) return;
+
+  if(ans==questions[i].c){
+    btn.classList.add("correct");
+    document.getElementById("correct").play();
+    score++;
+    document.getElementById("score").innerText=score;
+    lock=true;
+    document.getElementById("nextBtn").style.display="inline-block";
+  } else {
+    attempt++;
+    btn.classList.add("wrong");
+    document.getElementById("wrong").play();
+
+    if(attempt>=2){
+      lock=true;
+      document.getElementById("nextBtn").style.display="inline-block";
+    }
+  }
+}
+
+/* NEXT */
+function nextQ(){
+  i++;
+  if(i<questions.length){
+    load();
+  } else {
+    show();
+  }
+}
+
+/* RESULT */
+function show(){
+  document.getElementById("game").style.display="none";
+  document.getElementById("result").style.display="block";
+
+  let percent=(score/questions.length)*100;
+
+  let msg="";
+  if(percent>=75) msg="Good job 🎉";
+  else if(percent>=40) msg="Review this chapter 🙂";
+  else msg="Let’s practise more 📘";
+
+  document.getElementById("resultText").innerText =
+    `${msg}\nScore: ${score}/${questions.length}`;
+}
+
+/* TIMER */
+setInterval(()=>{
+  if(time>0){
+    time--;
+    document.getElementById("time").innerText=time;
+  } else {
+    show();
+  }
+},1000);
+
+load();
+
+</script>
+
+</body>
+</html>
