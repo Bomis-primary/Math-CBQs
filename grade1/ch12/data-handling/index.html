@@ -1,1 +1,663 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grade 1 Maths: Fun Data Explorer</title>
+    <style>
+        :root {
+            --primary: #db2777;
+            --secondary: #fbcfe8;
+            --success: #16a34a;
+            --danger: #dc2626;
+            --warning: #ea580c;
+            --background: #fff1f2;
+            --surface: #ffffff;
+            --text: #4c0519;
+        }
 
+        * {
+            box-shadow: none;
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Comic Sans MS', "Chalkboard SE", "Segoe UI", sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--background);
+            color: var(--text);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 12px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 600px;
+            background: var(--surface);
+            border-radius: 24px;
+            box-shadow: 0 8px 24px rgba(219, 39, 119, 0.1);
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+            border: 4px solid var(--secondary);
+        }
+
+        /* 5-Second Splash Screen */
+        #splash-screen {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: #ffffff;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease;
+        }
+
+        .logo-placeholder {
+            max-width: 180px;
+            height: auto;
+            margin-bottom: 20px;
+        }
+
+        /* Display Engine Screens */
+        .screen { display: none; }
+        .screen.active { display: block; }
+
+        h1, h2 {
+            color: var(--primary);
+            text-align: center;
+            margin-bottom: 12px;
+            font-size: 1.8rem;
+        }
+
+        p.description {
+            text-align: center;
+            color: #4b5563;
+            margin-bottom: 20px;
+            line-height: 1.5;
+            font-size: 1.1rem;
+        }
+
+        /* Game HUD Layout */
+        .hud {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #ffe4e6;
+            padding: 10px 14px;
+            border-radius: 16px;
+            margin-bottom: 16px;
+            font-weight: bold;
+            font-size: 1rem;
+            border: 2px dashed var(--primary);
+        }
+
+        .timer-box {
+            color: var(--danger);
+        }
+
+        /* Question Box Styling */
+        .question-text {
+            font-size: 1.2rem;
+            font-weight: bold;
+            line-height: 1.6;
+            margin-bottom: 16px;
+            white-space: pre-line;
+            background: #fff5f5;
+            padding: 14px;
+            border-radius: 12px;
+            border-left: 6px solid var(--primary);
+        }
+
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+
+        .option-btn {
+            background: var(--surface);
+            border: 3px solid #e5e7eb;
+            border-radius: 16px;
+            padding: 14px;
+            text-align: left;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-weight: bold;
+            width: 100%;
+            color: #374151;
+        }
+
+        .option-btn:hover:not(:disabled) {
+            border-color: var(--primary);
+            background: #fff1f2;
+        }
+
+        .option-btn.correct {
+            background-color: #dcfce7 !important;
+            border-color: var(--success) !important;
+            color: #14532d;
+        }
+
+        .option-btn.wrong {
+            background-color: #fee2e2 !important;
+            border-color: var(--danger) !important;
+            color: #7f1d1d;
+        }
+
+        /* Grade 1 Context Boxes */
+        .feedback-box {
+            border-radius: 14px;
+            padding: 14px;
+            margin-top: 12px;
+            font-weight: bold;
+            display: none;
+            line-height: 1.4;
+            font-size: 1rem;
+        }
+
+        .feedback-box.hint {
+            background-color: #fff7ed;
+            border: 2px solid var(--warning);
+            color: #7c2d12;
+        }
+
+        .feedback-box.explanation {
+            background-color: #f0fdf4;
+            border: 2px solid var(--success);
+            color: #166534;
+        }
+
+        /* Next Navigation Action */
+        .action-btn {
+            display: block;
+            width: 100%;
+            background: var(--primary);
+            color: #fff;
+            border: none;
+            border-radius: 16px;
+            padding: 14px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            text-align: center;
+            margin-top: 16px;
+            box-shadow: 0 4px 10px rgba(219, 39, 119, 0.2);
+        }
+
+        .action-btn:hover {
+            background: #be185d;
+        }
+
+        .score-circle {
+            width: 110px;
+            height: 110px;
+            border-radius: 50%;
+            background: #ffe4e6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 2rem;
+            font-weight: bold;
+            margin: 16px auto;
+            color: var(--primary);
+            border: 4px solid var(--primary);
+        }
+
+        #particle-canvas {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        @media (max-width: 480px) {
+            .container { padding: 14px; }
+            .question-text { font-size: 1.1rem; }
+            .option-btn { padding: 12px; font-size: 1rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="particle-canvas"></canvas>
+
+    <div id="splash-screen">
+        <img src="grade-1/subject/chapter-12/assets/logo.png" alt="Innovine Logo" class="logo-placeholder" onerror="this.style.display='none'; document.getElementById('logo-text').style.display='block';">
+        <h2 id="logo-text" style="display:none; color: var(--primary);">Innovine</h2>
+    </div>
+
+    <audio id="audio-correct" src="grade-1/subject/chapter-12/assets/correct.mp3" preload="auto"></audio>
+    <audio id="audio-wrong" src="grade-1/subject/chapter-12/assets/wrong.mp3" preload="auto"></audio>
+
+    <div class="container">
+        
+        <div id="welcome-screen" class="screen active">
+            <h1>Fun Data Handling!</h1>
+            <p class="description">Welcome little explorer! Let's play an exciting game by sorting beautiful shapes, counting toys, and reading picture charts!</p>
+            <button class="action-btn" onclick="startInteractive()">Start Playing</button>
+        </div>
+
+        <div id="game-screen" class="screen">
+            <div class="hud">
+                <div id="progress-text">Game: 1/12</div>
+                <div id="score-text">Stars: 0 ⭐</div>
+                <div class="timer-box">⏱️ <span id="timer-counter">60</span>s</div>
+            </div>
+
+            <div id="question-box">
+                <div class="question-text" id="target-question">Loading fun math games...</div>
+                <div class="options-container" id="target-options"></div>
+            </div>
+
+            <div id="hint-feedback" class="feedback-box hint"></div>
+            <div id="explain-feedback" class="feedback-box explanation"></div>
+
+            <button id="next-btn" class="action-btn" style="display: none;" onclick="advanceQuestion()">Next Game ➔</button>
+        </div>
+
+        <div id="result-screen" class="screen">
+            <h2>You Did It! 🎉</h2>
+            <div class="score-circle" id="final-score-value">0/12</div>
+            <p class="description" id="final-status-msg">Gathering your shiny stars...</p>
+            <button class="action-btn" onclick="resetInteractive()">Play Again! 🔄</button>
+        </div>
+
+    </div>
+
+    <script>
+        const questionBank = [
+            {
+                type: "Sorting by Type",
+                question: "Look at the animals on the field:\n🐈 Cat, 🐕 Dog, 🐈 Cat, 🐕 Dog, 🐕 Dog\n\nHow many Dogs are there in total when you sort them?",
+                options: [
+                    "2 Dogs",
+                    "3 Dogs",
+                    "5 Dogs",
+                    "4 Dogs"
+                ],
+                answer: 1,
+                hint: "Count only the friendly puppies (🐕) that you see in the list!",
+                explanation: "When we sort the group, we count 2 Cats and 3 Dogs. So there are 3 Dogs!"
+            },
+            {
+                type: "Sorting by Color",
+                question: "Tina has a toy basket with these blocks:\n🔴 Red, 🔵 Blue, 🔴 Red, 🔴 Red, 🔵 Blue\n\nHow many Red blocks does Tina have?",
+                options: [
+                    "2 Red blocks",
+                    "3 Red blocks",
+                    "5 Red blocks",
+                    "1 Red block"
+                ],
+                answer: 1,
+                hint: "Count only the round red circles (🔴) one by one.",
+                explanation: "Sorting them gives 3 Red blocks and 2 Blue blocks. The answer is 3!"
+            },
+            {
+                type: "Sorting by Shape",
+                question: "Look at the stickers on the paper:\n🔺 Triangle, 🟡 Circle, 🔺 Triangle, 🟡 Circle, 🟡 Circle\n\nWhich shape group has MORE items?",
+                options: [
+                    "🔺 Triangle has more",
+                    "🟡 Circle has more",
+                    "Both are exactly the same",
+                    "None have any items"
+                ],
+                answer: 1,
+                hint: "Count the Triangles, then count the Circles. Which number is bigger?",
+                explanation: "There are 2 Triangles and 3 Circles. Since 3 is bigger than 2, Circle has more!"
+            },
+            {
+                type: "Reading a Pictograph",
+                question: "A picture chart shows favorite fruits of kids:\n🍎 Apple: 🍎 🍎 🍎\n🍌 Banana: 🍌 🍌\n\n(Each picture = 1 child)\nHow many children love Apples best?",
+                options: [
+                    "2 children",
+                    "3 children",
+                    "5 children",
+                    "1 child"
+                ],
+                answer: 1,
+                hint: "Point and count the apple pictures (🍎) in that row.",
+                explanation: "There are exactly 3 apple pictures in the row, which means 3 children chose apples."
+            },
+            {
+                type: "Comparing Pictograph Rows",
+                question: "Let's read this flower chart:\n🌹 Red Rose: 🌹 🌹 🌹 🌹\n🌻 Sunflower: 🌻 🌻 🌻 🌻 🌻\n\nWhich flower row has FEWER (less) pictures?",
+                options: [
+                    "Red Rose has fewer",
+                    "Sunflower has fewer",
+                    "Both rows are the same",
+                    "There are no flowers"
+                ],
+                answer: 0,
+                hint: "Fewer means the smaller group. Which row looks shorter?",
+                explanation: "Red Rose has 4 pictures and Sunflower has 5 pictures. 4 is less than 5, so Red Rose has fewer!"
+            },
+            {
+                type: "Sorting Big vs Small",
+                question: "A playground has these balls scattered around:\n⚽ Big, 🥎 Small, ⚽ Big, 🥎 Small, 🥎 Small, 🥎 Small\n\nHow many Small balls are there?",
+                options: [
+                    "2 Small balls",
+                    "3 Small balls",
+                    "4 Small balls",
+                    "6 balls"
+                ],
+                answer: 2,
+                hint: "Count only the tiny green tennis balls (🥎) in the playground.",
+                explanation: "There are 2 Big soccer balls and 4 Small tennis balls. The total number of small balls is 4."
+            },
+            {
+                type: "Pictograph Total Math",
+                question: "Look at the pet chart tracking classroom fish tanks:\n🐠 Goldfish: 🐠 🐠\n🦀 Little Crab: 🦀 🦀 🦀\n\nHow many total animals are shown inside this chart?",
+                options: [
+                    "2 animals",
+                    "3 animals",
+                    "5 animals",
+                    "4 animals"
+                ],
+                answer: 2,
+                hint: "Count all the fish and all the crab pictures together!",
+                explanation: "We add 2 goldfish and 3 crabs together: $2 + 3 = 5$ total animals."
+            },
+            {
+                type: "Sorting Sweet Treats",
+                question: "Rohan sorts his candy wrappers:\n🍬 Candy, 🍦 Ice Cream, 🍬 Candy, 🍬 Candy\n\nWhich item was picked the LEAST (smallest count)?",
+                options: [
+                    "🍬 Candy",
+                    "🍦 Ice Cream",
+                    "Both are equal",
+                    "Donut"
+                ],
+                answer: 1,
+                hint: "Look for the treat that appears only once in the list.",
+                explanation: "Candy has 3 items and Ice Cream has only 1 item. 1 is the smallest, so Ice Cream is the least."
+            },
+            {
+                type: "Understanding Chart Meaning",
+                question: "When we draw a picture chart (pictograph) with smiling faces, what does each happy face symbol usually stand for?",
+                options: [
+                    "A real person or object that we counted",
+                    "A funny storybook page",
+                    "A random color scribble",
+                    "A musical instrument score"
+                ],
+                answer: 0,
+                hint: "Think about why we draw fruits or stars on a tracking board.",
+                explanation: "In a pictograph, each picture represents a real thing or amount that we counted during our sorting game."
+            },
+            {
+                type: "Assertion & Reason Logic",
+                question: "Assertion: If we sort 3 green cars and 2 blue cars, we have 5 cars altogether.\nReason: Sorting separates things into groups, but the total number stays the same.",
+                options: [
+                    "Both statements are true and make perfect sense together!",
+                    "The first part is true, but the reason makes no sense.",
+                    "The first part is wrong.",
+                    "Both parts are completely wrong."
+                ],
+                answer: 0,
+                hint: "Does grouping items change how many objects you started with?",
+                explanation: "Both parts are correct. Sorting groups things by a common trait like color, but the absolute total count ($3 + 2 = 5$) remains correct."
+            },
+            {
+                type: "Multi-Step Case Story (Part 1)",
+                question: "Case Story Part 1: Sam visits a park and writes down the vehicles he sees:\n🚗 Cars: 🚗 🚗 🚗 🚗\n🚲 Bicycles: 🚲 🚲\n\nHow many Cars did Sam see in the park?",
+                options: [
+                    "2 Cars",
+                    "4 Cars",
+                    "6 Cars",
+                    "3 Cars"
+                ],
+                answer: 1,
+                hint: "Count the red car pictures (🚗) in the first row of Sam's list.",
+                explanation: "Sam's chart shows exactly 4 car pictures in that row, so he saw 4 cars."
+            },
+            {
+                type: "Multi-Step Case Story (Part 2)",
+                question: "Case Story Part 2: Look at Sam's chart from Part 1 again (4 Cars, 2 Bicycles). How many MORE Cars did Sam see than Bicycles?",
+                options: [
+                    "2 more Cars",
+                    "4 more Cars",
+                    "6 more Cars",
+                    "1 more Car"
+                ],
+                answer: 0,
+                hint: "Take the 4 cars and subtract the 2 bicycles to find out the difference.",
+                explanation: "To find how many more cars there are, calculate: $4 - 2 = 2$. Sam saw 2 more cars than bicycles."
+            }
+        ];
+
+        let currentIndex = 0;
+        let runningScore = 0;
+        let attemptTracker = 0; 
+        let countdownTimer;
+        let activeSeconds = 60;
+
+        window.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                const splash = document.getElementById('splash-screen');
+                splash.style.opacity = '0';
+                setTimeout(() => splash.style.display = 'none', 500);
+            }, 5000); // Strict 5-second brand screen configuration
+        });
+
+        function startInteractive() {
+            document.getElementById('welcome-screen').classList.remove('active');
+            document.getElementById('game-screen').classList.add('active');
+            displayQuestion();
+        }
+
+        function displayQuestion() {
+            clearInterval(countdownTimer);
+            activeSeconds = 60; 
+            attemptTracker = 0;
+            
+            document.getElementById('timer-counter').innerText = activeSeconds;
+            document.getElementById('hint-feedback').style.display = 'none';
+            document.getElementById('explain-feedback').style.display = 'none';
+            document.getElementById('next-btn').style.display = 'none';
+
+            let qData = questionBank[currentIndex];
+            document.getElementById('progress-text').innerText = `Game: ${currentIndex + 1}/${questionBank.length}`;
+            document.getElementById('target-question').innerText = `[${qData.type}]\n${qData.question}`;
+            
+            const optionsBox = document.getElementById('target-options');
+            optionsBox.innerHTML = '';
+
+            qData.options.forEach((optText, index) => {
+                let btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.innerText = optText;
+                btn.setAttribute('onclick', `evaluateSelection(this, ${index})`);
+                optionsBox.appendChild(btn);
+            });
+
+            startTimer();
+        }
+
+        function startTimer() {
+            countdownTimer = setInterval(() => {
+                activeSeconds--;
+                document.getElementById('timer-counter').innerText = activeSeconds;
+                if(activeSeconds <= 0) {
+                    clearInterval(countdownTimer);
+                    lockButtonsOnTimeout();
+                }
+            }, 1000);
+        }
+
+        function lockButtonsOnTimeout() {
+            let qData = questionBank[currentIndex];
+            disableAllOptions();
+            const explBox = document.getElementById('explain-feedback');
+            explBox.innerHTML = `<strong>Time's Up! ⏱️</strong> ${qData.explanation}`;
+            explBox.style.display = 'block';
+            playSound('wrong');
+            document.getElementById('next-btn').style.display = 'block';
+        }
+
+        function evaluateSelection(selectedBtn, chosenIdx) {
+            let qData = questionBank[currentIndex];
+            
+            if (chosenIdx === qData.answer) {
+                clearInterval(countdownTimer);
+                selectedBtn.classList.add('correct');
+                disableAllOptions();
+                
+                if (attemptTracker === 0) {
+                    runningScore++;
+                    document.getElementById('score-text').innerText = `Stars: ${runningScore} ⭐`;
+                }
+                
+                triggerSparkles();
+                playSound('correct');
+                
+                const explBox = document.getElementById('explain-feedback');
+                explBox.innerHTML = `<strong>Yay! Correct! 🎉</strong> ${qData.explanation}`;
+                explBox.style.display = 'block';
+                document.getElementById('next-btn').style.display = 'block';
+
+            } else {
+                attemptTracker++;
+                selectedBtn.classList.add('wrong');
+                selectedBtn.disabled = true;
+                playSound('wrong');
+
+                if (attemptTracker === 1) {
+                    const hintBox = document.getElementById('hint-feedback');
+                    hintBox.innerHTML = `<strong>Clue: 💡</strong> ${qData.hint}`;
+                    hintBox.style.display = 'block';
+                } else {
+                    clearInterval(countdownTimer);
+                    disableAllOptions();
+                    
+                    const optionsList = document.getElementById('target-options').children;
+                    optionsList[qData.answer].classList.add('correct');
+
+                    const hintBox = document.getElementById('hint-feedback');
+                    hintBox.style.display = 'none';
+
+                    const explBox = document.getElementById('explain-feedback');
+                    explBox.innerHTML = `<strong>Let's look! 🌟</strong> ${qData.explanation}`;
+                    explBox.style.display = 'block';
+                    document.getElementById('next-btn').style.display = 'block';
+                }
+            }
+        }
+
+        function disableAllOptions() {
+            const buttons = document.getElementsByClassName('option-btn');
+            for(let btn of buttons) {
+                btn.disabled = true;
+            }
+        }
+
+        function playSound(type) {
+            const audio = document.getElementById(`audio-${type}`);
+            if (audio) {
+                audio.currentTime = 0;
+                audio.play().catch(e => console.log("Sound ready to play!"));
+            }
+        }
+
+        function advanceQuestion() {
+            currentIndex++;
+            if (currentIndex < questionBank.length) {
+                displayQuestion();
+            } else {
+                showFinalResults();
+            }
+        }
+
+        function showFinalResults() {
+            document.getElementById('game-screen').classList.remove('active');
+            document.getElementById('result-screen').classList.add('active');
+            
+            document.getElementById('final-score-value').innerText = `${runningScore}/${questionBank.length}`;
+            
+            let finalPercentage = (runningScore / questionBank.length) * 100;
+            let statusText = "";
+
+            if (finalPercentage >= 75) {
+                statusText = "Wow! You are a Data Handling Superstar! ⭐🎈";
+            } else if (finalPercentage >= 40) {
+                statusText = "Great try! Let's review and play one more time! 🌱";
+            } else {
+                statusText = "Let's practise sorting together and try again! 🤗";
+            }
+            
+            document.getElementById('final-status-msg').innerText = statusText;
+        }
+
+        function resetInteractive() {
+            currentIndex = 0;
+            runningScore = 0;
+            document.getElementById('score-text').innerText = `Stars: 0 ⭐`;
+            document.getElementById('result-screen').classList.remove('active');
+            document.getElementById('welcome-screen').classList.add('active');
+        }
+
+        // Kid-Friendly Bright Pink Sparkle Engine
+        const canvas = document.getElementById('particle-canvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+
+        function resizeCanvas() {
+            canvas.width = canvas.parentElement.clientWidth;
+            canvas.height = canvas.parentElement.clientHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        function triggerSparkles() {
+            resizeCanvas();
+            for (let i = 0; i < 35; i++) {
+                particles.push({
+                    x: canvas.width / 2,
+                    y: canvas.height / 2,
+                    radius: Math.random() * 5 + 3,
+                    color: `hsl(${Math.random() * 30 + 330}, 95%, 65%)`, 
+                    speedX: (Math.random() - 0.5) * 7,
+                    speedY: (Math.random() - 0.5) * 7,
+                    alpha: 1
+                });
+            }
+            renderParticles();
+        }
+
+        function renderParticles() {
+            if (particles.length === 0) return;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            particles.forEach((p, idx) => {
+                p.x += p.speedX;
+                p.y += p.speedY;
+                p.alpha -= 0.025;
+                
+                ctx.save();
+                ctx.globalAlpha = p.alpha;
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                ctx.fillStyle = p.color;
+                ctx.fill();
+                ctx.restore();
+
+                if (p.alpha <= 0) particles.splice(idx, 1);
+            });
+
+            if (particles.length > 0) {
+                requestAnimationFrame(renderParticles);
+            } else {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+            }
+        }
+    </script>
+</body>
+</html>
