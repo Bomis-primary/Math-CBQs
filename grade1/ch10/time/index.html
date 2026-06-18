@@ -319,11 +319,11 @@ body {
 
 <body>
 
-<div id="logoScreen" class="screen active">
+<div id="logoScreen" class="screen">
   <img src="assets/logo.png" alt="Innovine Logo" class="logo" />
 </div>
 
-<div id="quizScreen" class="screen">
+<div id="quizScreen" class="screen active">
   <div class="card">
     <div class="topbar">
       <div class="badge">Question <span id="qNo">1</span>/12</div>
@@ -353,8 +353,8 @@ body {
   </div>
 </div>
 
-<audio id="correctSound" src="assets/correct.mp3"></audio>
-<audio id="wrongSound" src="assets/wrong.mp3"></audio>
+<audio id="correctSound" src="assets/correct.mp3" preload="auto"></audio>
+<audio id="wrongSound" src="assets/wrong.mp3" preload="auto"></audio>
 
 <script>
 const questions = [
@@ -496,11 +496,12 @@ const nextBtn = document.getElementById("nextBtn");
 const correctSound = document.getElementById("correctSound");
 const wrongSound = document.getElementById("wrongSound");
 
-setTimeout(() => {
+// Safe DOM initialization to bypass splash screen errors completely
+window.addEventListener('DOMContentLoaded', () => {
   logoScreen.classList.remove("active");
   quizScreen.classList.add("active");
   startQuiz();
-}, 5000);
+});
 
 function startQuiz() {
   current = 0;
@@ -559,8 +560,8 @@ function renderVisual(item) {
       <div class="clock-face">
         <div class="num3">3</div>
         <div class="num9">9</div>
-        <div class="hand-hour" style="transform: translate(-50%, -100%) rotate(${item.hourDeg}deg);"></div>
-        <div class="hand-minute" style="transform: translate(-50%, -100%) rotate(${item.minuteDeg}deg);"></div>
+        <div class="hand-hour" style="transform: translate(-50%, -100%) rotate(${item.hourDeg}deg); WebkitTransform: translate(-50%, -100%) rotate(${item.hourDeg}deg);"></div>
+        <div class="hand-minute" style="transform: translate(-50%, -100%) rotate(${item.minuteDeg}deg); WebkitTransform: translate(-50%, -100%) rotate(${item.minuteDeg}deg);"></div>
         <div class="center-dot"></div>
       </div>
       <strong>${item.visualText}</strong>
@@ -680,4 +681,39 @@ function showResult() {
 }
 
 function restartQuiz() {
-  result
+  resultScreen.classList.remove("active");
+  quizScreen.classList.add("active");
+  startQuiz();
+}
+
+function toggleMute() {
+  muted = !muted;
+  document.getElementById("muteBtn").textContent = muted ? "🔇 Sound Off" : "🔊 Sound On";
+}
+
+function playSound(sound) {
+  if (muted) return;
+  sound.currentTime = 0;
+  sound.play().catch(() => {});
+}
+
+function launchConfetti() {
+  const colors = ["#f59e0b", "#10b981", "#3b82f6", "#ef4444", "#8b5cf6"];
+
+  for (let i = 0; i < 30; i++) {
+    const piece = document.createElement("div");
+    piece.className = "confetti";
+    piece.style.left = Math.random() * 100 + "vw";
+    piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+    piece.style.animationDuration = (Math.random() * 0.8 + 0.8) + "s";
+    document.body.appendChild(piece);
+
+    setTimeout(() => {
+      piece.remove();
+    }, 1500);
+  }
+}
+</script>
+
+</body>
+</html>
