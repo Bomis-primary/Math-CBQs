@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Addition Mastery Challenge</title>
+    <style>
+        :root {
+            --primary: #8e44ad;
+            --primary-dark: #732d91;
+            --success: #27ae60;
+            --error: #c0392b;
+            --bg: #f5f6fa;
+            --text: #2c3e50;
+            --hud-purple: #f3e5f5;
+            --hud-orange: #fff3e0;
+        }
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 10px;
+        }
+
+        #app-container {
+            width: 100%;
+            max-width: 550px;
+            background: #ffffff;
+            border-radius: 24px;
+            padding: 25px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.08);
+            position: relative;
+            overflow: hidden;
+            min-height: 520px;
+        }
+
+        .instruction-box {
+            background: #f8f9fa;
+            border-left: 4px solid var(--primary);
+            padding: 15px;
+            border-radius: 8px;
+            text-align: left;
+            margin: 20px 0;
+            font-size: 0.95rem;
+            color: #4f5d73;
+            line-height: 1.5;
+        }
+        .instruction-box ul { margin: 5px 0 0 20px; padding: 0; }
+        .instruction-box li { margin-bottom: 6px; }
+
+        .hud-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        .hud-pill {
+            text-align: center;
+            padding: 12px 6px;
+            border-radius: 14px;
+            font-size: 0.95rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: inset 0 -2px 0px rgba(0,0,0,0.05);
+        }
+        .hud-pill.purple { background-color: var(--hud-purple); color: var(--primary-dark); }
+        .hud-pill.orange { background-color: var(--hud-orange); color: #e67e22; }
+
+        .timer-track { width: 100%; height: 8px; background: #edf2f4; border-radius: 10px; margin-bottom: 20px; overflow: hidden; }
+        #timer-bar { height: 100%; width: 100%; background: var(--primary); transition: width 1s linear; }
+
+        .category-text { font-size: 0.85rem; color: #16a085; font-weight: 700; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 1px; }
+        .question-text { font-size: 1.1rem; font-weight: 600; line-height: 1.5; margin-bottom: 15px; white-space: pre-line; }
+
+        .options-grid { display: grid; gap: 12px; }
+        .opt-btn {
+            background: #fff; border: 2px solid #edf2f4; padding: 16px;
+            border-radius: 14px; text-align: left; font-size: 1rem; cursor: pointer; transition: 0.2s;
+            color: #34495e; font-weight: 500;
+        }
+        .opt-btn:hover:not(:disabled) { border-color: var(--primary); background: #fafafa; }
+        .opt-btn.correct { background: #e8f5e9 !important; color: var(--success) !important; border-color: #a5d6a7 !important; font-weight: 700; }
+        .opt-btn.wrong { background: #ffebee !important; color: var(--error) !important; border-color: #ef9a9a !important; }
+
+        .feedback { margin-top: 20px; padding: 15px; border-radius: 12px; display: none; line-height: 1.5; font-size: 0.95rem; }
+        .hint-box { background: #fffde7; border: 1px solid #fff59d; color: #f57f17; }
+        .expl-box { background: #e0f7fa; border: 1px solid #b2ebf2; color: #006064; }
+
+        #action-btn { width: 100%; margin-top: 20px; padding: 16px; background: var(--primary); color: white; border: none; border-radius: 14px; font-weight: 700; cursor: pointer; font-size: 1rem; }
+        #action-btn:hover { background: var(--primary-dark); }
+        
+        .red-cross { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 100px; color: rgba(192, 57, 43, 0.4); pointer-events: none; display: none; z-index: 10; }
+        .star { position: absolute; width: 12px; height: 12px; background: #f1c40f; clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%); pointer-events: none; animation: pop 1s ease-out forwards; }
+
+        @keyframes pop { 0% { transform: scale(0); opacity: 1; } 100% { transform: scale(1.5) translate(var(--tx), var(--ty)); opacity: 0; } }
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+
+<div id="app-container">
+    <div id="intro-view">
+        <div style="text-align: center; font-size: 3.5rem; margin-bottom: 5px;">➕</div>
+        <h1 style="text-align:center; color:var(--primary); margin: 0 0 5px 0; font-size: 26px;">Addition Mastery Challenge</h1>
+        <p style="text-align:center; color:#7f8c8d; margin-top: 0; font-weight: 600; text-transform: uppercase; font-size: 12px; letter-spacing: 1px;">Chapter 02 Evaluation</p>
+        
+        <div class="instruction-box">
+            <strong>📋 Target Objectives Evaluated:</strong>
+            <ul>
+                <li>Commutative, Associative, & Identity Addition properties.</li>
+                <li>5-digit and 6-digit addition (with and without carrying over).</li>
+                <li>Logical reasoning for finding missing addends and sums.</li>
+                <li>Real-world application word problems and math puzzles.</li>
+                <li><b>Game Rules:</b> 60s per turn. Up to 2 attempts per question!</li>
+            </ul>
+        </div>
+
+        <button id="start-btn" style="width:100%; padding:18px; background:var(--primary); color:white; border:none; border-radius:14px; font-weight:bold; font-size:1.1rem; cursor:pointer; margin-top: 10px;">Begin Challenge ⚡</button>
+    </div>
+
+    <div id="quiz-view" class="hidden">
+        <div class="hud-row">
+            <div class="hud-pill purple">Task <span id="q-num">1</span>/10</div>
+            <div class="hud-pill purple">Score: <span id="score-val">0</span></div>
+            <div class="hud-pill orange"><span id="timer-text">60s</span></div>
+        </div>
+        <div class="timer-track"><div id="timer-bar"></div></div>
+        
+        <div id="q-category" class="category-text"></div>
+        <div id="q-text" class="question-text"></div>
+        <div id="options-area" class="options-grid"></div>
+        
+        <div id="feedback-box" class="feedback"></div>
+        <button id="action-btn" class="hidden">Next Question →</button>
+        <div id="cross-mark" class="red-cross">✖</div>
+    </div>
+
+    <div id="result-view" class="hidden" style="text-align:center;">
+        <div style="font-size: 4rem; margin-bottom: 5px;">🏆</div>
+        <h2 style="font-size:1.6rem; margin: 5px 0;">Evaluation Completed!</h2>
+        <div style="font-size: 4rem; font-weight: 800; color: var(--primary); margin: 10px 0;"><span id="final-pts">0</span>/10</div>
+        <div id="result-msg" style="color:#5f6368; font-size: 0.95rem; line-height: 1.5; margin: 0 0 25px 0; text-align: left; background: #f8f9fa; border: 1px solid #e2e8f0; padding: 16px; border-radius: 16px; max-height: 220px; overflow-y: auto;"></div>
+        <button onclick="location.reload()" style="width:100%; padding:16px; background:var(--primary); color:white; border:none; border-radius:14px; font-weight:700; cursor:pointer; font-size: 1rem;">Restart New Run</button>
+    </div>
+</div>
+
+<script>
+    const pool = [
+        { 
+            cat: "Properties of Addition", 
+            q: "A scientist counts 45,218 bacteria cells in Dish A and 12,985 in Dish B. She writes: 45,218 + 12,985 = 12,985 + 45,218.\n\nWhich mathematical property is she demonstrating?", 
+            opts: ["A) Associative Property of Addition", "B) Identity Property of Addition", "C) Commutative Property of Addition", "D) Distributive Property of Addition"], 
+            ans: 2, 
+            hint: "This property states that changing the order of the numbers being added does not change the total sum.", 
+            expl: "The Commutative Property states that order does not matter in addition ($a + b = b + a$)." 
+        },
+        { 
+            cat: "Properties of Addition", 
+            q: "While solving a massive data framework puzzle, a computer program executes this line:\n\n(14,200 + 35,800) + 11,500 = 14,200 + (35,800 + 11,500)\n\nWhich addition rule makes this mathematically true?", 
+            opts: ["A) Commutative Property", "B) Associative Property", "C) Identity Property", "D) Inverse Property"], 
+            ans: 1, 
+            hint: "Look at how the numbers are grouped together inside the brackets.", 
+            expl: "The Associative Property states that changing the grouping of addends using parentheses does not alter the final sum." 
+        },
+        { 
+            cat: "Identity Property", 
+            q: "An inventory system lists a starting balance of 562,814 items. If the tracking node adds exactly 0 shipments to this specific registry over an entire week, what is the final calculation value?", 
+            opts: ["A) 0", "B) 1", "C) 562,814", "D) 5,628,140"], 
+            ans: 2, 
+            hint: "Adding zero to any number leaves that original number completely unchanged.", 
+            expl: "According to the Identity Property of Addition, adding 0 to any number always results in the number itself." 
+        },
+        { 
+            cat: "5-Digit Addition (No Carry Over)", 
+            q: "A shipping depot tracks two distinct small container modules. Module X weighs 23,142 kg, and Module Y weighs 41,523 kg. \n\nWhat is their combined total weight?", 
+            opts: ["A) 64,665 kg", "B) 64,555 kg", "C) 54,665 kg", "D) 63,665 kg"], 
+            ans: 0, 
+            hint: "Add column-by-column starting from the ones place. No columns will exceed 9, so no carrying over is required!", 
+            expl: "Aligning column values: 23142 + 41523 = 64665. Every column summation remains below 10." 
+        },
+        { 
+            cat: "5-Digit Addition (With Carrying Over)", 
+            q: "An airline logging engine records 58,764 miles flown by Plane A and 24,558 miles flown by Plane B. \n\nWhat is the cumulative mileage logged by both aircraft?", 
+            opts: ["A) 73,322 miles", "B) 83,222 miles", "C) 83,322 miles", "D) 82,322 miles"], 
+            ans: 2, 
+            hint: "Make sure to carry over values to the next place column when a position sums to 10 or higher (e.g., 4 + 8 = 12 in the ones place).", 
+            expl: "58,764 + 24,558 yields 83,322 after correctly managing your carried-over units." 
+        },
+        { 
+            cat: "Missing Addends Analysis", 
+            q: "Examine the missing structural values in this puzzle block:\n\n   5  3  [A]  1  4\n+  2  [B]  4  8  3\n----------------\n   7  8   9  9  7\n\nWhat must be the exact numerical identity of digits A and B?", 
+            opts: ["A) A = 5, B = 5", "B) A = 4, B = 5", "C) A = 5, B = 4", "D) A = 9, B = 8"], 
+            ans: 0, 
+            hint: "Look at the columns: [A] + 4 = 9, and 3 + [B] = 8. Solve those basic missing subtraction pieces.", 
+            expl: "Subtracting knowns from sums gives: 9 - 4 = 5 (for A), and 8 - 3 = 5 (for B)." 
+        },
+        { 
+            cat: "Logical Patterns", 
+            q: "Study the logical number pattern addition block below:\n\n12,000 + 13,000 = 25,000\n13,000 + 14,000 = 27,000\n14,000 + 15,000 = 29,000\n\nFollowing this exact logic, what will the next line equal?", 
+            opts: ["A) 15,000 + 16,000 = 31,000", "B) 15,000 + 15,000 = 30,000", "C) 16,000 + 17,000 = 33,000", "D) 15,000 + 17,000 = 32,000"], 
+            ans: 0, 
+            hint: "Each consecutive addend increases by 1,000, which causes the final output sum to step up by 2,000.", 
+            expl: "The sequence increases the starting parameters by 1,000 sequentially, yielding 15,000 + 16,000 = 31,000." 
+        },
+        { 
+            cat: "Real-World Application", 
+            q: "A state utility company spent 245,150 Indian Rupees fixing underground power grids and 312,425 Rupees installing clean solar grids.\n\nHow much combined emergency currency did they spend?", 
+            opts: ["A) 557,575 Rupees", "B) 557,475 Rupees", "C) 555,575 Rupees", "D) 547,575 Rupees"], 
+            ans: 0, 
+            hint: "This uses direct 6-digit structural addition. Set up your parameters clearly: 245,150 + 312,425.", 
+            expl: "Adding the 6-digit values line by line provides 245,150 + 312,425 = 557,575." 
+        },
+        { 
+            cat: "Addition Puzzles", 
+            q: "A secret combination safe unlocks when the user inputs a value that is exactly 15,500 units *greater* than the sum of 40,200 and 12,300.\n\nWhat is the code?", 
+            opts: ["A) 52,500", "B) 67,000", "C) 68,000", "D) 67,500"], 
+            ans: 1, 
+            hint: "Step 1: Find the initial sum of 40,200 + 12,300. Step 2: Add 15,500 directly onto that result.", 
+            expl: "First sum: 40,200 + 12,300 = 52,500. Adding the extra criteria block: 52,500 + 15,500 = 67,000." 
+        },
+        { 
+            cat: "Story Sum Creation", 
+            q: "Identify which scenario represents a mathematically sound story sum problem statement matching: '350,000 + 125,000 = ?'", 
+            opts: ["A) A factory made 350,000 toy cars and destroyed 125,000 broken ones. How many remain?", "B) A harbor docked 350,000 ships. 125,000 moved out to sea. How many are left?", "C) A city infrastructure recorded 350,000 local residents and 125,000 visiting tourists. What is the total population count?", "D) A warehouse split 350,000 distribution boxes equally into 125 separate delivery trucks."], 
+            ans: 2, 
+            hint: "Look for keywords indicating a process where things are combined, pooled, or gathered together total.", 
+            expl: "Option C requires finding a collective total population, which correctly translates into the structural addition expression provided." 
+        }
+    ];
+
+    let questions = [];
+    let current = 0, score = 0, attempts = 0, timer, timeLeft = 60;
+
+    // Direct initialization
+    questions = [...pool];
+    // Shuffle helper
+    for (let i = questions.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [questions[i], questions[j]] = [questions[j], questions[i]];
+    }
+
+    document.getElementById('start-btn').onclick = () => {
+        document.getElementById('intro-view').classList.add('hidden');
+        document.getElementById('quiz-view').classList.remove('hidden');
+        loadQuestion();
+    };
+
+    function loadQuestion() {
+        attempts = 0; timeLeft = 60;
+        const q = questions[current];
+        document.getElementById('feedback-box').style.display = 'none';
+        document.getElementById('action-btn').classList.add('hidden');
+        document.getElementById('q-num').innerText = current + 1;
+        document.getElementById('q-category').innerText = q.cat;
+        document.getElementById('q-text').innerText = q.q;
+        document.getElementById('timer-text').innerText = timeLeft + "s";
+        
+        const area = document.getElementById('options-area');
+        area.innerHTML = "";
+        q.opts.forEach((o, i) => {
+            const b = document.createElement('button');
+            b.className = 'opt-btn';
+            b.innerText = o;
+            b.onclick = () => check(i, b);
+            area.appendChild(b);
+        });
+        startTimer();
+    }
+
+    function startTimer() {
+        clearInterval(timer);
+        timer = setInterval(() => {
+            timeLeft--;
+            document.getElementById('timer-text').innerText = timeLeft + "s";
+            document.getElementById('timer-bar').style.width = (timeLeft / 60 * 100) + "%";
+            if(timeLeft <= 0) { clearInterval(timer); endTurn(); }
+        }, 1000);
+    }
+
+    function check(i, b) {
+        if(i === questions[current].ans) {
+            clearInterval(timer);
+            b.classList.add('correct');
+            score++;
+            document.getElementById('score-val').innerText = score;
+            createStars();
+            endTurn();
+        } else {
+            attempts++;
+            showCross();
+            b.classList.add('wrong');
+            b.disabled = true;
+            if(attempts === 1) {
+                const f = document.getElementById('feedback-box');
+                f.className = 'feedback hint-box';
+                f.innerHTML = "<b>💡 Helpful Hint:</b> " + questions[current].hint;
+                f.style.display = 'block';
+            } else {
+                clearInterval(timer);
+                endTurn();
+            }
+        }
+    }
+
+    function endTurn() {
+        document.querySelectorAll('.opt-btn').forEach(btn => btn.disabled = true);
+        const f = document.getElementById('feedback-box');
+        f.className = 'feedback expl-box';
+        f.innerHTML = "<b>🔍 Explanation:</b> " + questions[current].expl;
+        f.style.display = 'block';
+        document.querySelectorAll('.opt-btn')[questions[current].ans].classList.add('correct');
+        document.getElementById('action-btn').classList.remove('hidden');
+    }
+
+    function showCross() {
+        const c = document.getElementById('cross-mark');
+        c.style.display = 'block';
+        setTimeout(() => c.style.display = 'none', 600);
+    }
+
+    function createStars() {
+        for(let i=0; i<15; i++) {
+            const s = document.createElement('div');
+            s.className = 'star';
+            s.style.setProperty('--tx', (Math.random() * 200 - 100) + 'px');
+            s.style.setProperty('--ty', (Math.random() * 200 - 100) + 'px');
+            s.style.left = '50%'; s.style.top = '50%';
+            document.getElementById('app-container').appendChild(s);
+            setTimeout(() => s.remove(), 1000);
+        }
+    }
+
+    document.getElementById('action-btn').onclick = () => {
+        current++;
+        if(current < questions.length) loadQuestion();
+        else {
+            document.getElementById('quiz-view').classList.add('hidden');
+            document.getElementById('result-view').classList.remove('hidden');
+            document.getElementById('final-pts').innerText = score;
+
+            let statusMessage = "Keep practicing! Review multi-digit column alignment and properties of addition to build your confidence.";
+            if(score === 10) {
+                statusMessage = "Magnificent! Perfect Addition mastery. You completely understand all properties, missing-addend problems, and multi-digit operations.";
+            } else if(score >= 8) {
+                statusMessage = "Excellent job! You show a powerful grasp of large addition models, carry-over functions, and contextual math stories.";
+            } else if(score >= 5) {
+                statusMessage = "Good attempt! You have a foundation but sometimes miss carried numbers or specific properties. Give it another try!";
+            }
+
+            document.getElementById('result-msg').innerHTML = `
+                <span style="font-weight:700; color:#2c3e50; display:block; margin-bottom:6px;">Performance Breakdown:</span>
+                ${statusMessage}
+            `;
+        }
+    };
+</script>
+</body>
+</html>
