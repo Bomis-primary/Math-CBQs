@@ -233,15 +233,18 @@
 
     <div id="instruction-screen">
         <h2 style="color: var(--primary); margin-bottom: 15px;">Learning Outcomes</h2>
-        <p style="font-size: 1.1rem; color: #cbd5e1; line-height: 1.6; margin-bottom: 25px;">
-            • Performing addition and subtraction of large numbers.<br>
-            • Performing multiplication and division of large numbers.<br>
-            • Performing division by 10, 100, 1000, 10000, etc.<br>
-            • Solving word problems based on four basic operations.<br><br>
-            Welcome, <b>Finance Manager</b>! You are in charge of "Number City’s" grand stadium. You need to manage ticket sales, seat numbers, and budgets using your knowledge of large numbers.<br><br>
-            You have <b>2 attempts</b> per question to secure your star.
+        <p style="font-size: 1.05rem; color: #cbd5e1; line-height: 1.5; margin-bottom: 25px;">
+            By the end of this lesson, you will be able to:<br>
+            • Read and write 5-digit and 6-digit numbers.<br>
+            • Explain place and face value of digits in numbers.<br>
+            • Formulate largest and smallest 5-digit/6-digit numbers from given digits.<br>
+            • Arrange, sort, and compare large scale numbers with relational indicators.<br>
+            • Evaluate calculations using strategic rounding to the nearest thousand.<br>
+            • Convert and decipher traditional Roman and Hindu-Arabic numerals.<br><br>
+            Welcome, <b>Finance Manager</b>! Welcome to the <b>Number City Challenge</b>. Manage ticket allocations, system logs, and passcodes using large numbers.<br><br>
+            You have <b>2 attempts</b> per question to secure a perfect evaluation.
         </p>
-        <button class="btn-next" style="float: none;" onclick="startQuizGame()">Start Game</button>
+        <button class="btn-next" style="float: none;" onclick="startQuizGame()">Start Challenge</button>
     </div>
     
     <div id="game-play-area" class="hidden">
@@ -273,7 +276,7 @@
         <div class="creative-pop">🎉🧮⚡</div>
         <h1 style="color: var(--primary); margin: 10px 0;">Challenge Complete!</h1>
         <p id="result-msg" style="font-size: 1.2rem; color: #cbd5e1; line-height: 1.6; margin-bottom: 30px;"></p>
-        <button class="btn-next" style="float: none;" onclick="location.reload()">Restart Quiz</button>
+        <button class="btn-next" style="float: none;" onclick="location.reload()">Restart Challenge</button>
     </div>
 </div>
 
@@ -284,7 +287,7 @@
         claps: new Audio('assets/freesound_community-claps-44774.mp3')
     };
 
-    // CBQ Questions mapped directly from source syllabus parameters
+    // Question array structured around Large Numbers metrics
     const questions = [
         {
             type: "text",
@@ -300,7 +303,7 @@
         },
         {
             type: "abacus",
-            q: "Look at the abacus showing the number 4,05,213 below. If you add one bead to the Ten Thousand place and take away one bead from the Ones place, what is the new number?",
+            q: "Look at the abacus below showing the number 4,05,213. If you add one bead to the Ten Thousand place and take away one bead from the Ones place, what is the new number?",
             options: [
                 "A) 4,15,212",
                 "B) 5,05,213",
@@ -308,11 +311,11 @@
                 "D) 4,15,213"
             ],
             ans: 0,
-            explain: "Adding 1 bead to the Ten Thousand place increases the value by 10,000 (0 becomes 1). Taking 1 bead from the ones place decreases it by 1 (3 becomes 2). The number evolves from 4,05,213 to 4,15,212."
+            explain: "Adding 1 bead to the Ten Thousand place increases the value by 10,000 (0 becomes 1). Taking 1 bead from the ones place decreases it by 1 (3 becomes 2). The updated value is 4,15,212."
         },
         {
             type: "text",
-            q: "The population of four blocks in Number City is:\nBlock A: 1,25,000\nBlock B: 98,500\nBlock C: 1,02,999\nBlock D: 1,25,001\n\nWhich block has the second highest population?",
+            q: "The population of four distinct blocks in Number City is recorded as follows:\n• Block A: 1,25,000\n• Block B: 98,500\n• Block C: 1,02,999\n• Block D: 1,25,001\n\nWhich block has the second highest population?",
             options: [
                 "A) Block B",
                 "B) Block C",
@@ -320,11 +323,11 @@
                 "D) Block D"
             ],
             ans: 2,
-            explain: "Ordering populations from highest to lowest: Block D (1,25,001) > Block A (1,25,000) > Block C (1,02,999) > Block B (98,500). Thus, Block A is the second highest."
+            explain: "Arranging from largest to smallest: Block D (1,25,001) > Block A (1,25,000) > Block C (1,02,999) > Block B (98,500). Thus, Block A is the second highest."
         },
         {
             type: "text",
-            q: "Case study: A printer prints serial numbers for coupons. The last coupon printed was 4,59,999. What will be the serial number on the next coupon?",
+            q: "Case study: A system printer logs consecutive coupon codes. If the last printed log was 4,59,999, what will be the serial configuration code on the next printed item?",
             options: [
                 "A) 4,59,990",
                 "B) 4,60,000",
@@ -332,11 +335,11 @@
                 "D) 4,59,100"
             ],
             ans: 1,
-            explain: "The 'next' number represents the successor. Adding 1 to 4,59,999 results in exactly 4,60,000."
+            explain: "The next item represents the successor of the line item. Adding 1 to 4,59,999 returns exactly 4,60,000."
         },
         {
             type: "text",
-            q: "Statement: The place value of 0 in the number 7,05,432 is always 0.\nReason: 0 multiplied by any place (like Thousands) results in 0.\n\nChoose the correct structural assessment:",
+            q: "Statement: The place value of 0 in the number 7,05,432 is always 0.\nReason: 0 multiplied by any place value multiplier (like Thousands) results in 0.\n\nChoose the correct logical outcome:",
             options: [
                 "A) Both statement and reason are true, and the reason explains the statement.",
                 "B) The statement is true, but the reason is false.",
@@ -344,11 +347,11 @@
                 "D) Both are false."
             ],
             ans: 0,
-            explain: "No matter which 'house' (place value column) zero lives in, its total positional value remains zero because 0 × 10,000 = 0."
+            explain: "No matter which slot zero lives in, its total calculated place value remains zero because 0 × 10,000 = 0."
         },
         {
             type: "text",
-            q: "A student wrote the number Six Lakh Five Thousand Forty-Two as 6,50,042. Why is this wrong?",
+            q: "A junior accountant logged the expression 'Six Lakh Five Thousand Forty-Two' as 6,50,042. Why is this data log incorrect?",
             options: [
                 "A) The number should have 7 digits.",
                 "B) He put the 5 in the Ten Thousand place instead of the Thousands place.",
@@ -356,11 +359,11 @@
                 "D) There is no error; the number is correct."
             ],
             ans: 1,
-            explain: "Six Lakh Five Thousand Forty-Two is written as 6,05,042. By writing 6,50,042, the student placed the digit 5 in the Ten Thousands column, mistakenly evaluating it as Fifty Thousand."
+            explain: "Six Lakh Five Thousand Forty-Two is correctly written as 6,05,042. Logging 6,50,042 incorrectly shifts the 5 into the Ten Thousands column, inflating it to fifty thousand."
         },
         {
             type: "text",
-            q: "Which of these expressions represents a completely different numeric value than the others?",
+            q: "Which of the following value expressions represents a completely different numeric benchmark than the others?",
             options: [
                 "A) 1,00,000",
                 "B) Ten Thousand",
@@ -368,11 +371,11 @@
                 "D) One hundred thousand"
             ],
             ans: 1,
-            explain: "Options A, C, and D all equal 1,00,000 (One Lakh). Option B stands distinct as it is only 10,000."
+            explain: "Options A, C, and D are different notations for 1,00,000 (One Lakh). Option B stands alone as it equals only 10,000."
         },
         {
             type: "text",
-            q: "A school wants to buy 1,895 chairs. Each chair costs about ₹1,000. The principal wants to estimate the total cost to the nearest thousand. What estimate should she use for the total number of chairs?",
+            q: "A building manager wants to secure 1,895 luxury chairs for the VIP stands. Each chair costs about ₹1,000. If the manager rounds the total order size to the nearest thousand for estimation purposes, what is the updated chair allocation amount?",
             options: [
                 "A) 1,000",
                 "B) 1,800",
@@ -380,11 +383,11 @@
                 "D) 1,900"
             ],
             ans: 2,
-            explain: "1,895 rounded to the nearest thousand is 2,000. Because the hundreds digit (8) is 5 or greater, we round up to the next thousand."
+            explain: "1,895 rounded to the nearest thousand is 2,000. Since the hundreds position digit (8) is greater than or equal to 5, we round up."
         },
         {
             type: "clock",
-            q: "Look at the analogue clock visualization carefully. If the hour hand is on IX and the minute hand is on XII, what time is it in Hindu-Arabic numbers?",
+            q: "Look at the stadium display clock visualization carefully. If the hour indicator rests on IX and the minute hand points directly at XII, what time is it in standard Hindu-Arabic numbers?",
             options: [
                 "A) 11:12",
                 "B) 9:00",
@@ -392,11 +395,11 @@
                 "D) 6:10"
             ],
             ans: 1,
-            explain: "In Roman numerals, IX represents 9 (10 - 1) and XII represents 12 (10 + 1 + 1). An hour hand pointing at IX with a minute hand at XII signals exactly 9:00."
+            explain: "In Roman system metrics, IX signifies 9 (10 - 1) and XII represents 12. Having the short hand at IX and long hand at XII designates exactly 9:00."
         },
         {
             type: "text",
-            q: "You have the digits 5, 0, 2, 9, 8. What is the smallest 5-digit number you can make to use as a secret stadium passcode? (Note: A number cannot start with 0).",
+            q: "You are given the numeric digit blocks: 5, 0, 2, 9, 8. What is the absolute smallest 5-digit security passcode configuration you can form? (Note: A number cannot start with 0).",
             options: [
                 "A) 02589",
                 "B) 20,589",
@@ -404,11 +407,11 @@
                 "D) 98,520"
             ],
             ans: 1,
-            explain: "To form the smallest number, begin with the smallest non-zero digit (2), place the zero immediately next, and arrange the remaining digits in ascending order: 2, 0, 5, 8, 9."
+            explain: "To form the lowest layout without a leading zero, place the lowest non-zero digit (2) first, follow immediately with the 0, and append the remaining digits in ascending order: 2, 0, 5, 8, 9."
         },
         {
             type: "text",
-            q: "Final Challenge (HOTS): I am a 6-digit number. All my digits are exactly the same. If you add 1 to me, I transform into a 7-digit number. What number am I?",
+            q: "Final Challenge (HOTS): I am a 6-digit number. All my internal numeric digits are exactly the same. If you increment my value by 1, I immediately grow into a 7-digit number. What number am I?",
             options: [
                 "A) 1,11,111",
                 "B) 6,66,666",
@@ -416,7 +419,7 @@
                 "D) 10,00,000"
             ],
             ans: 2,
-            explain: "Adding 1 to the largest possible 6-digit number, 9,99,999, triggers a carry-over across all places to form the smallest 7-digit number, 10,00,000."
+            explain: "Adding 1 to the absolute largest 6-digit layout (9,99,999) rolls every column over, creating the smallest 7-digit value (10,00,000)."
         }
     ];
 
@@ -434,7 +437,7 @@
                 document.getElementById('brand-screen').style.display = 'none';
                 document.getElementById('game-card').classList.remove('hidden');
             }
-        }, 50); // Exact 5-second tracking loop
+        }, 50);
     });
 
     function startQuizGame() {
@@ -452,7 +455,6 @@
         document.getElementById('next-btn').classList.add('hidden');
         document.getElementById('progress-bar').style.width = ((currentIdx / questions.length) * 100) + '%';
 
-        // Render graphical engines depending on problem context
         const canvasWrapper = document.getElementById('canvas-wrapper');
         if (data.type === "abacus") {
             canvasWrapper.classList.remove('hidden');
@@ -480,7 +482,7 @@
         const ctx = canvas.getContext('2d');
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         
-        // Base setup
+        // Floor bar base
         ctx.strokeStyle = "#cbd5e1";
         ctx.lineWidth = 4;
         ctx.beginPath();
@@ -488,7 +490,7 @@
         ctx.lineTo(370, 160);
         ctx.stroke();
 
-        // 4,05,213 digits -> L, TTh, Th, H, T, O
+        // Target: 4,05,213 -> L, TTh, Th, H, T, O
         const columns = ["L", "TTh", "Th", "H", "T", "O"];
         const counts = [4, 0, 5, 2, 1, 3];
         const step = 55;
@@ -504,12 +506,12 @@
             ctx.lineTo(x, 160);
             ctx.stroke();
 
-            // Label text
+            // Headings
             ctx.fillStyle = "#38bdf8";
             ctx.font = "bold 12px sans-serif";
             ctx.fillText(col, x - 8, 180);
 
-            // Draw beads
+            // Counter beads
             ctx.fillStyle = "#e74c3c";
             for(let b = 0; b < counts[idx]; b++) {
                 ctx.beginPath();
@@ -528,7 +530,6 @@
         const cy = canvas.height / 2;
         const radius = 75;
 
-        // Dial rim
         ctx.strokeStyle = "#3498db";
         ctx.lineWidth = 4;
         ctx.beginPath();
@@ -537,7 +538,6 @@
         ctx.fillStyle = "#1e293b";
         ctx.fill();
 
-        // Markers
         ctx.fillStyle = "#f1f5f9";
         ctx.font = "bold 12px sans-serif";
         ctx.fillText("XII", cx - 8, cy - radius + 16);
@@ -545,7 +545,6 @@
         ctx.fillText("VI", cx - 6, cy + radius - 10);
         ctx.fillText("IX", cx - radius + 10, cy + 4);
 
-        // Center Pin
         ctx.fillStyle = "#ffffff";
         ctx.beginPath();
         ctx.arc(cx, cy, 4, 0, Math.PI * 2);
@@ -597,7 +596,7 @@
                 }, 400);
             } else {
                 allBtns[data.ans].classList.add('correct');
-                feedback.innerHTML = `<b>Out of attempts!</b> The correct path was: <b>${data.options[data.ans]}</b>.<br>${data.explain}`;
+                feedback.innerHTML = `<b>Out of attempts!</b> The correct choice was: <b>${data.options[data.ans]}</b>.<br>${data.explain}`;
                 feedback.classList.remove('hidden');
                 document.getElementById('next-btn').classList.remove('hidden');
             }
@@ -619,8 +618,8 @@
         document.getElementById('progress-bar').style.width = '100%';
         try { audio.claps.play(); } catch(e){}
         
-        let msg = `Phenomenal performance! You completed the arena challenge and earned ${score} out of 11 stars!`;
-        if (score === questions.length) msg = "Outstanding, Master Finance Manager! A perfect mathematical run. You have completely mastered structural large number values and base operations!";
+        let msg = `Phenomenal performance! You completed the challenge and earned ${score} out of 11 stars!`;
+        if (score === questions.length) msg = "Outstanding, Master Finance Manager! A perfect mathematical run. You have completely mastered all structural large number outcomes!";
         
         document.getElementById('result-msg').innerText = msg;
     }
