@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-<title>The Number City Challenge</title>
+<title>The Number Mastery Challenge</title>
 
 <style>
 *{
@@ -20,7 +20,7 @@ html,body{
 
 body{
   font-family:Arial, sans-serif;
-  background:linear-gradient(135deg,#fff8e1,#e3f2fd,#f3e5f5);
+  background:linear-gradient(135deg,#e0f2f1,#e8eaf6,#f3e5f5);
   color:#263238;
 }
 
@@ -76,14 +76,14 @@ body{
 }
 
 h1{
-  color:#6a1b9a;
+  color:#283593;
   margin:10px 0;
   font-size:32px;
   line-height:1.15;
 }
 
 h2{
-  color:#0277bd;
+  color:#00838f;
   margin:8px 0;
   font-size:22px;
 }
@@ -130,7 +130,7 @@ button:active{
 }
 
 .badge{
-  background:#e3f2fd;
+  background:#e8eaf6;
   border-radius:16px;
   padding:10px 8px;
   text-align:center;
@@ -164,16 +164,6 @@ button:active{
   margin:22px 0;
   text-align: left;
   white-space: pre-line;
-}
-
-.canvas-container {
-  display: flex;
-  justify-content: center;
-  margin: 15px 0;
-  background: #f8fafc;
-  padding: 10px;
-  border-radius: 18px;
-  border: 2px dashed #cbd5e1;
 }
 
 .options{
@@ -337,79 +327,50 @@ button:active{
     font-size:13px;
   }
 }
-
-@media(max-height:520px){
-  .active{
-    align-items:flex-start;
-  }
-
-  .screen{
-    padding-top:10px;
-  }
-
-  .card{
-    margin:8px 0;
-  }
-
-  .question{
-    margin:12px 0;
-  }
-
-  .option{
-    min-height:50px;
-    padding:11px;
-  }
-}
-
-@media(prefers-reduced-motion:reduce){
-  .bg span,
-  .star,
-  .cross{
-    animation:none;
-  }
-}
 </style>
 </head>
 
 <body>
 
 <div class="bg">
-  <span>⭐</span>
-  <span>🏢</span>
-  <span>⭐</span>
-  <span>🏟️</span>
+  <span>📊</span>
+  <span>🔢</span>
+  <span>🎯</span>
+  <span>✏️</span>
   <span>⭐</span>
 </div>
 
 <div id="splash" class="screen active">
   <div class="card">
-    <img src="assets/logo.png" class="logo" alt="Innovine Logo" onerror="this.style.opacity='0.5';">
+    <img src="assets/innovine-logo.png" class="logo" alt="Innovine Logo" onerror="this.style.opacity='0.5';">
+    <h2>Shuffling the quiz matrix...</h2>
   </div>
 </div>
 
 <div id="intro" class="screen">
   <div class="card">
-    <h1>The Number City Challenge</h1>
+    <h1>The Number Mastery Challenge</h1>
     <h2>Grade 4 Mathematics</h2>
-    <p><b>Welcome, Finance Manager!</b> You are in charge of "Number City’s" grand stadium. Manage ticket sales, allocations, and configurations using large numbers.</p>
+    <p><b>Welcome, Mathematical Explorer!</b> Test your knowledge with 12 randomly shuffled questions targeting large numbers, place values, estimates, and Roman numerals.</p>
     
     <div class="outcomes-list">
-      <b>Learning Outcomes:</b><br>
-      • Read and write 5-digit and 6-digit numbers.<br>
-      • Explain place and face value of digits.<br>
-      • Formulate largest and smallest configurations.<br>
-      • Evaluate estimations, successors, and Roman system mappings.
+      <b>Target Learning Outcomes:</b><br>
+      • Read, write, and order 5 and 6-digit numbers.<br>
+      • Identify place values and face values.<br>
+      • Form largest and smallest combinations from digits.<br>
+      • Compare Indian and International systems.<br>
+      • Solve arithmetic hierarchies, successors, rounding, and Roman system conversions.
     </div>
 
-    <p>Choose the best answer. You get one retry after a wrong answer. Each question has a 60-second timer.</p>
-    <button onclick="startGame()">Start Game</button>
+    <p>Each attempt provides a maximum of 60 seconds. You have one retry if your first selection is wrong.</p>
+    <button onclick="startGame()">Start Randomized Quiz</button>
   </div>
 </div>
 
 <div id="quiz" class="screen">
   <div class="card">
     <div class="topbar">
-      <div class="badge" id="qCount">Question 1/10</div>
+      <div class="badge" id="qCount">Question 1/12</div>
       <div class="badge">Score: <span id="score">0</span></div>
       <div class="badge timer">Time: <span id="time">60</span>s</div>
     </div>
@@ -419,14 +380,9 @@ button:active{
     </div>
 
     <div class="question" id="question"></div>
-    
-    <div id="canvas-wrapper" class="canvas-container hidden">
-      <canvas id="visual-canvas" width="400" height="180"></canvas>
-    </div>
-
     <div class="options" id="options"></div>
     <div class="feedback" id="feedback"></div>
-    <button id="nextBtn" class="hidden" onclick="nextQuestion()">Next</button>
+    <button id="nextBtn" class="hidden" onclick="nextQuestion()">Next Question</button>
   </div>
 </div>
 
@@ -434,20 +390,20 @@ button:active{
   <div class="card">
     <h1>Final Challenge (HOTS)</h1>
     <div class="finalbox">
-      <p><b>Think and say:</b></p>
-      <p class="question" style="text-align:center; margin:10px 0;">I am a 6-digit number. All my digits are the same. If you add 1 to me, I become a 7-digit number. What number am I?</p>
+      <p><b>Critical Analytical Thinker Task:</b></p>
+      <p class="question" style="text-align:center; margin:10px 0;">What is the exact numerical difference between the largest 5-digit number and the smallest 5-digit number?</p>
     </div>
-    <p class="small">Tap finish to check the system parameters.</p>
+    <p class="small">Tap finish to tabulate your final score parameters.</p>
     <button onclick="showResult()">Finish</button>
   </div>
 </div>
 
 <div id="result" class="screen">
   <div class="card">
-    <h1>Great Work!</h1>
-    <h2>Your Score: <span id="finalScore"></span>/10</h2>
+    <h1>Challenge Completed!</h1>
+    <h2>Final Score: <span id="finalScore"></span>/12</h2>
     <p id="resultMsg"></p>
-    <button onclick="location.reload()">Play Again</button>
+    <button onclick="location.reload()">Restart New Shuffled Run</button>
   </div>
 </div>
 
@@ -458,129 +414,142 @@ button:active{
 <audio id="clapSound" src="assets/clapping.mp3" preload="auto"></audio>
 
 <script>
-const questions=[
+const pool=[
 {
-  q:"The stadium sold 54,209 tickets on Saturday and 54,290 tickets on Sunday. On which day was the stadium more crowded?",
+  q:"The census bureau lists a community's population record as 4,50,000 using local structures, while another portal displays it as 450,000. Which statement is true?",
   o:[
-    "A) Saturday, because 209 is more than 290.",
-    "B) Sunday, because 54,290 is greater than 54,209.",
-    "C) Both days had the exact same number of people.",
-    "D) Saturday, because 0 comes before 9."
+    "A) 4,50,000 is larger because it uses the Indian system layout.",
+    "B) Both formats represent the exact same numerical value under different punctuation rules.",
+    "C) 450,000 is larger because it holds three digits in its thousands house.",
+    "D) The numbers cannot be compared without explicit unit tags."
   ],
   a:1,
-  e:"When comparing numbers, we look at the highest place value where the digits differ. In the tens place, 9 is greater than 0.",
-  type:"text"
+  e:"4,50,000 (Indian System) and 450,000 (International System) are identical in scale. Punctuation placements change without mutating core numeric values."
 },
 {
-  q:"Look at the abacus showing the number 4,05,213 below. If you add one bead to the Ten Thousand place and take away one bead from the Ones place, what is the new number?",
+  q:"Evaluate this expression honoring standard mathematical operation priorities:\n240 + (15 × 8) - (360 ÷ 6)",
   o:[
-    "A) 4,15,212",
-    "B) 5,05,213",
-    "C) 4,06,212",
-    "D) 4,15,213"
+    "A) 1,980",
+    "B) 300",
+    "C) 240",
+    "D) 320"
+  ],
+  a:1,
+  e:"Solve internal brackets: (15 × 8) = 120 and (360 ÷ 6) = 60. Then solve left-to-right: 240 + 120 - 60 = 360 - 60 = 300."
+},
+{
+  q:"An infrastructure depot maps a materials asset list measuring 4,385 structural pins. What are the correct parameters when rounded to the nearest thousand and nearest hundred?",
+  o:[
+    "A) Nearest Thousand: 5,000 | Nearest Hundred: 4,300",
+    "B) Nearest Thousand: 4,000 | Nearest Hundred: 4,400",
+    "C) Nearest Thousand: 4,000 | Nearest Hundred: 4,390",
+    "D) Nearest Thousand: 4,500 | Nearest Hundred: 4,400"
+  ],
+  a:1,
+  e:"4,385 is closer to 4,000 when checking the thousands scale (3 < 5). It rounds up to 4,400 on the hundreds scale because the tens digit is 8 (8 >= 5)."
+},
+{
+  q:"A primary transmission node routes 7,89,000 binary telemetry packages into identical sub-channels holding 1,000 units each. How many sub-channels are fully loaded?",
+  o:[
+    "A) 789 channels",
+    "B) 7,890 channels",
+    "C) 78 channels",
+    "D) 78,900 channels"
   ],
   a:0,
-  e:"Adding 1 to the Ten Thousand place increases the value by 10,000 (0 becomes 1). Taking 1 from the ones place decreases it by 1 (3 becomes 2).",
-  type:"abacus"
+  e:"Dividing a value by 1,000 eliminates exactly three trailing zeros. 7,89,000 ÷ 1,000 = 789."
 },
 {
-  q:"The population of four blocks in Number City is:\nBlock A: 1,25,000\nBlock B: 98,500\nBlock C: 1,02,999\nBlock D: 1,25,001\n\nWhich block has the second highest population?",
+  q:"An ancient decorative pillar exhibits two numerical markers side-by-side: CLV and CXLV. Which analytical comparison holds true?",
   o:[
-    "A) Block B",
-    "B) Block C",
-    "C) Block A",
-    "D) Block D"
+    "A) CLV < CXLV because X resides earlier within string lines.",
+    "B) CLV = CXLV because they are built from identical letters.",
+    "C) CLV > CXLV because 155 is greater than 145.",
+    "D) CLV > CXLV because 165 is greater than 145."
   ],
   a:2,
-  e:"Block D is the highest (1,25,001). Block A is the second highest (1,25,000).",
-  type:"text"
+  e:"CLV translates to 100 + 50 + 5 = 155. CXLV translates to 100 + (50 - 10) + 5 = 145. Thus, 155 > 145."
 },
 {
-  q:"Case: A printer prints serial numbers for coupons. The last coupon printed was 4,59,999. What will be the serial number on the next coupon?",
+  q:"What is the placeholder difference when comparing the place value of 7 and the face value of 7 in the number 5,73,124?",
   o:[
-    "A) 4,59,990",
-    "B) 4,60,000",
-    "C) 5,00,000",
-    "D) 4,59,100"
+    "A) 0",
+    "B) 69,993",
+    "C) 70,000",
+    "D) 7,000"
   ],
   a:1,
-  e:"The \"next\" number is the successor. Adding 1 to 4,59,999 results in 4,60,000.",
-  type:"text"
+  e:"The place value of 7 is 70,000 (Ten Thousands place). The face value is simply 7. Evaluating the difference: 70,000 - 7 = 69,993."
 },
 {
-  q:"Statement: The place value of 0 in the number 7,05,432 is always 0.\nReason: 0 multiplied by any place (like Thousands) results in 0.",
+  q:"An automation tool generates serial identifiers. If the current sequence identifier reads 8,99,999, what is its direct numerical successor?",
   o:[
-    "A) Both statement and reason are true, and the reason explains the statement.",
-    "B) The statement is true, but the reason is false.",
-    "C) The statement is false.",
-    "D) Both are false."
+    "A) 8,99,990",
+    "B) 9,00,000",
+    "C) 8,00,000",
+    "D) 9,99,999"
+  ],
+  a:1,
+  e:"The successor is calculated by adding 1. 8,99,999 + 1 = 9,00,000."
+},
+{
+  q:"You are given the distinct digits: 6, 0, 3, 9, 1. What is the smallest possible 5-digit configuration you can build without using 0 as the leading digit?",
+  o:[
+    "A) 01369",
+    "B) 10,369",
+    "C) 13,690",
+    "D) 10,639"
+  ],
+  a:1,
+  e:"Place the smallest non-zero digit first (1), followed immediately by 0, and organize the remaining digits in ascending order (3, 6, 9) to generate 10,369."
+},
+{
+  q:"A container ship holds 23,000 cargo crates. If each crate carries exactly 30 consumer appliances, what is the total appliance inventory value?",
+  o:[
+    "A) 69,000",
+    "B) 6,90,000",
+    "C) 6,900",
+    "D) 23,030"
+  ],
+  a:1,
+  e:"Compute 23 × 3 = 69. Append the group of trailing zeros (three from 23,000 and one from 30) to establish 6,90,000."
+},
+{
+  q:"Consider the number 8,45,219. If you swap the digits in the Ten Thousand place and the Hundreds place, what new value configuration is engineered?",
+  o:[
+    "A) 8,25,419",
+    "B) 4,85,219",
+    "C) 8,42,519",
+    "D) 2,45,819"
   ],
   a:0,
-  e:"No matter which \"house\" (place) zero lives in, its total value remains zero.",
-  type:"text"
+  e:"The original Ten Thousand digit is 4 and the Hundreds digit is 2. Exchanging their positions results in 8,25,419."
 },
 {
-  q:"A student wrote the number Six Lakh Five Thousand Forty-Two as 6,50,042. Why is this wrong?",
+  q:"A logic system processes a division assignment: 4,82,315 ÷ 100. What is the accurate breakdown for the resulting Quotient and Remainder?",
   o:[
-    "A) The number should have 7 digits.",
-    "B) He put the 5 in the Ten Thousand place instead of the Thousands place.",
-    "C) He forgot to write the zero for the Hundreds place.",
-    "D) There is no error; the number is correct."
+    "A) Quotient: 4,823 | Remainder: 15",
+    "B) Quotient: 48,231 | Remainder: 5",
+    "C) Quotient: 482 | Remainder: 315",
+    "D) Quotient: 4,823 | Remainder: 0"
+  ],
+  a:0,
+  e:"Dividing by 100 detaches the final two digits to act as the remainder (15), leaving the remaining leading sequence to act as the quotient (4,823)."
+},
+{
+  q:"How is the Hindu-Arabic value 94 accurately mapped into standard Roman numeral symbols?",
+  o:[
+    "A) LIIIIV",
+    "B) XCIV",
+    "C) CVI",
+    "D) XCCCC"
   ],
   a:1,
-  e:"Six Lakh Five Thousand is written as 6,05,042. The student wrote 6,50,042 (Six Lakh Fifty Thousand).",
-  type:"text"
-},
-{
-  q:"Which of these represents a different value than the others?",
-  o:[
-    "A) 1,00,000",
-    "B) Ten Thousand",
-    "C) 1 Lakh",
-    "D) One hundred thousand"
-  ],
-  a:1,
-  e:"A, C, and D all represent 1,00,000. Option B is only 10,000.",
-  type:"text"
-},
-{
-  q:"A school wants to buy 1,895 chairs. Each chair costs about ₹1,000. The principal wants to estimate the total cost to the nearest thousand. What estimate should she use for the number of chairs?",
-  o:[
-    "A) 1,000",
-    "B) 1,800",
-    "C) 2,000",
-    "D) 1,900"
-  ],
-  a:2,
-  e:"1,895 is closer to 2,000 than 1,000. When rounding to the nearest thousand, we look at the hundreds digit (8), which tells us to round up.",
-  type:"text"
-},
-{
-  q:"If the hour hand is on IX and the minute hand is on XII, what time is it in Hindu-Arabic numbers?",
-  o:[
-    "A) 11:12",
-    "B) 9:00",
-    "C) 4:12",
-    "D) 6:10"
-  ],
-  a:1,
-  e:"IX represents 10 - 1 = 9. XII represents 10 + 1 + 1 = 12. On a clock, this is 9 o'clock.",
-  type:"clock"
-},
-{
-  q:"You have the digits 5, 0, 2, 9, 8. What is the smallest 5-digit number you can make to use as a secret passcode? (Note: A number cannot start with 0).",
-  o:[
-    "A) 02589",
-    "B) 20,589",
-    "C) 25,890",
-    "D) 98,520"
-  ],
-  a:1,
-  e:"To make the smallest number, we start with the smallest non-zero digit (2), then place the zero, and then the remaining digits in ascending order.",
-  type:"text"
+  e:"90 is represented as XC (100 - 10) and 4 is mapped as IV (5 - 1). Combining them produces XCIV."
 }
 ];
 
+let questions=[];
 let current=0;
 let score=0;
 let attempts=0;
@@ -591,6 +560,14 @@ let locked=false;
 const correctSound=document.getElementById("correctSound");
 const wrongSound=document.getElementById("wrongSound");
 const clapSound=document.getElementById("clapSound");
+
+function shuffle(array){
+  for(let i=array.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [array[i],array[j]]=[array[j],array[i]];
+  }
+  return array;
+}
 
 setTimeout(function(){
   showScreen("intro");
@@ -607,6 +584,7 @@ function showScreen(id){
 function startGame(){
   score=0;
   current=0;
+  questions=shuffle([...pool]);
   showScreen("quiz");
   loadQuestion();
 }
@@ -627,17 +605,6 @@ function loadQuestion(){
   const progress=((current)/questions.length)*100;
   document.getElementById("progressBar").style.width=progress+"%";
 
-  const canvasWrapper = document.getElementById('canvas-wrapper');
-  if (questions[current].type === "abacus") {
-      canvasWrapper.classList.remove('hidden');
-      drawAbacus();
-  } else if (questions[current].type === "clock") {
-      canvasWrapper.classList.remove('hidden');
-      drawClock();
-  } else {
-      canvasWrapper.classList.add('hidden');
-  }
-
   const box=document.getElementById("options");
   box.innerHTML="";
 
@@ -652,89 +619,6 @@ function loadQuestion(){
   }
 
   startTimer();
-}
-
-function drawAbacus() {
-  const canvas = document.getElementById('visual-canvas');
-  const ctx = canvas.getContext('2d');
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  
-  ctx.strokeStyle = "#455a64";
-  ctx.lineWidth = 4;
-  ctx.beginPath();
-  ctx.moveTo(30, 140);
-  ctx.lineTo(370, 140);
-  ctx.stroke();
-
-  const columns = ["L", "TTh", "Th", "H", "T", "O"];
-  const counts = [4, 0, 5, 2, 1, 3];
-  const step = 55;
-  const startX = 60;
-
-  columns.forEach((col, idx) => {
-    const x = startX + (idx * step);
-    ctx.strokeStyle = "#b0bec5";
-    ctx.lineWidth = 2;
-    ctx.beginPath();
-    ctx.moveTo(x, 20);
-    ctx.lineTo(x, 140);
-    ctx.stroke();
-
-    ctx.fillStyle = "#0277bd";
-    ctx.font = "bold 13px Arial";
-    ctx.fillText(col, x - 8, 160);
-
-    ctx.fillStyle = "#e53935";
-    for(let b = 0; b < counts[idx]; b++) {
-      ctx.beginPath();
-      ctx.arc(x, 130 - (b * 12), 5, 0, Math.PI * 2);
-      ctx.fill();
-    }
-  });
-}
-
-function drawClock() {
-  const canvas = document.getElementById('visual-canvas');
-  const ctx = canvas.getContext('2d');
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-  const cx = canvas.width / 2;
-  const cy = canvas.height / 2;
-  const radius = 65;
-
-  ctx.strokeStyle = "#0277bd";
-  ctx.lineWidth = 4;
-  ctx.beginPath();
-  ctx.arc(cx, cy, radius, 0, Math.PI * 2);
-  ctx.stroke();
-  ctx.fillStyle = "#ffffff";
-  ctx.fill();
-
-  ctx.fillStyle = "#263238";
-  ctx.font = "bold 13px Arial";
-  ctx.fillText("XII", cx - 9, cy - radius + 16);
-  ctx.fillText("III", cx + radius - 20, cy + 4);
-  ctx.fillText("VI", cx - 6, cy + radius - 10);
-  ctx.fillText("IX", cx - radius + 10, cy + 4);
-
-  ctx.fillStyle = "#263238";
-  ctx.beginPath();
-  ctx.arc(cx, cy, 4, 0, Math.PI * 2);
-  ctx.fill();
-
-  ctx.strokeStyle = "#2e7d32";
-  ctx.lineWidth = 3;
-  ctx.beginPath();
-  ctx.moveTo(cx, cy);
-  ctx.lineTo(cx, cy - 45);
-  ctx.stroke();
-
-  ctx.strokeStyle = "#c62828";
-  ctx.lineWidth = 4;
-  ctx.beginPath();
-  ctx.moveTo(cx, cy);
-  ctx.lineTo(cx - 30, cy);
-  ctx.stroke();
 }
 
 function startTimer(){
@@ -781,7 +665,7 @@ function checkAnswer(i,el){
       document.getElementById("feedback").innerHTML="Try once more.";
       el.onclick=null;
     }else{
-      showAnswer("Not quite.");
+      showAnswer("Incorrect.");
     }
   }
 }
@@ -801,7 +685,7 @@ function showAnswer(msg){
   }
 
   document.getElementById("feedback").innerHTML=
-    msg+"<div class='explain'>Correct answer: <b>"+q.o[q.a]+"</b><br>"+q.e+"</div>";
+    msg+"<div class='explain'>Correct option: <b>"+q.o[q.a]+"</b><br>"+q.e+"</div>";
 
   document.getElementById("nextBtn").classList.remove("hidden");
 }
@@ -821,15 +705,17 @@ function showResult(){
   showScreen("result");
   document.getElementById("finalScore").textContent=score;
 
-  let msg="Good effort! Keep practicing configurations and logical place values.";
+  let msg="Review complex place values, arithmetic rules, and multi-step math problems to build confidence.";
 
-  if(score>=9){
-    msg="Excellent! Perfect run. You thoroughly understand place values, successors, and Roman system conversions.";
-  }else if(score>=7){
-    msg="Well done! A little more practice will make it flawless.";
+  if(score===12){
+    msg="Outstanding performance! Perfect evaluation of every randomized configuration variant.";
+  }else if(score>=9){
+    msg="Great job! Exceptional precision across varied numerical structures.";
+  }else if(score>=6){
+    msg="Good effort! You have a solid basic understanding but can refine some problem areas.";
   }
 
-  document.getElementById("resultMsg").innerHTML = msg + "<br><br><b>Final Challenge Reference:</b> 9,99,999<br><span class='small'>Reasoning: Adding 1 to the largest 6-digit number (9,99,999) results in the smallest 7-digit number (10,00,000).</span>";
+  document.getElementById("resultMsg").innerHTML = msg + "<br><br><b>Final Challenge Formula:</b> 89,999<br><span class='small'>Reasoning: The largest 5-digit number is 99,999 and the smallest 5-digit number is 10,000. 99,999 - 10,000 = 89,999.</span>";
 }
 
 function makeConfetti(){
