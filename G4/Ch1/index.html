@@ -42,27 +42,29 @@
             min-height: 520px;
         }
 
-        /* --- SPLASH SCREEN --- */
+        /* --- STABLE TEXT SPLASH --- */
         #splash-screen {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
             background: #ffffff;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
             z-index: 9999;
-            opacity: 1;
-            transition: opacity 0.5s ease-out;
         }
 
-        .logo-only {
-            width: 250px;
-            height: auto;
-            max-width: 85%;
-            object-fit: contain;
+        .fallback-badge {
+            background: var(--primary);
+            color: white;
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-weight: 800;
+            font-size: 1.2rem;
+            letter-spacing: 2px;
+            box-shadow: 0 4px 10px rgba(26,115,232,0.3);
         }
 
-        /* --- BASIC INSTRUCTIONS STYLING --- */
         .instruction-box {
             background: #f1f3f9;
             border-left: 4px solid var(--primary);
@@ -77,7 +79,6 @@
         .instruction-box ul { margin: 5px 0 0 20px; padding: 0; }
         .instruction-box li { margin-bottom: 5px; }
 
-        /* --- HORIZONTAL HUD COMPONENT --- */
         .hud-row {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -129,12 +130,11 @@
 <body>
 
 <div id="app-container">
-    <!-- --- SPLASH SCREEN --- -->
     <div id="splash-screen">
-        <img src="assets/innovine-logo.png" class="logo-only" onerror="this.src='https://via.placeholder.com/250x100?text=INNOVINE'" alt="Innovine Logo">
+        <div class="fallback-badge">INNOVINE</div>
+        <p style="font-size: 11px; color:#aaa; margin-top:10px;">Loading Environment...</p>
     </div>
 
-    <!-- --- INTRO VIEW --- -->
     <div id="intro-view" class="hidden">
         <div style="text-align: center; font-size: 3.5rem; margin-bottom: 5px;">🔢</div>
         <h1 style="text-align:center; color:var(--primary); margin: 0 0 5px 0; font-size: 24px;">The Number Mastery Challenge</h1>
@@ -154,7 +154,6 @@
         <button id="start-btn" style="width:100%; padding:18px; background:var(--primary); color:white; border:none; border-radius:14px; font-weight:bold; font-size:1.1rem; cursor:pointer; margin-top: 10px;">Begin Challenge ⚡</button>
     </div>
 
-    <!-- --- QUIZ CHALLENGE VIEW --- -->
     <div id="quiz-view" class="hidden">
         <div class="hud-row">
             <div class="hud-pill blue">Task <span id="q-num">1</span>/12</div>
@@ -172,7 +171,6 @@
         <div id="cross-mark" class="red-cross">✖</div>
     </div>
 
-    <!-- --- HOTS CHALLENGE GATE --- -->
     <div id="hots-view" class="hidden" style="text-align:center;">
         <div style="font-size: 4rem; margin-bottom: 5px;">🎯</div>
         <h1 style="color: var(--text); font-weight: 800; margin: 0; font-size: 24px;">Final Challenge (HOTS)</h1>
@@ -184,7 +182,6 @@
         <button id="finish-btn" style="width:100%; padding:16px; background:var(--primary); color:white; border:none; border-radius:14px; font-weight:700; cursor:pointer;">FINISH WORKSPACE</button>
     </div>
 
-    <!-- --- FINAL SCORE SUMMARY RESULT VIEW --- -->
     <div id="result-view" class="hidden" style="text-align:center;">
         <div style="font-size: 4rem; margin-bottom: 5px;">🏅</div>
         <h2 style="font-size:1.5rem; margin: 5px 0;">Challenge Completed!</h2>
@@ -213,32 +210,17 @@
     let questions = [];
     let current = 0, score = 0, attempts = 0, timer, timeLeft = 60;
 
-    // Audio assets fallbacks
-    const sndC = new Audio('assets/correct.mp3');
-    const sndW = new Audio('assets/wrong.mp3');
-    const sndF = new Audio('assets/clapping.mp3');
-
-    // Robust Initialization Flow
     function initGame() {
         const splash = document.getElementById('splash-screen');
         const intro = document.getElementById('intro-view');
-        
         if (splash) splash.style.display = 'none';
         if (intro) intro.classList.remove('hidden');
     }
 
-    // Trigger on window load, with an immediate fallback safety timeout
-    window.addEventListener('load', () => {
-        setTimeout(initGame, 3000); // 3-second explicit transition limit
+    // Instantly transition after 800ms so it doesn't leave the user hanging
+    window.addEventListener('DOMContentLoaded', () => {
+        setTimeout(initGame, 800);
     });
-
-    // Hard fallback if asset streams block the window load entirely
-    setTimeout(() => {
-        const intro = document.getElementById('intro-view');
-        if (intro && intro.classList.contains('hidden')) {
-            initGame();
-        }
-    }, 4000);
 
     document.getElementById('start-btn').onclick = () => {
         document.getElementById('intro-view').classList.add('hidden');
@@ -289,12 +271,10 @@
             b.classList.add('correct');
             score++;
             document.getElementById('score-val').innerText = score;
-            try { sndC.play(); } catch(e){}
             createStars();
             endTurn();
         } else {
             attempts++;
-            try { sndW.play(); } catch(e){}
             showCross();
             b.classList.add('wrong');
             b.disabled = true;
@@ -351,7 +331,6 @@
         document.getElementById('hots-view').classList.add('hidden');
         document.getElementById('result-view').classList.remove('hidden');
         document.getElementById('final-pts').innerText = score;
-        try { sndF.play(); } catch(e){}
 
         let msg = "Review complex place values, arithmetic rules, and multi-step math problems to build confidence.";
         if(score === 12) {
