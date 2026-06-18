@@ -330,15 +330,22 @@
 
 <div id="confetti" style="position:fixed; inset:0; pointer-events:none; z-index:3;"></div>
 
-<audio id="correctSound" src="assets/correct.mp3" preload="auto"></audio>
-<audio id="wrongSound" src="assets/wrong.mp3" preload="auto"></audio>
-<audio id="clapSound" src="assets/clapping.mp3" preload="auto"></audio>
-
 <script>
-    // --- AUDIO SYSTEM ---
-    const correctSound = document.getElementById("correctSound");
-    const wrongSound = document.getElementById("wrongSound");
-    const clapSound = document.getElementById("clapSound");
+    // --- SAFE AUDIO LOADER ENGINE ---
+    function createSafeAudio(src) {
+        let a = new Audio();
+        a.src = src;
+        a.preload = "auto";
+        // Prevent file load failures from breaking script workflow
+        a.addEventListener('error', function(e) { 
+            console.log("Audio asset omitted/offline:", src); 
+        }, true);
+        return a;
+    }
+
+    const correctSound = createSafeAudio('assets/correct.mp3');
+    const wrongSound = createSafeAudio('assets/wrong.mp3');
+    const clapSound = createSafeAudio('assets/clapping.mp3');
 
     const pool = [
         {
@@ -498,10 +505,14 @@
     }
 
     window.onload = () => {
+        // Guaranteed entry fallback to bypass layout blockades smoothly
         setTimeout(() => {
-            document.getElementById('splash-screen').style.display = 'none';
-            document.getElementById('intro-view').classList.remove('hidden');
-        }, 5000);
+            const splash = document.getElementById('splash-screen');
+            if (splash && splash.style.display !== 'none') {
+                splash.style.display = 'none';
+                document.getElementById('intro-view').classList.remove('hidden');
+            }
+        }, 2500);
     };
 
     function startChallenge() {
