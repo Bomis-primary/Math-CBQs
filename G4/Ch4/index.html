@@ -38,6 +38,24 @@
             position: relative;
         }
 
+        /* --- LOGO STYLING --- */
+        .logo-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .inovine-logo {
+            font-size: 1.8rem;
+            font-weight: 900;
+            letter-spacing: 2px;
+            color: #2c3e50;
+            text-transform: uppercase;
+        }
+        .inovine-logo span {
+            color: var(--primary);
+        }
+
         .instruction-box {
             background: #e8f8f5;
             border-left: 4px solid var(--primary);
@@ -76,7 +94,6 @@
         .category-text { font-size: 0.85rem; color: #b7950b; font-weight: 700; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 1px; }
         .question-text { font-size: 1.1rem; font-weight: 600; line-height: 1.5; margin-bottom: 15px; white-space: pre-line; }
 
-        /* --- STABLE BACKUP STANDARD DESIGN FOR LATTICE QUESTION --- */
         .lattice-backup-box {
             background: #fcfcfc;
             border: 2px dashed #bdc3c7;
@@ -114,7 +131,10 @@
 
 <div id="app-container">
     <div id="intro-view">
-        <div style="text-align: center; font-size: 3.5rem; margin-bottom: 5px;">✖️</div>
+        <div class="logo-container">
+            <div class="inovine-logo">Ino<span>vine</span></div>
+            </div>
+
         <h1 style="text-align:center; color:var(--primary); margin: 0 0 5px 0; font-size: 26px;">Multiplication Mastery</h1>
         <p style="text-align:center; color:#7f8c8d; margin-top: 0; font-weight: 600; text-transform: uppercase; font-size: 12px; letter-spacing: 1px;">Chapter 04 Evaluation</p>
         
