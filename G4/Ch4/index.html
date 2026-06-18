@@ -1,1 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Multiplication Mastery Challenge</title>
+    <style>
+        :root {
+            --primary: #107a65;
+            --primary-dark: #0e6251;
+            --success: #27ae60;
+            --error: #e67e22;
+            --bg: #f2f9f6;
+            --panel-bg: #e8f8f5;
+            --text: #2c3e50;
+            --hud-green: #d1f2eb;
+            --hud-gold: #fef9e7;
+        }
 
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background-color: #eaecee;
+            color: var(--text);
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 10px;
+        }
+
+        #app-container {
+            width: 100%;
+            max-width: 580px;
+            background: #ffffff;
+            border-radius: 24px;
+            padding: 25px;
+            box-shadow: 0 15px 35px rgba(16, 122, 101, 0.12);
+            position: relative;
+            overflow: hidden;
+            min-height: 540px;
+        }
+
+        .instruction-box {
+            background: var(--panel-bg);
+            border-left: 4px solid var(--primary);
+            padding: 15px;
+            border-radius: 8px;
+            text-align: left;
+            margin: 20px 0;
+            font-size: 0.95rem;
+            color: #455a64;
+            line-height: 1.5;
+        }
+        .instruction-box ul { margin: 5px 0 0 20px; padding: 0; }
+        .instruction-box li { margin-bottom: 6px; }
+
+        .hud-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        .hud-pill {
+            text-align: center;
+            padding: 12px 6px;
+            border-radius: 14px;
+            font-size: 0.95rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: inset 0 -2px 0px rgba(0,0,0,0.05);
+        }
+        .hud-pill.green { background-color: var(--hud-green); color: var(--primary-dark); }
+        .hud-pill.gold { background-color: var(--hud-gold); color: #b7950b; }
+
+        .timer-track { width: 100%; height: 8px; background: #e5e8e8; border-radius: 10px; margin-bottom: 20px; overflow: hidden; }
+        #timer-bar { height: 100%; width: 100%; background: var(--primary); transition: width 1s linear; }
+
+        .category-text { font-size: 0.85rem; color: #b7950b; font-weight: 700; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 1px; }
+        .question-text { font-size: 1.1rem; font-weight: 600; line-height: 1.5; margin-bottom: 15px; white-space: pre-line; }
+
+        /* --- STYLED INTERACTIVE LATTICE GRID GRAPHIC --- */
+        .lattice-container {
+            display: flex;
+            justify-content: center;
+            margin: 15px 0 20px 0;
+            background: #fafafa;
+            padding: 15px;
+            border-radius: 14px;
+            border: 1px solid #e5e8e8;
+        }
+        .lattice-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 50px);
+            grid-template-rows: repeat(3, 50px);
+            gap: 2px;
+            background-color: #bdc3c7;
+            border: 2px solid #2c3e50;
+            position: relative;
+        }
+        .lattice-cell {
+            background: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: 700;
+            font-size: 1.2rem;
+            position: relative;
+        }
+        .diagonal-split {
+            background: linear-gradient(to top right, #fff 48%, #2c3e50 49%, #2c3e50 51%, #fff 52%);
+        }
+        .top-right-val { position: absolute; top: 4px; right: 6px; font-size: 0.85rem; color: #7f8c8d; }
+        .bottom-left-val { position: absolute; bottom: 4px; left: 6px; font-size: 0.85rem; color: #2c3e50; font-weight: 800; }
+        
+        .lattice-label {
+            font-weight: 800;
+            color: var(--primary);
+            font-size: 1.2rem;
+            text-align: center;
+            line-height: 50px;
+        }
+
+        .options-grid { display: grid; gap: 12px; }
+        .opt-btn {
+            background: #fff; border: 2px solid #edf2f4; padding: 16px;
+            border-radius: 14px; text-align: left; font-size: 1rem; cursor: pointer; transition: 0.2s;
+            color: #34495e; font-weight: 500;
+        }
+        .opt-btn:hover:not(:disabled) { border-color: var(--primary); background: #fafafa; }
+        .opt-btn.correct { background: #e8f5e9 !important; color: var(--success) !important; border-color: #a5d6a7 !important; font-weight: 700; }
+        .opt-btn.wrong { background: #fdf2e9 !important; color: var(--error) !important; border-color: #f5caba !important; }
+
+        .feedback { margin-top: 20px; padding: 15px; border-radius: 12px; display: none; line-height: 1.5; font-size: 0.95rem; }
+        .hint-box { background: #fef9e7; border: 1px solid #f9e79f; color: #b7950b; }
+        .expl-box { background: #e8f8f5; border: 1px solid #a3e4d7; color: #117a65; }
+
+        #action-btn { width: 100%; margin-top: 20px; padding: 16px; background: var(--primary); color: white; border: none; border-radius: 14px; font-weight: 700; cursor: pointer; font-size: 1rem; }
+        #action-btn:hover { background: var(--primary-dark); }
+        
+        .red-cross { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 100px; color: rgba(230, 126, 34, 0.4); pointer-events: none; display: none; z-index: 10; }
+        .star { position: absolute; width: 12px; height: 12px; background: #2ecc71; clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%); pointer-events: none; animation: pop 1s ease-out forwards; }
+
+        @keyframes pop { 0% { transform: scale(0); opacity: 1; } 100% { transform: scale(1.5) translate(var(--tx), var(--ty)); opacity: 0; } }
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+
+<div id="app-container">
+    <div id="intro-view">
+        <div style="text-align: center; font-size: 3.5rem; margin-bottom: 5px;">✖️</div>
+        <h1 style="text-align:center; color:var(--primary); margin: 0 0 5px 0; font-size: 26px;">Multiplication Mastery</h1>
+        <p style="text-align:center; color:#7f8c8d; margin-top: 0; font-weight: 600; text-transform: uppercase; font-size: 12px; letter-spacing: 1px;">Chapter 04 Evaluation</p>
+        
+        <div class="instruction-box">
+            <strong>📋 Learning Outcomes Checked:</strong>
+            <ul>
+                <li>Repeated addition conceptual framework.</li>
+                <li>Multiplication table fluency from 1 to 25.</li>
+                <li>Multiplying large values up to 6 digits.</li>
+                <li>Lattice multiplication technique & grid layouts.</li>
+                <li>Rapid mental execution multiplying by 10, 100, and 1000.</li>
+                <li>Product estimations & unique word problem logic.</li>
+                <li><b>Rules:</b> 60s per turn. Up to 2 attempts per question!</li>
+            </ul>
+        </div>
+
+        <button id="start-btn" style="width:100%; padding:18px; background:var(--primary); color:white; border:none; border-radius:14px; font-weight:bold; font-size:1.1rem; cursor:pointer; margin-top: 10px;">Begin Challenge ⚡</button>
+    </div>
+
+    <div id="quiz-view" class="hidden">
+        <div class="hud-row">
+            <div class="hud-pill green">Task <span id="q-num">1</span>/10</div>
+            <div class="hud-pill green">Score: <span id="score-val">0</span></div>
+            <div class="hud-pill gold"><span id="timer-text">60s</span></div>
+        </div>
+        <div class="timer-track"><div id="timer-bar"></div></div>
+        
+        <div id="q-category" class="category-text"></div>
+        <div id="q-text" class="question-text"></div>
+        
+        <div id="custom-table-area"></div>
+        
+        <div id="options-area" class="options-grid"></div>
+        
+        <div id="feedback-box" class="feedback"></div>
+        <button id="action-btn" class="hidden">Next Question →</button>
+        <div id="cross-mark" class="red-cross">✖</div>
+    </div>
+
+    <div id="result-view" class="hidden" style="text-align:center;">
+        <div style="font-size: 4rem; margin-bottom: 5px;">🏆</div>
+        <h2 style="font-size:1.6rem; margin: 5px 0;">Evaluation Completed!</h2>
+        <div style="font-size: 4rem; font-weight: 800; color: var(--primary); margin: 10px 0;"><span id="final-pts">0</span>/10</div>
+        <div id="result-msg" style="color:#5f6368; font-size: 0.95rem; line-height: 1.5; margin: 0 0 25px 0; text-align: left; background: #f8f9fa; border: 1px solid #e2e8f0; padding: 16px; border-radius: 16px; max-height: 220px; overflow-y: auto;"></div>
+        <button onclick="location.reload()" style="width:100%; padding:16px; background:var(--primary); color:white; border:none; border-radius:14px; font-weight:700; cursor:pointer; font-size: 1rem;">Start New Session</button>
+    </div>
+</div>
+
+<script>
+    const pool = [
+        { 
+            cat: "Conceptual Framework", 
+            q: "A teacher writes the following mathematical sentence on the blackboard:\n18 + 18 + 18 + 18 + 18 + 18 + 18\n\nWhich expression accurately translates this repeated addition setup into standard multiplication form?", 
+            opts: ["A) 18 × 6", "B) 18 × 7", "C) 7 × 7 × 18", "D) 18 + 7"], 
+            ans: 1, 
+            hint: "Count how many times the number 18 is written down sequentially.", 
+            expl: "Multiplication is defined as repeated addition. Since 18 is added 7 times, it can be written as 18 × 7." 
+        },
+        { 
+            cat: "Table Fluency (1 to 25)", 
+            q: "During a competitive mental math sprint, players are asked to evaluate the product of the 24 times table:\n\n24 × 12 = ?", 
+            opts: ["A) 268", "B) 288", "C) 244", "D) 278"], 
+            ans: 1, 
+            hint: "Think of it as (24 × 10) + (24 × 2) to compute the total mentally.", 
+            expl: "24 × 10 = 240, and 24 × 2 = 48. Adding them together gives 240 + 48 = 288." 
+        },
+        { 
+            cat: "Multiplying by Powers of 10", 
+            q: "An assembly line packs a shipping carton containing exactly 4,320 microchips. \n\nIf a cargo ship carries 1,000 of these identical cartons, how many microchips are on board in total?", 
+            opts: ["A) 43,200", "B) 432,000", "C) 4,320,000", "D) 43,200,000"], 
+            ans: 2, 
+            hint: "When multiplying an integer by 1000, append three zeros to the right of the original number.", 
+            expl: "4,320 × 1,000 = 4,320,000. Shift the decimal digits three column places to the left." 
+        },
+        { 
+            cat: "4-Digit by 2-Digit Calculation", 
+            q: "A wholesale textbook retailer orders 35 collection boxes. Each box contains exactly 1,212 reference manuals. \n\nWhat is the total quantity of manuals delivered?", 
+            opts: ["A) 42,420 manuals", "B) 41,320 manuals", "C) 42,320 manuals", "D) 39,840 manuals"], 
+            ans: 0, 
+            hint: "Calculate 1,212 × 35 using standard vertical alignment or partial products.", 
+            expl: "1,212 × 5 = 6,060. 1,212 × 30 = 36,360. 6,060 + 36,360 = 42,420." 
+        },
+        { 
+            cat: "Large Number Multiplications", 
+            q: "A concrete mixing complex outputs 145,200 kg of materials every hour. \n\nHow many kilograms of concrete does it produce over a 12-hour continuous runtime window?", 
+            opts: ["A) 1,642,400 kg", "B) 1,742,400 kg", "C) 1,742,000 kg", "D) 1,842,400 kg"], 
+            ans: 1, 
+            hint: "Perform a 6-digit by 2-digit multiplication: 145,200 × 12.", 
+            expl: "145,200 × 12 = 1,742,400 kg after working out the column distributions." 
+        },
+        { 
+            cat: "Lattice Method Strategy", 
+            q: "Look at the lattice multiplication box diagram below. It calculates the partial products for a cell position:\n\nWhat is the value missing from the lower-left half of the split cell [?]?", 
+            hasLattice: true,
+            opts: ["A) 1", "B) 2", "C) 3", "D) 4"], 
+            ans: 1, 
+            hint: "The digit above the cell is 4 and the digit to the right is 6. Multiply 4 × 6 = 24. The tens digit (2) is already written in the top-right. What digit goes in the bottom-left?", 
+            expl: "4 × 6 = 24. In a lattice cell, the tens digit (2) occupies the top-right, while the ones digit (4) occupies the bottom-left." 
+        },
+        { 
+            cat: "Product Estimation", 
+            q: "A storage fleet loads 28 crates. Each individual crate weighs 415 kg. \n\nEstimate the total weight load by rounding the number of crates to the nearest ten and the weight of each crate to the nearest hundred.", 
+            opts: ["A) 8,000 kg", "B) 12,000 kg", "C) 15,000 kg", "D) 16,000 kg"], 
+            ans: 1, 
+            hint: "28 rounds to 30. 415 rounds to 400. Now find the product of these rounded figures.", 
+            expl: "28 rounds to 30. 415 rounds to 400. Estimated product = 30 × 400 = 12,000 kg." 
+        },
+        { 
+            cat: "Method Effectiveness Analysis", 
+            q: "When asked to multiply 2,500 × 40 mentally, which strategy is the most efficient and mathematically direct?", 
+            opts: ["A) Draw a full 4x2 lattice box diagram on paper.", "B) Add 2,500 forty times row-by-row.", "C) Multiply 25 × 4 to get 100, then append the three combined zeros to get 100,000.", "D) Round 2,500 up to 3,000 and calculate an estimated guess."], 
+            ans: 2, 
+            hint: "Look for the shortcut that counts terminal trailing zeros to save calculation time.", 
+            expl: "Multiplying base non-zero values (25 × 4 = 100) and adding the trailing zeros (2 from 2,500 and 1 from 40) gives 100,000 quickly and accurately." 
+        },
+        { 
+            cat: "Story Sum Mastery", 
+            q: "An agricultural cooperative buys 125 trucks. Each vehicle is loaded with 2,400 organic saplings. \n\nWhat is the total number of saplings across the entire fleet?", 
+            opts: ["A) 280,000 saplings", "B) 300,000 saplings", "C) 325,000 saplings", "D) 30,000 saplings"], 
+            ans: 1, 
+            hint: "Set up the multiplication problem: 2,400 × 125.", 
+            expl: "2,400 × 125 = 300,000 saplings carried collectively by the vehicles." 
+        },
+        { 
+            cat: "Word Problem Design", 
+            q: "Identify which real-world scenario perfectly matches the core math statement: \nTotal = 450 × 15", 
+            opts: ["A) A library shelves 450 books and gives away 15 to a student.", "B) A school hall has 450 rows with 15 seats in each row. Find the total seating capacity.", "C) A courier agent delivers 450 packages across 15 separate city addresses evenly.", "D) A car travel log records 450 km on day one and 15 km on day two."], 
+            ans: 1, 
+            hint: "Look for equal groupings or sets where a value is repeated a specific number of times.", 
+            expl: "Having 450 rows with 15 seats each sets up a uniform repeating group, which translates directly to 450 × 15." 
+        }
+    ];
+
+    let questions = [];
+    let current = 0, score = 0, attempts = 0, timer, timeLeft = 60;
+
+    questions = [...pool];
+    for (let i = questions.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [questions[i], questions[j]] = [questions[j], questions[i]];
+    }
+
+    document.getElementById('start-btn').onclick = () => {
+        document.getElementById('intro-view').classList.add('hidden');
+        document.getElementById('quiz-view').classList.remove('hidden');
+        loadQuestion();
+    };
+
+    function loadQuestion() {
+        attempts = 0; timeLeft = 60;
+        const q = questions[current];
+        document.getElementById('feedback-box').style.display = 'none';
+        document.getElementById('action-btn').classList.add('hidden');
+        document.getElementById('q-num').innerText = current + 1;
+        document.getElementById('q-category').innerText = q.cat;
+        document.getElementById('q-text').innerText = q.q;
+        document.getElementById('timer-text').innerText = timeLeft + "s";
+        
+        const tableArea = document.getElementById('custom-table-area');
+        if (q.hasLattice) {
+            tableArea.innerHTML = `
+                <div class="lattice-container">
+                    <div style="display: flex; flex-direction: column; align-items: center;">
+                        <div style="display: grid; grid-template-columns: 50px 50px; margin-left: 50px; width: 100px;">
+                            <div class="lattice-label">4</div>
+                            <div class="lattice-label" style="color: #ccc;">...</div>
+                        </div>
+                        
+                        <div style="display: flex; align-items: center;">
+                            <div class="lattice-label" style="width: 50px; padding-right: 15px;">✖</div>
+                            
+                            <div class="lattice-grid">
+                                <div class="lattice-cell diagonal-split">
+                                    <span class="top-right-val">2</span>
+                                    <span class="bottom-left-val">[?]</span>
+                                </div>
+                                <div class="lattice-cell" style="background: #f5f5f5; color:#ccc;"></div>
+                                <div class="lattice-label" style="background:#fff;">6</div>
+                                
+                                <div class="lattice-cell" style="background: #f5f5f5;"></div>
+                                <div class="lattice-cell" style="background: #f5f5f5;"></div>
+                                <div class="lattice-label" style="background:#fff; color:#ccc;">...</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        } else {
+            tableArea.innerHTML = "";
+        }
+
+        const area = document.getElementById('options-area');
+        area.innerHTML = "";
+        q.opts.forEach((o, i) => {
+            const b = document.createElement('button');
+            b.className = 'opt-btn';
+            b.innerText = o;
+            b.onclick = () => check(i, b);
+            area.appendChild(b);
+        });
+        startTimer();
+    }
+
+    function startTimer() {
+        clearInterval(timer);
+        timer = setInterval(() => {
+            timeLeft--;
+            document.getElementById('timer-text').innerText = timeLeft + "s";
+            document.getElementById('timer-bar').style.width = (timeLeft / 60 * 100) + "%";
+            if(timeLeft <= 0) { clearInterval(timer); endTurn(); }
+        }, 1000);
+    }
+
+    function check(i, b) {
+        if(i === questions[current].ans) {
+            clearInterval(timer);
+            b.classList.add('correct');
+            score++;
+            document.getElementById('score-val').innerText = score;
+            createStars();
+            endTurn();
+        } else {
+            attempts++;
+            showCross();
+            b.classList.add('wrong');
+            b.disabled = true;
+            if(attempts === 1) {
+                const f = document.getElementById('feedback-box');
+                f.className = 'feedback hint-box';
+                f.innerHTML = "<b>💡 Helpful Hint:</b> " + questions[current].hint;
+                f.style.display = 'block';
+            } else {
+                clearInterval(timer);
+                endTurn();
+            }
+        }
+    }
+
+    function endTurn() {
+        document.querySelectorAll('.opt-btn').forEach(btn => btn.disabled = true);
+        const f = document.getElementById('feedback-box');
+        f.className = 'feedback expl-box';
+        f.innerHTML = "<b>🔍 Explanation:</b> " + questions[current].expl;
+        f.style.display = 'block';
+        document.querySelectorAll('.opt-btn')[questions[current].ans].classList.add('correct');
+        document.getElementById('action-btn').classList.remove('hidden');
+    }
+
+    function showCross() {
+        const c = document.getElementById('cross-mark');
+        c.style.display = 'block';
+        setTimeout(() => c.style.display = 'none', 600);
+    }
+
+    function createStars() {
+        for(let i=0; i<15; i++) {
+            const s = document.createElement('div');
+            s.className = 'star';
+            s.style.setProperty('--tx', (Math.random() * 200 - 100) + 'px');
+            s.style.setProperty('--ty', (Math.random() * 200 - 100) + 'px');
+            s.style.left = '50%'; s.style.top = '50%';
+            document.getElementById('app-container').appendChild(s);
+            setTimeout(() => s.remove(), 1000);
+        }
+    }
+
+    document.getElementById('action-btn').onclick = () => {
+        current++;
+        if(current < questions.length) loadQuestion();
+        else {
+            document.getElementById('quiz-view').classList.add('hidden');
+            document.getElementById('result-view').classList.remove('hidden');
+            document.getElementById('final-pts').innerText = score;
+
+            let statusMessage = "Review lattice value placements and tables up to 25 to sharpen your math precision!";
+            if(score === 10) {
+                statusMessage = "Magnificent! Perfect multiplication competency unlocked. You understand all large digit product methods, powers of 10, and structural algorithms.";
+            } else if(score >= 8) {
+                statusMessage = "Excellent performance! Strong grasp of multiplication techniques, algorithmic lattice rules, and estimated products.";
+            } else if(score >= 5) {
+                statusMessage = "Good job! You have a solid core, but sometimes mix up column zeros or rounding estimation milestones. Try another round!";
+            }
+
+            document.getElementById('result-msg').innerHTML = `
+                <span style="font-weight:700; color:#2c3e50; display:block; margin-bottom:6px;">Performance Insights:</span>
+                ${statusMessage}
+            `;
+        }
+    };
+</script>
+</body>
+</html>
