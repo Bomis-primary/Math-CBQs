@@ -33,27 +33,41 @@
             max-width: 580px;
             background: #ffffff;
             border-radius: 24px;
-            padding: 25px;
             box-shadow: 0 15px 35px rgba(16, 122, 101, 0.12);
             position: relative;
+            overflow: hidden;
+            min-height: 520px;
         }
 
-        /* --- LOGO STYLING --- */
-        .logo-container {
+        /* --- 5-SECOND WHITE SPLASH SCREEN --- */
+        #splash-screen {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-color: #ffffff;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
-            margin-bottom: 15px;
+            z-index: 100;
+            transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        .inovine-logo {
-            font-size: 1.8rem;
-            font-weight: 900;
-            letter-spacing: 2px;
-            color: #2c3e50;
-            text-transform: uppercase;
+        
+        .splash-logo-img {
+            max-width: 240px;
+            width: 80%;
+            height: auto;
+            object-fit: contain;
+            animation: gentle-pulse 2.5s infinite ease-in-out;
         }
-        .inovine-logo span {
-            color: var(--primary);
+
+        @keyframes gentle-pulse {
+            0%, 100% { transform: scale(0.97); opacity: 0.9; }
+            50% { transform: scale(1.02); opacity: 1; }
+        }
+
+        /* --- MAIN VIEW CONTENT ELEMENTS --- */
+        .quiz-padding {
+            padding: 25px;
         }
 
         .instruction-box {
@@ -130,59 +144,79 @@
 <body>
 
 <div id="app-container">
-    <div id="intro-view">
-        <div class="logo-container">
-            <div class="inovine-logo">Ino<span>vine</span></div>
+
+    <div id="splash-screen">
+        <img class="splash-logo-img" src="assets/logo.png" alt="Inovine Logo">
+    </div>
+
+    <div id="intro-view" class="hidden">
+        <div class="quiz-padding">
+            <h1 style="text-align:center; color:var(--primary); margin: 10px 0 5px 0; font-size: 26px;">Multiplication Mastery</h1>
+            <p style="text-align:center; color:#7f8c8d; margin-top: 0; font-weight: 600; text-transform: uppercase; font-size: 12px; letter-spacing: 1px;">Chapter 04 Evaluation</p>
+            
+            <div class="instruction-box">
+                <strong>📋 Learning Outcomes Checked:</strong>
+                <ul>
+                    <li>Repeated addition framework.</li>
+                    <li>Multiplication table fluency up to 25.</li>
+                    <li>Multiplying 5 and 6 digit numbers.</li>
+                    <li>Lattice multiplication cell structures.</li>
+                    <li>Multiplying by 10, 100, and 1000 dynamically.</li>
+                    <li>Product estimations & word problems.</li>
+                    <li><b>Rules:</b> 60s per turn. Up to 2 attempts per task!</li>
+                </ul>
             </div>
 
-        <h1 style="text-align:center; color:var(--primary); margin: 0 0 5px 0; font-size: 26px;">Multiplication Mastery</h1>
-        <p style="text-align:center; color:#7f8c8d; margin-top: 0; font-weight: 600; text-transform: uppercase; font-size: 12px; letter-spacing: 1px;">Chapter 04 Evaluation</p>
-        
-        <div class="instruction-box">
-            <strong>📋 Learning Outcomes Checked:</strong>
-            <ul>
-                <li>Repeated addition framework.</li>
-                <li>Multiplication table fluency up to 25.</li>
-                <li>Multiplying 5 and 6 digit numbers.</li>
-                <li>Lattice multiplication cell structures.</li>
-                <li>Multiplying by 10, 100, and 1000 dynamically.</li>
-                <li>Product estimations & word problems.</li>
-                <li><b>Rules:</b> 60s per turn. Up to 2 attempts per task!</li>
-            </ul>
+            <button id="start-btn" style="width:100%; padding:18px; background:var(--primary); color:white; border:none; border-radius:14px; font-weight:bold; font-size:1.1rem; cursor:pointer; margin-top: 10px;">Begin Challenge ⚡</button>
         </div>
-
-        <button id="start-btn" style="width:100%; padding:18px; background:var(--primary); color:white; border:none; border-radius:14px; font-weight:bold; font-size:1.1rem; cursor:pointer; margin-top: 10px;">Begin Challenge ⚡</button>
     </div>
 
     <div id="quiz-view" class="hidden">
-        <div class="hud-row">
-            <div class="hud-pill">Task <span id="q-num">1</span>/10</div>
-            <div class="hud-pill">Score: <span id="score-val">0</span></div>
-            <div class="hud-pill gold"><span id="timer-text">60s</span></div>
+        <div class="quiz-padding">
+            <div class="hud-row">
+                <div class="hud-pill">Task <span id="q-num">1</span>/10</div>
+                <div class="hud-pill">Score: <span id="score-val">0</span></div>
+                <div class="hud-pill gold"><span id="timer-text">60s</span></div>
+            </div>
+            <div class="timer-track"><div id="timer-bar"></div></div>
+            
+            <div id="q-category" class="category-text"></div>
+            <div id="q-text" class="question-text"></div>
+            
+            <div id="custom-table-area"></div>
+            
+            <div id="options-area" class="options-grid"></div>
+            
+            <div id="feedback-box" class="feedback"></div>
+            <button id="action-btn" class="hidden">Next Question →</button>
         </div>
-        <div class="timer-track"><div id="timer-bar"></div></div>
-        
-        <div id="q-category" class="category-text"></div>
-        <div id="q-text" class="question-text"></div>
-        
-        <div id="custom-table-area"></div>
-        
-        <div id="options-area" class="options-grid"></div>
-        
-        <div id="feedback-box" class="feedback"></div>
-        <button id="action-btn" class="hidden">Next Question →</button>
     </div>
 
     <div id="result-view" class="hidden" style="text-align:center;">
-        <div style="font-size: 4rem; margin-bottom: 5px;">🏆</div>
-        <h2 style="font-size:1.6rem; margin: 5px 0;">Evaluation Completed!</h2>
-        <div style="font-size: 4rem; font-weight: 800; color: var(--primary); margin: 10px 0;"><span id="final-pts">0</span>/10</div>
-        <div id="result-msg" style="color:#5f6368; font-size: 0.95rem; line-height: 1.5; margin: 0 0 25px 0; text-align: left; background: #f8f9fa; border: 1px solid #e2e8f0; padding: 16px; border-radius: 16px;"></div>
-        <button onclick="location.reload()" style="width:100%; padding:16px; background:var(--primary); color:white; border:none; border-radius:14px; font-weight:700; cursor:pointer; font-size: 1rem;">Start New Session</button>
+        <div class="quiz-padding">
+            <div style="font-size: 4rem; margin-bottom: 5px;">🏆</div>
+            <h2 style="font-size:1.6rem; margin: 5px 0;">Evaluation Completed!</h2>
+            <div style="font-size: 4rem; font-weight: 800; color: var(--primary); margin: 10px 0;"><span id="final-pts">0</span>/10</div>
+            <div id="result-msg" style="color:#5f6368; font-size: 0.95rem; line-height: 1.5; margin: 0 0 25px 0; text-align: left; background: #f8f9fa; border: 1px solid #e2e8f0; padding: 16px; border-radius: 16px;"></div>
+            <button onclick="location.reload()" style="width:100%; padding:16px; background:var(--primary); color:white; border:none; border-radius:14px; font-weight:700; cursor:pointer; font-size: 1rem;">Start New Session</button>
+        </div>
     </div>
 </div>
 
 <script>
+    // Automate Splash Screen Exit Sequence at exactly 5 seconds
+    window.addEventListener('DOMContentLoaded', () => {
+        setTimeout(() => {
+            const splash = document.getElementById('splash-screen');
+            splash.style.opacity = '0';
+            
+            setTimeout(() => {
+                splash.style.display = 'none';
+                document.getElementById('intro-view').classList.remove('hidden');
+            }, 800); 
+        }, 5000);
+    });
+
     const pool = [
         { 
             cat: "Conceptual Framework", 
@@ -260,7 +294,7 @@
         { 
             cat: "Word Problem Design", 
             q: "Identify which real-world scenario perfectly matches the core math statement: \nTotal = 450 × 15", 
-            opts: ["A) A library shelves 450 books and gives away 15 to a student.", "B) A school hall has 450 rows with 15 seats in each row. Find the total seating capacity.", "C) A courier agent delivers 450 packages across 15 separate city addresses evenly.", "D) A car travel log records 450 km on day one and 15 km on day two."], 
+            opts: ["A) Extracted data value item mapping setup.", "B) A school hall has 450 rows with 15 seats in each row. Find the total seating capacity.", "C) A courier agent delivers 450 packages across 15 separate city addresses evenly.", "D) A car travel log records 450 km on day one and 15 km on day two."], 
             ans: 1, 
             hint: "Look for equal groupings or sets where a value is repeated a specific number of times.", 
             expl: "Having 450 rows with 15 seats each sets up a uniform repeating group, which translates directly to 450 × 15." 
