@@ -1,1 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Division Mastery Challenge</title>
+    <style>
+        :root {
+            --primary: #2980b9;
+            --primary-dark: #21618c;
+            --success: #27ae60;
+            --error: #e67e22;
+            --bg: #ebf5fb;
+            --text: #2c3e50;
+        }
 
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background-color: #eaecee;
+            color: var(--text);
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 10px;
+        }
+
+        #app-container {
+            width: 100%;
+            max-width: 580px;
+            background: #ffffff;
+            border-radius: 24px;
+            box-shadow: 0 15px 35px rgba(41, 128, 185, 0.12);
+            position: relative;
+            overflow: hidden;
+            min-height: 520px;
+        }
+
+        /* --- 5-SECOND WHITE SPLASH SCREEN (STATIC LOGO) --- */
+        #splash-screen {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .splash-logo-img {
+            max-width: 240px;
+            width: 80%;
+            height: auto;
+            object-fit: contain;
+        }
+
+        /* --- MAIN VIEW CONTENT ELEMENTS --- */
+        .quiz-padding {
+            padding: 25px;
+        }
+
+        .instruction-box {
+            background: #ebf5fb;
+            border-left: 4px solid var(--primary);
+            padding: 15px;
+            border-radius: 8px;
+            text-align: left;
+            margin: 20px 0;
+            font-size: 0.95rem;
+            color: #455a64;
+            line-height: 1.5;
+        }
+        .instruction-box ul { margin: 5px 0 0 20px; padding: 0; }
+        .instruction-box li { margin-bottom: 6px; }
+
+        .hud-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        .hud-pill {
+            flex: 1;
+            text-align: center;
+            padding: 12px 6px;
+            border-radius: 14px;
+            font-size: 0.95rem;
+            font-weight: 800;
+            background-color: #d4e6f1;
+            color: var(--primary-dark);
+        }
+        .hud-pill.gold { background-color: #fef9e7; color: #b7950b; }
+
+        .timer-track { width: 100%; height: 8px; background: #e5e8e8; border-radius: 10px; margin-bottom: 20px; overflow: hidden; }
+        #timer-bar { height: 100%; width: 100%; background: var(--primary); transition: width 1s linear; }
+
+        .category-text { font-size: 0.85rem; color: #b7950b; font-weight: 700; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 1px; }
+        .question-text { font-size: 1.1rem; font-weight: 600; line-height: 1.5; margin-bottom: 15px; white-space: pre-line; }
+
+        .visual-display-box {
+            background: #fcfcfc;
+            border: 2px dashed #bdc3c7;
+            padding: 15px;
+            border-radius: 12px;
+            text-align: center;
+            font-family: monospace;
+            font-size: 1.1rem;
+            font-weight: bold;
+            margin: 15px 0;
+            line-height: 1.4;
+        }
+
+        .options-grid { display: grid; gap: 12px; }
+        .opt-btn {
+            background: #fff; border: 2px solid #edf2f4; padding: 16px;
+            border-radius: 14px; text-align: left; font-size: 1rem; cursor: pointer; transition: 0.2s;
+            color: #34495e; font-weight: 500;
+        }
+        .opt-btn:hover:not(:disabled) { border-color: var(--primary); background: #fafafa; }
+        .opt-btn.correct { background: #e8f5e9 !important; color: var(--success) !important; border-color: #a5d6a7 !important; font-weight: 700; }
+        .opt-btn.wrong { background: #fdf2e9 !important; color: var(--error) !important; border-color: #f5caba !important; }
+
+        .feedback { margin-top: 20px; padding: 15px; border-radius: 12px; display: none; line-height: 1.5; font-size: 0.95rem; }
+        .hint-box { background: #fef9e7; border: 1px solid #f9e79f; color: #b7950b; }
+        .expl-box { background: #ebf5fb; border: 1px solid #a9cee7; color: #1b4f72; }
+
+        #action-btn { width: 100%; margin-top: 20px; padding: 16px; background: var(--primary); color: white; border: none; border-radius: 14px; font-weight: 700; cursor: pointer; font-size: 1rem; }
+        #action-btn:hover { background: var(--primary-dark); }
+        
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+
+<div id="app-container">
+
+    <!-- 1. Pure White Splash Screen with static centered logo image asset -->
+    <div id="splash-screen">
+        <img class="splash-logo-img" src="assets/logo.png" alt="Innovine Logo">
+    </div>
+
+    <!-- 2. GAME INSTRUCTION WELCOME PANEL (Reveals after splash completes) -->
+    <div id="intro-view" class="hidden">
+        <div class="quiz-padding">
+            <h1 style="text-align:center; color:var(--primary); margin: 10px 0 5px 0; font-size: 26px;">Division Mastery</h1>
+            <p style="text-align:center; color:#7f8c8d; margin-top: 0; font-weight: 600; text-transform: uppercase; font-size: 12px; letter-spacing: 1px;">Chapter 05 Evaluation</p>
+            
+            <div class="instruction-box">
+                <strong>📋 Learning Outcomes Checked:</strong>
+                <ul>
+                    <li>Identify basic division terminology and operational facts.</li>
+                    <li>Execute mental shortcuts for dividing by 10, 100, and 1000.</li>
+                    <li>Apply short division rules for single-digit divisors.</li>
+                    <li>Divide 4-digit numbers by multi-digit configurations.</li>
+                    <li>Verify calculation accuracy using inverse properties.</li>
+                    <li>Isolate quotients and remainders within complex sets.</li>
+                    <li>Perform 5-digit and 6-digit structural scale operations.</li>
+                    <li>Estimate rough quotients to evaluate tracking boundaries.</li>
+                    <li><b>Rules:</b> 60s per turn. Up to 2 attempts per task!</li>
+                </ul>
+            </div>
+
+            <button id="start-btn" style="width:100%; padding:18px; background:var(--primary); color:white; border:none; border-radius:14px; font-weight:bold; font-size:1.1rem; cursor:pointer; margin-top: 10px;">Begin Challenge ⚡</button>
+        </div>
+    </div>
+
+    <!-- 3. MAIN INTERACTIVE QUIZ INTERFACE -->
+    <div id="quiz-view" class="hidden">
+        <div class="quiz-padding">
+            <div class="hud-row">
+                <div class="hud-pill">Task <span id="q-num">1</span>/10</div>
+                <div class="hud-pill">Score: <span id="score-val">0</span></div>
+                <div class="hud-pill gold"><span id="timer-text">60s</span></div>
+            </div>
+            <div class="timer-track"><div id="timer-bar"></div></div>
+            
+            <div id="q-category" class="category-text"></div>
+            <div id="q-text" class="question-text"></div>
+            
+            <div id="custom-table-area"></div>
+            
+            <div id="options-area" class="options-grid"></div>
+            
+            <div id="feedback-box" class="feedback"></div>
+            <button id="action-btn" class="hidden">Next Question →</button>
+        </div>
+    </div>
+
+    <!-- 4. FINAL PROGRESS SCORE REPORT OVERVIEW -->
+    <div id="result-view" class="hidden" style="text-align:center;">
+        <div class="quiz-padding">
+            <div style="font-size: 4rem; margin-bottom: 5px;">🏆</div>
+            <h2 style="font-size:1.6rem; margin: 5px 0;">Evaluation Completed!</h2>
+            <div style="font-size: 4rem; font-weight: 800; color: var(--primary); margin: 10px 0;"><span id="final-pts">0</span>/10</div>
+            <div id="result-msg" style="color:#5f6368; font-size: 0.95rem; line-height: 1.5; margin: 0 0 25px 0; text-align: left; background: #f8f9fa; border: 1px solid #e2e8f0; padding: 16px; border-radius: 16px;"></div>
+            <button onclick="location.reload()" style="width:100%; padding:16px; background:var(--primary); color:white; border:none; border-radius:14px; font-weight:700; cursor:pointer; font-size: 1rem;">Start New Session</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Automate Splash Screen Exit Sequence at exactly 5 seconds
+    window.addEventListener('DOMContentLoaded', () => {
+        setTimeout(() => {
+            const splash = document.getElementById('splash-screen');
+            splash.style.opacity = '0';
+            
+            setTimeout(() => {
+                splash.style.display = 'none';
+                document.getElementById('intro-view').classList.remove('hidden');
+            }, 800); 
+        }, 5000);
+    });
+
+    const pool = [
+        { 
+            cat: "Division Terminology", 
+            q: "A logistics company maps out a delivery dispatch layout:\n\n4,800 packages ÷ 40 trucks = 120 packages per truck\n\nWhat is the exact mathematical name assigned to the number 4,800 in this operational phrase?", 
+            opts: ["A) Divisor", "B) Quotient", "C) Dividend", "D) Remainder"], 
+            ans: 2, 
+            hint: "This refers to the total initial value or quantity that is going to be split up into equal parts.", 
+            expl: "In division syntax, the total amount being divided is the 'dividend' (4,800), the number you divide by is the 'divisor' (40), and the result is the 'quotient' (120)." 
+        },
+        { 
+            cat: "Powers of 10 Shortcuts", 
+            q: "An industrial agricultural facility packages a seasonal surplus of 345,000 grain tokens evenly into 1,000 structural storage boxes.\n\nUsing base-10 division shortcut properties, how many tokens are allocated to each individual box?", 
+            opts: ["A) 34,500", "B) 3,450", "C) 345", "D) 34"], 
+            ans: 2, 
+            hint: "When dividing by 1,000, you drop three trailing zeros from the dividend.", 
+            expl: "Dividing an integer ending in zeros by 1,000 can be evaluated instantly by eliminating three decimal place positions: 345,000 ÷ 1,000 = 345." 
+        },
+        { 
+            cat: "Short Division Method", 
+            q: "A team of researchers splits a small localized testing block of 741 core items into 3 separate reference groups.\n\nUsing short division with a single-digit divisor, determine the precise volume of each group.", 
+            opts: ["A) 247", "B) 237", "C) 246", "D) 257"], 
+            ans: 0, 
+            hint: "Divide column by column from left to right, tracking remainders down line: 7÷3=2 (remainder 1), making the next step 14÷3.", 
+            expl: "7 ÷ 3 = 2 rem 1; 14 ÷ 3 = 4 rem 2; 21 ÷ 3 = 7. Combining these results gives an exact quotient of 247 with no leftover remainder." 
+        },
+        { 
+            cat: "4-Digit Long Division", 
+            q: "A high-density server cluster partitions a packet containing 6,832 data frames across 16 primary network nodes.\n\nCalculate the uniform size of the data slice assigned to each node.", 
+            opts: ["A) 417", "B) 427", "C) 437", "D) 422"], 
+            ans: 1, 
+            hint: "Find how many times 16 goes into 68, carry down the remainder, and continue long division steps.", 
+            expl: "68 ÷ 16 = 4 (remainder 4); bring down 3 to get 43. 43 ÷ 16 = 2 (remainder 11); bring down 2 to get 112. 112 ÷ 16 = 7. Total = 427." 
+        },
+        { 
+            cat: "Result Verification", 
+            q: "A data engineer evaluates a division tracking output to see if it is valid:\n\nDividend = 4,525 | Divisor = 25 | Quotient = 181\n\nWhich inverse equation properly checks and confirms the absolute accuracy of this division result?", 
+            opts: ["A) 181 + 25 = 4,525", "B) 181 × 25 = 4,525", "C) 4,525 + 25 = 181", "D) 4,525 × 181 = 25"], 
+            ans: 1, 
+            hint: "To verify standard division without remainders, multiply the quotient by the divisor to confirm it equals the dividend.", 
+            expl: "The formula for verification is (Quotient × Divisor) + Remainder = Dividend. Since the remainder is zero here, 181 × 25 must equal exactly 4,525." 
+        },
+        { 
+            cat: "Quotients & Remainders", 
+            q: "A manufacturing asset manager splits 948 identical structural bolts into shipping crates that each hold a capacity limit of 45 bolts.\n\nWhat is the correct configuration of complete crates filled and the leftover bolt remainder?", 
+            opts: ["A) 20 crates, 48 bolts left", "B) 21 crates, 3 bolts left", "C) 21 crates, 13 bolts left", "D) 22 crates, 0 bolts left"], 
+            ans: 1, 
+            hint: "Perform division on 948 by 45 to locate both the whole integer quotient and the terminal remainder value.", 
+            expl: "948 ÷ 45 gives a whole quotient of 21, because 21 × 45 = 945. The residual leftover remainder is 948 - 945 = 3 bolts." 
+        },
+        { 
+            cat: "Large Scale Operations", 
+            q: "A municipal urban planning model balances a water registry tracking field containing 142,500 liters across 125 secondary collection tanks.\n\nWhat is the exact volume capacity distribution metrics assigned per tank?", 
+            opts: ["A) 1,140 liters", "B) 1,130 liters", "C) 1,040 liters", "D) 1,240 liters"], 
+            ans: 0, 
+            hint: "Execute a standard multi-digit long division algorithm using 142,500 divided by the 3-digit divisor 125.", 
+            expl: "142,500 ÷ 125 = 1,140. This can be processed step-by-step: 142÷125=1 (rem 17); 175÷125=1 (rem 50); 500÷125=4; trailing zero makes it 1,140." 
+        },
+        { 
+            cat: "Quotient Estimation", 
+            q: "An operations manager needs to quickly estimate a baseline threshold before running complete tracking logs. \n\nEstimate the quotient of 5,942 ÷ 31 by rounding the dividend to the nearest thousand and the divisor to the nearest ten.", 
+            opts: ["A) 150", "B) 300", "C) 200", "D) 250"], 
+            ans: 2, 
+            hint: "5,942 rounds to 6,000 at the nearest thousand, while 31 rounds down to 30 at the nearest ten place.", 
+            expl: "Rounding yields the simplified calculation model: 6,000 ÷ 30. Canceling trailing placeholder zeros leaves 600 ÷ 3 = 200 estimated quotient." 
+        },
+        { 
+            cat: "Verification Analysis", 
+            q: "Examine the verification check panel layout displayed below:", 
+            hasVisual: true,
+            opts: ["A) The equation matches a completely valid division state", "B) The quotient is wrong because the verification check does not equal the dividend", "C) The remainder value must be larger than the divisor field", "D) The check setup is structurally invalid because it adds the quotient first"], 
+            ans: 1, 
+            hint: "Test the checking math sequence: (Quotient × Divisor) + Remainder. Does it match the stated dividend?", 
+            expl: "Running the inverse check calculation: (102 × 12) + 8 = 1,224 + 8 = 1,232. Because 1,232 does not equal the stated dividend of 1,235, the division state is incorrect." 
+        },
+        { 
+            cat: "Contextual Modeling", 
+            q: "A regional textile hub manufactures 25,600 uniform threads. Management intends to group them identically across a variable setup.\n\nWhich scenario represents an explicit real-world application of finding a division remainder?", 
+            opts: ["A) Determining the exact cost of expanding production infrastructure capacity by 25,600 elements.", "B) Finding out how many leftover individual threads remain loose after packing items into standardized bundles of 50.", "C) Adding an influx of 25,600 new threads to an existing repository pool.", "D) Multiplying the total manufacturing time baseline across a group of 50 operators."], 
+            ans: 1, 
+            hint: "Remainders measure structural leftovers when an initial pool cannot be partitioned completely into equal sets.", 
+            expl: "Finding loose, extra items after distributing values into fixed bundles directly applies the mathematical remainder property." 
+        }
+    ];
+
+    let current = 0, score = 0, attempts = 0, timer, timeLeft = 60;
+
+    document.getElementById('start-btn').onclick = () => {
+        document.getElementById('intro-view').classList.add('hidden');
+        document.getElementById('quiz-view').classList.remove('hidden');
+        loadQuestion();
+    };
+
+    function loadQuestion() {
+        attempts = 0; timeLeft = 60;
+        const q = pool[current];
+        document.getElementById('feedback-box').style.display = 'none';
+        document.getElementById('action-btn').classList.add('hidden');
+        document.getElementById('q-num').innerText = current + 1;
+        document.getElementById('q-category').innerText = q.cat;
+        document.getElementById('q-text').innerText = q.q;
+        document.getElementById('timer-text').innerText = timeLeft + "s";
+        
+        const tableArea = document.getElementById('custom-table-area');
+        if (q.hasVisual) {
+            tableArea.innerHTML = `
+                <div class="visual-display-box">
+                    Stated Division: 1,235 ÷ 12 <br>
+                    Reported Quotient: 102 , Remainder: 8 <br>
+                    Verification Check: (102 × 12) + 8 = [ ? ]
+                </div>
+            `;
+        } else {
+            tableArea.innerHTML = "";
+        }
+
+        const area = document.getElementById('options-area');
+        area.innerHTML = "";
+        q.opts.forEach((o, i) => {
+            const b = document.createElement('button');
+            b.className = 'opt-btn';
+            b.innerText = o;
+            b.onclick = () => check(i, b);
+            area.appendChild(b);
+        });
+        startTimer();
+    }
+
+    function startTimer() {
+        clearInterval(timer);
+        timer = setInterval(() => {
+            timeLeft--;
+            document.getElementById('timer-text').innerText = timeLeft + "s";
+            document.getElementById('timer-bar').style.width = (timeLeft / 60 * 100) + "%";
+            if(timeLeft <= 0) { clearInterval(timer); endTurn(); }
+        }, 1000);
+    }
+
+    function check(i, b) {
+        if(i === pool[current].ans) {
+            clearInterval(timer);
+            b.classList.add('correct');
+            score++;
+            document.getElementById('score-val').innerText = score;
+            endTurn();
+        } else {
+            attempts++;
+            b.classList.add('wrong');
+            b.disabled = true;
+            if(attempts === 1) {
+                const f = document.getElementById('feedback-box');
+                f.className = 'feedback hint-box';
+                f.innerHTML = "<b>💡 Hint:</b> " + pool[current].hint;
+                f.style.display = 'block';
+            } else {
+                clearInterval(timer);
+                endTurn();
+            }
+        }
+    }
+
+    function endTurn() {
+        document.querySelectorAll('.opt-btn').forEach(btn => btn.disabled = true);
+        const f = document.getElementById('feedback-box');
+        f.className = 'feedback expl-box';
+        f.innerHTML = "<b>🔍 Explanation:</b> " + pool[current].expl;
+        f.style.display = 'block';
+        document.querySelectorAll('.opt-btn')[pool[current].ans].classList.add('correct');
+        document.getElementById('action-btn').classList.remove('hidden');
+    }
+
+    document.getElementById('action-btn').onclick = () => {
+        current++;
+        if(current < pool.length) loadQuestion();
+        else {
+            document.getElementById('quiz-view').classList.add('hidden');
+            document.getElementById('result-view').classList.remove('hidden');
+            document.getElementById('final-pts').innerText = score;
+
+            let statusMessage = "Review long division steps, inverse verification metrics, and remainder rules to maximize your score.";
+            if(score === 10) {
+                statusMessage = "Spectacular! You have mastered every single division learning outcome perfectly.";
+            } else if(score >= 7) {
+                statusMessage = "Great job! Strong multi-digit computation, remainder analysis, and estimation skills.";
+            }
+
+            document.getElementById('result-msg').innerHTML = `
+                <span style="font-weight:700; color:#2c3e50; display:block; margin-bottom:6px;">Performance Summary:</span>
+                ${statusMessage}
+            `;
+        }
+    };
+</script>
+</body>
+</html>
