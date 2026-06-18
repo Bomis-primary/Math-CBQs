@@ -48,7 +48,7 @@ body{
   display:none;
   width:100%;
   height:100%;
-  padding:12px;
+  padding:10px;
   position:relative;
   z-index:1;
 }
@@ -61,8 +61,8 @@ body{
 
 .card{
   width:100%;
-  max-width:680px;
-  max-height:96vh;
+  max-width:640px;
+  height:96vh;
   background:rgba(255,255,255,.96);
   border-radius:22px;
   padding:16px;
@@ -74,56 +74,61 @@ body{
 }
 
 .logo{
-  height:40px;
+  height:36px;
   width:auto;
   object-fit:contain;
-  margin:0 auto 10px auto;
+  margin:0 auto 6px auto;
+  flex-shrink:0;
 }
 
 h1{
   color:#283593;
-  margin:6px 0;
-  font-size:24px;
+  margin:4px 0;
+  font-size:22px;
   line-height:1.1;
+  flex-shrink:0;
 }
 
 h2{
   color:#00838f;
-  margin:4px 0;
-  font-size:18px;
+  margin:2px 0;
+  font-size:16px;
+  flex-shrink:0;
 }
 
 p{
-  font-size:14px;
-  line-height:1.35;
-  margin:8px 0;
+  font-size:13px;
+  line-height:1.3;
+  margin:6px 0;
+  flex-shrink:0;
 }
 
 .outcomes-list {
   text-align: left;
   max-width: 560px;
-  margin: 6px auto;
-  font-size: 13px;
-  line-height: 1.4;
+  margin: 4px auto;
+  font-size: 12px;
+  line-height: 1.35;
   color: #455a64;
   overflow-y:auto;
   background:#f8fafc;
-  padding:10px;
+  padding:8px 12px;
   border-radius:12px;
+  flex:1;
 }
 
 button{
   border:0;
   border-radius:14px;
-  padding:12px 20px;
-  margin:6px;
-  font-size:15px;
+  padding:10px 18px;
+  margin:4px;
+  font-size:14px;
   font-weight:bold;
   background:#ffca28;
   color:#263238;
   cursor:pointer;
   box-shadow:0 4px 0 #f9a825;
-  min-height:44px;
+  min-height:40px;
   flex-shrink:0;
 }
 
@@ -136,17 +141,17 @@ button:active{
   display:grid;
   grid-template-columns:repeat(3,1fr);
   gap:6px;
-  margin-bottom:10px;
+  margin-bottom:8px;
   font-weight:bold;
   flex-shrink:0;
 }
 
 .badge{
   background:#e8eaf6;
-  border-radius:12px;
-  padding:8px 4px;
+  border-radius:10px;
+  padding:6px 4px;
   text-align:center;
-  font-size:13px;
+  font-size:12px;
 }
 
 .timer{
@@ -155,11 +160,11 @@ button:active{
 
 .progress-wrap{
   width:100%;
-  height:8px;
+  height:6px;
   background:#e0e0e0;
   border-radius:10px;
   overflow:hidden;
-  margin-bottom:12px;
+  margin-bottom:8px;
   flex-shrink:0;
 }
 
@@ -172,33 +177,45 @@ button:active{
 
 .quiz-body{
   flex:1;
+  display:flex;
+  flex-direction:column;
+  overflow:hidden;
+}
+
+.question-area{
+  flex-shrink:0;
   overflow-y:auto;
-  padding-right:4px;
+  max-height:28%;
   margin-bottom:8px;
 }
 
 .question{
-  font-size:16px;
+  font-size:15px;
   line-height:1.35;
   font-weight:bold;
-  margin:0 0 12px 0;
+  margin:0;
   text-align: left;
   white-space: pre-line;
+}
+
+.options-area{
+  flex:1;
+  overflow-y:auto;
 }
 
 .options{
   display:grid;
   grid-template-columns:1fr;
-  gap:8px;
+  gap:6px;
 }
 
 .option{
   background:#f1f8e9;
   border:2px solid #c5e1a5;
-  border-radius:14px;
-  padding:10px 12px;
-  font-size:14px;
-  min-height:48px;
+  border-radius:12px;
+  padding:8px 12px;
+  font-size:13px;
+  min-height:40px;
   display:flex;
   align-items:center;
   cursor:pointer;
@@ -213,7 +230,6 @@ button:active{
 .correct{
   background:#c8f7c5!important;
   border-color:#2e7d32!important;
-  transform:scale(1.01);
 }
 
 .wrong{
@@ -222,17 +238,18 @@ button:active{
 }
 
 .feedback{
-  margin-top:10px;
-  font-size:14px;
+  margin-top:6px;
+  font-size:13px;
   font-weight:bold;
   text-align:left;
+  flex-shrink:0;
 }
 
 .explain{
-  font-size:13px;
+  font-size:12px;
   font-weight:normal;
-  margin-top:4px;
-  line-height:1.3;
+  margin-top:2px;
+  line-height:1.25;
 }
 
 .hidden{
@@ -278,26 +295,27 @@ button:active{
 .finalbox{
   background:#fff8e1;
   border:2px dashed #ffb300;
-  border-radius:16px;
-  padding:12px;
-  margin:10px 0;
+  border-radius:14px;
+  padding:10px;
+  margin:6px 0;
+  flex:1;
   overflow-y:auto;
 }
 
 .small{
-  font-size:12px;
+  font-size:11px;
   color:#546e7a;
 }
 
 @media(max-width:520px) {
   .card {
-    max-height: 98vh;
-    padding: 12px;
+    height: 98vh;
+    padding: 10px;
   }
-  h1 { font-size: 20px; }
-  h2 { font-size: 16px; }
-  .question { font-size: 15px; }
-  .option { font-size: 13px; padding: 8px 10px; min-height: 44px; }
+  h1 { font-size: 18px; }
+  h2 { font-size: 14px; }
+  .question { font-size: 13.5px; }
+  .option { font-size: 12px; padding: 6px 10px; min-height: 36px; }
 }
 </style>
 </head>
@@ -313,7 +331,7 @@ button:active{
 </div>
 
 <div id="splash" class="screen active">
-  <div class="card">
+  <div class="card" style="justify-content:center;">
     <img src="assets/innovine-logo.png" class="logo" alt="Innovine Logo" onerror="this.style.opacity='0.5';">
     <h2>Shuffling the quiz matrix...</h2>
   </div>
@@ -352,9 +370,13 @@ button:active{
     </div>
 
     <div class="quiz-body">
-      <div class="question" id="question"></div>
-      <div class="options" id="options"></div>
-      <div class="feedback" id="feedback"></div>
+      <div class="question-area">
+        <div class="question" id="question"></div>
+      </div>
+      <div class="options-area">
+        <div class="options" id="options"></div>
+        <div class="feedback" id="feedback"></div>
+      </div>
     </div>
 
     <button id="nextBtn" class="hidden" onclick="nextQuestion()">Next Question</button>
@@ -432,7 +454,7 @@ const pool=[
     "D) 78,900 channels"
   ],
   a:0,
-  e:"Dividing a value by 1,000 eliminates exactly three trailing zeros. 7,89,000 ÷ 1,000 = 789."
+  e:"Dividing a value by 1,00,000 eliminates exactly three trailing zeros. 7,89,000 ÷ 1,000 = 789."
 },
 {
   q:"An ancient decorative pillar exhibits two numerical markers side-by-side: CLV and CXLV. Which analytical comparison holds true?",
@@ -593,8 +615,8 @@ function loadQuestion(){
     box.appendChild(div);
   }
 
-  // Scroll quiz body straight back up on loading new items
-  document.querySelector('.quiz-body').scrollTop = 0;
+  document.querySelector('.options-area').scrollTop = 0;
+  document.querySelector('.question-area').scrollTop = 0;
 
   startTimer();
 }
@@ -634,10 +656,9 @@ function checkAnswer(i,el){
     makeConfetti();
     document.getElementById("nextBtn").classList.remove("hidden");
     
-    // Auto scroll down within the card container to reveal explanations if text overflowed
     setTimeout(() => {
-      const body = document.querySelector('.quiz-body');
-      body.scrollTo({ top: body.scrollHeight, behavior: 'smooth' });
+      const area = document.querySelector('.options-area');
+      area.scrollTo({ top: area.scrollHeight, behavior: 'smooth' });
     }, 50);
   }else{
     attempts++;
@@ -661,7 +682,7 @@ function showAnswer(msg){
   const q=questions[current];
   const options=document.querySelectorAll(".option");
 
-  for(let i=0;i<options.length;i++){
+  for(let i=0; i<options.length; i++){
     options[i].onclick=null;
     if(i===q.a){
       options[i].classList.add("correct");
@@ -674,8 +695,8 @@ function showAnswer(msg){
   document.getElementById("nextBtn").classList.remove("hidden");
   
   setTimeout(() => {
-    const body = document.querySelector('.quiz-body');
-    body.scrollTo({ top: body.scrollHeight, behavior: 'smooth' });
+    const area = document.querySelector('.options-area');
+    area.scrollTo({ top: area.scrollHeight, behavior: 'smooth' });
   }, 50);
 }
 
