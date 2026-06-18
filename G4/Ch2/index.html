@@ -82,6 +82,56 @@
         .category-text { font-size: 0.85rem; color: #16a085; font-weight: 700; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 1px; }
         .question-text { font-size: 1.1rem; font-weight: 600; line-height: 1.5; margin-bottom: 15px; white-space: pre-line; }
 
+        /* --- STYLED PLACE VALUE MATH TABLE --- */
+        .math-table-container {
+            display: flex;
+            justify-content: center;
+            margin: 15px 0 20px 0;
+        }
+        .math-table {
+            display: grid;
+            grid-template-columns: auto repeat(5, 45px);
+            align-items: center;
+            text-align: center;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 1.25rem;
+            font-weight: 700;
+            row-gap: 8px;
+        }
+        .th-header {
+            font-family: 'Segoe UI', sans-serif;
+            font-size: 0.85rem;
+            color: #7f8c8d;
+            font-weight: 800;
+            padding-bottom: 4px;
+            border-bottom: 2px dashed #eceff1;
+        }
+        .math-sign {
+            grid-column: 1;
+            text-align: left;
+            padding-right: 10px;
+            color: var(--primary);
+        }
+        .missing-box {
+            background: #fff3cd;
+            border: 2px dashed #f39c12;
+            color: #d35400;
+            border-radius: 4px;
+            font-weight: 800;
+            display: inline-block;
+            width: 32px;
+            height: 32px;
+            line-height: 28px;
+        }
+        .math-line {
+            grid-column: 1 / span 6;
+            border-top: 3px solid #2c3e50;
+            margin: 4px 0;
+        }
+        .math-total {
+            color: var(--primary-dark);
+        }
+
         .options-grid { display: grid; gap: 12px; }
         .opt-btn {
             background: #fff; border: 2px solid #edf2f4; padding: 16px;
@@ -138,6 +188,9 @@
         
         <div id="q-category" class="category-text"></div>
         <div id="q-text" class="question-text"></div>
+        
+        <div id="custom-table-area"></div>
+        
         <div id="options-area" class="options-grid"></div>
         
         <div id="feedback-box" class="feedback"></div>
@@ -162,7 +215,7 @@
             opts: ["A) Associative Property of Addition", "B) Identity Property of Addition", "C) Commutative Property of Addition", "D) Distributive Property of Addition"], 
             ans: 2, 
             hint: "This property states that changing the order of the numbers being added does not change the total sum.", 
-            expl: "The Commutative Property states that order does not matter in addition ($a + b = b + a$)." 
+            expl: "The Commutative Property states that order does not matter in addition (a + b = b + a)." 
         },
         { 
             cat: "Properties of Addition", 
@@ -198,7 +251,8 @@
         },
         { 
             cat: "Missing Addends Analysis", 
-            q: "Examine the missing structural values in this puzzle block:\n\n   5  3  [A]  1  4\n+  2  [B]  4  8  3\n----------------\n   7  8   9  9  7\n\nWhat must be the exact numerical identity of digits A and B?", 
+            q: "Examine the missing structural values in this place-value matrix:", 
+            hasTable: true,
             opts: ["A) A = 5, B = 5", "B) A = 4, B = 5", "C) A = 5, B = 4", "D) A = 9, B = 8"], 
             ans: 0, 
             hint: "Look at the columns: [A] + 4 = 9, and 3 + [B] = 8. Solve those basic missing subtraction pieces.", 
@@ -222,7 +276,7 @@
         },
         { 
             cat: "Addition Puzzles", 
-            q: "A secret combination safe unlocks when the user inputs a value that is exactly 15,500 units *greater* than the sum of 40,200 and 12,300.\n\nWhat is the code?", 
+            q: "A secret combination safe unlocks when the user inputs a value that is exactly 15,500 units greater than the sum of 40,200 and 12,300.\n\nWhat is the code?", 
             opts: ["A) 52,500", "B) 67,000", "C) 68,000", "D) 67,500"], 
             ans: 1, 
             hint: "Step 1: Find the initial sum of 40,200 + 12,300. Step 2: Add 15,500 directly onto that result.", 
@@ -241,9 +295,9 @@
     let questions = [];
     let current = 0, score = 0, attempts = 0, timer, timeLeft = 60;
 
-    // Direct initialization
+    // Load pool
     questions = [...pool];
-    // Shuffle helper
+    // Shuffle pool
     for (let i = questions.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [questions[i], questions[j]] = [questions[j], questions[i]];
@@ -265,6 +319,32 @@
         document.getElementById('q-text').innerText = q.q;
         document.getElementById('timer-text').innerText = timeLeft + "s";
         
+        // Render Table Component if designated true
+        const tableArea = document.getElementById('custom-table-area');
+        if (q.hasTable) {
+            tableArea.innerHTML = `
+                <div class="math-table-container">
+                    <div class="math-table">
+                        <div class="th-header"></div>
+                        <div class="th-header">TTh</div>
+                        <div class="th-header">Th</div>
+                        <div class="th-header">H</div>
+                        <div class="th-header">T</div>
+                        <div class="th-header">O</div>
+                        
+                        <div></div><div>5</div><div>3</div><div><span class="missing-box">A</span></div><div>1</div><div>4</div>
+                        <div class="math-sign">+</div><div>2</div><div><span class="missing-box">B</span></div><div>4</div><div>8</div><div>3</div>
+                        
+                        <div class="math-line"></div>
+                        
+                        <div></div><div class="math-total">7</div><div class="math-total">8</div><div class="math-total">9</div><div class="math-total">9</div><div class="math-total">7</div>
+                    </div>
+                </div>
+            `;
+        } else {
+            tableArea.innerHTML = "";
+        }
+
         const area = document.getElementById('options-area');
         area.innerHTML = "";
         q.opts.forEach((o, i) => {
