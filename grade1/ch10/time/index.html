@@ -183,6 +183,8 @@ body {
   cursor: pointer;
   text-align: left;
   min-height: 56px;
+  white-space: normal;
+  word-wrap: break-word;
 }
 
 .option.correct {
@@ -200,6 +202,7 @@ body {
   margin-top: 12px;
   font-size: 18px;
   font-weight: bold;
+  line-height: 1.4;
 }
 
 .controls {
@@ -287,7 +290,7 @@ body {
 <body>
 
 <div id="logoScreen" class="screen active">
-  <img src="assets/innovine-logo.png" alt="Innovine Logo" class="logo" />
+  <img src="assets/logo.png" alt="Innovine Logo" class="logo" />
 </div>
 
 <div id="quizScreen" class="screen">
@@ -330,16 +333,20 @@ const questions = [
     visual: "🍱",
     visualText: "Think about how long daily activities take.",
     options: ["Blinking your eyes", "Eating your lunch", "Sneezing", "Writing your name"],
-    answer: 1
+    answer: 1,
+    hint: "Which activity cannot be completed in just a few seconds?",
+    explanation: "Eating lunch takes several minutes, whereas blinking, sneezing, or writing your name is finished very quickly."
   },
   {
     q: "On an analog clock, the short hand points to the:",
     visual: "clock",
-    visualText: "Short hand = hour hand",
-    hourDeg: 90,
+    visualText: "Observe the two hands.",
+    hourDeg: 270,
     minuteDeg: 0,
     options: ["Minutes", "Seconds", "Hours", "Days"],
-    answer: 2
+    answer: 2,
+    hint: "The long hand tracks minutes. What does the shorter hand track?",
+    explanation: "The short hand is specifically designed to indicate the hours on a clock face."
   },
   {
     q: "If the hour hand is on 3 and the minute hand is on 12, what time is it?",
@@ -348,63 +355,81 @@ const questions = [
     hourDeg: 90,
     minuteDeg: 0,
     options: ["12:03", "3:00", "3:12", "6:00"],
-    answer: 1
+    answer: 1,
+    hint: "When the long hand points directly to 12, it is an 'o'clock' time.",
+    explanation: "An hour hand on 3 and a minute hand on 12 indicates exactly 3:00."
   },
   {
     q: "Which of these shows a digital clock time?",
     visual: "digital",
     visualText: "10:30",
     options: ["A circle with numbers 1 to 12", "A long hand and a short hand", "10:30", "A sun dial"],
-    answer: 2
+    answer: 2,
+    hint: "Digital clocks display time using numbers separated by a colon.",
+    explanation: "10:30 displays time cleanly in numeric form, which is typical of digital interfaces."
   },
   {
     q: "If today is Tuesday, what day was yesterday?",
     visual: "days",
     visualText: "Monday → Tuesday → Wednesday",
     options: ["Wednesday", "Monday", "Sunday", "Thursday"],
-    answer: 1
+    answer: 1,
+    hint: "Think about the day that comes right before Tuesday.",
+    explanation: "Yesterday refers to the day before. Monday comes directly before Tuesday."
   },
   {
     q: "If today is Friday, what day will it be tomorrow?",
     visual: "days",
     visualText: "Thursday → Friday → Saturday",
     options: ["Saturday", "Thursday", "Sunday", "Monday"],
-    answer: 0
+    answer: 0,
+    hint: "What day comes directly after Friday?",
+    explanation: "Tomorrow means the upcoming day. Saturday follows Friday."
   },
   {
     q: "How many days are there in a full week?",
     visual: "calendar",
     visualText: "A week has seven days.",
     options: ["5", "6", "7", "12"],
-    answer: 2
+    answer: 2,
+    hint: "Count all the days from Monday up through Sunday.",
+    explanation: "There are exactly 7 days in one standard week loop."
   },
   {
     q: "Which month comes immediately after June?",
     visual: "months",
     visualText: "May → June → July → August",
     options: ["May", "August", "July", "January"],
-    answer: 2
+    answer: 2,
+    hint: "Recite the months of the year starting from January.",
+    explanation: "July follows immediately after June in our yearly calendar sequence."
   },
   {
     q: "Which activity do we usually do in the morning?",
     visual: "🌅",
     visualText: "Morning routine",
     options: ["Going to sleep for the night", "Seeing the stars", "Brushing our teeth after waking up", "Having dinner"],
-    answer: 2
+    answer: 2,
+    hint: "What is one of the very first things you do right after waking up?",
+    explanation: "We brush our teeth right after waking up to start our morning cleanly."
   },
   {
     q: "How many months are there in one year?",
     visual: "months",
     visualText: "January to December",
     options: ["7", "10", "12", "30"],
-    answer: 2
+    answer: 2,
+    hint: "Count total months from January all the way through to December.",
+    explanation: "A full calendar year contains exactly 12 months."
   },
   {
     q: "Which day comes between Wednesday and Friday?",
     visual: "days",
     visualText: "Wednesday → ? → Friday",
     options: ["Tuesday", "Thursday", "Saturday", "Monday"],
-    answer: 1
+    answer: 1,
+    hint: "What day follows Wednesday and comes right before Friday?",
+    explanation: "Thursday sits perfectly in between Wednesday and Friday."
   },
   {
     q: "When both the long hand and the short hand are pointing at 12, the time is:",
@@ -413,7 +438,9 @@ const questions = [
     hourDeg: 0,
     minuteDeg: 0,
     options: ["6:00", "12:00", "12:12", "1:12"],
-    answer: 1
+    answer: 1,
+    hint: "If the short hour hand is pointing at 12, what hour value does that represent?",
+    explanation: "When both hands point directly straight up at 12, it is exactly 12:00."
   }
 ];
 
@@ -448,22 +475,27 @@ setTimeout(() => {
 function startQuiz() {
   current = 0;
   score = 0;
-  timeLeft = 60;
   scoreBox.textContent = score;
-  timerBox.textContent = timeLeft;
   loadQuestion();
-  startTimer();
 }
 
 function startTimer() {
   clearInterval(timerInterval);
+  timeLeft = 60;
+  timerBox.textContent = timeLeft;
+
   timerInterval = setInterval(() => {
     timeLeft--;
     timerBox.textContent = timeLeft;
 
     if (timeLeft <= 0) {
       clearInterval(timerInterval);
-      showResult();
+      answered = true;
+      feedback.style.color = "#dc2626";
+      feedback.textContent = "Time's up! " + questions[current].explanation;
+      showCorrectAnswer();
+      disableOptions();
+      nextBtn.style.display = "inline-block";
     }
   }, 1000);
 }
@@ -487,6 +519,8 @@ function loadQuestion() {
     btn.onclick = () => checkAnswer(btn, index);
     optionsBox.appendChild(btn);
   });
+
+  startTimer();
 }
 
 function renderVisual(item) {
@@ -503,7 +537,7 @@ function renderVisual(item) {
     `;
   } else if (item.visual === "digital") {
     visualBox.innerHTML = `
-      <div style="font-size:54px; font-weight:bold; background:#111827; color:white; display:inline-block; padding:14px 24px; border-radius:12px;">
+      <div style="font-size:54px; font-weight:bold; background:#111827; color:white; display:inline-block; padding:14px 24px; border-radius:12px; font-family: monospace;">
         ${item.visualText}
       </div>
       <div style="margin-top:10px;"><strong>Digital clock time</strong></div>
@@ -534,14 +568,17 @@ function renderVisual(item) {
 function checkAnswer(button, selected) {
   if (answered) return;
 
-  const correctIndex = questions[current].answer;
+  const currentQuestion = questions[current];
+  const correctIndex = currentQuestion.answer;
 
   if (selected === correctIndex) {
+    clearInterval(timerInterval);
     answered = true;
     score++;
     scoreBox.textContent = score;
     button.classList.add("correct");
-    feedback.textContent = "Correct!";
+    feedback.style.color = "#047857";
+    feedback.textContent = "Correct! " + currentQuestion.explanation;
     playSound(correctSound);
     launchConfetti();
     disableOptions();
@@ -552,11 +589,14 @@ function checkAnswer(button, selected) {
     playSound(wrongSound);
 
     if (attempts === 1) {
-      feedback.textContent = "Try again.";
+      feedback.style.color = "#ea580c";
+      feedback.textContent = "Try again. Hint: " + currentQuestion.hint;
       button.disabled = true;
     } else {
+      clearInterval(timerInterval);
       answered = true;
-      feedback.textContent = "Incorrect. The correct answer is highlighted.";
+      feedback.style.color = "#b91c1c";
+      feedback.textContent = "Incorrect. " + currentQuestion.explanation;
       showCorrectAnswer();
       disableOptions();
       nextBtn.style.display = "inline-block";
@@ -567,7 +607,9 @@ function checkAnswer(button, selected) {
 function showCorrectAnswer() {
   const correctIndex = questions[current].answer;
   const allOptions = document.querySelectorAll(".option");
-  allOptions[correctIndex].classList.add("correct");
+  if (allOptions[correctIndex]) {
+    allOptions[correctIndex].classList.add("correct");
+  }
 }
 
 function disableOptions() {
@@ -577,7 +619,6 @@ function disableOptions() {
 
 function nextQuestion() {
   current++;
-
   if (current < questions.length) {
     loadQuestion();
   } else {
