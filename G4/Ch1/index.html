@@ -51,6 +51,8 @@
             justify-content: center;
             align-items: center;
             z-index: 9999;
+            opacity: 1;
+            transition: opacity 0.5s ease-out;
         }
 
         .logo-only {
@@ -127,10 +129,12 @@
 <body>
 
 <div id="app-container">
+    <!-- --- SPLASH SCREEN --- -->
     <div id="splash-screen">
         <img src="assets/innovine-logo.png" class="logo-only" onerror="this.src='https://via.placeholder.com/250x100?text=INNOVINE'" alt="Innovine Logo">
     </div>
 
+    <!-- --- INTRO VIEW --- -->
     <div id="intro-view" class="hidden">
         <div style="text-align: center; font-size: 3.5rem; margin-bottom: 5px;">🔢</div>
         <h1 style="text-align:center; color:var(--primary); margin: 0 0 5px 0; font-size: 24px;">The Number Mastery Challenge</h1>
@@ -150,6 +154,7 @@
         <button id="start-btn" style="width:100%; padding:18px; background:var(--primary); color:white; border:none; border-radius:14px; font-weight:bold; font-size:1.1rem; cursor:pointer; margin-top: 10px;">Begin Challenge ⚡</button>
     </div>
 
+    <!-- --- QUIZ CHALLENGE VIEW --- -->
     <div id="quiz-view" class="hidden">
         <div class="hud-row">
             <div class="hud-pill blue">Task <span id="q-num">1</span>/12</div>
@@ -167,6 +172,7 @@
         <div id="cross-mark" class="red-cross">✖</div>
     </div>
 
+    <!-- --- HOTS CHALLENGE GATE --- -->
     <div id="hots-view" class="hidden" style="text-align:center;">
         <div style="font-size: 4rem; margin-bottom: 5px;">🎯</div>
         <h1 style="color: var(--text); font-weight: 800; margin: 0; font-size: 24px;">Final Challenge (HOTS)</h1>
@@ -178,6 +184,7 @@
         <button id="finish-btn" style="width:100%; padding:16px; background:var(--primary); color:white; border:none; border-radius:14px; font-weight:700; cursor:pointer;">FINISH WORKSPACE</button>
     </div>
 
+    <!-- --- FINAL SCORE SUMMARY RESULT VIEW --- -->
     <div id="result-view" class="hidden" style="text-align:center;">
         <div style="font-size: 4rem; margin-bottom: 5px;">🏅</div>
         <h2 style="font-size:1.5rem; margin: 5px 0;">Challenge Completed!</h2>
@@ -206,23 +213,37 @@
     let questions = [];
     let current = 0, score = 0, attempts = 0, timer, timeLeft = 60;
 
-    // --- SAFE AUDIO CONTEXT ENGINE ---
+    // Audio assets fallbacks
     const sndC = new Audio('assets/correct.mp3');
     const sndW = new Audio('assets/wrong.mp3');
     const sndF = new Audio('assets/clapping.mp3');
 
-    window.onload = () => {
-        setTimeout(() => {
-            document.getElementById('splash-screen').style.display = 'none';
-            document.getElementById('intro-view').classList.remove('hidden');
-        }, 5000); // Strict 5s intentional splash view sequence
-    };
+    // Robust Initialization Flow
+    function initGame() {
+        const splash = document.getElementById('splash-screen');
+        const intro = document.getElementById('intro-view');
+        
+        if (splash) splash.style.display = 'none';
+        if (intro) intro.classList.remove('hidden');
+    }
+
+    // Trigger on window load, with an immediate fallback safety timeout
+    window.addEventListener('load', () => {
+        setTimeout(initGame, 3000); // 3-second explicit transition limit
+    });
+
+    // Hard fallback if asset streams block the window load entirely
+    setTimeout(() => {
+        const intro = document.getElementById('intro-view');
+        if (intro && intro.classList.contains('hidden')) {
+            initGame();
+        }
+    }, 4000);
 
     document.getElementById('start-btn').onclick = () => {
         document.getElementById('intro-view').classList.add('hidden');
         document.getElementById('quiz-view').classList.remove('hidden');
         questions = [...pool];
-        // Shuffle utility
         for (let i = questions.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
             [questions[i], questions[j]] = [questions[j], questions[i]];
