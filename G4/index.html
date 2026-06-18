@@ -1,628 +1,884 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Number City Challenge</title>
-    <style>
-        :root {
-            --primary: #2980b9;
-            --accent: #3498db;
-            --success: #27ae60;
-            --danger: #c0392b;
-            --bg: #0f172a;
-            --card-shadow: 0 8px 30px rgba(0,0,0,0.3);
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>The Number City Challenge</title>
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+<style>
+*{
+  box-sizing:border-box;
+}
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: var(--bg);
-            color: #f8fafc;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            padding: 15px;
-        }
+html,body{
+  margin:0;
+  padding:0;
+  width:100%;
+  min-height:100%;
+  overflow-x:hidden;
+}
 
-        /* Pure White Startup Screen Layout (Displays for 5 seconds) */
-        #brand-screen {
-            position: fixed;
-            inset: 0;
-            background: #ffffff;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-            text-align: center;
-            padding: 20px;
-        }
-        .logo-wrapper {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 180px;
-            margin-bottom: 20px;
-            width: 100%;
-        }
-        #brand-screen img { 
-            width: 80%;
-            max-width: 220px; 
-            height: auto;
-            object-fit: contain;
-        }
-        .loader-bar-bg {
-            width: 200px;
-            height: 6px;
-            background: #e2e8f0;
-            border-radius: 3px;
-            overflow: hidden;
-        }
-        .loader-bar-fill {
-            width: 0%;
-            height: 100%;
-            background: var(--primary);
-            box-shadow: 0 0 10px rgba(41, 128, 185, 0.5);
-        }
+body{
+  font-family:Arial, sans-serif;
+  background:linear-gradient(135deg,#fff8e1,#e3f2fd,#f3e5f5);
+  color:#263238;
+}
 
-        /* Adaptive Cross-Device Container Box */
-        .game-card {
-            width: 100%;
-            max-width: 650px;
-            background: #1e293b;
-            padding: 35px;
-            border-radius: 24px;
-            box-shadow: var(--card-shadow);
-            border: 3px solid var(--primary);
-            position: relative;
-        }
+.bg span{
+  position:fixed;
+  top:-30px;
+  font-size:22px;
+  opacity:.22;
+  animation:float 14s linear infinite;
+  z-index:0;
+}
 
-        @media (max-width: 600px) {
-            .game-card {
-                padding: 24px 16px;
-                border-radius: 16px;
-            }
-            .option-btn {
-                padding: 14px !important;
-                font-size: 1rem !important;
-            }
-            #q-text {
-                font-size: 1.15rem !important;
-            }
-        }
+.bg span:nth-child(1){left:8%;animation-delay:0s}
+.bg span:nth-child(2){left:28%;animation-delay:3s}
+.bg span:nth-child(3){left:52%;animation-delay:6s}
+.bg span:nth-child(4){left:76%;animation-delay:2s}
+.bg span:nth-child(5){left:92%;animation-delay:5s}
 
-        .hidden { display: none !important; }
+@keyframes float{
+  from{transform:translateY(-40px) rotate(0deg)}
+  to{transform:translateY(110vh) rotate(180deg)}
+}
 
-        .header { 
-            display: flex; 
-            justify-content: flex-end; 
-            align-items: center; 
-            margin-bottom: 15px; 
-        }
-        .hud { 
-            font-weight: bold; 
-            color: #38bdf8; 
-            display: flex; 
-            gap: 20px; 
-            font-size: 1.1rem;
-        }
+.screen{
+  display:none;
+  min-height:100vh;
+  padding:16px;
+  position:relative;
+  z-index:1;
+}
 
-        .progress-container { 
-            height: 10px; 
-            background: #334155; 
-            border-radius: 10px; 
-            margin-bottom: 25px; 
-            overflow: hidden; 
-        }
-        #progress-bar { 
-            height: 100%; 
-            background: var(--primary); 
-            width: 0%; 
-            transition: width 0.4s ease; 
-        }
+.active{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
 
-        .question-text { 
-            font-size: 1.3rem; 
-            color: #f1f5f9; 
-            line-height: 1.5; 
-            margin-bottom: 25px; 
-            font-weight: 600; 
-        }
+.card{
+  width:92vw;
+  max-width:760px;
+  background:rgba(255,255,255,.96);
+  border-radius:26px;
+  padding:22px;
+  box-shadow:0 10px 26px rgba(0,0,0,.13);
+  text-align:center;
+}
 
-        /* Vector Graphic Canvas containers */
-        .canvas-container {
-            display: flex;
-            justify-content: center;
-            margin-bottom: 20px;
-            background: #0f172a;
-            padding: 15px;
-            border-radius: 14px;
-            border: 1px solid #334155;
-        }
+.logo{
+  width:180px;
+  max-width:70%;
+  height:auto;
+  margin-bottom:18px;
+}
 
-        .options-grid { 
-            display: grid; 
-            grid-template-columns: 1fr;
-            gap: 14px; 
-        }
-        .option-btn {
-            padding: 16px;
-            border: 2px solid #334155;
-            border-radius: 14px;
-            background: #334155;
-            cursor: pointer;
-            font-size: 1.1rem;
-            font-weight: 500;
-            text-align: left;
-            transition: background 0.2s, border-color 0.2s;
-            color: #f1f5f9;
-            width: 100%;
-        }
-        .option-btn:hover:not(:disabled) { 
-            border-color: var(--primary); 
-            background: #475569; 
-        }
-        
-        .correct { background: var(--success) !important; color: white; border-color: #1e8449 !important; font-weight: bold; }
-        .wrong { background: var(--danger) !important; color: white; border-color: #922b21 !important; animation: shake 0.4s; }
+h1{
+  color:#6a1b9a;
+  margin:10px 0;
+  font-size:36px;
+  line-height:1.15;
+}
 
-        @keyframes shake { 
-            0%, 100% { transform: translateX(0); } 
-            25% { transform: translateX(-6px); } 
-            75% { transform: translateX(6px); } 
-        }
+h2{
+  color:#0277bd;
+  margin:8px 0;
+  font-size:24px;
+}
 
-        .feedback-box { 
-            margin-top: 20px; 
-            padding: 16px; 
-            border-radius: 14px; 
-            background: #0f172a; 
-            border-left: 5px solid var(--primary); 
-            color: #cbd5e1; 
-            line-height: 1.5; 
-            font-size: 1.05rem;
-        }
+p{
+  font-size:18px;
+  line-height:1.45;
+}
 
-        .btn-next {
-            margin-top: 20px;
-            background: var(--primary);
-            color: white;
-            border: none;
-            padding: 12px 32px;
-            border-radius: 50px;
-            font-weight: bold;
-            font-size: 1.05rem;
-            cursor: pointer;
-            float: right;
-            box-shadow: 0 4px 0 #1b4f72;
-            transition: background 0.2s, transform 0.1s;
-        }
-        .btn-next:hover { background: var(--accent); }
-        .btn-next:active { transform: translateY(2px); box-shadow: 0 2px 0 #1b4f72; }
+.outcomes-list {
+  text-align: left;
+  max-width: 600px;
+  margin: 0 auto 20px auto;
+  font-size: 16px;
+  line-height: 1.5;
+  color: #455a64;
+}
 
-        .creative-pop {
-            font-size: 4.5rem;
-            animation: popScale 1.5s infinite alternate ease-in-out;
-            margin-bottom: 15px;
-        }
-        @keyframes popScale {
-            0% { transform: scale(1); }
-            100% { transform: scale(1.1); }
-        }
-    </style>
+button{
+  border:0;
+  border-radius:18px;
+  padding:15px 24px;
+  margin:8px;
+  font-size:18px;
+  font-weight:bold;
+  background:#ffca28;
+  color:#263238;
+  cursor:pointer;
+  box-shadow:0 5px 0 #f9a825;
+  min-height:54px;
+}
+
+button:active{
+  transform:translateY(3px);
+  box-shadow:0 2px 0 #f9a825;
+}
+
+.topbar{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:8px;
+  margin-bottom:14px;
+  font-weight:bold;
+}
+
+.badge{
+  background:#e3f2fd;
+  border-radius:16px;
+  padding:10px 8px;
+  text-align:center;
+  font-size:16px;
+}
+
+.timer{
+  background:#fff3e0;
+}
+
+.progress-wrap{
+  width:100%;
+  height:12px;
+  background:#e0e0e0;
+  border-radius:20px;
+  overflow:hidden;
+  margin-bottom:16px;
+}
+
+.progress-bar{
+  height:100%;
+  width:0%;
+  background:#66bb6a;
+  transition:.3s;
+}
+
+.question{
+  font-size:22px;
+  line-height:1.4;
+  font-weight:bold;
+  margin:22px 0;
+  text-align: left;
+  white-space: pre-line;
+}
+
+/* Canvas container styling for interactive components */
+.canvas-container {
+  display: flex;
+  justify-content: center;
+  margin: 15px 0;
+  background: #f8fafc;
+  padding: 10px;
+  border-radius: 18px;
+  border: 2px dashed #cbd5e1;
+}
+
+.options{
+  display:grid;
+  grid-template-columns:1fr;
+  gap:12px;
+}
+
+.option{
+  background:#f1f8e9;
+  border:2px solid #c5e1a5;
+  border-radius:18px;
+  padding:18px;
+  font-size:19px;
+  min-height:70px;
+  display:flex;
+  align-items:center;
+  cursor:pointer;
+  text-align:left;
+  line-height:1.3;
+}
+
+.option:hover{
+  background:#e8f5e9;
+}
+
+.correct{
+  background:#c8f7c5!important;
+  border-color:#2e7d32!important;
+  transform:scale(1.01);
+}
+
+.wrong{
+  background:#ffcdd2!important;
+  border-color:#c62828!important;
+}
+
+.feedback{
+  min-height:62px;
+  margin-top:16px;
+  font-size:18px;
+  font-weight:bold;
+}
+
+.explain{
+  font-size:16px;
+  font-weight:normal;
+  margin-top:6px;
+  line-height:1.4;
+  text-align: left;
+}
+
+.hidden{
+  display:none;
+}
+
+.confetti{
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  z-index:3;
+}
+
+.star{
+  position:absolute;
+  font-size:24px;
+  animation:pop 900ms ease-out forwards;
+}
+
+@keyframes pop{
+  0%{transform:scale(.3) translateY(0);opacity:1}
+  100%{transform:scale(1.4) translateY(-120px);opacity:0}
+}
+
+.cross{
+  position:fixed;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  font-size:88px;
+  color:#e53935;
+  opacity:0;
+  z-index:4;
+  animation:crossfade 700ms ease-out;
+}
+
+@keyframes crossfade{
+  0%{opacity:0;transform:translate(-50%,-50%) scale(.5)}
+  40%{opacity:.85}
+  100%{opacity:0;transform:translate(-50%,-50%) scale(1.2)}
+}
+
+.finalbox{
+  background:#fff8e1;
+  border:2px dashed #ffb300;
+  border-radius:20px;
+  padding:16px;
+  margin-top:16px;
+}
+
+.small{
+  font-size:15px;
+  color:#546e7a;
+}
+
+@media(max-width:520px){
+  .screen{
+    padding:10px;
+  }
+
+  .card{
+    width:94vw;
+    padding:16px;
+    border-radius:22px;
+  }
+
+  h1{
+    font-size:26px;
+  }
+
+  h2{
+    font-size:20px;
+  }
+
+  p, .outcomes-list{
+    font-size:15px;
+  }
+
+  .topbar{
+    grid-template-columns:1fr;
+    gap:6px;
+  }
+
+  .badge{
+    font-size:15px;
+    padding:9px 8px;
+  }
+
+  .question{
+    font-size:18px;
+    margin:18px 0;
+  }
+
+  .option{
+    font-size:17px;
+    padding:16px;
+    min-height:64px;
+  }
+
+  button{
+    width:100%;
+    font-size:18px;
+    padding:15px 18px;
+  }
+
+  .feedback{
+    font-size:16px;
+  }
+
+  .explain{
+    font-size:14px;
+  }
+}
+
+@media(max-height:520px){
+  .active{
+    align-items:flex-start;
+  }
+
+  .screen{
+    padding-top:10px;
+  }
+
+  .card{
+    margin:8px 0;
+  }
+
+  .question{
+    margin:14px 0;
+  }
+
+  .option{
+    min-height:54px;
+    padding:13px;
+  }
+}
+
+@media(prefers-reduced-motion:reduce){
+  .bg span,
+  .star,
+  .cross{
+    animation:none;
+  }
+}
+</style>
 </head>
+
 <body>
 
-<div id="brand-screen">
-    <div class="logo-wrapper">
-        <img src="assets/logo.png" alt="Logo" onerror="this.style.opacity='0.5';">
-    </div>
-    <div class="loader-bar-bg" style="margin-top: 10px;">
-        <div id="loader-fill" class="loader-bar-fill"></div>
-    </div>
+<div class="bg">
+  <span>⭐</span>
+  <span>🏢</span>
+  <span>⭐</span>
+  <span>🏟️</span>
+  <span>⭐</span>
 </div>
 
-<div class="game-card hidden" id="game-card">
+<div id="splash" class="screen active">
+  <div class="card">
+    <img src="assets/innovine-logo.png" class="logo" alt="Innovine Logo" onerror="this.style.opacity='0.5';">
+    <h2>Loading your challenge...</h2>
+  </div>
+</div>
 
-    <div id="instruction-screen">
-        <h2 style="color: var(--primary); margin-bottom: 15px;">Learning Outcomes</h2>
-        <p style="font-size: 1.05rem; color: #cbd5e1; line-height: 1.5; margin-bottom: 25px;">
-            By the end of this lesson, you will be able to:<br>
-            • Read and write 5-digit and 6-digit numbers.<br>
-            • Explain place and face value of digits in numbers.<br>
-            • Formulate largest and smallest 5-digit/6-digit numbers from given digits.<br>
-            • Arrange, sort, and compare large scale numbers with relational indicators.<br>
-            • Evaluate calculations using strategic rounding to the nearest thousand.<br>
-            • Convert and decipher traditional Roman and Hindu-Arabic numerals.<br><br>
-            Welcome, <b>Finance Manager</b>! Welcome to the <b>Number City Challenge</b>. Manage ticket allocations, system logs, and passcodes using large numbers.<br><br>
-            You have <b>2 attempts</b> per question to secure a perfect evaluation.
-        </p>
-        <button class="btn-next" style="float: none;" onclick="startQuizGame()">Start Challenge</button>
-    </div>
+<div id="intro" class="screen">
+  <div class="card">
+    <h1>The Number City Challenge</h1>
+    <h2>Grade 4 Mathematics</h2>
+    <p><b>Welcome, Finance Manager!</b> You are in charge of "Number City’s" grand stadium. Manage ticket sales, allocations, and configurations using large numbers.</p>
     
-    <div id="game-play-area" class="hidden">
-        <div class="header">
-            <div class="hud">
-                <span>Problem: <span id="q-num">1</span>/11</span>
-                <span>Stars: ⭐ <span id="score">0</span></span>
-            </div>
-        </div>
-
-        <div class="progress-container"><div id="progress-bar"></div></div>
-
-        <div id="quiz-content">
-            <div class="question-text" id="q-text"></div>
-            
-            <div id="canvas-wrapper" class="canvas-container hidden">
-                <canvas id="visual-canvas" width="400" height="200"></canvas>
-            </div>
-
-            <div class="options-grid" id="options-box"></div>
-            <div id="feedback-area" class="feedback-box hidden"></div>
-            <div style="height: 60px;">
-                <button id="next-btn" class="btn-next hidden" onclick="handleNext()">Next Challenge ➡️</button>
-            </div>
-        </div>
+    <div class="outcomes-list">
+      <b>Learning Outcomes:</b><br>
+      • Read and write 5-digit and 6-digit numbers.<br>
+      • Explain place and face value of digits.<br>
+      • Formulate largest and smallest configurations.<br>
+      • Evaluate estimations, successors, and Roman system mappings.
     </div>
 
-    <div id="result-screen" class="hidden" style="text-align: center; padding: 20px 0;">
-        <div class="creative-pop">🎉🧮⚡</div>
-        <h1 style="color: var(--primary); margin: 10px 0;">Challenge Complete!</h1>
-        <p id="result-msg" style="font-size: 1.2rem; color: #cbd5e1; line-height: 1.6; margin-bottom: 30px;"></p>
-        <button class="btn-next" style="float: none;" onclick="location.reload()">Restart Challenge</button>
-    </div>
+    <p>Choose the best answer. You get one retry after a wrong answer. Each question has a 60-second timer.</p>
+    <button onclick="startGame()">Start Game</button>
+  </div>
 </div>
+
+<div id="quiz" class="screen">
+  <div class="card">
+    <div class="topbar">
+      <div class="badge" id="qCount">Question 1/10</div>
+      <div class="badge">Score: <span id="score">0</span></div>
+      <div class="badge timer">Time: <span id="time">60</span>s</div>
+    </div>
+
+    <div class="progress-wrap">
+      <div class="progress-bar" id="progressBar"></div>
+    </div>
+
+    <div class="question" id="question"></div>
+    
+    <div id="canvas-wrapper" class="canvas-container hidden">
+      <canvas id="visual-canvas" width="400" height="180"></canvas>
+    </div>
+
+    <div class="options" id="options"></div>
+    <div class="feedback" id="feedback"></div>
+    <button id="nextBtn" class="hidden" onclick="nextQuestion()">Next</button>
+  </div>
+</div>
+
+<div id="finalChallenge" class="screen">
+  <div class="card">
+    <h1>Final Challenge (HOTS)</h1>
+    <div class="finalbox">
+      <p><b>Think and say:</b></p>
+      <p class="question" style="text-align:center; margin:10px 0;">I am a 6-digit number. All my digits are the same. If you add 1 to me, I become a 7-digit number. What number am I?</p>
+    </div>
+    <p class="small">Tap finish to check the system parameters.</p>
+    <button onclick="showResult()">Finish</button>
+  </div>
+</div>
+
+<div id="result" class="screen">
+  <div class="card">
+    <h1>Great Work!</h1>
+    <h2>Your Score: <span id="finalScore"></span>/10</h2>
+    <p id="resultMsg"></p>
+    <button onclick="location.reload()">Play Again</button>
+  </div>
+</div>
+
+<div class="confetti" id="confetti"></div>
+
+<audio id="correctSound" src="assets/correct.mp3" preload="auto"></audio>
+<audio id="wrongSound" src="assets/wrong.mp3" preload="auto"></audio>
+<audio id="clapSound" src="assets/clapping.mp3" preload="auto"></audio>
 
 <script>
-    const audio = {
-        correct: new Audio('assets/correct.mp3'),
-        wrong: new Audio('assets/wrong.mp3'),
-        claps: new Audio('assets/freesound_community-claps-44774.mp3')
+const questions=[
+{
+  q:"The stadium sold 54,209 tickets on Saturday and 54,290 tickets on Sunday. On which day was the stadium more crowded?",
+  o:[
+    "A) Saturday, because 209 is more than 290.",
+    "B) Sunday, because 54,290 is greater than 54,209.",
+    "C) Both days had the exact same number of people.",
+    "D) Saturday, because 0 comes before 9."
+  ],
+  a:1,
+  e:"When comparing numbers, we look at the highest place value where the digits differ. In the tens place, 9 is greater than 0.",
+  type:"text"
+},
+{
+  q:"Look at the abacus showing the number 4,05,213 below. If you add one bead to the Ten Thousand place and take away one bead from the Ones place, what is the new number?",
+  o:[
+    "A) 4,15,212",
+    "B) 5,05,213",
+    "C) 4,06,212",
+    "D) 4,15,213"
+  ],
+  a:0,
+  e:"Adding 1 to the Ten Thousand place increases the value by 10,000 (0 becomes 1). Taking 1 from the ones place decreases it by 1 (3 becomes 2).",
+  type:"abacus"
+},
+{
+  q:"The population of four blocks in Number City is:\nBlock A: 1,25,000\nBlock B: 98,500\nBlock C: 1,02,999\nBlock D: 1,25,001\n\nWhich block has the second highest population?",
+  o:[
+    "A) Block B",
+    "B) Block C",
+    "C) Block A",
+    "D) Block D"
+  ],
+  a:2,
+  e:"Block D is the highest (1,25,001). Block A is the second highest (1,25,000).",
+  type:"text"
+},
+{
+  q:"Case: A printer prints serial numbers for coupons. The last coupon printed was 4,59,999. What will be the serial number on the next coupon?",
+  o:[
+    "A) 4,59,990",
+    "B) 4,60,000",
+    "C) 5,00,000",
+    "D) 4,59,100"
+  ],
+  a:1,
+  e:"The \"next\" number is the successor. Adding 1 to 4,59,999 results in 4,60,000.",
+  type:"text"
+},
+{
+  q:"Statement: The place value of 0 in the number 7,05,432 is always 0.\nReason: 0 multiplied by any place (like Thousands) results in 0.",
+  o:[
+    "A) Both statement and reason are true, and the reason explains the statement.",
+    "B) The statement is true, but the reason is false.",
+    "C) The statement is false.",
+    "D) Both are false."
+  ],
+  a:0,
+  e:"No matter which \"house\" (place) zero lives in, its total value remains zero.",
+  type:"text"
+},
+{
+  q:"A student wrote the number Six Lakh Five Thousand Forty-Two as 6,50,042. Why is this wrong?",
+  o:[
+    "A) The number should have 7 digits.",
+    "B) He put the 5 in the Ten Thousand place instead of the Thousands place.",
+    "C) He forgot to write the zero for the Hundreds place.",
+    "D) There is no error; the number is correct."
+  ],
+  a:1,
+  e:"Six Lakh Five Thousand is written as 6,05,042. The student wrote 6,50,042 (Six Lakh Fifty Thousand).",
+  type:"text"
+},
+{
+  q:"Which of these represents a different value than the others?",
+  o:[
+    "A) 1,00,000",
+    "B) Ten Thousand",
+    "C) 1 Lakh",
+    "D) One hundred thousand"
+  ],
+  a:1,
+  e:"A, C, and D all represent 1,00,000. Option B is only 10,000.",
+  type:"text"
+},
+{
+  q:"A school wants to buy 1,895 chairs. Each chair costs about ₹1,000. The principal wants to estimate the total cost to the nearest thousand. What estimate should she use for the number of chairs?",
+  o:[
+    "A) 1,000",
+    "B) 1,800",
+    "C) 2,000",
+    "D) 1,900"
+  ],
+  a:2,
+  e:"1,895 is closer to 2,000 than 1,000. When rounding to the nearest thousand, we look at the hundreds digit (8), which tells us to round up.",
+  type:"text"
+},
+{
+  q:"If the hour hand is on IX and the minute hand is on XII, what time is it in Hindu-Arabic numbers?",
+  o:[
+    "A) 11:12",
+    "B) 9:00",
+    "C) 4:12",
+    "D) 6:10"
+  ],
+  a:1,
+  e:"IX represents 10 - 1 = 9. XII represents 10 + 1 + 1 = 12. On a clock, this is 9 o'clock.",
+  type:"clock"
+},
+{
+  q:"You have the digits 5, 0, 2, 9, 8. What is the smallest 5-digit number you can make to use as a secret passcode? (Note: A number cannot start with 0).",
+  o:[
+    "A) 02589",
+    "B) 20,589",
+    "C) 25,890",
+    "D) 98,520"
+  ],
+  a:1,
+  e:"To make the smallest number, we start with the smallest non-zero digit (2), then place the zero, and then the remaining digits in ascending order.",
+  type:"text"
+}
+];
+
+let current=0;
+let score=0;
+let attempts=0;
+let timer;
+let timeLeft=60;
+let locked=false;
+
+const correctSound=document.getElementById("correctSound");
+const wrongSound=document.getElementById("wrongSound");
+const clapSound=document.getElementById("clapSound");
+
+setTimeout(function(){
+  showScreen("intro");
+},5000);
+
+function showScreen(id){
+  const screens=document.querySelectorAll(".screen");
+  for(let i=0;i<screens.length;i++){
+    screens[i].classList.remove("active");
+  }
+  document.getElementById(id).classList.add("active");
+}
+
+function startGame(){
+  score=0;
+  current=0;
+  showScreen("quiz");
+  loadQuestion();
+}
+
+function loadQuestion(){
+  locked=false;
+  attempts=0;
+  clearInterval(timer);
+  timeLeft=60;
+
+  document.getElementById("time").textContent=timeLeft;
+  document.getElementById("score").textContent=score;
+  document.getElementById("qCount").textContent="Question "+(current+1)+"/"+questions.length;
+  document.getElementById("question").textContent=questions[current].q;
+  document.getElementById("feedback").innerHTML="";
+  document.getElementById("nextBtn").classList.add("hidden");
+
+  const progress=((current)/questions.length)*100;
+  document.getElementById("progressBar").style.width=progress+"%";
+
+  // Contextual canvas initialization
+  const canvasWrapper = document.getElementById('canvas-wrapper');
+  if (questions[current].type === "abacus") {
+      canvasWrapper.classList.remove('hidden');
+      drawAbacus();
+  } else if (questions[current].type === "clock") {
+      canvasWrapper.classList.remove('hidden');
+      drawClock();
+  } else {
+      canvasWrapper.classList.add('hidden');
+  }
+
+  const box=document.getElementById("options");
+  box.innerHTML="";
+
+  for(let i=0;i<questions[current].o.length;i++){
+    const div=document.createElement("div");
+    div.className="option";
+    div.textContent=questions[current].o[i];
+    div.onclick=function(){
+      checkAnswer(i,div);
     };
+    box.appendChild(div);
+  }
 
-    // Question array structured around Large Numbers metrics
-    const questions = [
-        {
-            type: "text",
-            q: "The stadium sold 54,209 tickets on Saturday and 54,290 tickets on Sunday. On which day was the stadium more crowded?",
-            options: [
-                "A) Saturday, because 209 is more than 290.",
-                "B) Sunday, because 54,290 is greater than 54,209.",
-                "C) Both days had the exact same number of people.",
-                "D) Saturday, because 0 comes before 9."
-            ],
-            ans: 1,
-            explain: "When comparing numbers, we look at the highest place value where the digits differ. In the tens place, 9 is greater than 0, making 54,290 > 54,209."
-        },
-        {
-            type: "abacus",
-            q: "Look at the abacus below showing the number 4,05,213. If you add one bead to the Ten Thousand place and take away one bead from the Ones place, what is the new number?",
-            options: [
-                "A) 4,15,212",
-                "B) 5,05,213",
-                "C) 4,06,212",
-                "D) 4,15,213"
-            ],
-            ans: 0,
-            explain: "Adding 1 bead to the Ten Thousand place increases the value by 10,000 (0 becomes 1). Taking 1 bead from the ones place decreases it by 1 (3 becomes 2). The updated value is 4,15,212."
-        },
-        {
-            type: "text",
-            q: "The population of four distinct blocks in Number City is recorded as follows:\n• Block A: 1,25,000\n• Block B: 98,500\n• Block C: 1,02,999\n• Block D: 1,25,001\n\nWhich block has the second highest population?",
-            options: [
-                "A) Block B",
-                "B) Block C",
-                "C) Block A",
-                "D) Block D"
-            ],
-            ans: 2,
-            explain: "Arranging from largest to smallest: Block D (1,25,001) > Block A (1,25,000) > Block C (1,02,999) > Block B (98,500). Thus, Block A is the second highest."
-        },
-        {
-            type: "text",
-            q: "Case study: A system printer logs consecutive coupon codes. If the last printed log was 4,59,999, what will be the serial configuration code on the next printed item?",
-            options: [
-                "A) 4,59,990",
-                "B) 4,60,000",
-                "C) 5,00,000",
-                "D) 4,59,100"
-            ],
-            ans: 1,
-            explain: "The next item represents the successor of the line item. Adding 1 to 4,59,999 returns exactly 4,60,000."
-        },
-        {
-            type: "text",
-            q: "Statement: The place value of 0 in the number 7,05,432 is always 0.\nReason: 0 multiplied by any place value multiplier (like Thousands) results in 0.\n\nChoose the correct logical outcome:",
-            options: [
-                "A) Both statement and reason are true, and the reason explains the statement.",
-                "B) The statement is true, but the reason is false.",
-                "C) The statement is false.",
-                "D) Both are false."
-            ],
-            ans: 0,
-            explain: "No matter which slot zero lives in, its total calculated place value remains zero because 0 × 10,000 = 0."
-        },
-        {
-            type: "text",
-            q: "A junior accountant logged the expression 'Six Lakh Five Thousand Forty-Two' as 6,50,042. Why is this data log incorrect?",
-            options: [
-                "A) The number should have 7 digits.",
-                "B) He put the 5 in the Ten Thousand place instead of the Thousands place.",
-                "C) He forgot to write the zero for the Hundreds place.",
-                "D) There is no error; the number is correct."
-            ],
-            ans: 1,
-            explain: "Six Lakh Five Thousand Forty-Two is correctly written as 6,05,042. Logging 6,50,042 incorrectly shifts the 5 into the Ten Thousands column, inflating it to fifty thousand."
-        },
-        {
-            type: "text",
-            q: "Which of the following value expressions represents a completely different numeric benchmark than the others?",
-            options: [
-                "A) 1,00,000",
-                "B) Ten Thousand",
-                "C) 1 Lakh",
-                "D) One hundred thousand"
-            ],
-            ans: 1,
-            explain: "Options A, C, and D are different notations for 1,00,000 (One Lakh). Option B stands alone as it equals only 10,000."
-        },
-        {
-            type: "text",
-            q: "A building manager wants to secure 1,895 luxury chairs for the VIP stands. Each chair costs about ₹1,000. If the manager rounds the total order size to the nearest thousand for estimation purposes, what is the updated chair allocation amount?",
-            options: [
-                "A) 1,000",
-                "B) 1,800",
-                "C) 2,000",
-                "D) 1,900"
-            ],
-            ans: 2,
-            explain: "1,895 rounded to the nearest thousand is 2,000. Since the hundreds position digit (8) is greater than or equal to 5, we round up."
-        },
-        {
-            type: "clock",
-            q: "Look at the stadium display clock visualization carefully. If the hour indicator rests on IX and the minute hand points directly at XII, what time is it in standard Hindu-Arabic numbers?",
-            options: [
-                "A) 11:12",
-                "B) 9:00",
-                "C) 4:12",
-                "D) 6:10"
-            ],
-            ans: 1,
-            explain: "In Roman system metrics, IX signifies 9 (10 - 1) and XII represents 12. Having the short hand at IX and long hand at XII designates exactly 9:00."
-        },
-        {
-            type: "text",
-            q: "You are given the numeric digit blocks: 5, 0, 2, 9, 8. What is the absolute smallest 5-digit security passcode configuration you can form? (Note: A number cannot start with 0).",
-            options: [
-                "A) 02589",
-                "B) 20,589",
-                "C) 25,890",
-                "D) 98,520"
-            ],
-            ans: 1,
-            explain: "To form the lowest layout without a leading zero, place the lowest non-zero digit (2) first, follow immediately with the 0, and append the remaining digits in ascending order: 2, 0, 5, 8, 9."
-        },
-        {
-            type: "text",
-            q: "Final Challenge (HOTS): I am a 6-digit number. All my internal numeric digits are exactly the same. If you increment my value by 1, I immediately grow into a 7-digit number. What number am I?",
-            options: [
-                "A) 1,11,111",
-                "B) 6,66,666",
-                "C) 9,99,999",
-                "D) 10,00,000"
-            ],
-            ans: 2,
-            explain: "Adding 1 to the absolute largest 6-digit layout (9,99,999) rolls every column over, creating the smallest 7-digit value (10,00,000)."
-        }
-    ];
+  startTimer();
+}
 
-    let currentIdx = 0, score = 0, attempts = 0;
+function drawAbacus() {
+  const canvas = document.getElementById('visual-canvas');
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  
+  ctx.strokeStyle = "#455a64";
+  ctx.lineWidth = 4;
+  ctx.beginPath();
+  ctx.moveTo(30, 140);
+  ctx.lineTo(370, 140);
+  ctx.stroke();
 
-    window.addEventListener('DOMContentLoaded', () => {
-        const fill = document.getElementById('loader-fill');
-        let pct = 0;
-        
-        const loaderTimer = setInterval(() => {
-            pct += 1;
-            fill.style.width = pct + '%';
-            if (pct >= 100) {
-                clearInterval(loaderTimer);
-                document.getElementById('brand-screen').style.display = 'none';
-                document.getElementById('game-card').classList.remove('hidden');
-            }
-        }, 50);
-    });
+  const columns = ["L", "TTh", "Th", "H", "T", "O"];
+  const counts = [4, 0, 5, 2, 1, 3];
+  const step = 55;
+  const startX = 60;
 
-    function startQuizGame() {
-        document.getElementById('instruction-screen').classList.add('hidden');
-        document.getElementById('game-play-area').classList.remove('hidden');
-        loadQuestion();
+  columns.forEach((col, idx) => {
+    const x = startX + (idx * step);
+    ctx.strokeStyle = "#b0bec5";
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(x, 20);
+    ctx.lineTo(x, 140);
+    ctx.stroke();
+
+    ctx.fillStyle = "#0277bd";
+    ctx.font = "bold 13px Arial";
+    ctx.fillText(col, x - 8, 160);
+
+    ctx.fillStyle = "#e53935";
+    for(let b = 0; b < counts[idx]; b++) {
+      ctx.beginPath();
+      ctx.arc(x, 130 - (b * 12), 5, 0, Math.PI * 2);
+      ctx.fill();
     }
+  });
+}
 
-    function loadQuestion() {
-        const data = questions[currentIdx];
-        attempts = 0; 
-        document.getElementById('q-num').innerText = currentIdx + 1;
-        document.getElementById('q-text').innerText = data.q;
-        document.getElementById('feedback-area').classList.add('hidden');
-        document.getElementById('next-btn').classList.add('hidden');
-        document.getElementById('progress-bar').style.width = ((currentIdx / questions.length) * 100) + '%';
+function drawClock() {
+  const canvas = document.getElementById('visual-canvas');
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        const canvasWrapper = document.getElementById('canvas-wrapper');
-        if (data.type === "abacus") {
-            canvasWrapper.classList.remove('hidden');
-            drawAbacus();
-        } else if (data.type === "clock") {
-            canvasWrapper.classList.remove('hidden');
-            drawClock();
-        } else {
-            canvasWrapper.classList.add('hidden');
-        }
+  const cx = canvas.width / 2;
+  const cy = canvas.height / 2;
+  const radius = 65;
 
-        const box = document.getElementById('options-box');
-        box.innerHTML = '';
-        data.options.forEach((opt, i) => {
-            const btn = document.createElement('button');
-            btn.className = 'option-btn';
-            btn.innerText = opt;
-            btn.onclick = () => checkAnswer(i, btn);
-            box.appendChild(btn);
-        });
+  ctx.strokeStyle = "#0277bd";
+  ctx.lineWidth = 4;
+  ctx.beginPath();
+  ctx.arc(cx, cy, radius, 0, Math.PI * 2);
+  ctx.stroke();
+  ctx.fillStyle = "#ffffff";
+  ctx.fill();
+
+  ctx.fillStyle = "#263238";
+  ctx.font = "bold 13px Arial";
+  ctx.fillText("XII", cx - 9, cy - radius + 16);
+  ctx.fillText("III", cx + radius - 20, cy + 4);
+  ctx.fillText("VI", cx - 6, cy + radius - 10);
+  ctx.fillText("IX", cx - radius + 10, cy + 4);
+
+  ctx.fillStyle = "#263238";
+  ctx.beginPath();
+  ctx.arc(cx, cy, 4, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Minute Hand (XII)
+  ctx.strokeStyle = "#2e7d32";
+  ctx.lineWidth = 3;
+  ctx.beginPath();
+  ctx.moveTo(cx, cy);
+  ctx.lineTo(cx, cy - 45);
+  ctx.stroke();
+
+  // Hour Hand (IX)
+  ctx.strokeStyle = "#c62828";
+  ctx.lineWidth = 4;
+  ctx.beginPath();
+  ctx.moveTo(cx, cy);
+  ctx.lineTo(cx - 30, cy);
+  ctx.stroke();
+}
+
+function startTimer(){
+  timer=setInterval(function(){
+    timeLeft--;
+    document.getElementById("time").textContent=timeLeft;
+
+    if(timeLeft<=0){
+      clearInterval(timer);
+      showAnswer("Time is up!");
     }
+  },1000);
+}
 
-    function drawAbacus() {
-        const canvas = document.getElementById('visual-canvas');
-        const ctx = canvas.getContext('2d');
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        
-        // Floor bar base
-        ctx.strokeStyle = "#cbd5e1";
-        ctx.lineWidth = 4;
-        ctx.beginPath();
-        ctx.moveTo(30, 160);
-        ctx.lineTo(370, 160);
-        ctx.stroke();
+function checkAnswer(i,el){
+  if(locked){
+    return;
+  }
 
-        // Target: 4,05,213 -> L, TTh, Th, H, T, O
-        const columns = ["L", "TTh", "Th", "H", "T", "O"];
-        const counts = [4, 0, 5, 2, 1, 3];
-        const step = 55;
-        const startX = 60;
+  const q=questions[current];
 
-        columns.forEach((col, idx) => {
-            const x = startX + (idx * step);
-            // Draw rods
-            ctx.strokeStyle = "#475569";
-            ctx.lineWidth = 2;
-            ctx.beginPath();
-            ctx.moveTo(x, 40);
-            ctx.lineTo(x, 160);
-            ctx.stroke();
+  if(i===q.a){
+    locked=true;
+    clearInterval(timer);
+    score++;
+    document.getElementById("score").textContent=score;
+    el.classList.add("correct");
+    document.getElementById("feedback").innerHTML="Correct!<div class='explain'>"+q.e+"</div>";
 
-            // Headings
-            ctx.fillStyle = "#38bdf8";
-            ctx.font = "bold 12px sans-serif";
-            ctx.fillText(col, x - 8, 180);
+    playSound(correctSound);
+    setTimeout(function(){
+      playSound(clapSound);
+    },250);
 
-            // Counter beads
-            ctx.fillStyle = "#e74c3c";
-            for(let b = 0; b < counts[idx]; b++) {
-                ctx.beginPath();
-                ctx.arc(x, 150 - (b * 14), 6, 0, Math.PI * 2);
-                ctx.fill();
-            }
-        });
+    makeConfetti();
+    document.getElementById("nextBtn").classList.remove("hidden");
+  }else{
+    attempts++;
+    el.classList.add("wrong");
+    showCross();
+    playSound(wrongSound);
+
+    if(attempts===1){
+      document.getElementById("feedback").innerHTML="Try once more.";
+      el.onclick=null;
+    }else{
+      showAnswer("Not quite.");
     }
+  }
+}
 
-    function drawClock() {
-        const canvas = document.getElementById('visual-canvas');
-        const ctx = canvas.getContext('2d');
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
+function showAnswer(msg){
+  locked=true;
+  clearInterval(timer);
 
-        const cx = canvas.width / 2;
-        const cy = canvas.height / 2;
-        const radius = 75;
+  const q=questions[current];
+  const options=document.querySelectorAll(".option");
 
-        ctx.strokeStyle = "#3498db";
-        ctx.lineWidth = 4;
-        ctx.beginPath();
-        ctx.arc(cx, cy, radius, 0, Math.PI * 2);
-        ctx.stroke();
-        ctx.fillStyle = "#1e293b";
-        ctx.fill();
-
-        ctx.fillStyle = "#f1f5f9";
-        ctx.font = "bold 12px sans-serif";
-        ctx.fillText("XII", cx - 8, cy - radius + 16);
-        ctx.fillText("III", cx + radius - 20, cy + 4);
-        ctx.fillText("VI", cx - 6, cy + radius - 10);
-        ctx.fillText("IX", cx - radius + 10, cy + 4);
-
-        ctx.fillStyle = "#ffffff";
-        ctx.beginPath();
-        ctx.arc(cx, cy, 4, 0, Math.PI * 2);
-        ctx.fill();
-
-        // Minute Hand (pointing to XII)
-        ctx.strokeStyle = "#27ae60";
-        ctx.lineWidth = 3;
-        ctx.beginPath();
-        ctx.moveTo(cx, cy);
-        ctx.lineTo(cx, cy - 50);
-        ctx.stroke();
-
-        // Hour Hand (pointing to IX)
-        ctx.strokeStyle = "#e74c3c";
-        ctx.lineWidth = 5;
-        ctx.beginPath();
-        ctx.moveTo(cx, cy);
-        ctx.lineTo(cx - 35, cy);
-        ctx.stroke();
+  for(let i=0;i<options.length;i++){
+    options[i].onclick=null;
+    if(i===q.a){
+      options[i].classList.add("correct");
     }
+  }
 
-    function checkAnswer(idx, btn) {
-        const data = questions[currentIdx];
-        const feedback = document.getElementById('feedback-area');
-        const allBtns = document.querySelectorAll('.option-btn');
+  document.getElementById("feedback").innerHTML=
+    msg+"<div class='explain'>Correct answer: <b>"+q.o[q.a]+"</b><br>"+q.e+"</div>";
 
-        allBtns.forEach(b => b.disabled = true);
+  document.getElementById("nextBtn").classList.remove("hidden");
+}
 
-        if (idx === data.ans) {
-            btn.classList.add('correct');
-            try { audio.correct.play(); } catch(e){}
-            if (attempts === 0) score++;
-            document.getElementById('score').innerText = score;
-            feedback.innerHTML = `<b>🌟 Correct!</b><br>${data.explain}`;
-            feedback.classList.remove('hidden');
-            document.getElementById('next-btn').classList.remove('hidden');
-            if(currentIdx === questions.length - 1) { try { audio.claps.play(); } catch(e){} }
-        } else {
-            btn.classList.add('wrong');
-            try { audio.wrong.play(); } catch(e){}
-            attempts++;
+function nextQuestion(){
+  current++;
 
-            if (attempts < 2) {
-                setTimeout(() => {
-                    allBtns.forEach(b => { if(!b.classList.contains('wrong')) b.disabled = false; });
-                    feedback.innerHTML = `<b>Not quite right!</b> Check your structural place values. 1 attempt left.`;
-                    feedback.classList.remove('hidden');
-                }, 400);
-            } else {
-                allBtns[data.ans].classList.add('correct');
-                feedback.innerHTML = `<b>Out of attempts!</b> The correct choice was: <b>${data.options[data.ans]}</b>.<br>${data.explain}`;
-                feedback.classList.remove('hidden');
-                document.getElementById('next-btn').classList.remove('hidden');
-            }
-        }
+  if(current<questions.length){
+    loadQuestion();
+  }else{
+    document.getElementById("progressBar").style.width="100%";
+    showScreen("finalChallenge");
+  }
+}
+
+function showResult(){
+  showScreen("result");
+  document.getElementById("finalScore").textContent=score;
+
+  let msg="Good effort! Keep practicing configurations and logical place values.";
+
+  if(score>=9){
+    msg="Excellent! Perfect run. You thoroughly understand place values, successors, and Roman system conversions.";
+  }else if(score>=7){
+    msg="Well done! A little more practice will make it flawless.";
+  }
+
+  document.getElementById("resultMsg").innerHTML = msg + "<br><br><b>Final Challenge Reference:</b> 9,99,999<br><span class='small'>Reasoning: Adding 1 to the largest 6-digit number (9,99,999) results in the smallest 7-digit number (10,00,000).</span>";
+}
+
+function makeConfetti(){
+  const box=document.getElementById("confetti");
+
+  for(let i=0;i<18;i++){
+    const s=document.createElement("div");
+    s.className="star";
+    s.textContent="⭐";
+    s.style.left=Math.random()*100+"vw";
+    s.style.top=(55+Math.random()*25)+"vh";
+    box.appendChild(s);
+
+    setTimeout(function(){
+      s.remove();
+    },900);
+  }
+}
+
+function showCross(){
+  const x=document.createElement("div");
+  x.className="cross";
+  x.textContent="✕";
+  document.body.appendChild(x);
+
+  setTimeout(function(){
+    x.remove();
+  },700);
+}
+
+function playSound(sound){
+  if(!sound){
+    return;
+  }
+
+  try{
+    sound.currentTime=0;
+    const playPromise=sound.play();
+
+    if(playPromise!==undefined){
+      playPromise.catch(function(){});
     }
-
-    function handleNext() {
-        currentIdx++;
-        if (currentIdx < questions.length) {
-            loadQuestion();
-        } else {
-            showResults();
-        }
-    }
-
-    function showResults() {
-        document.getElementById('game-play-area').classList.add('hidden');
-        document.getElementById('result-screen').classList.remove('hidden');
-        document.getElementById('progress-bar').style.width = '100%';
-        try { audio.claps.play(); } catch(e){}
-        
-        let msg = `Phenomenal performance! You completed the challenge and earned ${score} out of 11 stars!`;
-        if (score === questions.length) msg = "Outstanding, Master Finance Manager! A perfect mathematical run. You have completely mastered all structural large number outcomes!";
-        
-        document.getElementById('result-msg').innerText = msg;
-    }
+  }catch(error){}
+}
 </script>
 
 </body>
