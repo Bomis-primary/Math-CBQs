@@ -6,84 +6,40 @@
     <title>The Number Mastery Challenge</title>
     <style>
         :root {
-            --primary-blue: #1a73e8;
+            --primary: #1a73e8;
             --primary-dark: #1254b0;
-            --light-blue-bg: #e8f0fe;
-            --accent-gold: #f9ab00;
-            --light-gold-bg: #fef7e0;
             --success: #1e8e3e;
-            --success-bg: #e6f4ea;
-            --success-border: #81c784;
-            --danger: #d93025;
-            --danger-bg: #fce8e6;
-            --danger-border: #e57373;
-            --light-grey: #f8f9fa;
-            --text-dark: #202124;
-            --text-main: #37474f;
-            --text-muted: #5f6368;
-            --card-bg: rgba(255, 255, 255, 0.98);
-            --bg-gradient: linear-gradient(135deg, #e0f2f1 0%, #e8eaf6 50%, #f3e5f5 100%);
+            --error: #d93025;
+            --bg: #f8f9fa;
+            --text: #202124;
+            --hud-blue: #e8f0fe;
+            --hud-orange: #fef7e0;
         }
 
-        * { 
-            box-sizing: border-box; 
-            -webkit-tap-highlight-color: transparent; 
-        }
-
-        html, body {
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-        }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
         body {
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background: var(--bg-gradient);
-            color: var(--text-main);
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
             display: flex;
-            align-items: center;
             justify-content: center;
-        }
-
-        /* --- BACKGROUND DECORATIVE ELEMENTS --- */
-        .bg span {
-            position: fixed;
-            top: -40px;
-            font-size: 28px;
-            opacity: .15;
-            animation: float 16s linear infinite;
-            z-index: 0;
-            user-select: none;
-        }
-        .bg span:nth-child(1) { left: 10%; animation-delay: 0s; animation-duration: 14s; }
-        .bg span:nth-child(2) { left: 30%; animation-delay: 3s; animation-duration: 18s; }
-        .bg span:nth-child(3) { left: 55%; animation-delay: 6s; animation-duration: 15s; }
-        .bg span:nth-child(4) { left: 78%; animation-delay: 2s; animation-duration: 17s; }
-        .bg span:nth-child(5) { left: 90%; animation-delay: 5s; animation-duration: 13s; }
-
-        @keyframes float {
-            from { transform: translateY(-40px) rotate(0deg); }
-            to { transform: translateY(110vh) rotate(360deg); }
+            align-items: center;
+            min-height: 100vh;
+            padding: 10px;
         }
 
         #app-container {
             width: 100%;
-            max-width: 540px;
-            height: 94vh;
-            max-height: 720px;
-            background: var(--card-bg);
-            border-radius: 28px;
-            padding: 24px;
-            margin: 10px;
-            box-shadow: 0 16px 40px rgba(26, 35, 126, 0.12);
-            border: 1px solid rgba(255, 255, 255, 0.7);
+            max-width: 500px;
+            background: #ffffff;
+            border-radius: 24px;
+            padding: 25px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.08);
             position: relative;
             overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            backdrop-filter: blur(10px);
+            min-height: 520px;
         }
 
         /* --- SPLASH SCREEN --- */
@@ -92,435 +48,187 @@
             top: 0; left: 0; width: 100%; height: 100%;
             background: #ffffff;
             display: flex;
-            flex-direction: column;
             justify-content: center;
             align-items: center;
             z-index: 9999;
         }
-        .logo-main { width: 240px; height: auto; max-width: 80%; margin-bottom: 24px; }
-        .loader { border: 4px solid #f3f3f3; border-top: 4px solid var(--primary-blue); border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        /* --- SCREEN WRAPPERS --- */
-        .view-frame {
-            display: flex;
-            flex-direction: column;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
+        .logo-only {
+            width: 250px;
+            height: auto;
+            max-width: 85%;
+            object-fit: contain;
         }
 
-        /* --- TOP DASHBOARD ROW --- */
-        .stats-dashboard {
+        /* --- BASIC INSTRUCTIONS STYLING --- */
+        .instruction-box {
+            background: #f1f3f9;
+            border-left: 4px solid var(--primary);
+            padding: 15px;
+            border-radius: 8px;
+            text-align: left;
+            margin: 20px 0;
+            font-size: 0.95rem;
+            color: #4a5568;
+            line-height: 1.4;
+        }
+        .instruction-box ul { margin: 5px 0 0 20px; padding: 0; }
+        .instruction-box li { margin-bottom: 5px; }
+
+        /* --- HORIZONTAL HUD COMPONENT --- */
+        .hud-row {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 8px;
-            margin-bottom: 12px;
-            flex-shrink: 0;
+            gap: 10px;
+            margin-bottom: 15px;
         }
-        .stat-card {
-            padding: 8px 4px;
-            border-radius: 12px;
+        .hud-pill {
             text-align: center;
-            font-weight: 700;
-            font-size: 0.85rem;
-            letter-spacing: 0.2px;
-        }
-        .stat-card.blue-pill {
-            background-color: var(--light-blue-bg);
-            color: var(--primary-blue);
-        }
-        .stat-card.gold-pill {
-            background-color: var(--light-gold-bg);
-            color: #ef6c00;
-        }
-
-        /* --- UI ELEMENTS --- */
-        .timer-track { width: 100%; height: 6px; background: #eee; border-radius: 10px; margin-bottom: 14px; overflow: hidden; flex-shrink: 0; }
-        #timer-bar { height: 100%; width: 100%; background: linear-gradient(90deg, var(--primary-blue), #4285f4); transition: width 1s linear; }
-
-        /* --- QUIZ DYNAMIC SIZING BODY --- */
-        .quiz-body {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-        }
-
-        .question-area {
-            flex-shrink: 0;
-            overflow-y: auto;
-            max-height: 32%;
-            margin-bottom: 12px;
-            padding-right: 2px;
-        }
-
-        .q-title { font-size: 0.85rem; color: #00838f; font-weight: 700; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 1px; }
-        .q-text { font-size: 1.05rem; font-weight: 700; line-height: 1.45; color: var(--text-dark); margin: 0; text-align: left; }
-
-        .table-wrap {
-            width: 100%;
-            margin-top: 8px;
-            overflow-x: auto;
-        }
-        .data-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; background: #ffffff; }
-        .data-table th, .data-table td { border: 1px solid #dadce0; padding: 8px 10px; text-align: left; }
-        .data-table th { background: #f1f3f4; font-weight: 700; color: var(--text-dark); }
-
-        .options-area {
-            flex: 1;
-            overflow-y: auto;
-            padding-right: 2px;
-        }
-
-        .options-grid { display: grid; gap: 8px; }
-        .opt-btn {
-            background: #fff; 
-            border: 1.5px solid #e2e8f0; 
-            padding: 12px 14px;
-            border-radius: 14px; 
-            text-align: left; 
-            font-size: 0.95rem; 
-            cursor: pointer; 
-            transition: all 0.15s ease;
-            color: var(--text-main); 
-            font-weight: 500;
-            line-height: 1.35;
+            padding: 12px 6px;
+            border-radius: 14px;
+            font-size: 0.95rem;
+            font-weight: 800;
             display: flex;
             align-items: center;
-            min-height: 44px;
+            justify-content: center;
+            box-shadow: inset 0 -2px 0px rgba(0,0,0,0.05);
         }
-        .opt-btn:hover:not(:disabled) {
-            background: #f8fafc;
-            border-color: #cbd5e1;
-            transform: translateY(-1px);
-        }
-        .opt-btn.correct { background: var(--success-bg) !important; color: var(--success) !important; border-color: var(--success-border) !important; font-weight: 700; }
-        .opt-btn.wrong { background: var(--danger-bg) !important; color: var(--danger) !important; border-color: var(--danger-border) !important; opacity: 0.85; }
+        .hud-pill.blue { background-color: var(--hud-blue); color: #1e3a8a; }
+        .hud-pill.orange { background-color: var(--hud-orange); color: #c2410c; }
 
-        .feedback { 
-            margin-top: 10px; 
-            padding: 12px 14px; 
-            border-radius: 14px; 
-            display: none; 
-            line-height: 1.45; 
-            font-size: 0.9rem; 
-            animation: pop 0.3s ease; 
-            flex-shrink: 0;
-        }
-        .hint { background: var(--light-gold-bg); border-left: 4px solid var(--accent-gold); color: #856404; }
-        .expl { background: var(--light-blue-bg); border-left: 4px solid var(--primary-blue); color: #1967d2; }
-        @keyframes pop { from { transform: scale(0.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        .timer-track { width: 100%; height: 8px; background: #edf2f4; border-radius: 10px; margin-bottom: 20px; overflow: hidden; }
+        #timer-bar { height: 100%; width: 100%; background: var(--primary); transition: width 1s linear; }
 
-        /* --- ACTION AND GLOBAL BUTTONS --- */
-        #action-btn, .action-trigger { 
-            width: 100%; 
-            margin-top: 12px; 
-            padding: 14px 24px; 
-            background: var(--primary-blue); 
-            color: white; 
-            border: none; 
-            border-radius: 16px; 
-            font-weight: 700; 
-            font-size: 0.95rem; 
-            cursor: pointer; 
-            flex-shrink: 0;
-            box-shadow: 0 4px 14px rgba(26, 115, 232, 0.3);
-            transition: all 0.2s ease;
+        .category-text { font-size: 0.85rem; color: #00838f; font-weight: 700; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 1px; }
+        .question-text { font-size: 1.1rem; font-weight: 600; line-height: 1.5; margin-bottom: 15px; white-space: pre-line; }
+
+        .options-grid { display: grid; gap: 12px; }
+        .opt-btn {
+            background: #fff; border: 2px solid #edf2f4; padding: 16px;
+            border-radius: 14px; text-align: left; font-size: 1rem; cursor: pointer; transition: 0.2s;
+            color: #37474f; font-weight: 500;
         }
-        #action-btn:hover, .action-trigger:hover {
-            background: var(--primary-dark);
-            transform: translateY(-1px);
-            box-shadow: 0 6px 20px rgba(26, 115, 232, 0.4);
-        }
-        #action-btn:active, .action-trigger:active {
-            transform: translateY(1px);
-            box-shadow: 0 2px 8px rgba(26, 115, 232, 0.3);
-        }
+        .opt-btn.correct { background: #e6f4ea !important; color: var(--success) !important; border-color: #81c784 !important; font-weight: 700; }
+        .opt-btn.wrong { background: #fce8e6 !important; color: var(--error) !important; border-color: #e57373 !important; }
+
+        .feedback { margin-top: 20px; padding: 15px; border-radius: 12px; display: none; line-height: 1.5; font-size: 0.95rem; }
+        .hint-box { background: #fff3cd; border: 1px solid #ffeeba; color: #856404; }
+        .expl-box { background: #d1ecf1; border: 1px solid #bee5eb; color: #0c5460; }
+
+        #action-btn { width: 100%; margin-top: 20px; padding: 16px; background: var(--primary); color: white; border: none; border-radius: 14px; font-weight: 700; cursor: pointer; }
         
-        .hidden { display: none !important; }
+        .red-cross { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 100px; color: rgba(217, 48, 37, 0.4); pointer-events: none; display: none; z-index: 10; }
+        .star { position: absolute; width: 12px; height: 12px; background: #FFD700; clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%); pointer-events: none; animation: pop 1s ease-out forwards; }
 
-        @media(max-width:520px) {
-            #app-container {
-                height: 96vh;
-                padding: 16px;
-                border-radius: 20px;
-            }
-            .q-text { font-size: 0.95rem; }
-            .opt-btn { font-size: 0.88rem; padding: 10px 12px; min-height: 40px; }
-            .data-table { font-size: 0.8rem; }
-            .data-table th, .data-table td { padding: 6px 8px; }
-        }
+        @keyframes pop { 0% { transform: scale(0); opacity: 1; } 100% { transform: scale(1.5) translate(var(--tx), var(--ty)); opacity: 0; } }
+        .hidden { display: none !important; }
     </style>
 </head>
 <body>
 
-<div class="bg">
-    <span>📊</span>
-    <span>🔢</span>
-    <span>🎯</span>
-    <span>✏️</span>
-    <span>⭐</span>
-</div>
-
 <div id="app-container">
     <div id="splash-screen">
-        <img src="assets/innovine-logo.png" class="logo-main" onerror="this.src='https://via.placeholder.com/280x100?text=INNOVINE'" alt="Logo">
-        <div class="loader"></div>
+        <img src="assets/innovine-logo.png" class="logo-only" onerror="this.src='https://via.placeholder.com/250x100?text=INNOVINE'" alt="Innovine Logo">
     </div>
 
-    <div id="intro-view" class="view-frame hidden" style="text-align: center; justify-content: center; align-items: center;">
-        <div style="font-size: 4rem; margin-bottom: 10px;">🔢</div>
-        <h1 style="color: var(--text-dark); font-weight: 800; margin: 0; font-size: 24px; letter-spacing: -0.5px;">The Number Mastery Challenge</h1>
-        <p style="color: var(--primary-blue); font-weight: 600; text-transform: uppercase; font-size: 13px; letter-spacing: 1px; margin: 4px 0 16px 0;">Grade 4 Mathematics</p>
-        <div style="background: #f4f6fa; padding: 16px 20px; border-radius: 16px; margin: 0 0 20px 0; text-align: left; border: 1px solid #e1e4e8; font-size: 0.9rem; line-height: 1.45; color: var(--text-main); overflow-y: auto; max-height: 180px;">
-            <b>Target Learning Outcomes:</b><br>
-            • Read, write, and order 5 and 6-digit numbers.<br>
-            • Identify place values and face values.<br>
-            • Form largest and smallest combinations from digits.<br>
-            • Compare Indian and International systems.<br>
-            • Solve arithmetic hierarchies, successors, rounding, and Roman system conversions.
-        </div>
-        <button id="start-btn" class="action-trigger" style="border-radius: 50px; background: #ffb300; box-shadow: 0 4px 14px rgba(255, 179, 0, 0.4);">START CHALLENGE</button>
-    </div>
-
-    <div id="quiz-view" class="view-frame hidden">
-        <div class="stats-dashboard">
-            <div class="stat-card blue-pill">Question <span id="q-num">1</span>/12</div>
-            <div class="stat-card blue-pill">Score: <span id="score-val">0</span></div>
-            <div class="stat-card gold-pill">Time: <span id="timer-val">60</span>s</div>
-        </div>
+    <div id="intro-view" class="hidden">
+        <div style="text-align: center; font-size: 3.5rem; margin-bottom: 5px;">🔢</div>
+        <h1 style="text-align:center; color:var(--primary); margin: 0 0 5px 0; font-size: 24px;">The Number Mastery Challenge</h1>
+        <p style="text-align:center; color:#6c757d; margin-top: 0; font-weight: 600; text-transform: uppercase; font-size: 12px; letter-spacing: 1px;">Grade 4 Mathematics</p>
         
+        <div class="instruction-box">
+            <strong>📋 Target Learning Outcomes:</strong>
+            <ul>
+                <li>Read, write, and order 5 and 6-digit numbers.</li>
+                <li>Identify place values, face values, and successors.</li>
+                <li>Compare Indian and International systems.</li>
+                <li>Solve arithmetic hierarchies and Roman calculations.</li>
+                <li><b>Rules:</b> 60s per turn with up to 2 attempts per question!</li>
+            </ul>
+        </div>
+
+        <button id="start-btn" style="width:100%; padding:18px; background:var(--primary); color:white; border:none; border-radius:14px; font-weight:bold; font-size:1.1rem; cursor:pointer; margin-top: 10px;">Begin Challenge ⚡</button>
+    </div>
+
+    <div id="quiz-view" class="hidden">
+        <div class="hud-row">
+            <div class="hud-pill blue">Task <span id="q-num">1</span>/12</div>
+            <div class="hud-pill blue">Score: <span id="score-val">0</span></div>
+            <div class="hud-pill orange"><span id="timer-text">60s</span></div>
+        </div>
         <div class="timer-track"><div id="timer-bar"></div></div>
         
-        <div class="quiz-body">
-            <div class="question-area">
-                <div id="q-category" class="q-title"></div>
-                <div id="q-text" class="q-text"></div>
-                <div id="table-area" class="table-wrap"></div>
-            </div>
-            <div class="options-area">
-                <div id="options-area" class="options-grid"></div>
-                <div id="feedback-box" class="feedback"></div>
-            </div>
-        </div>
-
-        <button id="action-btn" class="hidden">NEXT QUESTION →</button>
+        <div id="q-category" class="category-text"></div>
+        <div id="q-text" class="question-text"></div>
+        <div id="options-area" class="options-grid"></div>
+        
+        <div id="feedback-box" class="feedback"></div>
+        <button id="action-btn" class="hidden">Next Question →</button>
+        <div id="cross-mark" class="red-cross">✖</div>
     </div>
 
-    <div id="final-challenge-view" class="view-frame hidden" style="text-align: center; justify-content: center; align-items: center;">
+    <div id="hots-view" class="hidden" style="text-align:center;">
         <div style="font-size: 4rem; margin-bottom: 5px;">🎯</div>
-        <h1 style="color: var(--text-dark); font-weight: 800; margin: 0; font-size: 24px;">Final Challenge (HOTS)</h1>
-        <p style="color: #00838f; font-weight: 600; text-transform: uppercase; font-size: 13px; letter-spacing: 1px; margin: 4px 0 16px 0;">Critical Analytical Thinker Task</p>
-        <div style="background: #fffdf5; padding: 20px; border-radius: 16px; margin: 0 0 20px 0; text-align: center; border: 1.5px dashed #ffc107; font-size: 1.05rem; font-weight: 700; color: var(--text-dark); line-height: 1.45;">
+        <h1 style="color: var(--text); font-weight: 800; margin: 0; font-size: 24px;">Final Challenge (HOTS)</h1>
+        <p style="color: #00838f; font-weight: 600; text-transform: uppercase; font-size: 12px; letter-spacing: 1px; margin: 4px 0 16px 0;">Critical Analytical Thinker Task</p>
+        <div style="background: #fffdf5; padding: 20px; border-radius: 16px; margin: 0 0 20px 0; text-align: center; border: 1.5px dashed #ffc107; font-size: 1.05rem; font-weight: 700; color: var(--text); line-height: 1.45;">
             What is the exact numerical difference between the largest 5-digit number and the smallest 5-digit number?
         </div>
-        <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 16px;">Tap finish to tabulate your final score parameters.</p>
-        <button id="finish-btn" class="action-trigger" style="background: var(--primary-blue);">FINISH</button>
+        <p style="font-size: 13px; color: #5f6368; margin-bottom: 20px;">Tap finish to compile your final analysis data parameters.</p>
+        <button id="finish-btn" style="width:100%; padding:16px; background:var(--primary); color:white; border:none; border-radius:14px; font-weight:700; cursor:pointer;">FINISH WORKSPACE</button>
     </div>
 
-    <div id="result-view" class="view-frame hidden" style="text-align:center; justify-content: center; align-items: center;">
+    <div id="result-view" class="hidden" style="text-align:center;">
         <div style="font-size: 4rem; margin-bottom: 5px;">🏅</div>
-        <h2 style="color: var(--text-dark); font-weight: 800; font-size: 22px; margin: 4px 0;">Challenge Completed!</h2>
-        <div style="font-size: 3.5rem; font-weight: 900; color: var(--primary-blue); margin: 8px 0;"><span id="final-pts">0</span>/12</div>
-        <div id="result-msg" style="color: var(--text-main); font-size: 0.9rem; line-height: 1.45; margin: 0 0 24px 0; text-align: left; background: #ffffff; border: 1px solid #e2e8f0; padding: 14px; border-radius: 16px; width: 100%; overflow-y: auto; max-height: 180px;"></div>
-        <button onclick="location.reload()" class="action-trigger">RESTART NEW SHUFFLED RUN</button>
+        <h2 style="font-size:1.5rem; margin: 5px 0;">Challenge Completed!</h2>
+        <div style="font-size: 4rem; font-weight: 800; color: var(--primary); margin: 10px 0;"><span id="final-pts">0</span>/12</div>
+        <div id="result-msg" style="color:#5f6368; font-size: 0.9rem; line-height: 1.45; margin: 0 0 25px 0; text-align: left; background: #f8f9fa; border: 1px solid #e2e8f0; padding: 14px; border-radius: 16px; max-height: 180px; overflow-y: auto;"></div>
+        <button onclick="location.reload()" style="width:100%; padding:16px; background:var(--primary); color:white; border:none; border-radius:14px; font-weight:700; cursor:pointer;">Restart Shuffled Run</button>
     </div>
 </div>
 
-<div id="confetti" style="position:fixed; inset:0; pointer-events:none; z-index:3;"></div>
-
 <script>
-    // --- SAFE AUDIO LOADER ENGINE ---
-    function createSafeAudio(src) {
-        let a = new Audio();
-        a.src = src;
-        a.preload = "auto";
-        // Bypasses resource blockages instantly if files are missing locally
-        a.addEventListener('error', function(e) { 
-            console.log("Audio asset missing or offline:", src); 
-        }, true);
-        return a;
-    }
-
-    const correctSound = createSafeAudio('assets/correct.mp3');
-    const wrongSound = createSafeAudio('assets/wrong.mp3');
-    const clapSound = createSafeAudio('assets/clapping.mp3');
-
     const pool = [
-        {
-            cat: "System Translation",
-            q: "The census bureau lists a community's population record as 4,50,000 using local structures, while another portal displays it as 450,000. Which statement is true?",
-            opts: [
-                "A) 4,50,000 is larger because it uses the Indian system layout.",
-                "B) Both formats represent the exact same numerical value under different punctuation rules.",
-                "C) 450,000 is larger because it holds three digits in its thousands house.",
-                "D) The numbers cannot be compared without explicit unit tags."
-            ],
-            ans: 1,
-            expl: "4,50,000 (Indian System) and 450,000 (International System) are identical in scale. Punctuation placements change without mutating core numeric values."
-        },
-        {
-            cat: "Operation Priorities",
-            q: "Evaluate this expression honoring standard mathematical operation priorities:\n120 + (45 × 4) - (150 ÷ 5)",
-            opts: [
-                "A) 150",
-                "B) 270",
-                "C) 330",
-                "D) 630"
-            ],
-            ans: 1,
-            expl: "Solve terms inside brackets first: (45 × 4) = 180 and (150 ÷ 5) = 30. Then calculate left-to-right: 120 + 180 - 30 = 300 - 30 = 270."
-        },
-        {
-            cat: "Rounding Properties",
-            q: "An infrastructure depot maps a materials asset list measuring 4,385 structural pins. What are the correct parameters when rounded to the nearest thousand and nearest hundred?",
-            opts: [
-                "A) Nearest Thousand: 5,000 | Nearest Hundred: 4,300",
-                "B) Nearest Thousand: 4,000 | Nearest Hundred: 4,400",
-                "C) Nearest Thousand: 4,000 | Nearest Hundred: 4,390",
-                "D) Nearest Thousand: 4,500 | Nearest Hundred: 4,400"
-            ],
-            ans: 1,
-            expl: "4,385 rounds down to 4,000 for the thousands place because 3 < 5. For the hundreds place, it rounds up to 4,400 because the tens digit is 8 (8 >= 5)."
-        },
-        {
-            cat: "Scale Reduction",
-            q: "A primary transmission node routes 7,89,000 binary telemetry packages into identical sub-channels holding 1,000 units each. How many sub-channels are fully loaded?",
-            opts: [
-                "A) 789 channels",
-                "B) 7,890 channels",
-                "C) 78 channels",
-                "D) 78,900 channels"
-            ],
-            ans: 0,
-            expl: "Dividing a value by 1,000 separates exactly three trailing zeros. 7,89,000 ÷ 1,000 = 789."
-        },
-        {
-            cat: "Roman Systems",
-            q: "An ancient decorative pillar exhibits two numerical markers side-by-side: CLV and CXLV. Which analytical comparison holds true?",
-            opts: [
-                "A) CLV < CXLV because X resides earlier within string lines.",
-                "B) CLV = CXLV because they are built from identical letters.",
-                "C) CLV > CXLV because 155 is greater than 145.",
-                "D) CLV > CXLV because 165 is greater than 145."
-            ],
-            ans: 2,
-            expl: "CLV transforms into 100 + 50 + 5 = 155. CXLV transforms into 100 + (50 - 10) + 5 = 145. Therefore, 155 > 145."
-        },
-        {
-            cat: "Place Parameters",
-            q: "What is the placeholder difference when comparing the place value of 7 and the face value of 7 in the number 5,73,124?",
-            opts: [
-                "A) 0",
-                "B) 69,993",
-                "C) 70,000",
-                "D) 7,000"
-            ],
-            ans: 1,
-            expl: "The place value of 7 is 70,000 (Ten Thousands place). The face value is simply 7. Evaluating the difference: 70,000 - 7 = 69,993."
-        },
-        {
-            cat: "Successor Series",
-            q: "An automation tool generates serial identifiers. If the current sequence identifier reads 8,99,999, what is its direct numerical successor?",
-            opts: [
-                "A) 8,99,990",
-                "B) 9,00,000",
-                "C) 8,00,000",
-                "D) 9,99,999"
-            ],
-            ans: 1,
-            expl: "The successor is calculated by adding exactly 1. 8,99,999 + 1 = 9,00,000."
-        },
-        {
-            cat: "Digit Engineering",
-            q: "You are given the distinct digits: 6, 0, 3, 9, 1. What is the smallest possible 5-digit configuration you can build without using 0 as the leading digit?",
-            opts: [
-                "A) 01369",
-                "B) 10,369",
-                "C) 13,690",
-                "D) 10,639"
-            ],
-            ans: 1,
-            expl: "Place the smallest non-zero digit first (1), followed immediately by 0, and organize the remaining digits in ascending order (3, 6, 9) to generate 10,369."
-        },
-        {
-            cat: "Composite Totals",
-            q: "A container ship holds 23,000 cargo crates. If each crate carries exactly 30 consumer appliances, what is the total appliance inventory value?",
-            opts: [
-                "A) 69,000",
-                "B) 6,90,000",
-                "C) 6,900",
-                "D) 23,030"
-            ],
-            ans: 1,
-            expl: "Compute 23 × 3 = 69. Append the combined number of trailing zeros (three from 23,000 and one from 30) to establish 6,90,000."
-        },
-        {
-            cat: "Mutation Algebra",
-            q: "Consider the number 8,45,219. If you swap the digits in the Ten Thousand place and the Hundreds place, what new value configuration is engineered?",
-            opts: [
-                "A) 8,25,419",
-                "B) 4,85,219",
-                "C) 8,42,519",
-                "D) 2,45,819"
-            ],
-            ans: 0,
-            expl: "The original Ten Thousand digit is 4 and the Hundreds digit is 2. Exchanging their positions results in 8,25,419."
-        },
-        {
-            cat: "Fractional Remnants",
-            q: "A logic system processes a division assignment: 4,82,315 ÷ 100. What is the accurate breakdown for the resulting Quotient and Remainder?",
-            opts: [
-                "A) Quotient: 4,823 | Remainder: 15",
-                "B) Quotient: 48,231 | Remainder: 5",
-                "C) Quotient: 482 | Remainder: 315",
-                "D) Quotient: 4,823 | Remainder: 0"
-            ],
-            ans: 0,
-            expl: "Dividing by 100 detaches the final two digits to act as the remainder (15), leaving the remaining leading sequence to act as the quotient (4,823)."
-        },
-        {
-            cat: "Roman Mapping",
-            q: "How is the Hindu-Arabic value 94 accurately mapped into standard Roman numeral symbols?",
-            opts: [
-                "A) LIIIIV",
-                "B) XCIV",
-                "C) CVI",
-                "D) XCCCC"
-            ],
-            ans: 1,
-            expl: "90 is represented as XC (100 - 10) and 4 is mapped as IV (5 - 1). Combining them produces XCIV."
-        }
+        { cat: "System Translation", q: "The census bureau lists a community's population record as 4,50,000 using local structures, while another displays it as 450,000. Which statement is true?", opts: ["A) 4,50,000 is larger because it uses the Indian system layout.", "B) Both formats represent the exact same numerical value under different punctuation rules.", "C) 450,000 is larger because it holds three digits in its thousands house.", "D) The numbers cannot be compared without explicit unit tags."], ans: 1, hint: "Check the values regardless of standard comma positions.", expl: "4,50,000 (Indian System) and 450,000 (International System) are identical in scale. Punctuation placements change without mutating core numeric values." },
+        { cat: "Operation Priorities", q: "Evaluate this expression honoring standard mathematical operation priorities:\n120 + (45 × 4) - (150 ÷ 5)", opts: ["A) 150", "B) 270", "C) 330", "D) 630"], ans: 1, hint: "Solve both calculations inside brackets first before adding or subtracting.", expl: "Solve terms inside brackets first: (45 × 4) = 180 and (150 ÷ 5) = 30. Then calculate left-to-right: 120 + 180 - 30 = 270." },
+        { cat: "Rounding Properties", q: "An infrastructure depot maps a materials asset list measuring 4,385 structural pins. What are the correct parameters when rounded to the nearest thousand and nearest hundred?", opts: ["A) Nearest Thousand: 5,000 | Nearest Hundred: 4,300", "B) Nearest Thousand: 4,000 | Nearest Hundred: 4,400", "C) Nearest Thousand: 4,000 | Nearest Hundred: 4,390", "D) Nearest Thousand: 4,500 | Nearest Hundred: 4,400"], ans: 1, hint: "Look at the hundreds digit to round thousands, and look at the tens digit to round hundreds.", expl: "4,385 rounds down to 4,000 for the thousands place because 3 < 5. For the hundreds place, it rounds up to 4,400 because the tens digit is 8." },
+        { cat: "Scale Reduction", q: "A primary transmission node routes 7,89,000 binary telemetry packages into identical sub-channels holding 1,000 units each. How many sub-channels are fully loaded?", opts: ["A) 789 channels", "B) 7,890 channels", "C) 78 channels", "D) 78,900 channels"], ans: 0, hint: "Dividing a number by 1,000 drops exactly three trailing zeros.", expl: "Dividing a value by 1,000 separates exactly three trailing zeros. 7,89,000 ÷ 1,000 = 789." },
+        { cat: "Roman Systems", q: "An ancient decorative pillar exhibits two numerical markers side-by-side: CLV and CXLV. Which analytical comparison holds true?", opts: ["A) CLV < CXLV because X resides earlier within string lines.", "B) CLV = CXLV because they are built from identical letters.", "C) CLV > CXLV because 155 is greater than 145.", "D) CLV > CXLV because 165 is greater than 145."], ans: 2, hint: "Convert both values back to numbers. L means 50, but XL means 40.", expl: "CLV transforms into 100 + 50 + 5 = 155. CXLV transforms into 100 + (50 - 10) + 5 = 145. Therefore, 155 > 145." },
+        { cat: "Place Parameters", q: "What is the placeholder difference when comparing the place value of 7 and the face value of 7 in the number 5,73,124?", opts: ["A) 0", "B) 69,993", "C) 70,000", "D) 7,000"], ans: 1, hint: "The place value is 70,000. Now subtract its face value, which is just 7.", expl: "The place value of 7 is 70,000 (Ten Thousands place). The face value is simply 7. Evaluating the difference: 70,000 - 7 = 69,993." },
+        { cat: "Successor Series", q: "An automation tool generates serial identifiers. If the current sequence identifier reads 8,99,999, what is its direct numerical successor?", opts: ["A) 8,99,990", "B) 9,00,000", "C) 8,00,000", "D) 9,99,999"], ans: 1, hint: "Successor means calculating your value by adding exactly 1.", expl: "The successor is calculated by adding exactly 1. 8,99,999 + 1 = 9,00,000." },
+        { cat: "Digit Engineering", q: "You are given the distinct digits: 6, 0, 3, 9, 1. What is the smallest possible 5-digit configuration you can build without using 0 as the leading digit?", opts: ["A) 01369", "B) 10,369", "C) 13,690", "D) 10,639"], ans: 1, hint: "Start with the smallest non-zero digit first, then immediately place the 0.", expl: "Place the smallest non-zero digit first (1), followed immediately by 0, and organize the remaining digits in ascending order to generate 10,369." },
+        { cat: "Composite Totals", q: "A container ship holds 23,000 cargo crates. If each crate carries exactly 30 consumer appliances, what is the total appliance inventory value?", opts: ["A) 69,000", "B) 6,90,000", "C) 6,900", "D) 23,030"], ans: 1, hint: "Multiply 23 by 3, then aggregate all four combined zeros onto the end.", expl: "Compute 23 × 3 = 69. Append the combined number of trailing zeros (three from 23,000 and one from 30) to establish 6,90,000." },
+        { cat: "Mutation Algebra", q: "Consider the number 8,45,219. If you swap the digits in the Ten Thousand place and the Hundreds place, what new value configuration is engineered?", opts: ["A) 8,25,419", "B) 4,85,219", "C) 8,42,519", "D) 2,45,819"], ans: 0, hint: "Identify the digit at the Ten Thousands position (4) and Hundreds position (2) and trade places.", expl: "The original Ten Thousand digit is 4 and the Hundreds digit is 2. Exchanging their positions results in 8,25,419." },
+        { cat: "Fractional Remnants", q: "A logic system processes a division assignment: 4,82,315 ÷ 100. What is the accurate breakdown for the resulting Quotient and Remainder?", opts: ["A) Quotient: 4,823 | Remainder: 15", "B) Quotient: 48,231 | Remainder: 5", "C) Quotient: 482 | Remainder: 315", "D) Quotient: 4,823 | Remainder: 0"], ans: 0, hint: "Dividing by 100 cuts off the last two digits to turn them directly into a remainder.", expl: "Dividing by 100 detaches the final two digits to act as the remainder (15), leaving the remaining leading sequence to act as the quotient (4,823)." },
+        { cat: "Roman Mapping", q: "How is the Hindu-Arabic value 94 accurately mapped into standard Roman numeral symbols?", opts: ["A) LIIIIV", "B) XCIV", "C) CVI", "D) XCCCC"], ans: 1, hint: "Write 90 as (100 - 10) and combine it with 4 written as (5 - 1).", expl: "90 is represented as XC (100 - 10) and 4 is mapped as IV (5 - 1). Combining them produces XCIV." }
     ];
 
     let questions = [];
     let current = 0, score = 0, attempts = 0, timer, timeLeft = 60;
 
-    function shuffleQuestions(array) {
-        for (let i = array.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [array[i], array[j]] = [array[j], array[i]];
-        }
-    }
+    // --- SAFE AUDIO CONTEXT ENGINE ---
+    const sndC = new Audio('assets/correct.mp3');
+    const sndW = new Audio('assets/wrong.mp3');
+    const sndF = new Audio('assets/clapping.mp3');
 
     window.onload = () => {
-        // Instant interface release mechanism bypassing image/asset blocks
-        const splash = document.getElementById('splash-screen');
-        if (splash) {
-            splash.style.display = 'none';
+        setTimeout(() => {
+            document.getElementById('splash-screen').style.display = 'none';
             document.getElementById('intro-view').classList.remove('hidden');
-        }
+        }, 5000); // Strict 5s intentional splash view sequence
     };
 
-    function startChallenge() {
+    document.getElementById('start-btn').onclick = () => {
         document.getElementById('intro-view').classList.add('hidden');
         document.getElementById('quiz-view').classList.remove('hidden');
         questions = [...pool];
-        shuffleQuestions(questions);
+        // Shuffle utility
+        for (let i = questions.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [questions[i], questions[j]] = [questions[j], questions[i]];
+        }
         loadQuestion();
-    }
-    document.getElementById('start-btn').onclick = startChallenge;
+    };
 
     function loadQuestion() {
         attempts = 0; timeLeft = 60;
@@ -528,11 +236,9 @@
         document.getElementById('feedback-box').style.display = 'none';
         document.getElementById('action-btn').classList.add('hidden');
         document.getElementById('q-num').innerText = current + 1;
-        document.getElementById('timer-val').innerText = timeLeft;
         document.getElementById('q-category').innerText = q.cat;
         document.getElementById('q-text').innerText = q.q;
-        
-        document.getElementById('table-area').innerHTML = "";
+        document.getElementById('timer-text').innerText = timeLeft + "s";
         
         const area = document.getElementById('options-area');
         area.innerHTML = "";
@@ -540,13 +246,9 @@
             const b = document.createElement('button');
             b.className = 'opt-btn';
             b.innerText = o;
-            b.onclick = () => handleChoice(i, b);
+            b.onclick = () => check(i, b);
             area.appendChild(b);
         });
-
-        document.querySelector('.options-area').scrollTop = 0;
-        document.querySelector('.question-area').scrollTop = 0;
-
         startTimer();
     }
 
@@ -554,80 +256,85 @@
         clearInterval(timer);
         timer = setInterval(() => {
             timeLeft--;
-            document.getElementById('timer-val').innerText = timeLeft;
-            document.getElementById('timer-bar').style.width = (timeLeft/60*100) + "%";
-            if(timeLeft <= 0) { clearInterval(timer); endTurn("Time is up!"); }
+            document.getElementById('timer-text').innerText = timeLeft + "s";
+            document.getElementById('timer-bar').style.width = (timeLeft / 60 * 100) + "%";
+            if(timeLeft <= 0) { clearInterval(timer); endTurn(); }
         }, 1000);
     }
 
-    function handleChoice(i, b) {
+    function check(i, b) {
         if(i === questions[current].ans) {
             clearInterval(timer);
-            playSound(correctSound);
-            b.className = 'opt-btn correct';
+            b.classList.add('correct');
             score++;
             document.getElementById('score-val').innerText = score;
-            endTurn("✓ Correct!");
-            makeConfetti();
-            setTimeout(function(){
-                playSound(clapSound);
-            }, 250);
+            try { sndC.play(); } catch(e){}
+            createStars();
+            endTurn();
         } else {
             attempts++;
-            playSound(wrongSound);
-            b.className = 'opt-btn wrong';
-            b.disabled = true;
+            try { sndW.play(); } catch(e){}
             showCross();
+            b.classList.add('wrong');
+            b.disabled = true;
             if(attempts === 1) {
                 const f = document.getElementById('feedback-box');
-                f.className = 'feedback hint';
-                f.innerHTML = "⚠️ <b>Try once more.</b>";
+                f.className = 'feedback hint-box';
+                f.innerHTML = "<b>Hint:</b> " + questions[current].hint;
                 f.style.display = 'block';
             } else {
                 clearInterval(timer);
-                endTurn("Incorrect.");
+                endTurn();
             }
         }
     }
 
-    function endTurn(statusMsg) {
+    function endTurn() {
         document.querySelectorAll('.opt-btn').forEach(btn => btn.disabled = true);
-        document.querySelectorAll('.opt-btn')[questions[current].ans].className = 'opt-btn correct';
         const f = document.getElementById('feedback-box');
-        
-        const isCorrect = statusMsg === "✓ Correct!";
-        f.className = 'feedback expl';
-        f.style.borderLeftColor = isCorrect ? 'var(--success)' : 'var(--danger)';
-        
-        f.innerHTML = `<b>${statusMsg}</b><br><span style="font-size:12px; font-weight:normal; line-height:1.35; color:var(--text-muted); display:block; margin-top:4px;">${questions[current].expl}</span>`;
+        f.className = 'feedback expl-box';
+        f.innerHTML = "<b>Explanation:</b> " + questions[current].expl;
         f.style.display = 'block';
+        document.querySelectorAll('.opt-btn')[questions[current].ans].classList.add('correct');
         document.getElementById('action-btn').classList.remove('hidden');
+    }
 
-        setTimeout(() => {
-            const area = document.querySelector('.options-area');
-            area.scrollTo({ top: area.scrollHeight, behavior: 'smooth' });
-        }, 60);
+    function showCross() {
+        const c = document.getElementById('cross-mark');
+        c.style.display = 'block';
+        setTimeout(() => c.style.display = 'none', 600);
+    }
+
+    function createStars() {
+        for(let i=0; i<15; i++) {
+            const s = document.createElement('div');
+            s.className = 'star';
+            s.style.setProperty('--tx', (Math.random() * 200 - 100) + 'px');
+            s.style.setProperty('--ty', (Math.random() * 200 - 100) + 'px');
+            s.style.left = '50%'; s.style.top = '50%';
+            document.getElementById('app-container').appendChild(s);
+            setTimeout(() => s.remove(), 1000);
+        }
     }
 
     document.getElementById('action-btn').onclick = () => {
         current++;
-        if(current < questions.length) {
-            loadQuestion();
-        } else {
+        if(current < questions.length) loadQuestion();
+        else {
             document.getElementById('quiz-view').classList.add('hidden');
-            document.getElementById('final-challenge-view').classList.remove('hidden');
+            document.getElementById('hots-view').classList.remove('hidden');
         }
     };
 
     document.getElementById('finish-btn').onclick = () => {
-        playSound(clapSound);
-        document.getElementById('final-challenge-view').classList.add('hidden');
+        document.getElementById('hots-view').classList.add('hidden');
         document.getElementById('result-view').classList.remove('hidden');
         document.getElementById('final-pts').innerText = score;
-        
+        try { sndF.play(); } catch(e){}
+
         let msg = "Review complex place values, arithmetic rules, and multi-step math problems to build confidence.";
         if(score === 12) {
-            msg = "Outstanding performance! Perfect evaluation of every randomized configuration variant.";
+            msg = "Outstanding performance! Perfect evaluation of every single randomized question configuration variant.";
         } else if(score >= 9) {
             msg = "Great job! Exceptional precision across varied numerical structures.";
         } else if(score >= 6) {
@@ -635,53 +342,14 @@
         }
 
         document.getElementById('result-msg').innerHTML = `
-            <span style="font-weight:700; color:var(--text-dark); display:block; margin-bottom:6px;">Performance Notes:</span>
+            <span style="font-weight:700; color:#202124; display:block; margin-bottom:6px;">Performance Notes:</span>
             ${msg}
             <br><br>
             <hr style="border:0; border-top:1px solid #e2e8f0; margin:10px 0;">
-            <span style="font-weight:700; color:var(--text-dark);">HOTS Reference Entry:</span> 89,999<br>
-            <span style="font-size:11.5px; color:var(--text-muted);">Reasoning: The largest 5-digit number is 99,999 and the smallest 5-digit number is 10,000. 99,999 - 10,000 = 89,999.</span>
+            <span style="font-weight:700; color:#202124;">HOTS Reference Entry:</span> 89,999<br>
+            <span style="font-size:11.5px; color:#5f6368;">Reasoning: The largest 5-digit number is 99,999 and the smallest 5-digit number is 10,000. Therefore, 99,999 - 10,000 = 89,999.</span>
         `;
     };
-
-    function makeConfetti() {
-        const box = document.getElementById("confetti");
-        for(let i=0; i<18; i++) {
-            const s = document.createElement("div");
-            s.style.position = "absolute";
-            s.style.fontSize = "24px";
-            s.style.pointerEvents = "none";
-            s.textContent = "⭐";
-            s.style.left = Math.random()*100+"vw";
-            s.style.top = (55+Math.random()*25)+"vh";
-            s.style.animation = "pop 900ms ease-out forwards";
-            box.appendChild(s);
-
-            setTimeout(function(){ s.remove(); }, 900);
-        }
-    }
-
-    function showCross() {
-        const x = document.createElement("div");
-        x.style.position = "fixed";
-        x.style.top = "50%"; x.style.left = "50%";
-        x.style.transform = "translate(-50%,-50%)";
-        x.style.fontSize = "88px"; x.style.color = "var(--danger)";
-        x.style.pointerEvents = "none"; x.style.zIndex = "4";
-        x.style.animation = "crossfade 700ms ease-out";
-        x.textContent = "✕";
-        document.body.appendChild(x);
-        setTimeout(function(){ x.remove(); }, 700);
-    }
-
-    function playSound(sound) {
-        if(!sound) return;
-        try {
-            sound.currentTime = 0;
-            const p = sound.play();
-            if(p !== undefined) p.catch(function(){});
-        } catch(e){}
-    }
 </script>
 </body>
 </html>
