@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Number City Challenge</title>
+    <style>
+        :root {
+            --primary: #2980b9;
+            --accent: #3498db;
+            --success: #27ae60;
+            --danger: #c0392b;
+            --bg: #0f172a;
+            --card-shadow: 0 8px 30px rgba(0,0,0,0.3);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg);
+            color: #f8fafc;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 15px;
+        }
+
+        /* Pure White Startup Screen Layout (Displays for 5 seconds) */
+        #brand-screen {
+            position: fixed;
+            inset: 0;
+            background: #ffffff;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            text-align: center;
+            padding: 20px;
+        }
+        .logo-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 180px;
+            margin-bottom: 20px;
+            width: 100%;
+        }
+        #brand-screen img { 
+            width: 80%;
+            max-width: 220px; 
+            height: auto;
+            object-fit: contain;
+        }
+        .loader-bar-bg {
+            width: 200px;
+            height: 6px;
+            background: #e2e8f0;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        .loader-bar-fill {
+            width: 0%;
+            height: 100%;
+            background: var(--primary);
+            box-shadow: 0 0 10px rgba(41, 128, 185, 0.5);
+        }
+
+        /* Adaptive Cross-Device Container Box */
+        .game-card {
+            width: 100%;
+            max-width: 650px;
+            background: #1e293b;
+            padding: 35px;
+            border-radius: 24px;
+            box-shadow: var(--card-shadow);
+            border: 3px solid var(--primary);
+            position: relative;
+        }
+
+        @media (max-width: 600px) {
+            .game-card {
+                padding: 24px 16px;
+                border-radius: 16px;
+            }
+            .option-btn {
+                padding: 14px !important;
+                font-size: 1rem !important;
+            }
+            #q-text {
+                font-size: 1.15rem !important;
+            }
+        }
+
+        .hidden { display: none !important; }
+
+        .header { 
+            display: flex; 
+            justify-content: flex-end; 
+            align-items: center; 
+            margin-bottom: 15px; 
+        }
+        .hud { 
+            font-weight: bold; 
+            color: #38bdf8; 
+            display: flex; 
+            gap: 20px; 
+            font-size: 1.1rem;
+        }
+
+        .progress-container { 
+            height: 10px; 
+            background: #334155; 
+            border-radius: 10px; 
+            margin-bottom: 25px; 
+            overflow: hidden; 
+        }
+        #progress-bar { 
+            height: 100%; 
+            background: var(--primary); 
+            width: 0%; 
+            transition: width 0.4s ease; 
+        }
+
+        .question-text { 
+            font-size: 1.3rem; 
+            color: #f1f5f9; 
+            line-height: 1.5; 
+            margin-bottom: 25px; 
+            font-weight: 600; 
+        }
+
+        /* Vector Graphic Canvas containers */
+        .canvas-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+            background: #0f172a;
+            padding: 15px;
+            border-radius: 14px;
+            border: 1px solid #334155;
+        }
+
+        .options-grid { 
+            display: grid; 
+            grid-template-columns: 1fr;
+            gap: 14px; 
+        }
+        .option-btn {
+            padding: 16px;
+            border: 2px solid #334155;
+            border-radius: 14px;
+            background: #334155;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: 500;
+            text-align: left;
+            transition: background 0.2s, border-color 0.2s;
+            color: #f1f5f9;
+            width: 100%;
+        }
+        .option-btn:hover:not(:disabled) { 
+            border-color: var(--primary); 
+            background: #475569; 
+        }
+        
+        .correct { background: var(--success) !important; color: white; border-color: #1e8449 !important; font-weight: bold; }
+        .wrong { background: var(--danger) !important; color: white; border-color: #922b21 !important; animation: shake 0.4s; }
+
+        @keyframes shake { 
+            0%, 100% { transform: translateX(0); } 
+            25% { transform: translateX(-6px); } 
+            75% { transform: translateX(6px); } 
+        }
+
+        .feedback-box { 
+            margin-top: 20px; 
+            padding: 16px; 
+            border-radius: 14px; 
+            background: #0f172a; 
+            border-left: 5px solid var(--primary); 
+            color: #cbd5e1; 
+            line-height: 1.5; 
+            font-size: 1.05rem;
+        }
+
+        .btn-next {
+            margin-top: 20px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 32px;
+            border-radius: 50px;
+            font-weight: bold;
+            font-size: 1.05rem;
+            cursor: pointer;
+            float: right;
+            box-shadow: 0 4px 0 #1b4f72;
+            transition: background 0.2s, transform 0.1s;
+        }
+        .btn-next:hover { background: var(--accent); }
+        .btn-next:active { transform: translateY(2px); box-shadow: 0 2px 0 #1b4f72; }
+
+        .creative-pop {
+            font-size: 4.5rem;
+            animation: popScale 1.5s infinite alternate ease-in-out;
+            margin-bottom: 15px;
+        }
+        @keyframes popScale {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.1); }
+        }
+    </style>
+</head>
+<body>
+
+<div id="brand-screen">
+    <div class="logo-wrapper">
+        <img src="assets/logo.png" alt="Logo" onerror="this.style.opacity='0.5';">
+    </div>
+    <div class="loader-bar-bg" style="margin-top: 10px;">
+        <div id="loader-fill" class="loader-bar-fill"></div>
+    </div>
+</div>
+
+<div class="game-card hidden" id="game-card">
+
+    <div id="instruction-screen">
+        <h2 style="color: var(--primary); margin-bottom: 15px;">Learning Outcomes</h2>
+        <p style="font-size: 1.1rem; color: #cbd5e1; line-height: 1.6; margin-bottom: 25px;">
+            • Performing addition and subtraction of large numbers.<br>
+            • Performing multiplication and division of large numbers.<br>
+            • Performing division by 10, 100, 1000, 10000, etc.<br>
+            • Solving word problems based on four basic operations.<br><br>
+            Welcome, <b>Finance Manager</b>! You are in charge of "Number City’s" grand stadium. You need to manage ticket sales, seat numbers, and budgets using your knowledge of large numbers.<br><br>
+            You have <b>2 attempts</b> per question to secure your star.
+        </p>
+        <button class="btn-next" style="float: none;" onclick="startQuizGame()">Start Game</button>
+    </div>
+    
+    <div id="game-play-area" class="hidden">
+        <div class="header">
+            <div class="hud">
+                <span>Problem: <span id="q-num">1</span>/11</span>
+                <span>Stars: ⭐ <span id="score">0</span></span>
+            </div>
+        </div>
+
+        <div class="progress-container"><div id="progress-bar"></div></div>
+
+        <div id="quiz-content">
+            <div class="question-text" id="q-text"></div>
+            
+            <div id="canvas-wrapper" class="canvas-container hidden">
+                <canvas id="visual-canvas" width="400" height="200"></canvas>
+            </div>
+
+            <div class="options-grid" id="options-box"></div>
+            <div id="feedback-area" class="feedback-box hidden"></div>
+            <div style="height: 60px;">
+                <button id="next-btn" class="btn-next hidden" onclick="handleNext()">Next Challenge ➡️</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="result-screen" class="hidden" style="text-align: center; padding: 20px 0;">
+        <div class="creative-pop">🎉🧮⚡</div>
+        <h1 style="color: var(--primary); margin: 10px 0;">Challenge Complete!</h1>
+        <p id="result-msg" style="font-size: 1.2rem; color: #cbd5e1; line-height: 1.6; margin-bottom: 30px;"></p>
+        <button class="btn-next" style="float: none;" onclick="location.reload()">Restart Quiz</button>
+    </div>
+</div>
+
+<script>
+    const audio = {
+        correct: new Audio('assets/correct.mp3'),
+        wrong: new Audio('assets/wrong.mp3'),
+        claps: new Audio('assets/freesound_community-claps-44774.mp3')
+    };
+
+    // CBQ Questions mapped directly from source syllabus parameters
+    const questions = [
+        {
+            type: "text",
+            q: "The stadium sold 54,209 tickets on Saturday and 54,290 tickets on Sunday. On which day was the stadium more crowded?",
+            options: [
+                "A) Saturday, because 209 is more than 290.",
+                "B) Sunday, because 54,290 is greater than 54,209.",
+                "C) Both days had the exact same number of people.",
+                "D) Saturday, because 0 comes before 9."
+            ],
+            ans: 1,
+            explain: "When comparing numbers, we look at the highest place value where the digits differ. In the tens place, 9 is greater than 0, making 54,290 > 54,209."
+        },
+        {
+            type: "abacus",
+            q: "Look at the abacus showing the number 4,05,213 below. If you add one bead to the Ten Thousand place and take away one bead from the Ones place, what is the new number?",
+            options: [
+                "A) 4,15,212",
+                "B) 5,05,213",
+                "C) 4,06,212",
+                "D) 4,15,213"
+            ],
+            ans: 0,
+            explain: "Adding 1 bead to the Ten Thousand place increases the value by 10,000 (0 becomes 1). Taking 1 bead from the ones place decreases it by 1 (3 becomes 2). The number evolves from 4,05,213 to 4,15,212."
+        },
+        {
+            type: "text",
+            q: "The population of four blocks in Number City is:\nBlock A: 1,25,000\nBlock B: 98,500\nBlock C: 1,02,999\nBlock D: 1,25,001\n\nWhich block has the second highest population?",
+            options: [
+                "A) Block B",
+                "B) Block C",
+                "C) Block A",
+                "D) Block D"
+            ],
+            ans: 2,
+            explain: "Ordering populations from highest to lowest: Block D (1,25,001) > Block A (1,25,000) > Block C (1,02,999) > Block B (98,500). Thus, Block A is the second highest."
+        },
+        {
+            type: "text",
+            q: "Case study: A printer prints serial numbers for coupons. The last coupon printed was 4,59,999. What will be the serial number on the next coupon?",
+            options: [
+                "A) 4,59,990",
+                "B) 4,60,000",
+                "C) 5,00,000",
+                "D) 4,59,100"
+            ],
+            ans: 1,
+            explain: "The 'next' number represents the successor. Adding 1 to 4,59,999 results in exactly 4,60,000."
+        },
+        {
+            type: "text",
+            q: "Statement: The place value of 0 in the number 7,05,432 is always 0.\nReason: 0 multiplied by any place (like Thousands) results in 0.\n\nChoose the correct structural assessment:",
+            options: [
+                "A) Both statement and reason are true, and the reason explains the statement.",
+                "B) The statement is true, but the reason is false.",
+                "C) The statement is false.",
+                "D) Both are false."
+            ],
+            ans: 0,
+            explain: "No matter which 'house' (place value column) zero lives in, its total positional value remains zero because 0 × 10,000 = 0."
+        },
+        {
+            type: "text",
+            q: "A student wrote the number Six Lakh Five Thousand Forty-Two as 6,50,042. Why is this wrong?",
+            options: [
+                "A) The number should have 7 digits.",
+                "B) He put the 5 in the Ten Thousand place instead of the Thousands place.",
+                "C) He forgot to write the zero for the Hundreds place.",
+                "D) There is no error; the number is correct."
+            ],
+            ans: 1,
+            explain: "Six Lakh Five Thousand Forty-Two is written as 6,05,042. By writing 6,50,042, the student placed the digit 5 in the Ten Thousands column, mistakenly evaluating it as Fifty Thousand."
+        },
+        {
+            type: "text",
+            q: "Which of these expressions represents a completely different numeric value than the others?",
+            options: [
+                "A) 1,00,000",
+                "B) Ten Thousand",
+                "C) 1 Lakh",
+                "D) One hundred thousand"
+            ],
+            ans: 1,
+            explain: "Options A, C, and D all equal 1,00,000 (One Lakh). Option B stands distinct as it is only 10,000."
+        },
+        {
+            type: "text",
+            q: "A school wants to buy 1,895 chairs. Each chair costs about ₹1,000. The principal wants to estimate the total cost to the nearest thousand. What estimate should she use for the total number of chairs?",
+            options: [
+                "A) 1,000",
+                "B) 1,800",
+                "C) 2,000",
+                "D) 1,900"
+            ],
+            ans: 2,
+            explain: "1,895 rounded to the nearest thousand is 2,000. Because the hundreds digit (8) is 5 or greater, we round up to the next thousand."
+        },
+        {
+            type: "clock",
+            q: "Look at the analogue clock visualization carefully. If the hour hand is on IX and the minute hand is on XII, what time is it in Hindu-Arabic numbers?",
+            options: [
+                "A) 11:12",
+                "B) 9:00",
+                "C) 4:12",
+                "D) 6:10"
+            ],
+            ans: 1,
+            explain: "In Roman numerals, IX represents 9 (10 - 1) and XII represents 12 (10 + 1 + 1). An hour hand pointing at IX with a minute hand at XII signals exactly 9:00."
+        },
+        {
+            type: "text",
+            q: "You have the digits 5, 0, 2, 9, 8. What is the smallest 5-digit number you can make to use as a secret stadium passcode? (Note: A number cannot start with 0).",
+            options: [
+                "A) 02589",
+                "B) 20,589",
+                "C) 25,890",
+                "D) 98,520"
+            ],
+            ans: 1,
+            explain: "To form the smallest number, begin with the smallest non-zero digit (2), place the zero immediately next, and arrange the remaining digits in ascending order: 2, 0, 5, 8, 9."
+        },
+        {
+            type: "text",
+            q: "Final Challenge (HOTS): I am a 6-digit number. All my digits are exactly the same. If you add 1 to me, I transform into a 7-digit number. What number am I?",
+            options: [
+                "A) 1,11,111",
+                "B) 6,66,666",
+                "C) 9,99,999",
+                "D) 10,00,000"
+            ],
+            ans: 2,
+            explain: "Adding 1 to the largest possible 6-digit number, 9,99,999, triggers a carry-over across all places to form the smallest 7-digit number, 10,00,000."
+        }
+    ];
+
+    let currentIdx = 0, score = 0, attempts = 0;
+
+    window.addEventListener('DOMContentLoaded', () => {
+        const fill = document.getElementById('loader-fill');
+        let pct = 0;
+        
+        const loaderTimer = setInterval(() => {
+            pct += 1;
+            fill.style.width = pct + '%';
+            if (pct >= 100) {
+                clearInterval(loaderTimer);
+                document.getElementById('brand-screen').style.display = 'none';
+                document.getElementById('game-card').classList.remove('hidden');
+            }
+        }, 50); // Exact 5-second tracking loop
+    });
+
+    function startQuizGame() {
+        document.getElementById('instruction-screen').classList.add('hidden');
+        document.getElementById('game-play-area').classList.remove('hidden');
+        loadQuestion();
+    }
+
+    function loadQuestion() {
+        const data = questions[currentIdx];
+        attempts = 0; 
+        document.getElementById('q-num').innerText = currentIdx + 1;
+        document.getElementById('q-text').innerText = data.q;
+        document.getElementById('feedback-area').classList.add('hidden');
+        document.getElementById('next-btn').classList.add('hidden');
+        document.getElementById('progress-bar').style.width = ((currentIdx / questions.length) * 100) + '%';
+
+        // Render graphical engines depending on problem context
+        const canvasWrapper = document.getElementById('canvas-wrapper');
+        if (data.type === "abacus") {
+            canvasWrapper.classList.remove('hidden');
+            drawAbacus();
+        } else if (data.type === "clock") {
+            canvasWrapper.classList.remove('hidden');
+            drawClock();
+        } else {
+            canvasWrapper.classList.add('hidden');
+        }
+
+        const box = document.getElementById('options-box');
+        box.innerHTML = '';
+        data.options.forEach((opt, i) => {
+            const btn = document.createElement('button');
+            btn.className = 'option-btn';
+            btn.innerText = opt;
+            btn.onclick = () => checkAnswer(i, btn);
+            box.appendChild(btn);
+        });
+    }
+
+    function drawAbacus() {
+        const canvas = document.getElementById('visual-canvas');
+        const ctx = canvas.getContext('2d');
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
+        // Base setup
+        ctx.strokeStyle = "#cbd5e1";
+        ctx.lineWidth = 4;
+        ctx.beginPath();
+        ctx.moveTo(30, 160);
+        ctx.lineTo(370, 160);
+        ctx.stroke();
+
+        // 4,05,213 digits -> L, TTh, Th, H, T, O
+        const columns = ["L", "TTh", "Th", "H", "T", "O"];
+        const counts = [4, 0, 5, 2, 1, 3];
+        const step = 55;
+        const startX = 60;
+
+        columns.forEach((col, idx) => {
+            const x = startX + (idx * step);
+            // Draw rods
+            ctx.strokeStyle = "#475569";
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(x, 40);
+            ctx.lineTo(x, 160);
+            ctx.stroke();
+
+            // Label text
+            ctx.fillStyle = "#38bdf8";
+            ctx.font = "bold 12px sans-serif";
+            ctx.fillText(col, x - 8, 180);
+
+            // Draw beads
+            ctx.fillStyle = "#e74c3c";
+            for(let b = 0; b < counts[idx]; b++) {
+                ctx.beginPath();
+                ctx.arc(x, 150 - (b * 14), 6, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        });
+    }
+
+    function drawClock() {
+        const canvas = document.getElementById('visual-canvas');
+        const ctx = canvas.getContext('2d');
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        const cx = canvas.width / 2;
+        const cy = canvas.height / 2;
+        const radius = 75;
+
+        // Dial rim
+        ctx.strokeStyle = "#3498db";
+        ctx.lineWidth = 4;
+        ctx.beginPath();
+        ctx.arc(cx, cy, radius, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.fillStyle = "#1e293b";
+        ctx.fill();
+
+        // Markers
+        ctx.fillStyle = "#f1f5f9";
+        ctx.font = "bold 12px sans-serif";
+        ctx.fillText("XII", cx - 8, cy - radius + 16);
+        ctx.fillText("III", cx + radius - 20, cy + 4);
+        ctx.fillText("VI", cx - 6, cy + radius - 10);
+        ctx.fillText("IX", cx - radius + 10, cy + 4);
+
+        // Center Pin
+        ctx.fillStyle = "#ffffff";
+        ctx.beginPath();
+        ctx.arc(cx, cy, 4, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Minute Hand (pointing to XII)
+        ctx.strokeStyle = "#27ae60";
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.moveTo(cx, cy);
+        ctx.lineTo(cx, cy - 50);
+        ctx.stroke();
+
+        // Hour Hand (pointing to IX)
+        ctx.strokeStyle = "#e74c3c";
+        ctx.lineWidth = 5;
+        ctx.beginPath();
+        ctx.moveTo(cx, cy);
+        ctx.lineTo(cx - 35, cy);
+        ctx.stroke();
+    }
+
+    function checkAnswer(idx, btn) {
+        const data = questions[currentIdx];
+        const feedback = document.getElementById('feedback-area');
+        const allBtns = document.querySelectorAll('.option-btn');
+
+        allBtns.forEach(b => b.disabled = true);
+
+        if (idx === data.ans) {
+            btn.classList.add('correct');
+            try { audio.correct.play(); } catch(e){}
+            if (attempts === 0) score++;
+            document.getElementById('score').innerText = score;
+            feedback.innerHTML = `<b>🌟 Correct!</b><br>${data.explain}`;
+            feedback.classList.remove('hidden');
+            document.getElementById('next-btn').classList.remove('hidden');
+            if(currentIdx === questions.length - 1) { try { audio.claps.play(); } catch(e){} }
+        } else {
+            btn.classList.add('wrong');
+            try { audio.wrong.play(); } catch(e){}
+            attempts++;
+
+            if (attempts < 2) {
+                setTimeout(() => {
+                    allBtns.forEach(b => { if(!b.classList.contains('wrong')) b.disabled = false; });
+                    feedback.innerHTML = `<b>Not quite right!</b> Check your structural place values. 1 attempt left.`;
+                    feedback.classList.remove('hidden');
+                }, 400);
+            } else {
+                allBtns[data.ans].classList.add('correct');
+                feedback.innerHTML = `<b>Out of attempts!</b> The correct path was: <b>${data.options[data.ans]}</b>.<br>${data.explain}`;
+                feedback.classList.remove('hidden');
+                document.getElementById('next-btn').classList.remove('hidden');
+            }
+        }
+    }
+
+    function handleNext() {
+        currentIdx++;
+        if (currentIdx < questions.length) {
+            loadQuestion();
+        } else {
+            showResults();
+        }
+    }
+
+    function showResults() {
+        document.getElementById('game-play-area').classList.add('hidden');
+        document.getElementById('result-screen').classList.remove('hidden');
+        document.getElementById('progress-bar').style.width = '100%';
+        try { audio.claps.play(); } catch(e){}
+        
+        let msg = `Phenomenal performance! You completed the arena challenge and earned ${score} out of 11 stars!`;
+        if (score === questions.length) msg = "Outstanding, Master Finance Manager! A perfect mathematical run. You have completely mastered structural large number values and base operations!";
+        
+        document.getElementById('result-msg').innerText = msg;
+    }
+</script>
+
+</body>
+</html>
