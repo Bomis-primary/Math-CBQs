@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Subtraction & Estimation Mastery</title>
+    <style>
+        :root {
+            --primary: #c0392b;
+            --primary-dark: #962d22;
+            --success: #27ae60;
+            --error: #d35400;
+            --bg: #fdfefe;
+            --panel-bg: #fff5f5;
+            --text: #2c3e50;
+            --hud-red: #fbeee6;
+            --hud-blue: #e8f8f5;
+        }
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background-color: #f4f6f7;
+            color: var(--text);
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 10px;
+        }
+
+        #app-container {
+            width: 100%;
+            max-width: 580px;
+            background: #ffffff;
+            border-radius: 24px;
+            padding: 25px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            position: relative;
+            overflow: hidden;
+            min-height: 540px;
+        }
+
+        .instruction-box {
+            background: var(--panel-bg);
+            border-left: 4px solid var(--primary);
+            padding: 15px;
+            border-radius: 8px;
+            text-align: left;
+            margin: 20px 0;
+            font-size: 0.95rem;
+            color: #5c6b73;
+            line-height: 1.5;
+        }
+        .instruction-box ul { margin: 5px 0 0 20px; padding: 0; }
+        .instruction-box li { margin-bottom: 6px; }
+
+        .hud-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        .hud-pill {
+            text-align: center;
+            padding: 12px 6px;
+            border-radius: 14px;
+            font-size: 0.95rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: inset 0 -2px 0px rgba(0,0,0,0.05);
+        }
+        .hud-pill.red { background-color: var(--hud-red); color: var(--primary-dark); }
+        .hud-pill.blue { background-color: var(--hud-blue); color: #117a65; }
+
+        .timer-track { width: 100%; height: 8px; background: #e5e8e8; border-radius: 10px; margin-bottom: 20px; overflow: hidden; }
+        #timer-bar { height: 100%; width: 100%; background: var(--primary); transition: width 1s linear; }
+
+        .category-text { font-size: 0.85rem; color: #7d6608; font-weight: 700; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 1px; }
+        .question-text { font-size: 1.1rem; font-weight: 600; line-height: 1.5; margin-bottom: 15px; white-space: pre-line; }
+
+        /* --- TEXTBOOK VERTICAL MATH TABLE STYLES --- */
+        .math-table-container {
+            display: flex;
+            justify-content: center;
+            margin: 15px 0 20px 0;
+            background: #fbfcfc;
+            padding: 15px;
+            border-radius: 14px;
+            border: 1px solid #eaeded;
+        }
+        .math-table {
+            display: grid;
+            align-items: center;
+            text-align: center;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 1.35rem;
+            font-weight: 700;
+            row-gap: 8px;
+        }
+        .th-header {
+            font-family: 'Segoe UI', sans-serif;
+            font-size: 0.85rem;
+            color: #7f8c8d;
+            font-weight: 800;
+            padding-bottom: 4px;
+            border-bottom: 2px dashed #bdc3c7;
+        }
+        .math-sign {
+            grid-column: 1;
+            text-align: left;
+            padding-right: 12px;
+            color: var(--primary);
+        }
+        .missing-box {
+            background: #fdebd0;
+            border: 2px dashed #e67e22;
+            color: #d35400;
+            border-radius: 4px;
+            font-weight: 800;
+            display: inline-block;
+            width: 34px;
+            height: 34px;
+            line-height: 30px;
+        }
+        .math-line {
+            border-top: 3px solid #2c3e50;
+            margin: 4px 0;
+        }
+        .math-total {
+            color: #2e4053;
+        }
+
+        .options-grid { display: grid; gap: 12px; }
+        .opt-btn {
+            background: #fff; border: 2px solid #edf2f4; padding: 16px;
+            border-radius: 14px; text-align: left; font-size: 1rem; cursor: pointer; transition: 0.2s;
+            color: #34495e; font-weight: 500;
+        }
+        .opt-btn:hover:not(:disabled) { border-color: var(--primary); background: #fafafa; }
+        .opt-btn.correct { background: #e8f5e9 !important; color: var(--success) !important; border-color: #a5d6a7 !important; font-weight: 700; }
+        .opt-btn.wrong { background: #fdf2e9 !important; color: var(--error) !important; border-color: #f5caba !important; }
+
+        .feedback { margin-top: 20px; padding: 15px; border-radius: 12px; display: none; line-height: 1.5; font-size: 0.95rem; }
+        .hint-box { background: #fef9e7; border: 1px solid #f9e79f; color: #b7950b; }
+        .expl-box { background: #e8f8f5; border: 1px solid #a3e4d7; color: #117a65; }
+
+        #action-btn { width: 100%; margin-top: 20px; padding: 16px; background: var(--primary); color: white; border: none; border-radius: 14px; font-weight: 700; cursor: pointer; font-size: 1rem; }
+        #action-btn:hover { background: var(--primary-dark); }
+        
+        .red-cross { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 100px; color: rgba(192, 57, 43, 0.4); pointer-events: none; display: none; z-index: 10; }
+        .star { position: absolute; width: 12px; height: 12px; background: #f1c40f; clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%); pointer-events: none; animation: pop 1s ease-out forwards; }
+
+        @keyframes pop { 0% { transform: scale(0); opacity: 1; } 100% { transform: scale(1.5) translate(var(--tx), var(--ty)); opacity: 0; } }
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+
+<div id="app-container">
+    <div id="intro-view">
+        <div style="text-align: center; font-size: 3.5rem; margin-bottom: 5px;">➖</div>
+        <h1 style="text-align:center; color:var(--primary); margin: 0 0 5px 0; font-size: 26px;">Subtraction & Estimation</h1>
+        <p style="text-align:center; color:#7f8c8d; margin-top: 0; font-weight: 600; text-transform: uppercase; font-size: 12px; letter-spacing: 1px;">Chapter 03 Evaluation</p>
+        
+        <div class="instruction-box">
+            <strong>📋 Learning Outcomes Checked:</strong>
+            <ul>
+                <li>Basic terminology (Minuend, Subtrahend, Difference).</li>
+                <li>Vertical form large numbers subtraction with borrowing.</li>
+                <li>Finding missing parts of a subtraction grid layout.</li>
+                <li>Estimating sums and differences via rounding.</li>
+                <li>Combined mixed operations (+ and - together).</li>
+                <li><b>Rules:</b> 60s per turn. Up to 2 attempts per task!</li>
+            </ul>
+        </div>
+
+        <button id="start-btn" style="width:100%; padding:18px; background:var(--primary); color:white; border:none; border-radius:14px; font-weight:bold; font-size:1.1rem; cursor:pointer; margin-top: 10px;">Start Evaluation Run ⚡</button>
+    </div>
+
+    <div id="quiz-view" class="hidden">
+        <div class="hud-row">
+            <div class="hud-pill red">Task <span id="q-num">1</span>/10</div>
+            <div class="hud-pill red">Score: <span id="score-val">0</span></div>
+            <div class="hud-pill blue"><span id="timer-text">60s</span></div>
+        </div>
+        <div class="timer-track"><div id="timer-bar"></div></div>
+        
+        <div id="q-category" class="category-text"></div>
+        <div id="q-text" class="question-text"></div>
+        
+        <div id="custom-table-area"></div>
+        
+        <div id="options-area" class="options-grid"></div>
+        
+        <div id="feedback-box" class="feedback"></div>
+        <button id="action-btn" class="hidden">Next Question →</button>
+        <div id="cross-mark" class="red-cross">✖</div>
+    </div>
+
+    <div id="result-view" class="hidden" style="text-align:center;">
+        <div style="font-size: 4rem; margin-bottom: 5px;">🏆</div>
+        <h2 style="font-size:1.6rem; margin: 5px 0;">Evaluation Completed!</h2>
+        <div style="font-size: 4rem; font-weight: 800; color: var(--primary); margin: 10px 0;"><span id="final-pts">0</span>/10</div>
+        <div id="result-msg" style="color:#5f6368; font-size: 0.95rem; line-height: 1.5; margin: 0 0 25px 0; text-align: left; background: #f8f9fa; border: 1px solid #e2e8f0; padding: 16px; border-radius: 16px; max-height: 220px; overflow-y: auto;"></div>
+        <button onclick="location.reload()" style="width:100%; padding:16px; background:var(--primary); color:white; border:none; border-radius:14px; font-weight:700; cursor:pointer; font-size: 1rem;">Restart New Shuffled Run</button>
+    </div>
+</div>
+
+<script>
+    const pool = [
+        { 
+            cat: "Basic Terminology", 
+            q: "In the mathematical equation block: \n85,400 - 21,100 = 64,300\n\nWhat is the exact technical name given to the number 85,400?", 
+            opts: ["A) Subtrahend", "B) Difference", "C) Minuend", "D) Addend"], 
+            ans: 2, 
+            hint: "The larger number you start with (from which you subtract) is always called the Minuend.", 
+            expl: "Minuend is the first number. Subtrahend is the number being subtracted. Difference is the final answer." 
+        },
+        { 
+            cat: "Properties of Subtraction", 
+            q: "Which of the following statements demonstrates a valid core rule property of subtraction arithmetic?", 
+            opts: ["A) 45,230 - 0 = 45,230", "B) 12,500 - 8,000 = 8,000 - 12,500", "C) Subtracting 1 from a number gives its direct successor.", "D) Changing the grouping brackets does not change the subtraction total."], 
+            ans: 0, 
+            hint: "Subtraction does not follow commutative or associative properties. Look for what happens when you subtract zero.", 
+            expl: "Subtracting 0 from any number leaves it unchanged. Subtraction is not commutative ($a - b \\neq b - a$)." 
+        },
+        { 
+            cat: "Vertical Subtraction (Borrowing)", 
+            q: "Solve the vertical subtraction layout shown in the panel below:", 
+            hasTable: true,
+            tableType: "standard",
+            opts: ["A) 285,441", "B) 175,441", "C) 185,441", "D) 185,541"], 
+            ans: 2, 
+            hint: "Start from the ones column. Since 5 is less than 6 in the thousands place, borrow 1 from the ten-thousands place column.", 
+            expl: "Carefully tracking the column borrows column-by-column yields: 432,577 - 247,136 = 185,441." 
+        },
+        { 
+            cat: "Finding Missing Components", 
+            q: "Find the missing value hidden inside box [X] in this vertical configuration:", 
+            hasTable: true,
+            tableType: "missing_sub",
+            opts: ["A) X = 2", "B) X = 3", "C) X = 4", "D) X = 5"], 
+            ans: 1, 
+            hint: "Look at the Thousands place column: 6 minus [X] equals 3. Solve for the missing digit.", 
+            expl: "In the thousands column: 6 - X = 3, which directly tells us that X must equal 3." 
+        },
+        { 
+            cat: "Finding Missing Minuends", 
+            q: "An incomplete subtraction sheet reads:\n[Minuend] - 15,200 = 43,500\n\nWhat is the value of the missing Minuend?", 
+            opts: ["A) 28,300", "B) 58,700", "C) 58,000", "D) 68,700"], 
+            ans: 1, 
+            hint: "To find the starting total (Minuend), add the Subtrahend and the Difference back together.", 
+            expl: "Minuend = Subtrahend + Difference. Therefore: 15,200 + 43,500 = 58,700." 
+        },
+        { 
+            cat: "Estimation (Rounding Difference)", 
+            q: "A farmer harvests 6,870 kg of wheat and sells 3,120 kg. \n\nEstimate the remaining wheat balance by rounding each metric value to the nearest thousand before subtracting.", 
+            opts: ["A) 3,000 kg", "B) 4,000 kg", "C) 3,800 kg", "D) 3,750 kg"], 
+            ans: 1, 
+            hint: "6,870 rounds up to 7,000. 3,120 rounds down to 3,000. Now find the difference.", 
+            expl: "Rounding to thousands: 6,870 $\\rightarrow$ 7,000 and 3,120 $\\rightarrow$ 3,000. Estimated difference = 7,000 - 3,000 = 4,000 kg." 
+        },
+        { 
+            cat: "Estimation (Rounding Sum)", 
+            q: "An e-commerce warehouse processes 24,890 orders on Monday and 41,120 orders on Tuesday. \n\nEstimate the total combined orders by rounding each value to the nearest ten-thousand.", 
+            opts: ["A) 60,000", "B) 65,000", "C) 70,000", "D) 80,000"], 
+            ans: 0, 
+            hint: "24,890 rounds to 20,000 at the ten-thousands mark. 41,120 rounds down to 40,000.", 
+            expl: "24,890 rounds to 20,000. 41,120 rounds to 40,000. Combined estimate: 20,000 + 40,000 = 60,000." 
+        },
+        { 
+            cat: "Mixed Operations (+ and - Together)", 
+            q: "Evaluate the given combined string operation checking rules of sequence order:\n\n50,000 + 25,000 - 15,000", 
+            opts: ["A) 90,000", "B) 40,000", "C) 60,000", "D) 55,000"], 
+            ans: 2, 
+            hint: "Perform the addition first left-to-right (50,000 + 25,000), then subtract 15,000 from that sum.", 
+            expl: "Step 1: 50,000 + 25,000 = 75,000. Step 2: 75,000 - 15,000 = 60,000." 
+        },
+        { 
+            cat: "Word Problems on Subtraction", 
+            q: "A tech start-up prints a 550,000 Rupee development budget line. They spend 120,000 Rupees on system assets and 80,000 Rupees on UI designs.\n\nHow much unused funding remains?", 
+            opts: ["A) 350,000 Rupees", "B) 430,000 Rupees", "C) 300,000 Rupees", "D) 400,000 Rupees"], 
+            ans: 0, 
+            hint: "Add total expenditures together first (120,000 + 80,000), then subtract that total from the initial 550,000 pot.", 
+            expl: "Total spent = 120,000 + 80,000 = 200,000. Remainder = 550,000 - 200,000 = 350,000 Rupees." 
+        },
+        { 
+            cat: "Story Construction Analysis", 
+            q: "Which written real-world problem scenario accurately matches the target math model expressions:\n\nValue = 85,000 - 22,500?", 
+            opts: ["A) A library has 85,000 books and buys 22,500 more. Find total books.", "B) A truck holds 85,000 fluid liters. 22,500 liters leak out. Find the remaining amount.", "C) An athlete runs 85,000 meters on week one, and splits week two into 22,500 paths.", "D) A bakery makes 85,000 crust cookies and distributes them evenly to 22,500 stores."], 
+            ans: 1, 
+            hint: "Look for expressions where items are explicitly removed, lost, lost to friction, or depleted.", 
+            expl: "Leakage represents subtraction loss, correctly mapping to the mathematical framework of 85,000 - 22,500." 
+        }
+    ];
+
+    let questions = [];
+    let current = 0, score = 0, attempts = 0, timer, timeLeft = 60;
+
+    questions = [...pool];
+    for (let i = questions.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [questions[i], questions[j]] = [questions[j], questions[i]];
+    }
+
+    document.getElementById('start-btn').onclick = () => {
+        document.getElementById('intro-view').classList.add('hidden');
+        document.getElementById('quiz-view').classList.remove('hidden');
+        loadQuestion();
+    };
+
+    function loadQuestion() {
+        attempts = 0; timeLeft = 60;
+        const q = questions[current];
+        document.getElementById('feedback-box').style.display = 'none';
+        document.getElementById('action-btn').classList.add('hidden');
+        document.getElementById('q-num').innerText = current + 1;
+        document.getElementById('q-category').innerText = q.cat;
+        document.getElementById('q-text').innerText = q.q;
+        document.getElementById('timer-text').innerText = timeLeft + "s";
+        
+        const tableArea = document.getElementById('custom-table-area');
+        if (q.hasTable) {
+            if (q.tableType === "standard") {
+                tableArea.innerHTML = `
+                    <div class="math-table-container">
+                        <div class="math-table" style="grid-template-columns: auto repeat(6, 45px);">
+                            <div class="th-header"></div>
+                            <div class="th-header">L</div>
+                            <div class="th-header">TTh</div>
+                            <div class="th-header">Th</div>
+                            <div class="th-header">H</div>
+                            <div class="th-header">T</div>
+                            <div class="th-header">O</div>
+                            
+                            <div></div><div>4</div><div>3</div><div>2</div><div>5</div><div>7</div><div>7</div>
+                            <div class="math-sign">−</div><div>2</div><div>4</div><div>7</div><div>1</div><div>3</div><div>6</div>
+                            
+                            <div class="math-line" style="grid-column: 1 / span 7;"></div>
+                            <div></div><div style="color:#7f8c8d;">?</div><div style="color:#7f8c8d;">?</div><div style="color:#7f8c8d;">?</div><div style="color:#7f8c8d;">?</div><div style="color:#7f8c8d;">?</div><div style="color:#7f8c8d;">?</div>
+                        </div>
+                    </div>
+                `;
+            } else if (q.tableType === "missing_sub") {
+                tableArea.innerHTML = `
+                    <div class="math-table-container">
+                        <div class="math-table" style="grid-template-columns: auto repeat(5, 45px);">
+                            <div class="th-header"></div>
+                            <div class="th-header">TTh</div>
+                            <div class="th-header">Th</div>
+                            <div class="th-header">H</div>
+                            <div class="th-header">T</div>
+                            <div class="th-header">O</div>
+                            
+                            <div></div><div>8</div><div>6</div><div>9</div><div>4</div><div>5</div>
+                            <div class="math-sign">−</div><div>3</div><div><span class="missing-box">X</span></div><div>2</div><div>1</div><div>0</div>
+                            
+                            <div class="math-line" style="grid-column: 1 / span 6;"></div>
+                            <div></div><div class="math-total">5</div><div class="math-total">3</div><div class="math-total">7</div><div class="math-total">3</div><div class="math-total">5</div>
+                        </div>
+                    </div>
+                `;
+            }
+        } else {
+            tableArea.innerHTML = "";
+        }
+
+        const area = document.getElementById('options-area');
+        area.innerHTML = "";
+        q.opts.forEach((o, i) => {
+            const b = document.createElement('button');
+            b.className = 'opt-btn';
+            b.innerText = o;
+            b.onclick = () => check(i, b);
+            area.appendChild(b);
+        });
+        startTimer();
+    }
+
+    function startTimer() {
+        clearInterval(timer);
+        timer = setInterval(() => {
+            timeLeft--;
+            document.getElementById('timer-text').innerText = timeLeft + "s";
+            document.getElementById('timer-bar').style.width = (timeLeft / 60 * 100) + "%";
+            if(timeLeft <= 0) { clearInterval(timer); endTurn(); }
+        }, 1000);
+    }
+
+    function check(i, b) {
+        if(i === questions[current].ans) {
+            clearInterval(timer);
+            b.classList.add('correct');
+            score++;
+            document.getElementById('score-val').innerText = score;
+            createStars();
+            endTurn();
+        } else {
+            attempts++;
+            showCross();
+            b.classList.add('wrong');
+            b.disabled = true;
+            if(attempts === 1) {
+                const f = document.getElementById('feedback-box');
+                f.className = 'feedback hint-box';
+                f.innerHTML = "<b>💡 Helpful Hint:</b> " + questions[current].hint;
+                f.style.display = 'block';
+            } else {
+                clearInterval(timer);
+                endTurn();
+            }
+        }
+    }
+
+    function endTurn() {
+        document.querySelectorAll('.opt-btn').forEach(btn => btn.disabled = true);
+        const f = document.getElementById('feedback-box');
+        f.className = 'feedback expl-box';
+        f.innerHTML = "<b>🔍 Explanation:</b> " + questions[current].expl;
+        f.style.display = 'block';
+        document.querySelectorAll('.opt-btn')[questions[current].ans].classList.add('correct');
+        document.getElementById('action-btn').classList.remove('hidden');
+    }
+
+    function showCross() {
+        const c = document.getElementById('cross-mark');
+        c.style.display = 'block';
+        setTimeout(() => c.style.display = 'none', 600);
+    }
+
+    function createStars() {
+        for(let i=0; i<15; i++) {
+            const s = document.createElement('div');
+            s.className = 'star';
+            s.style.setProperty('--tx', (Math.random() * 200 - 100) + 'px');
+            s.style.setProperty('--ty', (Math.random() * 200 - 100) + 'px');
+            s.style.left = '50%'; s.style.top = '50%';
+            document.getElementById('app-container').appendChild(s);
+            setTimeout(() => s.remove(), 1000);
+        }
+    }
+
+    document.getElementById('action-btn').onclick = () => {
+        current++;
+        if(current < questions.length) loadQuestion();
+        else {
+            document.getElementById('quiz-view').classList.add('hidden');
+            document.getElementById('result-view').classList.remove('hidden');
+            document.getElementById('final-pts').innerText = score;
+
+            let statusMessage = "Review vertical borrow tracking parameters and placeholder names to elevate accuracy.";
+            if(score === 10) {
+                statusMessage = "Spectacular! Absolute Subtraction and Estimation mastery unlocked. You managed all placeholders, borrowing criteria, and pattern targets flawlessly.";
+            } else if(score >= 8) {
+                statusMessage = "Excellent performance! High calculation competence verified across both standard operations and contextual math loops.";
+            } else if(score >= 5) {
+                statusMessage = "Good attempt! You have a stable foundation but sometimes drift during digit placement or rounding conversions. Give it another pass!";
+            }
+
+            document.getElementById('result-msg').innerHTML = `
+                <span style="font-weight:700; color:#2c3e50; display:block; margin-bottom:6px;">Performance Insights:</span>
+                ${statusMessage}
+            `;
+        }
+    };
+</script>
+</body>
+</html>
