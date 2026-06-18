@@ -336,9 +336,9 @@
         let a = new Audio();
         a.src = src;
         a.preload = "auto";
-        // Prevent file load failures from breaking script workflow
+        // Bypasses resource blockages instantly if files are missing locally
         a.addEventListener('error', function(e) { 
-            console.log("Audio asset omitted/offline:", src); 
+            console.log("Audio asset missing or offline:", src); 
         }, true);
         return a;
     }
@@ -362,15 +362,15 @@
         },
         {
             cat: "Operation Priorities",
-            q: "Evaluate this expression honoring standard mathematical operation priorities:\n240 + (15 × 8) - (360 ÷ 6)",
+            q: "Evaluate this expression honoring standard mathematical operation priorities:\n120 + (45 × 4) - (150 ÷ 5)",
             opts: [
-                "A) 1,980",
-                "B) 300",
-                "C) 240",
-                "D) 320"
+                "A) 150",
+                "B) 270",
+                "C) 330",
+                "D) 630"
             ],
             ans: 1,
-            expl: "Solve internal brackets: (15 × 8) = 120 and (360 ÷ 6) = 60. Then solve left-to-right: 240 + 120 - 60 = 360 - 60 = 300."
+            expl: "Solve terms inside brackets first: (45 × 4) = 180 and (150 ÷ 5) = 30. Then calculate left-to-right: 120 + 180 - 30 = 300 - 30 = 270."
         },
         {
             cat: "Rounding Properties",
@@ -382,7 +382,7 @@
                 "D) Nearest Thousand: 4,500 | Nearest Hundred: 4,400"
             ],
             ans: 1,
-            expl: "4,385 is closer to 4,000 when checking the thousands scale (3 < 5). It rounds up to 4,400 on the hundreds scale because the tens digit is 8 (8 >= 5)."
+            expl: "4,385 rounds down to 4,000 for the thousands place because 3 < 5. For the hundreds place, it rounds up to 4,400 because the tens digit is 8 (8 >= 5)."
         },
         {
             cat: "Scale Reduction",
@@ -394,7 +394,7 @@
                 "D) 78,900 channels"
             ],
             ans: 0,
-            expl: "Dividing a value by 1,000 eliminates exactly three trailing zeros. 7,89,000 ÷ 1,000 = 789."
+            expl: "Dividing a value by 1,000 separates exactly three trailing zeros. 7,89,000 ÷ 1,000 = 789."
         },
         {
             cat: "Roman Systems",
@@ -406,7 +406,7 @@
                 "D) CLV > CXLV because 165 is greater than 145."
             ],
             ans: 2,
-            expl: "CLV translates to 100 + 50 + 5 = 155. CXLV translates to 100 + (50 - 10) + 5 = 145. Thus, 155 > 145."
+            expl: "CLV transforms into 100 + 50 + 5 = 155. CXLV transforms into 100 + (50 - 10) + 5 = 145. Therefore, 155 > 145."
         },
         {
             cat: "Place Parameters",
@@ -430,7 +430,7 @@
                 "D) 9,99,999"
             ],
             ans: 1,
-            expl: "The successor is calculated by adding 1. 8,99,999 + 1 = 9,00,000."
+            expl: "The successor is calculated by adding exactly 1. 8,99,999 + 1 = 9,00,000."
         },
         {
             cat: "Digit Engineering",
@@ -454,7 +454,7 @@
                 "D) 23,030"
             ],
             ans: 1,
-            expl: "Compute 23 × 3 = 69. Append the group of trailing zeros (three from 23,000 and one from 30) to establish 6,90,000."
+            expl: "Compute 23 × 3 = 69. Append the combined number of trailing zeros (three from 23,000 and one from 30) to establish 6,90,000."
         },
         {
             cat: "Mutation Algebra",
@@ -505,14 +505,12 @@
     }
 
     window.onload = () => {
-        // Guaranteed entry fallback to bypass layout blockades smoothly
-        setTimeout(() => {
-            const splash = document.getElementById('splash-screen');
-            if (splash && splash.style.display !== 'none') {
-                splash.style.display = 'none';
-                document.getElementById('intro-view').classList.remove('hidden');
-            }
-        }, 2500);
+        // Instant interface release mechanism bypassing image/asset blocks
+        const splash = document.getElementById('splash-screen');
+        if (splash) {
+            splash.style.display = 'none';
+            document.getElementById('intro-view').classList.remove('hidden');
+        }
     };
 
     function startChallenge() {
@@ -598,7 +596,7 @@
         const f = document.getElementById('feedback-box');
         
         const isCorrect = statusMsg === "✓ Correct!";
-        f.className = isCorrect ? 'feedback expl' : 'feedback expl';
+        f.className = 'feedback expl';
         f.style.borderLeftColor = isCorrect ? 'var(--success)' : 'var(--danger)';
         
         f.innerHTML = `<b>${statusMsg}</b><br><span style="font-size:12px; font-weight:normal; line-height:1.35; color:var(--text-muted); display:block; margin-top:4px;">${questions[current].expl}</span>`;
