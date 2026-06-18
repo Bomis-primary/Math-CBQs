@@ -6,189 +6,186 @@
 <title>Grade 1 Maths CBQ Interactive</title>
 
 <style>
-
 *{
-  box-sizing:border-box;
+  box-sizing: border-box;
 }
 
 body{
-  margin:0;
-  font-family:Arial,sans-serif;
-  background:#f4f7fb;
-  color:#1f2937;
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f4f7fb;
+  color: #1f2937;
 }
 
 .logo-screen{
-  position:fixed;
-  inset:0;
-  background:white;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  z-index:999;
+  position: fixed;
+  inset: 0;
+  background: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
 }
 
 .logo-screen img{
-  max-width:220px;
-  width:70%;
+  max-width: 220px;
+  width: 70%;
 }
 
 .game{
-  max-width:760px;
-  margin:auto;
-  padding:16px;
+  max-width: 760px;
+  margin: auto;
+  padding: 16px;
 }
 
 .header{
-  background:#ffffff;
-  padding:14px;
-  border-radius:14px;
-  display:flex;
-  justify-content:space-between;
-  gap:8px;
-  align-items:center;
-  box-shadow:0 2px 8px rgba(0,0,0,0.08);
-  margin-bottom:16px;
-  flex-wrap:wrap;
+  background: #ffffff;
+  padding: 14px;
+  border-radius: 14px;
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  align-items: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  margin-bottom: 16px;
+  flex-wrap: wrap;
 }
 
 .badge{
-  background:#e0f2fe;
-  padding:8px 12px;
-  border-radius:999px;
-  font-weight:bold;
-  font-size:16px;
+  background: #e0f2fe;
+  padding: 8px 12px;
+  border-radius: 999px;
+  font-weight: bold;
+  font-size: 16px;
 }
 
 button{
-  border:none;
-  border-radius:12px;
-  padding:14px 18px;
-  font-size:18px;
-  cursor:pointer;
-  font-weight:bold;
+  border: none;
+  border-radius: 12px;
+  padding: 14px 18px;
+  font-size: 18px;
+  cursor: pointer;
+  font-weight: bold;
 }
 
 .mute-btn{
-  background:#374151;
-  color:white;
-  font-size:15px;
-  padding:10px 14px;
+  background: #374151;
+  color: white;
+  font-size: 15px;
+  padding: 10px 14px;
 }
 
 .card{
-  background:white;
-  padding:18px;
-  border-radius:18px;
-  box-shadow:0 2px 10px rgba(0,0,0,0.08);
+  background: white;
+  padding: 18px;
+  border-radius: 18px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.08);
 }
 
 .question{
-  font-size:22px;
-  line-height:1.4;
-  font-weight:bold;
-  margin-bottom:14px;
+  font-size: 22px;
+  line-height: 1.4;
+  font-weight: bold;
+  margin-bottom: 14px;
 }
 
 .question-img{
-  width:95%;
-  max-width:760px;
-  height:auto;
-  object-fit:contain;
-  display:block;
-  margin:12px auto;
+  width: 95%;
+  max-width: 760px;
+  height: auto;
+  object-fit: contain;
+  display: block;
+  margin: 12px auto;
 }
 
 .options{
-  display:grid;
-  gap:12px;
+  display: grid;
+  gap: 12px;
 }
 
 .option{
-  background:#f9fafb;
-  border:2px solid #d1d5db;
-  color:#111827;
-  text-align:left;
+  background: #f9fafb;
+  border: 2px solid #d1d5db;
+  color: #111827;
+  text-align: left;
+  white-space: normal;
+  word-wrap: break-word;
 }
 
 .option:hover{
-  background:#eef6ff;
+  background: #eef6ff;
 }
 
 .correct{
-  background:#dcfce7 !important;
-  border-color:#16a34a !important;
+  background: #dcfce7 !important;
+  border-color: #16a34a !important;
 }
 
 .wrong{
-  background:#fee2e2 !important;
-  border-color:#dc2626 !important;
+  background: #fee2e2 !important;
+  border-color: #dc2626 !important;
 }
 
 .feedback{
-  font-size:20px;
-  margin-top:14px;
-  font-weight:bold;
-  min-height:28px;
+  font-size: 18px;
+  margin-top: 14px;
+  font-weight: bold;
+  min-height: 28px;
+  line-height: 1.4;
 }
 
 .next-btn,
 .start-btn,
 .restart-btn{
-  background:#2563eb;
-  color:white;
-  width:100%;
-  margin-top:16px;
+  background: #2563eb;
+  color: white;
+  width: 100%;
+  margin-top: 16px;
 }
 
 .result{
-  text-align:center;
-  font-size:24px;
-  line-height:1.5;
+  text-align: center;
+  font-size: 24px;
+  line-height: 1.5;
 }
 
 .hidden{
-  display:none;
+  display: none;
 }
 
 .confetti{
-  position:fixed;
-  width:8px;
-  height:8px;
-  top:-10px;
-  animation:fall 1s linear forwards;
-  z-index:998;
+  position: fixed;
+  width: 8px;
+  height: 8px;
+  top: -10px;
+  animation: fall 1s linear forwards;
+  z-index: 998;
 }
 
 @keyframes fall{
   to{
-    transform:translateY(100vh) rotate(360deg);
-    opacity:0;
+    transform: translateY(100vh) rotate(360deg);
+    opacity: 0;
   }
 }
 
 @media (max-width:600px){
-
   .question{
-    font-size:20px;
+    font-size: 20px;
   }
-
   button{
-    font-size:17px;
-    padding:14px;
+    font-size: 17px;
+    padding: 14px;
   }
-
   .badge{
-    font-size:14px;
+    font-size: 14px;
   }
-
   .question-img{
-    width:100%;
-    max-width:760px;
-    height:auto;
+    width: 100%;
+    max-width: 760px;
+    height: auto;
   }
 }
-
 </style>
 </head>
 
@@ -215,31 +212,23 @@ button{
   </div>
 
   <div class="card" id="startCard">
-
     <div class="question">
       Ready to play the Number System quiz?
     </div>
-
     <p>
       Read each question carefully.
       You will get one retry after a wrong answer.
     </p>
-
     <button
       class="start-btn"
       onclick="startGame()"
     >
       Start
     </button>
-
   </div>
 
   <div class="card hidden" id="quizCard">
-
-    <div
-      class="question"
-      id="questionText"
-    ></div>
+    <div class="question" id="questionText"></div>
 
     <img
       id="questionImage"
@@ -247,15 +236,8 @@ button{
       alt="Question Image"
     >
 
-    <div
-      class="options"
-      id="options"
-    ></div>
-
-    <div
-      class="feedback"
-      id="feedback"
-    ></div>
+    <div class="options" id="options"></div>
+    <div class="feedback" id="feedback"></div>
 
     <button
       class="next-btn hidden"
@@ -264,174 +246,173 @@ button{
     >
       Next
     </button>
-
   </div>
 
-  <div
-    class="card hidden result"
-    id="resultCard"
-  ></div>
+  <div class="card hidden result" id="resultCard"></div>
 
 </div>
 
-<audio
-  id="correctSound"
-  src="assets/correct.mp3">
-</audio>
-
-<audio
-  id="wrongSound"
-  src="assets/wrong.mp3">
-</audio>
+<audio id="correctSound" src="assets/correct.mp3"></audio>
+<audio id="wrongSound" src="assets/wrong.mp3"></audio>
 
 <script>
-
 const questions = [
-
-{
-q:"Sia has 5 red balloons and Zoya has 5 blue balloons. Which of the following statements is true?",
-img:"",
-options:[
-"Sia has less balloons than Zoya.",
-"Zoya has less balloons than Sia.",
-"They both have the same number of balloons.",
-"They have no balloons."
-],
-answer:2
-},
-
-{
-q:"Sanju built a number using 4 bundles of ten sticks and 3 single sticks. Sonia says the number is 34. Is she correct?",
-img:"assets/sticks.png",
-options:[
-"Yes, the number is 34.",
-"No, the number is 43.",
-"No, the number is 41.",
-"No, the number is 35."
-],
-answer:1
-},
-
-{
-q:"Meera has no pencils in her box. Which number shows this?",
-img:"",
-options:[
-"1 tens and 1 ones",
-"10 tens and 0 ones",
-"0 tens and 0 ones",
-"0 tens and 1 ones"
-],
-answer:2
-},
-
-{
-q:"The teacher conducts a counting exercise in class. She shows the image given. Ananya counts 45 balloons, Prisha counts 43 balloons, Arjun counts 41 balloons and Aryan counts 42 balloons. Who has counted correctly?",
-img:"assets/balloons.png",
-options:[
-"Ananya",
-"Prisha",
-"Arjun",
-"Aryan"
-],
-answer:2
-},
-
-{
-q:"Rohan is playing Snakes and Ladders. His counter is on 29. He rolls the dice that shows 2. Which number will he reach?",
-img:"",
-options:[
-"28",
-"30",
-"31",
-"27"
-],
-answer:2
-},
-
-{
-q:"Rutvi, Pearl, Krupa and Mayank get into a lift from the ground floor. Rutvi lives on the 10th floor, Mayank on the 7th floor, Pearl on the 4th floor and Krupa on the 9th floor. Who will get out of the lift first?",
-img:"",
-options:[
-"Rutvi",
-"Mayank",
-"Pearl",
-"Krupa"
-],
-answer:2
-},
-
-{
-q:"In a match Rohan scored 23 runs, Mohan scored 32 runs, Rita scored 47 runs and Sita scored 24 runs. Who made the most runs?",
-img:"",
-options:[
-"Rita",
-"Sita",
-"Rohan",
-"Mohan"
-],
-answer:0
-},
-
-{
-q:"Aisha collected 42 stickers, Rasha collected 32 stickers and Kiaan collected 45 stickers. They want to stand in a line from the one who collected the least to the most stickers. How should they stand?",
-img:"",
-options:[
-"Kiaan, Rasha, Aisha",
-"Aisha, Rasha, Kiaan",
-"Rasha, Aisha, Kiaan",
-"Kiaan, Aisha, Rasha"
-],
-answer:2
-},
-
-{
-q:"On an abacus, there are 6 beads in tens place and 1 bead in ones place. Aksh wants to show the number 70 on the same abacus. How can he do so by moving just 1 bead?",
-img:"assets/abacus.png",
-options:[
-"Move 1 bead from ones to tens.",
-"Move 1 bead from tens to ones.",
-"Remove 1 bead from tens.",
-"Add 1 bead to ones."
-],
-answer:0
-},
-
-{
-q:"Asif says: “The number 39 has 3 ones and 9 tens.” Why is his statement incorrect?",
-img:"",
-options:[
-"The number 39 has 3 tens and 9 ones.",
-"The number 93 has 3 tens and 9 ones.",
-"The number 39 has 0 ones.",
-"The number 39 has 0 tens."
-],
-answer:0
-},
-
-{
-q:"Four students made statements about the numbers 45 and 40. One of them is incorrect. Who made the mistake?",
-img:"",
-options:[
-"Gopi: 45 is greater than 40.",
-"Aman: 45 is smaller than 40.",
-"Jenny: 45 has more ones than 40.",
-"Kabir: Both numbers have 4 tens."
-],
-answer:1
-},
-
-{
-q:"Meena has gathered some apples from the orchard and arranged them as shown. How many apples did Meena collect?",
-img:"assets/apple-bags.png",
-options:[
-"33 apples",
-"43 apples",
-"60 apples",
-"24 apples"
-],
-answer:3
-}
-
+  {
+    q: "Sia has 5 red balloons and Zoya has 5 blue balloons. Which of the following statements is true?",
+    img: "",
+    options: [
+      "Sia has less balloons than Zoya.",
+      "Zoya has less balloons than Sia.",
+      "They both have the same number of balloons.",
+      "They have no balloons."
+    ],
+    answer: 2,
+    hint: "Compare the number 5 with the number 5.",
+    explanation: "Since 5 is equal to 5, both girls have the exact same number of balloons."
+  },
+  {
+    q: "Sanju built a number using 4 bundles of ten sticks and 3 single sticks. Sonia says the number is 34. Is she correct?",
+    img: "assets/sticks.png",
+    options: [
+      "Yes, the number is 34.",
+      "No, the number is 43.",
+      "No, the number is 41.",
+      "No, the number is 35."
+    ],
+    answer: 1,
+    hint: "4 bundles of ten make 40. Now count the extra 3 ones.",
+    explanation: "4 tens and 3 ones make the number 43, so Sonia reversed the digits."
+  },
+  {
+    q: "Meera has no pencils in her box. Which number shows this?",
+    img: "",
+    options: [
+      "1 tens and 1 ones",
+      "10 tens and 0 ones",
+      "0 tens and 0 ones",
+      "0 tens and 1 ones"
+    ],
+    answer: 2,
+    hint: "'No pencils' means the count is zero.",
+    explanation: "Zero pencils means there are 0 tens and 0 ones."
+  },
+  {
+    q: "The teacher conducts a counting exercise in class. She shows the image given. Ananya counts 45 balloons, Prisha counts 43 balloons, Arjun counts 41 balloons and Aryan counts 42 balloons. Who has counted correctly?",
+    img: "assets/balloons.png",
+    options: [
+      "Ananya",
+      "Prisha",
+      "Arjun",
+      "Aryan"
+    ],
+    answer: 2,
+    hint: "Carefully count the items grouped in the picture.",
+    explanation: "The correct total match corresponds to Arjun's total count."
+  },
+  {
+    q: "Rohan is playing Snakes and Ladders. His counter is on 29. He rolls the dice that shows 2. Which number will he reach?",
+    img: "",
+    options: [
+      "28",
+      "30",
+      "31",
+      "27"
+    ],
+    answer: 2,
+    hint: "Count forward 2 steps starting from 29.",
+    explanation: "Counting forward by 2 from 29 brings you to 30, then 31."
+  },
+  {
+    q: "Rutvi, Pearl, Krupa and Mayank get into a lift from the ground floor. Rutvi lives on the 10th floor, Mayank on the 7th floor, Pearl on the 4th floor and Krupa on the 9th floor. Who will get out of the lift first?",
+    img: "",
+    options: [
+      "Rutvi",
+      "Mayank",
+      "Pearl",
+      "Krupa"
+    ],
+    answer: 2,
+    hint: "The lift starts from the bottom. Look for the lowest floor number.",
+    explanation: "Floor 4 is reached before floors 7, 9, or 10. So Pearl gets out first."
+  },
+  {
+    q: "In a match Rohan scored 23 runs, Mohan scored 32 runs, Rita scored 47 runs and Sita scored 24 runs. Who made the most runs?",
+    img: "",
+    options: [
+      "Rita",
+      "Sita",
+      "Rohan",
+      "Mohan"
+    ],
+    answer: 0,
+    hint: "Look for the largest number among 23, 32, 47, and 24.",
+    explanation: "47 is the greatest number among them all, meaning Rita scored the most runs."
+  },
+  {
+    q: "Aisha collected 42 stickers, Rasha collected 32 stickers and Kiaan collected 45 stickers. They want to stand in a line from the one who collected the least to the most stickers. How should they stand?",
+    img: "",
+    options: [
+      "Kiaan, Rasha, Aisha",
+      "Aisha, Rasha, Kiaan",
+      "Rasha, Aisha, Kiaan",
+      "Kiaan, Aisha, Rasha"
+    ],
+    answer: 2,
+    hint: "Arrange the numbers from smallest to biggest: 32, 42, and 45.",
+    explanation: "32 (Rasha) is the smallest, followed by 42 (Aisha), and 45 (Kiaan) is the biggest."
+  },
+  {
+    q: "On an abacus, there are 6 beads in tens place and 1 bead in ones place. Aksh wants to show the number 70 on the same abacus. How can he do so by moving just 1 bead?",
+    img: "assets/abacus.png",
+    options: [
+      "Move 1 bead from ones to tens.",
+      "Move 1 bead from tens to ones.",
+      "Remove 1 bead from tens.",
+      "Add 1 bead to ones."
+    ],
+    answer: 0,
+    hint: "The current number is 61. To make it 70, you need 7 tens and 0 ones.",
+    explanation: "Moving 1 bead from the ones place to the tens place changes 6 tens to 7, and leaves 0 in the ones place."
+  },
+  {
+    q: "Asif says: “The number 39 has 3 ones and 9 tens.” Why is his statement incorrect?",
+    img: "",
+    options: [
+      "The number 39 has 3 tens and 9 ones.",
+      "The number 93 has 3 tens and 9 ones.",
+      "The number 39 has 0 ones.",
+      "The number 39 has 0 tens."
+    ],
+    answer: 0,
+    hint: "Think about which digit sits in the tens place and which is in the ones place for 39.",
+    explanation: "In 39, the digit 3 stands for 3 tens (30) and the digit 9 stands for 9 ones."
+  },
+  {
+    q: "Four students made statements about the numbers 45 and 40. One of them is incorrect. Who made the mistake?",
+    img: "",
+    options: [
+      "Gopi: 45 is greater than 40.",
+      "Aman: 45 is smaller than 40.",
+      "Jenny: 45 has more ones than 40.",
+      "Kabir: Both numbers have 4 tens."
+    ],
+    answer: 1,
+    hint: "Compare 45 and 40. Is 45 smaller or larger than 40?",
+    explanation: "45 is actually greater than 40, which makes Aman's statement incorrect."
+  },
+  {
+    q: "Meena has gathered some apples from the orchard and arranged them as shown. How many apples did Meena collect?",
+    img: "assets/apple-bags.png",
+    options: [
+      "33 apples",
+      "43 apples",
+      "60 apples",
+      "24 apples"
+    ],
+    answer: 3,
+    hint: "Count the items carefully to match the final option choice.",
+    explanation: "Counting the full asset arrangement yields a total value of 24 apples."
+  }
 ];
 
 let current = 0;
@@ -460,285 +441,180 @@ const qCount = document.getElementById("qCount");
 
 const correctSound = document.getElementById("correctSound");
 const wrongSound = document.getElementById("wrongSound");
-
 const muteBtn = document.getElementById("muteBtn");
 
 setTimeout(() => {
-
   logoScreen.style.display = "none";
-
   game.classList.remove("hidden");
-
-},5000);
+}, 5000);
 
 function startGame(){
-
   startCard.classList.add("hidden");
-
   quizCard.classList.remove("hidden");
-
   loadQuestion();
 }
 
 function loadQuestion(){
-
   clearInterval(timerInterval);
 
   timeLeft = 60;
   attempts = 0;
   answered = false;
-
-  feedback.textContent = "";
-
+  feedback.innerHTML = "";
   nextBtn.classList.add("hidden");
 
   const item = questions[current];
 
-  qCount.textContent =
-    `Question ${current + 1}/12`;
-
-  scoreBox.textContent =
-    `Score: ${score}`;
-
-  timerBox.textContent =
-    `${timeLeft}s`;
-
+  qCount.textContent = `Question ${current + 1}/12`;
+  scoreBox.textContent = `Score: ${score}`;
+  timerBox.textContent = `${timeLeft}s`;
   questionText.textContent = item.q;
 
   optionsDiv.innerHTML = "";
 
   if(item.img){
-
     questionImage.src = item.img;
-
     questionImage.classList.remove("hidden");
-
   } else {
-
     questionImage.classList.add("hidden");
   }
 
-  item.options.forEach((opt,index) => {
-
+  item.options.forEach((opt, index) => {
     const btn = document.createElement("button");
-
     btn.className = "option";
-
     btn.textContent = opt;
-
     btn.onclick = () => checkAnswer(index, btn);
-
     optionsDiv.appendChild(btn);
-
   });
 
   timerInterval = setInterval(() => {
-
     timeLeft--;
-
     timerBox.textContent = `${timeLeft}s`;
 
     if(timeLeft <= 0){
-
       clearInterval(timerInterval);
-
+      feedback.style.color = "#dc2626";
       feedback.textContent = "Time up!";
-
       disableOptions();
-
+      highlightCorrect();
       nextBtn.classList.remove("hidden");
     }
-
-  },1000);
+  }, 1000);
 }
 
-function checkAnswer(selected,button){
-
+function checkAnswer(selected, button){
   if(answered) return;
 
-  const correct = questions[current].answer;
+  const currentQuestion = questions[current];
+  const correct = currentQuestion.answer;
 
   if(selected === correct){
-
     answered = true;
-
     score++;
-
-    scoreBox.textContent =
-      `Score: ${score}`;
-
+    scoreBox.textContent = `Score: ${score}`;
     button.classList.add("correct");
-
-    feedback.textContent = "Correct!";
-
+    feedback.style.color = "#16a34a";
+    feedback.textContent = "Correct! " + currentQuestion.explanation;
     playSound(correctSound);
-
     showConfetti();
-
     clearInterval(timerInterval);
-
     disableOptions();
-
     nextBtn.classList.remove("hidden");
-
   } else {
-
     attempts++;
-
     button.classList.add("wrong");
-
     playSound(wrongSound);
 
     if(attempts < 2){
-
-      feedback.textContent = "Try again!";
-
+      feedback.style.color = "#ea580c";
+      feedback.textContent = `Try again! Hint: ${currentQuestion.hint}`;
       button.disabled = true;
-
     } else {
-
       answered = true;
-
-      feedback.textContent =
-        "Incorrect. Move to the next question.";
-
+      feedback.style.color = "#dc2626";
+      feedback.textContent = `Incorrect. ${currentQuestion.explanation}`;
       clearInterval(timerInterval);
-
       disableOptions();
-
       highlightCorrect();
-
       nextBtn.classList.remove("hidden");
     }
   }
 }
 
 function disableOptions(){
-
-  document.querySelectorAll(".option")
-    .forEach(btn => btn.disabled = true);
+  document.querySelectorAll(".option").forEach(btn => btn.disabled = true);
 }
 
 function highlightCorrect(){
-
   const correct = questions[current].answer;
-
-  document.querySelectorAll(".option")[correct]
-    .classList.add("correct");
+  const options = document.querySelectorAll(".option");
+  if(options[correct]) {
+    options[correct].classList.add("correct");
+  }
 }
 
 function nextQuestion(){
-
   current++;
-
   if(current < questions.length){
-
     loadQuestion();
-
   } else {
-
     showResult();
   }
 }
 
 function showResult(){
-
   quizCard.classList.add("hidden");
-
   resultCard.classList.remove("hidden");
 
-  const percent =
-    (score / questions.length) * 100;
-
+  const percent = (score / questions.length) * 100;
   let message = "";
 
   if(percent >= 75){
-
     message = "Good job";
-
   } else if(percent >= 40){
-
     message = "Review this chapter and try again";
-
   } else {
-
     message = "Let’s practise more";
   }
 
   resultCard.innerHTML = `
     <h2>${message}</h2>
-    <p>Your Score:
-    <strong>${score}/${questions.length}</strong>
-    </p>
-
-    <button
-      class="restart-btn"
-      onclick="restartGame()"
-    >
-      Restart
-    </button>
+    <p>Your Score: <strong>${score}/${questions.length}</strong></p>
+    <button class="restart-btn" onclick="restartGame()">Restart</button>
   `;
 }
 
 function restartGame(){
-
   current = 0;
   score = 0;
-
   resultCard.classList.add("hidden");
-
   quizCard.classList.remove("hidden");
-
   loadQuestion();
 }
 
 function playSound(sound){
-
   if(!muted){
-
     sound.currentTime = 0;
-
     sound.play().catch(() => {});
   }
 }
 
 function toggleMute(){
-
   muted = !muted;
-
-  muteBtn.textContent =
-    muted ? "🔇 Muted" : "🔊 Sound";
+  muteBtn.textContent = muted ? "🔇 Muted" : "🔊 Sound";
 }
 
 function showConfetti(){
-
   for(let i=0; i<30; i++){
-
-    const piece =
-      document.createElement("div");
-
+    const piece = document.createElement("div");
     piece.className = "confetti";
-
-    piece.style.left =
-      Math.random()*100 + "vw";
-
-    piece.style.background =
-      ["#2563eb","#16a34a","#f59e0b","#dc2626"]
-      [Math.floor(Math.random()*4)];
-
-    piece.style.animationDuration =
-      0.8 + Math.random()*0.8 + "s";
-
+    piece.style.left = Math.random()*100 + "vw";
+    piece.style.background = ["#2563eb","#16a34a","#f59e0b","#dc2626"][Math.floor(Math.random()*4)];
+    piece.style.animationDuration = 0.8 + Math.random()*0.8 + "s";
     document.body.appendChild(piece);
-
-    setTimeout(() => {
-
-      piece.remove();
-
-    },1600);
+    setTimeout(() => { piece.remove(); }, 1600);
   }
 }
-
 </script>
 
 </body>
