@@ -375,12 +375,12 @@ q:"What 3D mathematical name belongs to a round, solid soccer ball?",
 visualType:"images",
 images:["ball.png"],
 options:[
+  {text:"Sphere", img:"sphere.png"},
+  {text:"Cylinder", img:"cylinder.png"},
   {text:"Cube", img:"cube.png"},
-  {text:"Sphere", img:"ball.png"},
-  {text:"Cylinder", img:"can.png"},
-  {text:"Cone", img:"party-hat.png"}
+  {text:"Cone", img:"cone.png"}
 ],
-answer:1,
+answer:0,
 hint:"It is a perfectly round 3D ball, not a flat drawing.",
 explanation:"A solid, round ball shape is called a sphere."
 },
@@ -391,8 +391,8 @@ images:["party-hat.png"],
 options:[
   {text:"Pyramid"},
   {text:"Cube"},
-  {text:"Cone"},
-  {text:"Cylinder"}
+  {text:"Cone", img:"cone.png"},
+  {text:"Cylinder", img:"cylinder.png"}
 ],
 answer:2,
 hint:"This shape has a round flat bottom that goes up to a sharp tip.",
@@ -403,10 +403,10 @@ q:"Look at this tile pattern on the swimming pool floor: Circle, Square, Circle,
 visualType:"pattern",
 items:["circle.png","square.png","circle.png","square.png","?"],
 options:[
-  {text:"A round circle"},
-  {text:"A three-sided triangle"},
+  {text:"A round circle", img:"circle.png"},
+  {text:"A three-sided triangle", img:"triangle.png"},
   {text:"A five-pointed star"},
-  {text:"A long rectangle"}
+  {text:"A long rectangle", img:"rectangle.png"}
 ],
 answer:0,
 hint:"What always comes right after a square in this line?",
@@ -415,7 +415,7 @@ explanation:"The pattern changes back and forth. A circle always comes after a s
 {
 q:"Rohit looks out the car window and sees a bright red 'Yield' traffic sign. If he counts the sharp points where the straight lines meet, how many corners will he find?",
 visualType:"images",
-images:["image_65c945.jpg"],
+images:["yield.png"],
 options:[
   {text:"4 corners"},
   {text:"3 corners"},
@@ -429,12 +429,12 @@ explanation:"A triangle shape always has exactly 3 corners!"
 {
 q:"This soup can slides when upright but rolls on its side. What 3D shape is it?",
 visualType:"images",
-images:["can.png"],
+images:["cylinder.png"],
 options:[
-  {text:"Cube"},
-  {text:"Cone"},
-  {text:"Sphere"},
-  {text:"Cylinder"}
+  {text:"Cube", img:"cube.png"},
+  {text:"Cone", img:"cone.png"},
+  {text:"Sphere", img:"sphere.png"},
+  {text:"Cylinder", img:"cylinder.png"}
 ],
 answer:3,
 hint:"Look for a tube shape with flat circles at both ends.",
@@ -459,10 +459,10 @@ q:"A bicycle wheel and a food bowl share which flat geometric shape?",
 visualType:"images",
 images:["wheel.png","plate.png","circle.png"],
 options:[
-  {text:"Square"},
-  {text:"Triangle"},
-  {text:"Circle"},
-  {text:"Rectangle"}
+  {text:"Square", img:"square.png"},
+  {text:"Triangle", img:"triangle.png"},
+  {text:"Circle", img:"circle.png"},
+  {text:"Rectangle", img:"rectangle.png"}
 ],
 answer:2,
 hint:"Think of a shape that is perfectly round with no sides.",
@@ -474,7 +474,7 @@ visualType:"images",
 images:["dice.png","cube.png"],
 options:[
   {text:"It has absolutely no corners or edges."},
-  {text:"It has flat square surfaces that let it slide to a stop."},
+  {text:"It has flat square surfaces that let it slide to a stop.", img:"square.png"},
   {text:"It is a flat 2D drawing with no depth."},
   {text:"It has only round, curved surfaces that roll everywhere."}
 ],
@@ -503,7 +503,6 @@ let currentCorrectIndex = 0;
 
 let logoScreen, quizScreen, resultScreen, qNo, qLabel, scoreBox, timerBox, visualBox, questionText, optionsBox, feedback, nextBtn, correctSound, wrongSound, clapSound;
 
-// Safe structural wrapper ensures elements load completely before running logic
 document.addEventListener("DOMContentLoaded", () => {
   logoScreen=document.getElementById("logoScreen");
   quizScreen=document.getElementById("quizScreen");
@@ -606,8 +605,7 @@ function renderVisual(item){
     let html='<div class="visual-row">';
     const sizeClass = item.visualType === "largeImages" ? "large-square" : "big";
     item.images.forEach(img=>{
-      const srcPath = img.startsWith("image_") ? img : `assets/${img}`;
-      html+=`<img class="visual-img ${sizeClass}" src="${srcPath}" alt="">`;
+      html+=`<img class="visual-img ${sizeClass}" src="assets/${img}" alt="">`;
     });
     html+='</div>';
     visualBox.innerHTML=html;
