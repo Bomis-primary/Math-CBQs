@@ -226,9 +226,11 @@ body{
 }
 
 .result-score{
-  font-size:23px;
+  font-size:21px;
   text-align:center;
   margin-bottom:20px;
+  line-height:1.5;
+  color:#4b5563;
 }
 
 .confetti{
@@ -273,7 +275,7 @@ body{
 <div id="quizScreen" class="screen">
   <div class="card">
     <div class="topbar">
-      <div class="badge">Question <span id="qNo">1</span>/12</div>
+      <div class="badge" id="qLabel">Question <span id="qNo">1</span>/12</div>
       <div class="badge">Score: <span id="score">0</span></div>
       <div class="badge">Time: <span id="timer">60</span>s</div>
       <button class="sound-btn" onclick="toggleMute()" id="muteBtn">🔊 Sound On</button>
@@ -305,124 +307,150 @@ body{
 <script>
 const questions=[
 {
-q:"Look at a door. Which shape does it resemble most?",
+q:"Look at the main entrance door of your classroom. Which flat shape does its face resemble most?",
 visualType:"images",
 images:["door.png","rectangle.png"],
 text:"A door looks like a rectangle.",
 options:["Square","Triangle","Rectangle","Circle"],
-answer:2
+answer:2,
+hint:"Think about an object that has two long parallel sides and two shorter sides.",
+explanation:"A standard room door is taller than it is wide, giving it a distinct rectangular face."
 },
 {
-q:"Which of these objects has only curved lines?",
+q:"Kabir is searching for objects in his room. Which of these items has only curved lines and zero straight edges?",
 visualType:"images",
 images:["coin.png","circle.png"],
 text:"A coin has a round curved edge.",
-options:["A ruler","A dice","A coin","A textbook"],
-answer:2
+options:["A wooden ruler","A play dice","A round coin","A story textbook"],
+answer:2,
+hint:"Look for the item that can roll smoothly across a table without hitting flat edges.",
+explanation:"Rulers and books have straight sides, but a coin is perfectly round all the way around."
 },
 {
-q:"Reema has two shapes. Both have 4 sides and 4 corners. What are they?",
+q:"Reema is sorting cutout blocks. She finds two pieces that both have exactly 4 straight sides and 4 corners. What are they?",
 visualType:"images",
 images:["rectangle.png","square.png"],
 text:"Both shapes have 4 sides and 4 corners.",
 options:["Triangle and Rectangle","Rectangle and Square","Square and Circle","Circle and Triangle"],
-answer:1
+answer:1,
+hint:"Triangles only have 3 corners, and circles have none. Eliminate those choices.",
+explanation:"Both rectangles and squares are built using exactly four straight lines and four corners."
 },
 {
-q:"Which 3D shape is shaped like a ball and can roll easily?",
+q:"Sanya throws a toy across the grass. Which solid shape is shaped like a tennis ball and can roll easily in any direction?",
 visualType:"images",
 images:["ball.png","sphere.png"],
 text:"A ball is shaped like a sphere.",
 options:["Cube","Sphere","Cylinder","Cone"],
-answer:1
+answer:1,
+hint:"This shape has no flat edges or sharp corners at all.",
+explanation:"A ball is a perfect solid round shape, which in mathematics is called a sphere."
 },
 {
-q:"A party hat is an example of which 3D shape?",
+q:"A colorful birthday party hat is an example of which solid 3D shape?",
 visualType:"images",
 images:["party-hat.png","cone.png"],
 text:"A party hat has a pointed top like a cone.",
 options:["Cube","Sphere","Cone","Cylinder"],
-answer:2
+answer:2,
+hint:"It has a circular flat bottom that goes up to a sharp pointed tip.",
+explanation:"A shape that stands on a circular base and tapers to a fine point is a cone."
 },
 {
-q:"Identify the next shape in this pattern: Circle, Square, Circle, Square, ____",
+q:"Identify the next missing shape in this wallpaper pattern: Circle, Square, Circle, Square, ____",
 visualType:"pattern",
 items:["circle.png","square.png","circle.png","square.png","?"],
 text:"The pattern repeats circle and square.",
 options:["Triangle","Rectangle","Circle","Star"],
-answer:2
+answer:2,
+hint:"Look at what shape always shows up right after a square finishes.",
+explanation:"The sequence swaps back and forth: Circle, then Square. Following the square, a circle returns."
 },
 {
-q:"How many corners does a triangle have?",
+q:"Rohan points to a triangular highway warning sign. How many sharp corners can he count on it?",
 visualType:"images",
 images:["triangle.png"],
-text:"Count the corners of the triangle.",
+text:"Count the corners of the sign.",
 options:["2","3","4","0"],
-answer:1
+answer:1,
+hint:"Count the sharp points where the straight side lines meet.",
+explanation:"A triangle is constructed of 3 straight edges, creating exactly 3 corners."
 },
 {
-q:"Which 3D shape can both roll and slide?",
+q:"Which solid object in a kitchen can both roll on its side and slide when placed on its flat ends?",
 visualType:"images",
 images:["cylinder.png"],
 text:"A cylinder rolls on its curved side and slides on its flat ends.",
-options:["Cube","Sphere","Cylinder","Pyramid"],
-answer:2
+options:["A block box","A play marble","A soup cylinder can","A pointed pyramid tile"],
+answer:2,
+hint:"Look for a shape like a soda can that has both a round side and flat circular ends.",
+explanation:"A cylinder slides when placed on its flat top/bottom, and rolls when laid on its side."
 },
 {
-q:"Look at the letter S and the letter L. Which statement is true?",
+q:"Look at the written letter S and the letter L. Which sentence describes their lines correctly?",
 visualType:"images",
 images:["S.png","L.png"],
 text:"S is curved. L is made of straight lines.",
 options:[
-" S is a straight line, L is a curved line.",
+"S is a straight line, L is a curved line.",
 "Both are made of straight lines.",
 "S is a curved line, L is made of straight lines.",
 "Both are made of curved lines."
 ],
-answer:2
+answer:2,
+hint:"Trace the shapes with your finger. One winds around smoothly, while the other makes a sharp corner turn.",
+explanation:"The letter S has smooth bends (curved line), while L is formed by two flat straight paths joining."
 },
 {
-q:"Look at the wheel and the plate. What shape do they both share?",
+q:"Look at a bicycle wheel and a circular dinner plate. What geometric shape do they both share?",
 visualType:"images",
 images:["wheel.png","plate.png","circle.png"],
 text:"Both are round like a circle.",
 options:["Square","Triangle","Circle","Rectangle"],
-answer:2
+answer:2,
+hint:"Both items have zero straight borders and can spin or turn smoothly.",
+explanation:"Wheels and dining plates are completely round, matching a circle."
 },
 {
-q:"Which statement is true about a cube like a dice?",
+q:"Aarav is holding a standard game dice. Which statement is true about its surfaces?",
 visualType:"images",
 images:["dice.png","cube.png"],
 text:"A cube has flat surfaces.",
 options:[
-"It has no corners.",
-"It has only curved surfaces.",
+"It has no corners or edges.",
+"It has only curved round surfaces.",
 "It has flat surfaces and can slide.",
-"It is a 2D shape."
+"It is a completely flat 2D drawing."
 ],
-answer:2
+answer:2,
+hint:"Think about sliding a dice across a smooth game board tile.",
+explanation:"A cube is built out of six flat square faces, allowing it to slide smoothly across surfaces."
 },
 {
-q:"You have two circles: a small button and a large dinner plate. Which statement is correct?",
+q:"You compare two round items: a tiny clothing shirt button and a large kitchen pan. Which statement is correct?",
 visualType:"images",
 images:["button.png","plate.png"],
 text:"They are the same shape but different sizes.",
 options:[
 "They are different shapes because their sizes are different.",
 "They are the same shape but different sizes.",
-"The plate is a square and the button is a circle.",
+"The pan is a square and the button is a circle.",
 "They are exactly the same size."
 ],
-answer:1
+answer:1,
+hint:"Do they both keep the exact same round profile despite one being bigger?",
+explanation:"Size does not change the core geometric properties. Both remain circles."
 }
 ];
 
-let current=0,score=0,attempts=0,answered=false,timeLeft=60,timerInterval,muted=false;
+let current=0,score=0,firstAttemptCorrect=0,attempts=0,answered=false,timeLeft=60,timerInterval,muted=false;
+let currentCorrectIndex = 0;
 
 const logoScreen=document.getElementById("logoScreen");
 const quizScreen=document.getElementById("quizScreen");
 const resultScreen=document.getElementById("resultScreen");
 const qNo=document.getElementById("qNo");
+const qLabel=document.getElementById("qLabel");
 const scoreBox=document.getElementById("score");
 const timerBox=document.getElementById("timer");
 const visualBox=document.getElementById("visualBox");
@@ -443,14 +471,14 @@ setTimeout(()=>{
 function startQuiz(){
   current=0;
   score=0;
-  timeLeft=60;
+  firstAttemptCorrect=0;
   scoreBox.textContent=score;
-  timerBox.textContent=timeLeft;
   loadQuestion();
-  startTimer();
 }
 
 function startTimer(){
+  timeLeft=60;
+  timerBox.textContent=timeLeft;
   clearInterval(timerInterval);
   timerInterval=setInterval(()=>{
     timeLeft--;
@@ -466,21 +494,41 @@ function loadQuestion(){
   attempts=0;
   answered=false;
   feedback.textContent="";
+  feedback.style.color="#1f2937";
   nextBtn.style.display="none";
 
   const item=questions[current];
-  qNo.textContent=current+1;
+  
+  // Enforce Linear Structure with Final Challenge Indicator for last 2 questions 
+  if (current >= questions.length - 2) {
+    qLabel.innerHTML = `⚡ Challenge <span id="qNo">${current + 1}</span>/${questions.length}`;
+    document.getElementById("quizScreen").querySelector('.card').style.borderColor = "#8b5cf6";
+  } else {
+    qLabel.innerHTML = `Question <span id="qNo">${current + 1}</span>/${questions.length}`;
+  }
+  
   questionText.textContent=item.q;
   optionsBox.innerHTML="";
   renderVisual(item);
 
-  item.options.forEach((option,index)=>{
+  // Dynamic choice scrambling routine to avoid pattern recognition [cite: 71]
+  let shuffledOptions = item.options.map((opt, idx) => ({ text: opt, originalIndex: idx }));
+  shuffledOptions.sort(() => Math.random() - 0.5);
+
+  shuffledOptions.forEach((option, index)=>{
     const btn=document.createElement("button");
     btn.className="option";
-    btn.textContent=option;
-    btn.onclick=()=>checkAnswer(btn,index);
+    btn.textContent=option.text;
+    
+    if(option.originalIndex === item.answer) {
+      currentCorrectIndex = index;
+    }
+
+    btn.onclick=()=>checkAnswer(btn, index);
     optionsBox.appendChild(btn);
   });
+
+  startTimer();
 }
 
 function renderVisual(item){
@@ -507,34 +555,28 @@ function renderVisual(item){
     html+=`<div class="visual-text">${item.text}</div>`;
     visualBox.innerHTML=html;
   }
-
-  if(item.visualType==="numberPattern"){
-    let html='<div class="visual-row">';
-    item.items.forEach(it=>{
-      if(it==="?"){
-        html+='<div class="qmark">?</div>';
-      }else{
-        html+=`<div class="pattern-number">${it}</div>`;
-      }
-    });
-    html+='</div>';
-    html+=`<div class="visual-text">${item.text}</div>`;
-    visualBox.innerHTML=html;
-  }
 }
 
 function checkAnswer(button,selected){
   if(answered)return;
+  const currentQuestion=questions[current];
 
-  const correctIndex=questions[current].answer;
-
-  if(selected===correctIndex){
+  if(selected===currentCorrectIndex){
+    clearInterval(timerInterval);
     answered=true;
     score++;
+    
+    if(attempts===0){
+      firstAttemptCorrect++;
+    }
+    
     scoreBox.textContent=score;
     button.classList.add("correct");
     feedback.textContent="Correct!";
+    feedback.style.color="#047857";
+    // Double audio indicator overlay execution [cite: 93]
     playSound(correctSound);
+    playSound(clapSound);
     launchConfetti();
     disableOptions();
     nextBtn.style.display="inline-block";
@@ -544,11 +586,16 @@ function checkAnswer(button,selected){
     playSound(wrongSound);
 
     if(attempts===1){
-      feedback.textContent="Try again.";
+      // Instantly show targeted scaffolding tip on first error [cite: 88]
+      feedback.textContent="Hint: " + currentQuestion.hint;
+      feedback.style.color="#b45309";
       button.disabled=true;
     }else{
+      clearInterval(timerInterval);
       answered=true;
-      feedback.textContent="Incorrect. The correct answer is highlighted.";
+      // Show explanation details after second failed attempt [cite: 89]
+      feedback.textContent="Incorrect. " + currentQuestion.explanation;
+      feedback.style.color="#b91c1c";
       showCorrectAnswer();
       disableOptions();
       nextBtn.style.display="inline-block";
@@ -557,8 +604,7 @@ function checkAnswer(button,selected){
 }
 
 function showCorrectAnswer(){
-  const correctIndex=questions[current].answer;
-  document.querySelectorAll(".option")[correctIndex].classList.add("correct");
+  document.querySelectorAll(".option")[currentCorrectIndex].classList.add("correct");
 }
 
 function disableOptions(){
@@ -579,7 +625,8 @@ function showResult(){
   quizScreen.classList.remove("active");
   resultScreen.classList.add("active");
 
-  const percentage=(score/questions.length)*100;
+  // Score metrics evaluated strictly against first-attempt milestones [cite: 123, 124, 125]
+  const percentage=(firstAttemptCorrect/questions.length)*100;
   let message="";
 
   if(percentage>=75){
@@ -593,7 +640,7 @@ function showResult(){
   }
 
   document.getElementById("resultMessage").textContent=message;
-  document.getElementById("finalScore").textContent="Your Score: "+score+" out of "+questions.length;
+  document.getElementById("finalScore").innerHTML="Total Solved: "+score+" / "+questions.length+"<br>First-Attempt Correct: "+firstAttemptCorrect+" / "+questions.length;
 }
 
 function restartQuiz(){
