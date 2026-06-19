@@ -1,539 +1,448 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>CBQ Interactive - Multiplication</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grade 1 Math: Chapter 9 - Multiplication Challenge</title>
+    <style>
+        :root {
+            --primary: #d35400;
+            --secondary: #2c3e50;
+            --success: #2ecc71;
+            --danger: #e74c3c;
+            --bg: #fdf2e9;
+            --text: #2c3e50;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Comic Sans MS', 'Chalkboard SE', sans-serif; }
+        body { background-color: var(--bg); color: var(--text); display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 10px; }
+        .container { background: white; width: 100%; max-width: 460px; border-radius: 24px; box-shadow: 0 10px 20px rgba(0,0,0,0.08); padding: 20px; position: relative; min-height: 480px; border: 5px solid #f5b041; overflow: hidden; }
+        
+        /* Strict 5-Second Splash Guard Layout */
+        #splash-screen { position: absolute; top:0; left:0; width:100%; height:100%; background: #ffffff; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 100; border-radius: 18px; }
+        #splash-screen img { width: 190px; height: auto; }
 
-<style>
-*{box-sizing:border-box}
+        .hidden { display: none !important; }
+        
+        /* Interactive Dashboard Meta */
+        .header-meta { display: flex; justify-content: space-between; align-items: center; font-size: 1.3rem; font-weight: bold; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 4px dashed #f5b041; }
+        .timer { color: var(--danger); background: #fff5f5; padding: 5px 12px; border-radius: 12px; border: 2px solid #ffc9c9; }
+        .score-box { color: #2b8a3e; background: #ebfbee; padding: 5px 12px; border-radius: 12px; border: 2px solid #b2f2bb; }
+        
+        /* Layout Typography */
+        h2 { font-size: 1.6rem; text-align: center; margin-bottom: 15px; color: #ba4a00; line-height: 1.3; }
+        .visual-emoji-display { font-size: 3.5rem; text-align: center; margin: 10px 0; user-select: none; display: flex; justify-content: center; align-items: center; gap: 5px; flex-wrap: wrap; }
+        .q-context { background: #f4f6f6; padding: 15px; border-radius: 16px; margin-bottom: 15px; font-size: 1.2rem; text-align: center; font-weight: bold; color: #7e5109; line-height: 1.4; border: 2px dashed #f5b041; }
+        
+        /* Responsive High-Contrast Tap Targets */
+        .options-grid { display: grid; grid-template-columns: 1fr; gap: 12px; margin-bottom: 15px; }
+        .btn-opt { background: #f8f9fa; border: 3px solid #dee2e6; border-radius: 16px; padding: 14px; text-align: center; font-size: 1.2rem; font-weight: bold; cursor: pointer; transition: all 0.1s; width: 100%; -webkit-tap-highlight-color: transparent; box-shadow: 0 4px #e9ecef; color: var(--text); }
+        .btn-opt:active { transform: translateY(2px); box-shadow: 0 2px #e9ecef; }
+        .btn-opt.correct { background-color: #d4edda !important; border-color: var(--success) !important; color: #155724 !important; box-shadow: 0 4px #c3e6cb; }
+        .btn-opt.wrong { background-color: #f8d7da !important; border-color: var(--danger) !important; color: #721c24 !important; box-shadow: 0 4px #f5c6cb; }
+        
+        /* Feedback Callout Systems */
+        .feedback-box { padding: 14px; border-radius: 16px; margin-bottom: 15px; font-weight: bold; font-size: 1.1rem; text-align: center; line-height: 1.4; }
+        .feedback-box.hint { background: #fff3cd; color: #856404; border: 2px solid #ffeeba; }
+        .feedback-box.explanation { background: #e8f8f5; color: #117a65; border: 2px solid #a3e4d7; }
 
-body{
-  margin:0;
-  font-family:Arial,sans-serif;
-  background:#f3f8ff;
-  color:#1f2937;
-}
-
-.screen{
-  display:none;
-  min-height:100vh;
-  padding:16px;
-}
-
-.screen.active{
-  display:flex;
-  align-items:center;
-  justify-content:center;
-}
-
-#logoScreen{
-  background:#ffffff;
-}
-
-.logo{
-  max-width:420px;
-  width:80%;
-}
-
-.card{
-  width:100%;
-  max-width:860px;
-  background:#ffffff;
-  border-radius:22px;
-  padding:20px;
-  box-shadow:0 8px 24px rgba(0,0,0,0.15);
-}
-
-.topbar{
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:10px;
-  margin-bottom:16px;
-}
-
-.badge,.sound-btn{
-  background:#e0f2fe;
-  color:#0f3f5f;
-  padding:10px;
-  border-radius:14px;
-  font-weight:bold;
-  font-size:16px;
-  text-align:center;
-}
-
-.sound-btn{
-  border:none;
-  cursor:pointer;
-}
-
-.visual-box{
-  background:#fff7ed;
-  border:2px solid #fdba74;
-  border-radius:18px;
-  padding:16px;
-  margin-bottom:16px;
-  text-align:center;
-  min-height:130px;
-}
-
-.visual{
-  font-size:60px;
-  margin-bottom:8px;
-}
-
-.visual-text{
-  font-size:19px;
-  font-weight:bold;
-  color:#7c2d12;
-}
-
-.question{
-  font-size:24px;
-  font-weight:bold;
-  line-height:1.35;
-  margin:16px 0;
-  text-align:left;
-}
-
-.options{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:14px;
-}
-
-.option{
-  width:100%;
-  min-height:72px;
-  padding:14px 16px;
-  font-size:19px;
-  font-weight:bold;
-  line-height:1.3;
-  border:2px solid #1f4e79;
-  background:#ffffff;
-  color:#111827;
-  border-radius:16px;
-  cursor:pointer;
-  text-align:center;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  white-space:normal;
-  word-break:normal;
-}
-
-.option:hover{
-  background:#eef6ff;
-}
-
-.option.correct{
-  background:#d1fae5;
-  border-color:#047857;
-}
-
-.option.wrong{
-  background:#fee2e2;
-  border-color:#b91c1c;
-}
-
-.feedback{
-  min-height:34px;
-  margin-top:14px;
-  font-size:19px;
-  font-weight:bold;
-  text-align:center;
-}
-
-.controls{
-  margin-top:14px;
-  text-align:center;
-}
-
-.primary{
-  background:#1f4e79;
-  color:white;
-  border:none;
-  border-radius:14px;
-  padding:14px 28px;
-  font-size:19px;
-  font-weight:bold;
-  cursor:pointer;
-}
-
-#nextBtn{
-  display:none;
-}
-
-.result-title{
-  font-size:34px;
-  font-weight:bold;
-  text-align:center;
-  margin-bottom:14px;
-}
-
-.result-score{
-  font-size:23px;
-  text-align:center;
-  margin-bottom:20px;
-}
-
-.confetti{
-  position:fixed;
-  width:10px;
-  height:10px;
-  top:-10px;
-  animation:fall 1.2s linear forwards;
-  pointer-events:none;
-}
-
-@keyframes fall{
-  to{
-    transform:translateY(110vh) rotate(360deg);
-    opacity:0;
-  }
-}
-
-@media(max-width:700px){
-  .card{
-    padding:15px;
-  }
-
-  .topbar{
-    grid-template-columns:1fr 1fr;
-  }
-
-  .question{
-    font-size:21px;
-  }
-
-  .options{
-    grid-template-columns:1fr;
-    gap:11px;
-  }
-
-  .option{
-    min-height:58px;
-    font-size:18px;
-    padding:12px;
-  }
-
-  .visual{
-    font-size:50px;
-  }
-
-  .visual-text{
-    font-size:17px;
-  }
-
-  .primary{
-    width:100%;
-  }
-
-  .badge,.sound-btn{
-    font-size:14px;
-  }
-}
-</style>
+        /* General UI Actions */
+        .btn-action { background: #e67e22; color: white; border: none; padding: 15px; font-size: 1.4rem; border-radius: 16px; cursor: pointer; width: 100%; font-weight: bold; box-shadow: 0 5px #a04000; }
+        .btn-action:active { transform: translateY(2px); box-shadow: 0 2px #a04000; }
+        .audio-ctrl { background: none; border: none; font-size: 2rem; cursor: pointer; }
+        
+        #confetti-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 5; }
+    </style>
 </head>
-
 <body>
 
-<div id="logoScreen" class="screen active">
-  <img src="assets/logo.png" alt="Innovine Solutions Logo" class="logo" />
-</div>
+<div class="container">
+    <canvas id="confetti-canvas" class="hidden"></canvas>
 
-<div id="quizScreen" class="screen">
-  <div class="card">
-    <div class="topbar">
-      <div class="badge">Question <span id="qNo">1</span>/12</div>
-      <div class="badge">Score: <span id="score">0</span></div>
-      <div class="badge">Time: <span id="timer">60</span>s</div>
-      <button class="sound-btn" onclick="toggleMute()" id="muteBtn">🔊 Sound On</button>
+    <div id="splash-screen">
+        <img src="assets/logo.png" alt="Logo">
     </div>
 
-    <div class="visual-box" id="visualBox"></div>
-    <div class="question" id="questionText"></div>
-    <div class="options" id="optionsBox"></div>
-    <div class="feedback" id="feedback"></div>
-
-    <div class="controls">
-      <button class="primary" id="nextBtn" onclick="nextQuestion()">Next</button>
+    <div id="intro-screen" class="hidden" style="text-align: center; padding-top: 50px;">
+        <h2>Welcome, Math Explorer!</h2>
+        <p style="font-size: 1.3rem; font-weight: bold; margin-bottom: 25px; color: #7e5109;">Let's count fun groups together! 🌟</p>
+        <div class="visual-emoji-display" style="margin-bottom: 40px;">✖️🚲🌸🧁</div>
+        <button class="btn-action" onclick="startInteractive()">PLAY GAME 🎮</button>
     </div>
-  </div>
-</div>
 
-<div id="resultScreen" class="screen">
-  <div class="card">
-    <div class="result-title" id="resultMessage"></div>
-    <div class="result-score" id="finalScore"></div>
-    <button class="primary" onclick="restartQuiz()">Play Again</button>
-  </div>
-</div>
+    <div id="game-screen" class="hidden">
+        <div class="header-meta">
+            <div class="score-box">⭐ <span id="score-val">0</span> / <span id="q-total">15</span></div>
+            <button class="audio-ctrl" id="mute-btn" onclick="toggleMute()">🔊</button>
+            <div class="timer">⏳ <span id="timer-val">60</span>s</div>
+        </div>
+        
+        <div id="question-box">
+            <div id="q-emoji" class="visual-emoji-display"></div>
+            <div id="q-text" class="q-context"></div>
+            <div class="options-grid" id="options-container"></div>
+        </div>
 
-<audio id="correctSound" src="assets/correct.mp3"></audio>
-<audio id="wrongSound" src="assets/wrong.mp3"></audio>
-<audio id="clapSound" src="assets/freesound_community-claps-44774.mp3"></audio>
+        <div id="feedback" class="feedback-box hidden"></div>
+        <button id="next-btn" class="btn-action hidden" onclick="handleNext()">NEXT QUESTION 👉</button>
+    </div>
+
+    <div id="result-screen" class="hidden" style="text-align: center; padding-top: 20px;">
+        <h2 id="result-title">🎉 Great Job!</h2>
+        <div id="result-emoji" class="visual-emoji-display">🏆👏✨</div>
+        <p id="result-text" style="font-size: 1.3rem; margin-bottom: 25px; font-weight: bold; color: #2c3e50; white-space: pre-line;"></p>
+        <button class="btn-action" onclick="restartInteractive()">PLAY AGAIN 🔄</button>
+    </div>
+</div>
 
 <script>
-const questions=[
-{
-q:"What is another way to write 2 + 2 + 2 + 2 + 2?",
-visual:"🍎 🍎  🍎 🍎  🍎 🍎  🍎 🍎  🍎 🍎",
-visualText:"Repeated addition means equal groups.",
-options:["2 times 2","5 times 2","2 times 4","5 + 2"],
-answer:1
-},
-{
-q:"If one bicycle has 2 wheels, how many wheels do 4 bicycles have?",
-visual:"🚲 🚲 🚲 🚲",
-visualText:"4 bicycles, 2 wheels each",
-options:["6","4","8","2"],
-answer:2
-},
-{
-q:"Any number multiplied by 1 gives:",
-visual:"1 × number",
-visualText:"One group gives the same number.",
-options:["1","0","The same number","10"],
-answer:2
-},
-{
-q:"There are 5 flower pots, and each pot has 3 flowers. How many flowers are there in total?",
-visual:"🪴 🪴 🪴 🪴 🪴",
-visualText:"5 pots with 3 flowers each",
-options:["8","15","10","20"],
-answer:1
-},
-{
-q:"What is 10 times 4?",
-visual:"10 × 4",
-visualText:"10 groups of 4 make 40.",
-options:["14","40","104","44"],
-answer:1
-},
-{
-q:"Which multiplication fact is shown by 5 + 5 + 5?",
-visual:"5 + 5 + 5",
-visualText:"The number 5 is added 3 times.",
-options:["5 times 5","3 times 5","5 times 1","3 + 5"],
-answer:1
-},
-{
-q:"A hand has 5 fingers. How many fingers do 6 hands have?",
-visual:"🖐️ 🖐️ 🖐️ 🖐️ 🖐️ 🖐️",
-visualText:"6 hands with 5 fingers each",
-options:["11","25","30","35"],
-answer:2
-},
-{
-q:"2 times 10 is the same as:",
-visual:"10 + 10",
-visualText:"2 groups of 10",
-options:["10 + 10","2 + 2","10 times 10","2 + 10"],
-answer:0
-},
-{
-q:"If you multiply any number by 0, the answer is always:",
-visual:"0 groups",
-visualText:"Zero groups means nothing is there.",
-options:["The same number","1","0","10"],
-answer:2
-},
-{
-q:"A pack contains 10 crayons. How many crayons are in 10 such packs?",
-visual:"🖍️ × 10 packs",
-visualText:"10 packs with 10 crayons each",
-options:["20","100","10","50"],
-answer:1
-},
-{
-q:"What is 2 times 7?",
-visual:"7 + 7",
-visualText:"2 groups of 7",
-options:["14","12","9","16"],
-answer:0
-},
-{
-q:"Rahul buys 5 chocolates daily. How many chocolates does he buy in 2 days?",
-visual:"🍫 🍫 🍫 🍫 🍫  +  🍫 🍫 🍫 🍫 🍫",
-visualText:"5 chocolates each day for 2 days",
-options:["7","10","15","5"],
-answer:1
-}
-];
+    const dataset = [
+        {
+            emoji: "🔢",
+            context: "What is another way to write 2 + 2 + 2 + 2 + 2?",
+            options: ["2 times 2", "2 times 4", "5 times 2", "5 + 2"],
+            answer: 2, // 5 times 2
+            hint: "Count how many times you see the number 2 added together.",
+            exp: "Adding 2 five times is the same as 5 times 2."
+        },
+        {
+            emoji: "🚲",
+            context: "If one bicycle has 2 wheels, how many wheels do 4 bicycles have?",
+            options: ["6", "8", "4", "2"],
+            answer: 1, // 8
+            hint: "Count by 2s four times over: 2, 4, 6...",
+            exp: "4 groups of 2 wheels equals 8 wheels total."
+        },
+        {
+            emoji: "🌸",
+            context: "There are 5 flower pots. Each pot has 3 flowers. How many flowers are there in total?",
+            options: ["15", "8", "10", "20"],
+            answer: 0, // 15
+            hint: "Skip count by 3s five times: 3, 6, 9, 12...",
+            exp: "5 groups of 3 flowers equals 15 flowers."
+        },
+        {
+            emoji: "➕",
+            context: "Which multiplication fact matches 5 + 5 + 5?",
+            options: ["5 times 5", "3 times 5", "5 times 1", "3 + 5"],
+            answer: 1, // 3 times 5
+            hint: "Look at which number is added and how many times it shows up.",
+            exp: "The number 5 is added 3 times, so it is written as 3 times 5."
+        },
+        {
+            emoji: "🖐️",
+            context: "A hand has 5 fingers. How many fingers do 6 hands have?",
+            options: ["11", "25", "35", "30"],
+            answer: 3, // 30
+            hint: "Skip count by 5s six times over: 5, 10, 15, 20...",
+            exp: "6 groups of 5 fingers equals 30 total fingers."
+        },
+        {
+            emoji: "🤛",
+            context: "2 times 10 is the exact same as:",
+            options: ["10 + 10", "2 + 2", "10 times 10", "2 + 10"],
+            answer: 0, // 10 + 10
+            hint: "This means you have the number 10 repeated two times.",
+            exp: "2 times 10 means you add 10 two times (10 + 10)."
+        },
+        {
+            emoji: "🖍️",
+            context: "A pack contains 10 crayons. How many crayons are in 10 packs?",
+            options: ["20", "10", "50", "100"],
+            answer: 3, // 100
+            hint: "Skip count by 10s ten times over!",
+            exp: "10 groups of 10 equals 100 crayons."
+        },
+        {
+            emoji: "🍫",
+            context: "Rahul buys 5 chocolates everyday. How many chocolates does he buy in 2 days?",
+            options: ["7", "10", "15", "5"],
+            answer: 1, // 10
+            hint: "Add 5 chocolates for Day 1 and 5 chocolates for Day 2.",
+            exp: "2 days times 5 chocolates equals 10 chocolates total."
+        },
+        {
+            emoji: "📈",
+            context: "Complete the counting pattern: 2, 4, 6, 8, __",
+            options: ["9", "12", "10", "11"],
+            answer: 2, // 10
+            hint: "Add 2 more to the number 8 to find the next step.",
+            exp: "This pattern skip-counts by 2. The next number is 10."
+        },
+        {
+            emoji: "🪺",
+            context: "There are 3 nests. Each nest has 0 eggs. How many eggs are there in total?",
+            options: ["3", "1", "30", "0"],
+            answer: 3, // 0
+            hint: "If all the bird nests are completely empty, what is the count?",
+            exp: "3 groups of 0 equals 0."
+        },
+        {
+            emoji: "⭐",
+            context: "Which of these is the exact same as 5 times 4?",
+            options: ["4 + 4 + 4 + 4 + 4", "5 + 5 + 5 + 5 + 5", "5 + 4", "4 times 4"],
+            answer: 0, // 4 + 4 + 4 + 4 + 4
+            hint: "This means adding the number 4 a total of five times.",
+            exp: "5 times 4 means adding the number 4 five times."
+        },
+        {
+            emoji: "🦪",
+            context: "One starfish has 5 arms. How many arms do 3 starfish have?",
+            options: ["8", "15", "10", "20"],
+            answer: 1, // 15
+            hint: "Count by 5s three times over: 5, 10...",
+            exp: "3 starfish with 5 arms each means 3 times 5, which is 15."
+        },
+        {
+            emoji: "🚗",
+            context: "If a car can hold 5 people, how many people can 10 cars hold?",
+            options: ["15", "55", "50", "100"],
+            answer: 2, // 50
+            hint: "Skip count by 5s ten times over.",
+            exp: "10 cars times 5 people equals 50 people."
+        },
+        {
+            emoji: "🧁",
+            context: "A box has 2 rows of cupcakes. Each row has 5 cupcakes. How many cupcakes are there?",
+            options: ["7", "10", "12", "8"],
+            answer: 1, // 10
+            hint: "You have two groups, and each group has 5 treats inside.",
+            exp: "2 rows of 5 cupcakes means 5 + 5, which equals 10."
+        },
+        {
+            emoji: "💰",
+            context: "Sia has 4 piggy banks. She puts one 5-rupee coin inside each piggy bank. How much money does she have?",
+            options: ["9 rupees", "15 rupees", "20 rupees", "45 rupees"],
+            answer: 2, // 20 rupees
+            hint: "Count by 5s four times over: 5, 10, 15...",
+            exp: "4 banks with 5 rupees each equals 20 rupees in total."
+        }
+    ];
 
-let current=0,score=0,attempts=0,answered=false,timeLeft=60,timerInterval,muted=false;
+    let currentQ = 0;
+    let score = 0;
+    let attempts = 0;
+    let timerInterval = null;
+    let timeRemaining = 60; 
+    let isMuted = false;
 
-const logoScreen=document.getElementById("logoScreen");
-const quizScreen=document.getElementById("quizScreen");
-const resultScreen=document.getElementById("resultScreen");
-const qNo=document.getElementById("qNo");
-const scoreBox=document.getElementById("score");
-const timerBox=document.getElementById("timer");
-const visualBox=document.getElementById("visualBox");
-const questionText=document.getElementById("questionText");
-const optionsBox=document.getElementById("optionsBox");
-const feedback=document.getElementById("feedback");
-const nextBtn=document.getElementById("nextBtn");
-const correctSound=document.getElementById("correctSound");
-const wrongSound=document.getElementById("wrongSound");
-const clapSound=document.getElementById("clapSound");
+    const audioCorrect = new Audio('assets/correct.mp3');
+    const audioWrong = new Audio('assets/wrong.mp3');
+    const audioClaps = new Audio('assets/freesound_community-claps-44774.mp3');
 
-setTimeout(()=>{
-  logoScreen.classList.remove("active");
-  quizScreen.classList.add("active");
-  startQuiz();
-},5000);
+    window.addEventListener('load', () => {
+        document.getElementById('q-total').innerText = dataset.length;
+        setTimeout(() => {
+            document.getElementById('splash-screen').classList.add('hidden');
+            document.getElementById('intro-screen').classList.remove('hidden');
+        }, 5000);
+    });
 
-function startQuiz(){
-  current=0;
-  score=0;
-  timeLeft=60;
-  scoreBox.textContent=score;
-  timerBox.textContent=timeLeft;
-  loadQuestion();
-  startTimer();
-}
-
-function startTimer(){
-  clearInterval(timerInterval);
-  timerInterval=setInterval(()=>{
-    timeLeft--;
-    timerBox.textContent=timeLeft;
-    if(timeLeft<=0){
-      clearInterval(timerInterval);
-      showResult();
+    function startInteractive() {
+        document.getElementById('intro-screen').classList.add('hidden');
+        document.getElementById('game-screen').classList.remove('hidden');
+        loadQuestion();
     }
-  },1000);
-}
 
-function loadQuestion(){
-  attempts=0;
-  answered=false;
-  feedback.textContent="";
-  nextBtn.style.display="none";
-
-  const item=questions[current];
-  qNo.textContent=current+1;
-  questionText.textContent=item.q;
-  visualBox.innerHTML=`<div class="visual">${item.visual}</div><div class="visual-text">${item.visualText}</div>`;
-  optionsBox.innerHTML="";
-
-  item.options.forEach((option,index)=>{
-    const btn=document.createElement("button");
-    btn.className="option";
-    btn.textContent=option;
-    btn.onclick=()=>checkAnswer(btn,index);
-    optionsBox.appendChild(btn);
-  });
-}
-
-function checkAnswer(button,selected){
-  if(answered)return;
-
-  const correctIndex=questions[current].answer;
-
-  if(selected===correctIndex){
-    answered=true;
-    score++;
-    scoreBox.textContent=score;
-    button.classList.add("correct");
-    feedback.textContent="Correct!";
-    playSound(correctSound);
-    launchConfetti();
-    disableOptions();
-    nextBtn.style.display="inline-block";
-  }else{
-    attempts++;
-    button.classList.add("wrong");
-    playSound(wrongSound);
-
-    if(attempts===1){
-      feedback.textContent="Try again.";
-      button.disabled=true;
-    }else{
-      answered=true;
-      feedback.textContent="Incorrect. The correct answer is highlighted.";
-      showCorrectAnswer();
-      disableOptions();
-      nextBtn.style.display="inline-block";
+    function toggleMute() {
+        isMuted = !isMuted;
+        document.getElementById('mute-btn').innerText = isMuted ? "🔇" : "🔊";
     }
-  }
-}
 
-function showCorrectAnswer(){
-  const correctIndex=questions[current].answer;
-  const allOptions=document.querySelectorAll(".option");
-  allOptions[correctIndex].classList.add("correct");
-}
+    function playSound(type) {
+        if (isMuted) return;
+        if (type === 'correct') { audioCorrect.currentTime = 0; audioCorrect.play().catch(() => {}); }
+        else if (type === 'wrong') { audioWrong.currentTime = 0; audioWrong.play().catch(() => {}); }
+        else if (type === 'claps') { audioClaps.currentTime = 0; audioClaps.play().catch(() => {}); }
+    }
 
-function disableOptions(){
-  document.querySelectorAll(".option").forEach(btn=>btn.disabled=true);
-}
+    function startTimer() {
+        clearInterval(timerInterval);
+        timeRemaining = 60;
+        document.getElementById('timer-val').innerText = timeRemaining;
+        timerInterval = setInterval(() => {
+            timeRemaining--;
+            document.getElementById('timer-val').innerText = timeRemaining;
+            if (timeRemaining <= 0) {
+                clearInterval(timerInterval);
+                handleTimeout();
+            }
+        }, 1000);
+    }
 
-function nextQuestion(){
-  current++;
-  if(current<questions.length){
-    loadQuestion();
-  }else{
-    showResult();
-  }
-}
+    function loadQuestion() {
+        clearInterval(timerInterval);
+        startTimer();
+        
+        attempts = 0;
+        document.getElementById('feedback').classList.add('hidden');
+        document.getElementById('next-btn').classList.add('hidden');
+        
+        let qData = dataset[currentQ];
+        document.getElementById('q-emoji').innerText = qData.emoji;
+        document.getElementById('q-text').innerHTML = qData.context;
+        
+        const container = document.getElementById('options-container');
+        container.innerHTML = '';
+        
+        qData.options.forEach((opt, idx) => {
+            let btn = document.createElement('button');
+            btn.className = 'btn-opt';
+            btn.innerText = opt;
+            btn.onclick = () => selectOption(idx, btn);
+            container.appendChild(btn);
+        });
+    }
 
-function showResult(){
-  clearInterval(timerInterval);
+    function selectOption(selectedIndex, clickedBtn) {
+        let qData = dataset[currentQ];
+        const buttons = document.getElementsByClassName('btn-opt');
+        
+        if (selectedIndex === qData.answer) {
+            clearInterval(timerInterval);
+            clickedBtn.classList.add('correct');
+            playSound('correct');
+            
+            if (attempts === 0) {
+                score++;
+                document.getElementById('score-val').innerText = score;
+                triggerVisualSparklers();
+                showFeedback('explanation', `🎉 First-Attempt Star! ${qData.exp}`);
+            } else {
+                showFeedback('explanation', `👍 You got it! ${qData.exp}`);
+            }
+            
+            disableOptions();
+            document.getElementById('next-btn').classList.remove('hidden');
+        } else {
+            attempts++;
+            playSound('wrong');
+            clickedBtn.classList.add('wrong');
+            clickedBtn.disabled = true;
+            
+            if (attempts === 1) { 
+                showFeedback('hint', `💡 Hint: ${qData.hint}`);
+            } else {
+                clearInterval(timerInterval);
+                disableOptions();
+                buttons[qData.answer].classList.add('correct');
+                showFeedback('explanation', `Let's see: ${qData.exp}`);
+                document.getElementById('next-btn').classList.remove('hidden');
+            }
+        }
+    }
 
-  quizScreen.classList.remove("active");
-  resultScreen.classList.add("active");
+    function handleTimeout() {
+        disableOptions();
+        let qData = dataset[currentQ];
+        const buttons = document.getElementsByClassName('btn-opt');
+        buttons[qData.answer].classList.add('correct');
+        showFeedback('explanation', `⏰ Time ran out! Let's look at the fact: ${qData.exp}`);
+        document.getElementById('next-btn').classList.remove('hidden');
+    }
 
-  const percentage=(score/questions.length)*100;
-  let message="";
+    function disableOptions() {
+        const buttons = document.getElementsByClassName('btn-opt');
+        for (let b of buttons) { b.disabled = true; }
+    }
 
-  if(percentage>=75){
-    message="Good job";
-    launchConfetti();
-    playSound(clapSound);
-  }else if(percentage>=40){
-    message="Review this chapter and try again";
-  }else{
-    message="Let’s practise more";
-  }
+    function showFeedback(type, message) {
+        const box = document.getElementById('feedback');
+        box.className = `feedback-box ${type}`;
+        box.innerHTML = message;
+        box.classList.remove('hidden');
+    }
 
-  document.getElementById("resultMessage").textContent=message;
-  document.getElementById("finalScore").textContent="Your Score: "+score+" out of "+questions.length;
-}
+    function handleNext() {
+        currentQ++;
+        if (currentQ < dataset.length) {
+            loadQuestion();
+        } else {
+            showResults();
+        }
+    }
 
-function restartQuiz(){
-  resultScreen.classList.remove("active");
-  quizScreen.classList.add("active");
-  startQuiz();
-}
+    function showResults() {
+        clearInterval(timerInterval);
+        document.getElementById('game-screen').classList.add('hidden');
+        const screen = document.getElementById('result-screen');
+        screen.classList.remove('hidden');
+        playSound('claps');
+        
+        let finalPercent = (score / dataset.length) * 100;
+        let msg = `You earned ${score} / ${dataset.length} perfect first-attempt stars! ⭐`;
+        
+        if (finalPercent >= 80) {
+            document.getElementById('result-title').innerText = "👑 Multiplication Master!";
+            document.getElementById('result-emoji').innerText = "🥇🏆✨";
+            msg += "\nSuperb! You perfectly know how equal groups and skip-counting make adding super fast and easy.";
+        } else if (finalPercent >= 50) {
+            document.getElementById('result-title').innerText = "🚀 Great Job!";
+            document.getElementById('result-emoji').innerText = "🔢📈💡";
+            msg += "\nWonderful work! Practicing how zero sets and grouping grids operate will bring you to perfect scores next time.";
+        } else {
+            document.getElementById('result-title').innerText = "🧱 Keep Practicing!";
+            document.getElementById('result-emoji').innerText = "🎒🔄📚";
+            msg += "\nVisualizing arrays and equal sets makes multiplication easy. Try once more to win the top crown!";
+        }
+        
+        document.getElementById('result-text').innerText = msg;
+    }
 
-function toggleMute(){
-  muted=!muted;
-  document.getElementById("muteBtn").textContent=muted?"🔇 Sound Off":"🔊 Sound On";
-}
+    function restartInteractive() {
+        currentQ = 0;
+        score = 0;
+        document.getElementById('score-val').innerText = score;
+        document.getElementById('result-screen').classList.add('hidden');
+        document.getElementById('game-screen').classList.remove('hidden');
+        loadQuestion();
+    }
 
-function playSound(sound){
-  if(muted)return;
-  sound.currentTime=0;
-  sound.play().catch(()=>{});
-}
-
-function launchConfetti(){
-  const colors=["#f59e0b","#10b981","#3b82f6","#ef4444","#8b5cf6"];
-
-  for(let i=0;i<30;i++){
-    const piece=document.createElement("div");
-    piece.className="confetti";
-    piece.style.left=Math.random()*100+"vw";
-    piece.style.background=colors[Math.floor(Math.random()*colors.length)];
-    piece.style.animationDuration=(Math.random()*0.8+0.8)+"s";
-    document.body.appendChild(piece);
-    setTimeout(()=>piece.remove(),1500);
-  }
-}
+    function triggerVisualSparklers() {
+        const canvas = document.getElementById('confetti-canvas');
+        canvas.classList.remove('hidden');
+        const ctx = canvas.getContext('2d');
+        canvas.width = canvas.parentElement.offsetWidth;
+        canvas.height = canvas.parentElement.offsetHeight;
+        
+        let particles = [];
+        for (let i = 0; i < 35; i++) {
+            particles.push({
+                x: canvas.width / 2,
+                y: canvas.height / 3,
+                vx: (Math.random() - 0.5) * 8,
+                vy: (Math.random() - 0.5) * 8,
+                color: `hsl(${Math.random() * 360}, 100%, 65%)`,
+                size: Math.random() * 5 + 4,
+                alpha: 1
+            });
+        }
+        
+        let animationFrame;
+        function update() {
+            ctx.clearRect(0,0, canvas.width, canvas.height);
+            let alive = false;
+            particles.forEach(p => {
+                p.x += p.vx;
+                p.y += p.vy;
+                p.alpha -= 0.03;
+                if (p.alpha > 0) {
+                    alive = true;
+                    ctx.fillStyle = p.color;
+                    ctx.globalAlpha = p.alpha;
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            });
+            if (alive) {
+                animationFrame = requestAnimationFrame(update);
+            } else {
+                canvas.classList.add('hidden');
+                cancelAnimationFrame(animationFrame);
+            }
+        }
+        update();
+    }
 </script>
-
 </body>
 </html>
