@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Grade 1 Math: 14 Master CBQ Suite</title>
+    <title>Grade 1 Math: Chapter 8 - Measurement Challenge</title>
     <style>
         :root {
             --primary: #d35400;
@@ -63,17 +63,17 @@
     </div>
 
     <div id="intro-screen" class="hidden" style="text-align: center; padding-top: 20px;">
-        <h2>🧩 14-CBQ Master Challenge</h2>
-        <div class="visual-emoji-display">🔢📏⚖️🎈</div>
+        <h2>📏 Chapter 8: Measurement</h2>
+        <div class="visual-emoji-display">✏️⚖️🚪🥛</div>
         <p style="margin-bottom: 25px; font-size: 1.3rem; color: #495057; font-weight: bold;">
-            Numbers & Measurements Suite 🚀
+            15 Master Competency-Based Suite 🚀
         </p>
-        <button class="btn-action" onclick="startInteractive()">START SUITE 👉</button>
+        <button class="btn-action" onclick="startInteractive()">START CHALLENGE 👉</button>
     </div>
 
     <div id="game-screen" class="hidden">
         <div class="header-meta">
-            <div class="score-box">⭐ <span id="score-val">0</span> / <span id="q-total">14</span></div>
+            <div class="score-box">⭐ <span id="score-val">0</span> / <span id="q-total">15</span></div>
             <button class="audio-ctrl" id="mute-btn" onclick="toggleMute()">🔊</button>
             <div class="timer">⏳ <span id="timer-val">60</span>s</div>
         </div>
@@ -89,7 +89,7 @@
     </div>
 
     <div id="result-screen" class="hidden" style="text-align: center; padding-top: 20px;">
-        <h2 id="result-title">🎉 Master Evaluation Complete!</h2>
+        <h2 id="result-title">🎉 Evaluation Complete!</h2>
         <div id="result-emoji" class="visual-emoji-display">🏆👏✨</div>
         <p id="result-text" style="font-size: 1.3rem; margin-bottom: 25px; font-weight: bold; color: #2c3e50; white-space: pre-line;"></p>
         <button class="btn-action" onclick="restartInteractive()">RESTART CHALLENGE 🔄</button>
@@ -98,140 +98,165 @@
 
 <script>
     const dataset = [
-        /* --- MODULE 1: NUMBER SYSTEMS --- */
         {
-            emoji: "📦",
-            context: "How many ‘tens’ do you need to group together to make 100?",
-            options: ["1", "5", "10", "100"],
-            answer: 2,
-            hint: "Try skip counting by 10 until you reach 100. How many steps did it take?",
-            exp: "10 groups of ten (10 × 10) bundle together perfectly to form 100."
-        },
-        {
-            emoji: "🍎",
-            context: "In the word \"APPLE\", what is the position of 'L'?",
-            options: ["second", "sixth", "fifth", "fourth"],
-            answer: 3,
-            hint: "Count each letter systematically from left to right: A is 1st, P is 2nd...",
-            exp: "'L' is the fourth letter when we count the letters sequentially in order."
-        },
-        {
-            emoji: "🚌",
-            context: "Candy, Danny, Freddy, Polly, Edward and Suzi are standing in a line for the bus, starting with Candy at the front. Who is third in the line?",
-            options: ["Danny", "Freddy", "Polly", "Edward"],
-            answer: 1,
-            hint: "Candy is 1st, Danny is 2nd. Who comes right after Danny?",
-            exp: "Counting from Candy at the front, Freddy is the third person in the line."
-        },
-        {
-            emoji: "🎟️",
-            context: "What is the standard form of 100 + 0 + 7?",
-            options: ["170", "107", "17", "1007"],
-            answer: 1,
-            hint: "Put together 1 hundred, 0 tens, and 7 ones into placeholders.",
-            exp: "1 hundred, 0 tens, and 7 ones combined is 107."
-        },
-        {
-            emoji: "💯",
-            context: "How many hundreds are there in the number 200?",
-            options: ["1", "2", "0", "20"],
-            answer: 1,
-            hint: "Think about how many distinct groups of 100 are needed to count up to 200.",
-            exp: "The number 200 consists of exactly 2 separate bundles of hundreds."
-        },
-        {
-            emoji: "🏫",
-            context: "In a school assembly row, Deepa is 5th in line and she is the last student. How many students are standing in that row?",
-            options: ["7", "5", "3", "1"],
-            answer: 1,
-            hint: "If she is number 5 and there is no one standing behind her, the line stops there.",
-            exp: "If she is 5th and the absolute last person, there are exactly 5 students total in that row."
-        },
-        {
-            emoji: "💎",
-            context: "What is the face value of the digit 1 in the number 142?",
-            options: ["100", "10", "1", "142"],
-            answer: 2,
-            hint: "Face value is what a digit looks like on its own, ignoring its column place value.",
-            exp: "The face value of a digit is the digit itself, regardless of its position column."
-        },
-        {
-            emoji: "📝",
-            context: "In the number 106, which digit is in the tens place?",
-            options: ["1", "6", "0", "10"],
-            answer: 2,
-            hint: "Look at the middle placeholder digit that sits between the hundreds and ones.",
-            exp: "106 is written as 1 Hundred, 0 Tens, and 6 Ones. The middle tracking digit is 0."
-        },
-        {
-            emoji: "🚶‍♀️",
-            context: "A girl is standing in a queue. There are 10 people in front of her. What is her ordinal position in the queue?",
-            options: ["10th", "9th", "11th", "12th"],
-            answer: 2,
-            hint: "If 10 people are occupying spots ahead of her, what number is her turn?",
-            exp: "Since 10 people are occupying spots ahead of her, she takes the very next consecutive spot, which is the 11th position."
-        },
-
-        /* --- MODULE 2: HIGH-ORDER MEASUREMENTS --- */
-        {
-            emoji: "🎈",
-            context: "If a birthday balloon and a toy ball are exactly the same size, are they always the same weight?",
+            emoji: "✏️",
+            context: "A pencil is 5 paper clips long. A crayon is 3 paper clips long. Which statement is true? [cite: 2]",
             options: [
-                "Yes, size tells you exactly how heavy it is.",
-                "No, the balloon is usually heavier.",
-                "No, the ball is usually heavier because it is solid, while the balloon is full of light air.",
-                "Yes, because they take up the same amount of space."
-            ],
-            answer: 2,
-            hint: "Think about what is packed inside both objects. Air vs dense solid material!",
-            exp: "Size does not equal weight! A solid ball has much denser materials inside than an air-filled balloon."
-        },
-        {
-            emoji: "🖐️",
-            context: "You measure the classroom activity table using your handspan and get a count of 8. Your teacher measures the exact same table. Will the teacher's count be the same?",
-            options: [
-                "Yes, because the table did not change sizes.",
-                "No, the teacher's count will be smaller because their hand is larger.",
-                "No, the teacher's count will be larger because teachers are taller.",
-                "Yes, handspans are standard lines everywhere."
+                "The crayon is longer than the pencil. [cite: 3]",
+                "The pencil is longer than the crayon. [cite: 4]",
+                "They are the same length. [cite: 5]",
+                "The pencil is shorter than the crayon. [cite: 6]"
             ],
             answer: 1,
-            hint: "Whose hand covers more space in just one step?",
-            exp: "Handspans are non-standard. A teacher's hand covers more distance per step, meaning it takes fewer steps to cross the table."
+            hint: "Compare the number of units. Is 5 more or less than 3? [cite: 8]",
+            exp: "5 units is more than 3 units, so the pencil has a greater length. [cite: 8]"
+        },
+        {
+            emoji: "🪣",
+            context: "A bucket can hold 10 mugs of water. A jug can hold 3 mugs of water. Which has more capacity? [cite: 30]",
+            options: ["The jug [cite: 31]", "The mug [cite: 32]", "The bucket [cite: 33]", "They are the same [cite: 34]"],
+            answer: 2,
+            hint: "Which container takes a larger count of mugs to fill up completely? [cite: 30]",
+            exp: "The bucket holds more units (10) than the jug (3). [cite: 36]"
+        },
+        {
+            emoji: "🧼",
+            context: "If an eraser is \"shorter than\" a pen, then the pen is ________ the eraser. [cite: 37]",
+            options: ["Shorter than [cite: 38]", "Lighter than [cite: 39]", "Longer than [cite: 40]", "As long as [cite: 41]"],
+            answer: 2,
+            hint: "Flip the perspective! What is the opposite matching term for shorter? [cite: 43]",
+            exp: "\"Longer than\" is the structural opposite of \"shorter than.\" [cite: 43]"
+        },
+        {
+            emoji: "📚",
+            context: "Which of these would you use to measure the weight of a book using non-standard units? [cite: 44]",
+            options: ["A spoon [cite: 45]", "Marbles or blocks [cite: 46]", "A piece of string [cite: 47]", "A cup of water [cite: 48]"],
+            answer: 1,
+            hint: "We need solid, heavy, unvarying pieces that balance well on a scale. [cite: 50]",
+            exp: "We can use several small, equal-weight items like blocks to see how many it takes to balance the weight of a book. [cite: 50]"
         },
         {
             emoji: "🚪",
-            context: "To measure the height of your classroom door using non-standard units, which item is the most practical to use?",
-            options: ["Paper clips", "Grains of rice", "Arm spans", "Finger widths"],
+            context: "To measure the length of your classroom door, which non-standard unit would be most practical? [cite: 58]",
+            options: ["Paper clips [cite: 59]", "Finger widths [cite: 60]", "Arm spans [cite: 61]", "Grains of rice [cite: 62]"],
             answer: 2,
-            hint: "Using tiny items for a giant door would take hours! Choose a large unit.",
-            exp: "Arm spans match large objects best. Tiny items like rice or clips lead to tracking errors on big surfaces."
+            hint: "Using tiny items for a big door takes too long. Choose a larger bodily unit! [cite: 64]",
+            exp: "Arm spans are larger units, making it faster and easier to measure a large object like a door. [cite: 64]"
         },
         {
-            emoji: "✏️",
-            context: "If a mini eraser is \"shorter than\" a new wooden pen, then what can we say about the pen?",
+            emoji: "🫖",
+            context: "A teapot fills 5 teacups. A water bottle fills 8 teacups. Which statement is correct? [cite: 65]",
             options: [
-                "The pen is shorter than the eraser.",
-                "The pen is lighter than the eraser.",
-                "The pen is longer than the eraser.",
-                "The pen is the exact same length."
+                "The teapot holds more than the bottle. [cite: 66]",
+                "The bottle holds less than the teapot. [cite: 67]",
+                "The teapot holds less than the bottle. [cite: 68]",
+                "They have the same capacity. [cite: 69]"
             ],
             answer: 2,
-            hint: "Flip the perspective around! What is the structural opposite of 'shorter than'?",
-            exp: "Comparisons work in pairs. If the eraser is shorter, the pen must be longer than the eraser."
+            hint: "Compare the fluid unit count. Is 5 cups less or more than 8 cups? [cite: 71]",
+            exp: "5 cups is a smaller amount than 8 cups, meaning the teapot holds less. [cite: 71]"
+        },
+        {
+            emoji: "🍉",
+            context: "If a watermelon is heavier than a mango, then the mango is ________ the watermelon. [cite: 79]",
+            options: ["Heavier than [cite: 80]", "Lighter than [cite: 81]", "Larger than [cite: 82]", "As heavy as [cite: 83]"],
+            answer: 1,
+            hint: "If a big item tips the scale down, what does the smaller item feel like? [cite: 85]",
+            exp: "Math comparisons work in pairs. If one object is heavier, the other must be lighter. [cite: 85]"
+        },
+        {
+            emoji: "🎈",
+            context: "If a balloon and a ball are the same size, are they always the same weight? [cite: 114]",
+            options: [
+                "Yes, always. [cite: 115]",
+                "No, the ball is usually heavier. [cite: 116]",
+                "No, the balloon is usually heavier. [cite: 117]",
+                "Yes, because they look the same. [cite: 118]"
+            ],
+            answer: 1,
+            hint: "Think about what is stuffed inside. Air vs a dense, solid toy material! [cite: 120]",
+            exp: "Size does not determine weight. A ball is solid/dense, while a balloon is filled with light air. [cite: 120]"
+        },
+        {
+            emoji: "🖐️",
+            context: "If you measure a table using your handspan and your teacher measures it using their handspan, will the number be the same? [cite: 128]",
+            options: [
+                "Yes, because the table doesn't change. [cite: 129]",
+                "No, because the teacher's hand is likely larger. [cite: 130]",
+                "Yes, because handspans are standard units. [cite: 131]",
+                "No, because the table grows. [cite: 132]"
+            ],
+            answer: 1,
+            hint: "Whose hand takes up more space in a single baseline stretch? [cite: 130]",
+            exp: "Since handspans are non-standard and vary in size, the count will be different. [cite: 134]"
+        },
+        {
+            emoji: "🥛",
+            context: "An empty glass is ________ a glass full of milk. [cite: 135]",
+            options: ["Heavier than [cite: 136]", "Lighter than [cite: 137]", "Longer than [cite: 138]", "Shorter than [cite: 139]"],
+            answer: 1,
+            hint: "Does adding a liquid into a container add weight or make it vanish? [cite: 141]",
+            exp: "The milk adds weight to the glass, so the empty one is lighter. [cite: 141]"
+        },
+        {
+            emoji: "🎗️",
+            context: "A blue ribbon is longer than a yellow ribbon. The yellow ribbon is longer than a pink ribbon. Which statement must be true?",
+            options: [
+                "The pink ribbon is the longest.",
+                "The blue ribbon is the longest.",
+                "The blue ribbon is shorter than the pink ribbon.",
+                "All three ribbons are equal."
+            ],
+            answer: 1,
+            hint: "Line them up mentally! If Blue beats Yellow, and Yellow beats Pink, who is biggest?",
+            exp: "Transitive property logic: If Blue > Yellow and Yellow > Pink, then Blue is automatically the longest."
+        },
+        {
+            emoji: "🥣",
+            context: "You have a tall, narrow cup filled with juice. If you pour all of it into a short, wide empty bowl without spilling, what happens to the total juice?",
+            options: [
+                "There is more juice now because the bowl is wide.",
+                "There is less juice now because the bowl is short.",
+                "The amount of juice stays exactly the same.",
+                "The juice disappears."
+            ],
+            answer: 2,
+            hint: "Did you add any new juice or drink any away during the pouring?",
+            exp: "Conservation of volume: Changing container shape does not change the amount of liquid."
+        },
+        {
+            emoji: "🪵",
+            context: "Two sticks are on a table. Stick A's top reaches higher, but Stick B's bottom starts further down. How do you find out which is longer?",
+            options: [
+                "Look at whichever reaches highest on the page.",
+                "Line up their bottom edges flat at the exact same starting line.",
+                "Check which stick is brighter.",
+                "Roll them to see which goes faster."
+            ],
+            answer: 1,
+            hint: "To compare heights fairly, items must share a flat, equal starting baseline floor.",
+            exp: "Objects must share a common baseline starting line to be directly and accurately compared."
         },
         {
             emoji: "⚖️",
-            context: "Scale 1 shows a Red Apple is heavier than an Orange. Scale 2 shows that same Orange is heavier than a Strawberry. What happens if you contrast the Apple and the Strawberry?",
+            context: "You place a heavy structural block on the left pan of a balance scale and a light feather on the right pan. What will happen?",
             options: [
-                "The scale stays balanced.",
-                "The Apple side goes down because it is the heaviest.",
-                "The Strawberry side goes down.",
-                "The pans tip back and forth."
+                "The left pan with the block will tip all the way down.",
+                "The right pan with the feather will tip all the way down.",
+                "The scale will stay level and balanced.",
+                "Both pans will fly up together."
             ],
-            answer: 1,
-            hint: "If Apple > Orange, and Orange > Strawberry, who sits at the top of the chain?",
-            exp: "Transitive logic rules! If Apple beats Orange, and Orange beats Strawberry, the Apple is heaviest and pulls gravity down."
+            answer: 0,
+            hint: "Think about gravity! Does gravity pull heavier objects down or lift them into the air?",
+            exp: "Gravity pulls harder on heavier weights, causing that side of a balance scale to sink down."
+        },
+        {
+            emoji: "☕",
+            context: "It takes 5 big mugs of water to fill a bucket. If you switch to using a very tiny teacup instead, will it take more or fewer teacups?",
+            options: ["Fewer than 5 teacups.", "Exactly 5 teacups.", "More than 5 teacups.", "Zero teacups."],
+            answer: 2,
+            hint: "If each new cup holds much less space, do you need to scoop more times or fewer times?",
+            exp: "Smaller units mean a higher unit count is required to fill the exact same total space."
         }
     ];
 
@@ -353,7 +378,7 @@
         let qData = dataset[currentQ];
         const buttons = document.getElementsByClassName('btn-opt');
         buttons[qData.answer].classList.add('correct');
-        showFeedback('explanation', `⏰ Time ran out! Here is the layout check: ${qData.exp}`);
+        showFeedback('explanation', `⏰ Time ran out! Here is the baseline fact: ${qData.exp}`);
         document.getElementById('next-btn').classList.remove('hidden');
     }
 
@@ -389,17 +414,17 @@
         let msg = `You earned ${score} / ${dataset.length} perfect first-attempt stars! ⭐`;
         
         if (finalPercent >= 80) {
-            document.getElementById('result-title').innerText = "👑 Master of Spatial Analytics!";
+            document.getElementById('result-title').innerText = "👑 Master of Measurements!";
             document.getElementById('result-emoji').innerText = "🥇🏆✨";
-            msg += "\nFlawless comprehension! You possess advanced capability in tracking queues, reverse relational mapping, placeholder constraints, and density misconceptions.";
+            msg += "\nIncredible performance! You display sophisticated spatial analytical capability in resolving size vs weight misconceptions, transitive comparisons, and inverse non-standard counting scales.";
         } else if (finalPercent >= 50) {
-            document.getElementById('result-title').innerText = "🚀 Great Competency!";
+            document.getElementById('result-title').innerText = "🚀 Great Progress!";
             document.getElementById('result-emoji').innerText = "✏️📈💡";
-            msg += "\nWonderful effort! Paying closer attention to unit changes and queue positions will step you up to total mastery next time.";
+            msg += "\nWonderful work! Re-evaluating how variable non-standard base units operate will help push you to perfect mastery next time.";
         } else {
-            document.getElementById('result-title').innerText = "🧱 Keep Practice Open!";
+            document.getElementById('result-title').innerText = "🧱 Keep Practicing!";
             document.getElementById('result-emoji').innerText = "🎒🔄📚";
-            msg += "\nVisualizing physical blocks and weight balances makes math structural. Try once more to unlock your medals!";
+            msg += "\nVisualizing physical scale interactions makes measuring easy. Try once more to unlock your top medals!";
         }
         
         document.getElementById('result-text').innerText = msg;
