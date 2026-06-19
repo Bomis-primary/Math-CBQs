@@ -1,506 +1,425 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>CBQ Interactive - Subtraction up to 100</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grade 1 Math: Subtraction up to 100</title>
+    <style>
+        :root {
+            --primary: #f76707;
+            --secondary: #4dadf7;
+            --success: #2ecc71;
+            --danger: #e74c3c;
+            --bg: #fff4e6;
+            --text: #2c3e50;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Comic Sans MS', 'Chalkboard SE', sans-serif; }
+        body { background-color: var(--bg); color: var(--text); display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 10px; }
+        .container { background: white; width: 100%; max-width: 460px; border-radius: 24px; box-shadow: 0 10px 20px rgba(0,0,0,0.08); padding: 20px; position: relative; min-height: 440px; border: 5px solid #ffa94d; overflow: hidden; }
+        
+        /* Strict 5-Second Splash Guard Layout */
+        #splash-screen { position: absolute; top:0; left:0; width:100%; height:100%; background: #ffffff; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 100; border-radius: 18px; }
+        #splash-screen img { width: 190px; height: auto; margin-bottom: 20px; }
+        .loader-dots { font-size: 1.8rem; color: var(--primary); animation: blink 1.4s infinite both; }
+        @keyframes blink { 0% { opacity: .2; } 20% { opacity: 1; } 100% { opacity: .2; } }
 
-<style>
-*{box-sizing:border-box}
+        .hidden { display: none !important; }
+        
+        /* Interactive Dashboard Meta */
+        .header-meta { display: flex; justify-content: space-between; align-items: center; font-size: 1.3rem; font-weight: bold; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 4px dashed #ffe8cc; }
+        .timer { color: var(--danger); background: #fff5f5; padding: 5px 12px; border-radius: 12px; border: 2px solid #ffc9c9; }
+        .score-box { color: #2b8a3e; background: #ebfbee; padding: 5px 12px; border-radius: 12px; border: 2px solid #b2f2bb; }
+        
+        /* Simple Layout Typography */
+        h2 { font-size: 1.7rem; text-align: center; margin-bottom: 15px; color: #d9480f; line-height: 1.3; }
+        .visual-emoji-display { font-size: 3.8rem; text-align: center; margin: 10px 0; user-select: none; }
+        .q-context { background: #f1f3f5; padding: 15px; border-radius: 16px; margin-bottom: 15px; font-size: 1.35rem; text-align: center; font-weight: bold; color: #102a43; line-height: 1.4; border: 2px dashed #ffd8a8; }
+        
+        /* Responsive High-Contrast Tap Targets */
+        .options-grid { display: grid; grid-template-columns: 1fr; gap: 12px; margin-bottom: 15px; }
+        .btn-opt { background: #f8f9fa; border: 3px solid #dee2e6; border-radius: 16px; padding: 15px; text-align: center; font-size: 1.3rem; font-weight: bold; cursor: pointer; transition: all 0.1s; width: 100%; -webkit-tap-highlight-color: transparent; box-shadow: 0 4px #e9ecef; color: var(--text); }
+        .btn-opt:active { transform: translateY(2px); box-shadow: 0 2px #e9ecef; }
+        .btn-opt.correct { background-color: #d4edda !important; border-color: var(--success) !important; color: #155724 !important; box-shadow: 0 4px #c3e6cb; }
+        .btn-opt.wrong { background-color: #f8d7da !important; border-color: var(--danger) !important; color: #721c24 !important; box-shadow: 0 4px #f5c6cb; }
+        
+        /* Feedback Callout Systems */
+        .feedback-box { padding: 14px; border-radius: 16px; margin-bottom: 15px; font-weight: bold; font-size: 1.15rem; text-align: center; line-height: 1.4; }
+        .feedback-box.hint { background: #fff3cd; color: #856404; border: 2px solid #ffeeba; }
+        .feedback-box.explanation { background: #e3fafc; color: #0b7285; border: 2px solid #c5f6fa; }
 
-body{
-  margin:0;
-  font-family:Arial,sans-serif;
-  background:#f3f8ff;
-  color:#1f2937;
-}
-
-.screen{
-  display:none;
-  min-height:100vh;
-  padding:16px;
-}
-
-.screen.active{
-  display:flex;
-  align-items:center;
-  justify-content:center;
-}
-
-#logoScreen{
-  background:white;
-}
-
-.logo{
-  max-width:420px;
-  width:80%;
-}
-
-.card{
-  width:100%;
-  max-width:880px;
-  background:white;
-  border-radius:22px;
-  padding:20px;
-  box-shadow:0 8px 24px rgba(0,0,0,0.15);
-}
-
-.topbar{
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:10px;
-  margin-bottom:16px;
-}
-
-.badge,.sound-btn{
-  background:#e0f2fe;
-  color:#0f3f5f;
-  padding:10px;
-  border-radius:14px;
-  font-weight:bold;
-  font-size:16px;
-  text-align:center;
-}
-
-.sound-btn{
-  border:none;
-  cursor:pointer;
-}
-
-.visual-box{
-  background:#fff7ed;
-  border:2px solid #fdba74;
-  border-radius:18px;
-  padding:16px;
-  margin-bottom:16px;
-  text-align:center;
-  min-height:130px;
-}
-
-.visual{
-  font-size:54px;
-  margin-bottom:8px;
-  line-height:1.2;
-}
-
-.visual-text{
-  font-size:19px;
-  font-weight:bold;
-  color:#7c2d12;
-}
-
-.question{
-  font-size:24px;
-  font-weight:bold;
-  line-height:1.35;
-  margin:16px 0;
-}
-
-.options{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:14px;
-}
-
-.option{
-  width:100%;
-  min-height:72px;
-  padding:14px 16px;
-  font-size:19px;
-  font-weight:bold;
-  line-height:1.3;
-  border:2px solid #1f4e79;
-  background:white;
-  color:#111827;
-  border-radius:16px;
-  cursor:pointer;
-  text-align:center;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  white-space:normal;
-}
-
-.option:hover{
-  background:#eef6ff;
-}
-
-.option.correct{
-  background:#d1fae5;
-  border-color:#047857;
-}
-
-.option.wrong{
-  background:#fee2e2;
-  border-color:#b91c1c;
-}
-
-.feedback{
-  min-height:34px;
-  margin-top:14px;
-  font-size:19px;
-  font-weight:bold;
-  text-align:center;
-}
-
-.controls{
-  margin-top:14px;
-  text-align:center;
-}
-
-.primary{
-  background:#1f4e79;
-  color:white;
-  border:none;
-  border-radius:14px;
-  padding:14px 28px;
-  font-size:19px;
-  font-weight:bold;
-  cursor:pointer;
-}
-
-#nextBtn{
-  display:none;
-}
-
-.result-title{
-  font-size:34px;
-  font-weight:bold;
-  text-align:center;
-  margin-bottom:14px;
-}
-
-.result-score{
-  font-size:23px;
-  text-align:center;
-  margin-bottom:20px;
-}
-
-.confetti{
-  position:fixed;
-  width:10px;
-  height:10px;
-  top:-10px;
-  animation:fall 1.2s linear forwards;
-  pointer-events:none;
-}
-
-@keyframes fall{
-  to{
-    transform:translateY(110vh) rotate(360deg);
-    opacity:0;
-  }
-}
-
-@media(max-width:700px){
-  .card{padding:15px}
-  .topbar{grid-template-columns:1fr 1fr}
-  .question{font-size:21px}
-  .options{grid-template-columns:1fr;gap:11px}
-  .option{min-height:58px;font-size:18px;padding:12px}
-  .visual{font-size:46px}
-  .visual-text{font-size:17px}
-  .primary{width:100%}
-  .badge,.sound-btn{font-size:14px}
-}
-</style>
+        /* General UI Actions */
+        .btn-action { background: var(--primary); color: white; border: none; padding: 15px; font-size: 1.4rem; border-radius: 16px; cursor: pointer; width: 100%; font-weight: bold; box-shadow: 0 5px #c85907; }
+        .btn-action:active { transform: translateY(2px); box-shadow: 0 2px #c85907; }
+        .audio-ctrl { background: none; border: none; font-size: 2rem; cursor: pointer; }
+        
+        #confetti-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 5; }
+    </style>
 </head>
-
 <body>
 
-<div id="logoScreen" class="screen active">
-  <img src="assets/logo.png" alt="Innovine Solutions Logo" class="logo" />
-</div>
+<div class="container">
+    <canvas id="confetti-canvas" class="hidden"></canvas>
 
-<div id="quizScreen" class="screen">
-  <div class="card">
-    <div class="topbar">
-      <div class="badge">Question <span id="qNo">1</span>/12</div>
-      <div class="badge">Score: <span id="score">0</span></div>
-      <div class="badge">Time: <span id="timer">60</span>s</div>
-      <button class="sound-btn" onclick="toggleMute()" id="muteBtn">🔊 Sound On</button>
+    <!-- Splash Screen (Strict 5 Seconds Rule) -->
+    <div id="splash-screen">
+        <img src="assets/innovine-logo.png" alt="Innovine Logo">
+        <div class="loader-dots">🎈 Subtraction Fun... 🎈</div>
     </div>
 
-    <div class="visual-box" id="visualBox"></div>
-    <div class="question" id="questionText"></div>
-    <div class="options" id="optionsBox"></div>
-    <div class="feedback" id="feedback"></div>
-
-    <div class="controls">
-      <button class="primary" id="nextBtn" onclick="nextQuestion()">Next</button>
+    <!-- Intro Instructions Screen -->
+    <div id="intro-screen" class="hidden" style="text-align: center; padding-top: 20px;">
+        <h2>➖ Taking Away!</h2>
+        <div class="visual-emoji-display">🍬🎈🧸</div>
+        <p style="margin-bottom: 25px; font-size: 1.35rem; color: #495057; font-weight: bold;">
+            Subtraction up to 100 Game ⭐
+        </p>
+        <button class="btn-action" onclick="startInteractive()">PLAY! 🚀</button>
     </div>
-  </div>
-</div>
 
-<div id="resultScreen" class="screen">
-  <div class="card">
-    <div class="result-title" id="resultMessage"></div>
-    <div class="result-score" id="finalScore"></div>
-    <button class="primary" onclick="restartQuiz()">Play Again</button>
-  </div>
-</div>
+    <!-- Main Active Game Loop -->
+    <div id="game-screen" class="hidden">
+        <div class="header-meta">
+            <div class="score-box">⭐ <span id="score-val">0</span></div>
+            <button class="audio-ctrl" id="mute-btn" onclick="toggleMute()">🔊</button>
+            <div class="timer">⏳ <span id="timer-val">60</span>s</div>
+        </div>
+        
+        <div id="question-box">
+            <div id="q-emoji" class="visual-emoji-display"></div>
+            <div id="q-text" class="q-context"></div>
+            <div class="options-grid" id="options-container"></div>
+        </div>
 
-<audio id="correctSound" src="assets/correct.mp3"></audio>
-<audio id="wrongSound" src="assets/wrong.mp3"></audio>
-<audio id="clapSound" src="assets/freesound_community-claps-44774.mp3"></audio>
+        <div id="feedback" class="feedback-box hidden"></div>
+        <button id="next-btn" class="btn-action hidden" onclick="handleNext()">NEXT 👉</button>
+    </div>
+
+    <!-- Final Score Display -->
+    <div id="result-screen" class="hidden" style="text-align: center; padding-top: 20px;">
+        <h2>🎉 Finished!</h2>
+        <div class="visual-emoji-display">🏆⭐👑</div>
+        <p id="result-text" style="font-size: 1.35rem; margin-bottom: 25px; font-weight: bold; color: #2c3e50; white-space: pre-line;"></p>
+        <button class="btn-action" onclick="restartInteractive()">PLAY AGAIN 🔄</button>
+    </div>
+</div>
 
 <script>
-const questions=[
-{
-q:"Diya has 50 candies. She gives 20 to her friend. How many candies are left?",
-visual:"🍬 50 − 20",
-visualText:"Take away 20 candies from 50 candies.",
-options:["20","30","40","50"],
-answer:1
-},
-{
-q:"A shop has 80 balloons. 30 balloons are sold. How many remain?",
-visual:"🎈 80 − 30",
-visualText:"Subtract the sold balloons.",
-options:["40","50","60","70"],
-answer:1
-},
-{
-q:"Which number should be subtracted from 60 to get 40?",
-visual:"60 − ? = 40",
-visualText:"Find the missing number.",
-options:["10","20","30","40"],
-answer:1
-},
-{
-q:"Sam has 45 marbles. He loses 15 marbles. How many are left?",
-visual:"🔵 45 − 15",
-visualText:"Take away the marbles Sam lost.",
-options:["25","30","35","40"],
-answer:1
-},
-{
-q:"Meera solved: 34 − 12 = 22. Is she correct?",
-visual:"34 − 12 = 22",
-visualText:"Check the subtraction statement.",
-options:["Yes","No","Maybe","Cannot say"],
-answer:0
-},
-{
-q:"Subtract: 56 − 23",
-visual:"56 − 23",
-visualText:"Subtract ones, then tens.",
-options:["33","34","35","36"],
-answer:0
-},
-{
-q:"A boy has 72 pencils. He gives away 30 pencils. How many are left?",
-visual:"✏️ 72 − 30",
-visualText:"Take away 30 pencils.",
-options:["32","42","52","62"],
-answer:1
-},
-{
-q:"Subtract: 65 − 28",
-visual:"65 − 28",
-visualText:"This subtraction needs borrowing.",
-options:["37","38","39","36"],
-answer:0
-},
-{
-q:"Which subtraction needs borrowing?",
-visual:"Borrowing means the ones digit on top is smaller.",
-visualText:"Look carefully at the ones place.",
-options:["54 − 12","63 − 21","72 − 35","80 − 20"],
-answer:2
-},
-{
-q:"A basket has 90 apples. 45 are taken away. How many apples remain?",
-visual:"🍎 90 − 45",
-visualText:"Subtract the apples taken away.",
-options:["35","45","55","65"],
-answer:1
-},
-{
-q:"Which is smaller?",
-visual:"65 − 20  and  70 − 25",
-visualText:"Solve both and compare.",
-options:["65 − 20","70 − 25","Both equal","Cannot say"],
-answer:2
-},
-{
-q:"A child has 60 chocolates. He eats 25. How many are left?",
-visual:"🍫 60 − 25",
-visualText:"Subtract the chocolates eaten.",
-options:["35","30","40","45"],
-answer:0
-}
-];
+    // 12 Selected/Formatted Chapter-aligned questions from source text[cite: 5]
+    const dataset = [
+        {
+            emoji: "🍬",
+            context: "Diya has 50 candies. She gives 20 to her friend. How many candies are left?[cite: 5]",
+            options: ["20 candies 🍬", "30 candies 🍬", "40 candies 🍬", "50 candies 🍬"],
+            answer: 1,
+            hint: "Count backward by tens from 50 two times! 🔢",
+            exp: "50 − 20 = 30 candies left! 🎉[cite: 5]"
+        },
+        {
+            emoji: "🎈",
+            context: "A shop has 80 balloons. 30 balloons are sold. How many remain?[cite: 5]",
+            options: ["40 balloons 🎈", "50 balloons 🎈", "60 balloons 🎈", "70 balloons 🎈"],
+            answer: 1,
+            hint: "Take 3 tens away from 8 tens! 🔢",
+            exp: "80 − 30 = 50 balloons left! ✨[cite: 5]"
+        },
+        {
+            emoji: "🔮",
+            context: "Which number should be subtracted from 60 to get 40?[cite: 5]",
+            options: ["10 🔮", "20 🔮", "30 🔮", "40 🔮"],
+            answer: 1,
+            hint: "6 tens minus how many tens leaves 4 tens? 🧱",
+            exp: "60 − 20 = 40! ⭐[cite: 5]"
+        },
+        {
+            emoji: "🟢",
+            context: "Sam has 45 marbles. He loses 15 marbles. How many are left?[cite: 5]",
+            options: ["25 marbles 🟢", "30 marbles 🟢", "35 marbles 🟢", "40 marbles 🟢"],
+            answer: 1,
+            hint: "Subtract the ones place first: 5 − 5 = 0. Then do the tens! 🔢",
+            exp: "45 − 15 leaves exactly 30 marbles! 🌸[cite: 5]"
+        },
+        {
+            emoji: "✏️",
+            context: "A boy has 72 pencils. He gives away 30 pencils. How many are left?[cite: 5]",
+            options: ["32 pencils ✏️", "42 pencils ✏️", "52 pencils ✏️", "62 pencils ✏️"],
+            answer: 1,
+            hint: "Subtract 0 from 2 ones, and 3 tens from 7 tens! 🎒",
+            exp: "72 − 30 = 42 pencils! 🎈[cite: 5]"
+        },
+        {
+            emoji: "🍎",
+            context: "Which subtraction sum needs borrowing from the tens place?[cite: 5]",
+            options: ["54 − 12 🍎", "63 − 21 🍎", "72 − 35 🍎", "80 − 20 🍎"],
+            answer: 2,
+            hint: "Look for a sum where the top ones digit is smaller than the bottom ones digit! 👀",
+            exp: "72 − 35 needs borrowing because 2 is smaller than 5! 🌟[cite: 5]"
+        },
+        {
+            emoji: "🍏",
+            context: "A basket has 90 apples. 45 are taken away. How many remain?[cite: 5]",
+            options: ["35 apples 🍏", "45 apples 🍏", "55 apples 🍏", "65 apples 🍏"],
+            answer: 1,
+            hint: "Borrow 1 ten to make the ones place 10 − 5! 🔢",
+            exp: "90 − 45 leaves exactly 45 apples! 🏆[cite: 5]"
+        },
+        {
+            emoji: "⚖️",
+            context: "Which is smaller: (65 − 20) or (70 − 25)?[cite: 5]",
+            options: ["65 − 20 is smaller ⚖️", "70 − 25 is smaller ⚖️", "Both are equal ⚖️", "Cannot say ⚖️"],
+            answer: 2,
+            hint: "Solve both sums! They both give the same number answer. 🧩",
+            exp: "Both equal 45, so they are perfectly equal! 🎨[cite: 5]"
+        },
+        {
+            emoji: "🍫",
+            context: "A child has 60 chocolates. He eats 25. How many are left?[cite: 5]",
+            options: ["35 chocolates 🍫", "30 chocolates 🍫", "40 chocolates 🍫", "45 chocolates 🍫"],
+            answer: 0,
+            hint: "Borrow 1 ten from 6 to change 0 into 10! 🔢",
+            exp: "60 − 25 = 35 chocolates left! 🍩[cite: 5]"
+        },
+        {
+            emoji: "🧸",
+            context: "A shop had 100 toys. 30 were sold. How many are left?[cite: 5]",
+            options: ["60 toys 🧸", "70 toys 🧸", "80 toys 🧸", "90 toys 🧸"],
+            answer: 1,
+            hint: "Count backward by tens from 100 three times! 🔢",
+            exp: "100 − 30 leaves 70 toys! ✔️[cite: 5]"
+        },
+        {
+            emoji: "🚌",
+            context: "A bus has 80 seats. 60 are filled. How many are empty?[cite: 5]",
+            options: ["10 empty 🚌", "20 empty 🚌", "30 empty 🚌", "40 empty 🚌"],
+            answer: 1,
+            hint: "Take 6 tens away from 8 tens! 🔢",
+            exp: "80 − 60 = 20 empty seats! 🌟[cite: 5]"
+        },
+        {
+            emoji: "⭐",
+            context: "What must be subtracted from 75 to get 50?[cite: 5]",
+            options: ["20 ⭐", "25 ⭐", "30 ⭐", "35 ⭐"],
+            answer: 1,
+            hint: "Subtract 50 from 75 to find the missing part! 🧩",
+            exp: "75 − 25 = 50! 🎖️[cite: 5]"
+        }
+    ];
 
-let current=0,score=0,attempts=0,answered=false,timeLeft=60,timerInterval,muted=false;
+    let currentQ = 0;
+    let score = 0;
+    let attempts = 0;
+    let timerInterval = null;
+    let timeRemaining = 60; // Grade 1 threshold limit[cite: 2]
+    let isMuted = false;
 
-const logoScreen=document.getElementById("logoScreen");
-const quizScreen=document.getElementById("quizScreen");
-const resultScreen=document.getElementById("resultScreen");
-const qNo=document.getElementById("qNo");
-const scoreBox=document.getElementById("score");
-const timerBox=document.getElementById("timer");
-const visualBox=document.getElementById("visualBox");
-const questionText=document.getElementById("questionText");
-const optionsBox=document.getElementById("optionsBox");
-const feedback=document.getElementById("feedback");
-const nextBtn=document.getElementById("nextBtn");
-const correctSound=document.getElementById("correctSound");
-const wrongSound=document.getElementById("wrongSound");
-const clapSound=document.getElementById("clapSound");
+    const audioCorrect = new Audio('assets/correct.mp3');
+    const audioWrong = new Audio('assets/wrong.mp3');
 
-setTimeout(()=>{
-  logoScreen.classList.remove("active");
-  quizScreen.classList.add("active");
-  startQuiz();
-},5000);
+    // Asynchronous 5000ms splash guard execution block[cite: 2]
+    window.addEventListener('load', () => {
+        setTimeout(() => {
+            document.getElementById('splash-screen').classList.add('hidden');
+            document.getElementById('intro-screen').classList.remove('hidden');
+        }, 5000);
+    });
 
-function startQuiz(){
-  current=0;
-  score=0;
-  timeLeft=60;
-  scoreBox.textContent=score;
-  timerBox.textContent=timeLeft;
-  loadQuestion();
-  startTimer();
-}
-
-function startTimer(){
-  clearInterval(timerInterval);
-  timerInterval=setInterval(()=>{
-    timeLeft--;
-    timerBox.textContent=timeLeft;
-    if(timeLeft<=0){
-      clearInterval(timerInterval);
-      showResult();
+    function startInteractive() {
+        document.getElementById('intro-screen').classList.add('hidden');
+        document.getElementById('game-screen').classList.remove('hidden');
+        loadQuestion();
     }
-  },1000);
-}
 
-function loadQuestion(){
-  attempts=0;
-  answered=false;
-  feedback.textContent="";
-  nextBtn.style.display="none";
-
-  const item=questions[current];
-  qNo.textContent=current+1;
-  questionText.textContent=item.q;
-  visualBox.innerHTML=`<div class="visual">${item.visual}</div><div class="visual-text">${item.visualText}</div>`;
-  optionsBox.innerHTML="";
-
-  item.options.forEach((option,index)=>{
-    const btn=document.createElement("button");
-    btn.className="option";
-    btn.textContent=option;
-    btn.onclick=()=>checkAnswer(btn,index);
-    optionsBox.appendChild(btn);
-  });
-}
-
-function checkAnswer(button,selected){
-  if(answered)return;
-
-  const correctIndex=questions[current].answer;
-
-  if(selected===correctIndex){
-    answered=true;
-    score++;
-    scoreBox.textContent=score;
-    button.classList.add("correct");
-    feedback.textContent="Correct!";
-    playSound(correctSound);
-    launchConfetti();
-    disableOptions();
-    nextBtn.style.display="inline-block";
-  }else{
-    attempts++;
-    button.classList.add("wrong");
-    playSound(wrongSound);
-
-    if(attempts===1){
-      feedback.textContent="Try again.";
-      button.disabled=true;
-    }else{
-      answered=true;
-      feedback.textContent="Incorrect. The correct answer is highlighted.";
-      showCorrectAnswer();
-      disableOptions();
-      nextBtn.style.display="inline-block";
+    function toggleMute() {
+        isMuted = !isMuted;
+        document.getElementById('mute-btn').innerText = isMuted ? "🔇" : "🔊";
     }
-  }
-}
 
-function showCorrectAnswer(){
-  const correctIndex=questions[current].answer;
-  document.querySelectorAll(".option")[correctIndex].classList.add("correct");
-}
+    function playSound(type) {
+        if (isMuted) return;
+        if (type === 'correct') {
+            audioCorrect.currentTime = 0;
+            audioCorrect.play().catch(() => {});
+        } else {
+            audioWrong.currentTime = 0;
+            audioWrong.play().catch(() => {});
+        }
+    }
 
-function disableOptions(){
-  document.querySelectorAll(".option").forEach(btn=>btn.disabled=true);
-}
+    function startTimer() {
+        clearInterval(timerInterval);
+        timeRemaining = 60;
+        document.getElementById('timer-val').innerText = timeRemaining;
+        timerInterval = setInterval(() => {
+            timeRemaining--;
+            document.getElementById('timer-val').innerText = timeRemaining;
+            if (timeRemaining <= 0) {
+                clearInterval(timerInterval);
+                handleTimeout();
+            }
+        }, 1000);
+    }
 
-function nextQuestion(){
-  current++;
-  if(current<questions.length){
-    loadQuestion();
-  }else{
-    showResult();
-  }
-}
+    function loadQuestion() {
+        clearInterval(timerInterval);
+        startTimer();
+        
+        attempts = 0;
+        document.getElementById('feedback').classList.add('hidden');
+        document.getElementById('next-btn').classList.add('hidden');
+        
+        let qData = dataset[currentQ];
+        document.getElementById('q-emoji').innerText = qData.emoji;
+        document.getElementById('q-text').innerText = qData.context;
+        
+        const container = document.getElementById('options-container');
+        container.innerHTML = '';
+        
+        qData.options.forEach((opt, idx) => {
+            let btn = document.createElement('button');
+            btn.className = 'btn-opt';
+            btn.innerText = opt;
+            btn.onclick = () => selectOption(idx, btn);
+            container.appendChild(btn);
+        });
+    }
 
-function showResult(){
-  clearInterval(timerInterval);
-  quizScreen.classList.remove("active");
-  resultScreen.classList.add("active");
+    function selectOption(selectedIndex, clickedBtn) {
+        let qData = dataset[currentQ];
+        const buttons = document.getElementsByClassName('btn-opt');
+        
+        if (selectedIndex === qData.answer) {
+            clearInterval(timerInterval);
+            clickedBtn.classList.add('correct');
+            playSound('correct');
+            triggerVisualSparklers();
+            score++;
+            document.getElementById('score-val').innerText = score;
+            disableOptions();
+            showFeedback('explanation', `🎉 Correct! ${qData.exp}`);
+            document.getElementById('next-btn').classList.remove('hidden');
+        } else {
+            attempts++;
+            playSound('wrong');
+            clickedBtn.classList.add('wrong');
+            clickedBtn.disabled = true;
+            
+            if (attempts === 1) { // 2 attempts constraint loop rules[cite: 2]
+                showFeedback('hint', `✨ Hint: ${qData.hint}`);
+            } else {
+                clearInterval(timerInterval);
+                disableOptions();
+                buttons[qData.answer].classList.add('correct');
+                showFeedback('explanation', `Answer: ${qData.exp}`);
+                document.getElementById('next-btn').classList.remove('hidden');
+            }
+        }
+    }
 
-  const percentage=(score/questions.length)*100;
-  let message="";
+    function handleTimeout() {
+        disableOptions();
+        let qData = dataset[currentQ];
+        const buttons = document.getElementsByClassName('btn-opt');
+        buttons[qData.answer].classList.add('correct');
+        showFeedback('explanation', `⏰ Time's Up! ${qData.exp}`);
+        document.getElementById('next-btn').classList.remove('hidden');
+    }
 
-  if(percentage>=75){
-    message="Good job";
-    launchConfetti();
-    playSound(clapSound);
-  }else if(percentage>=40){
-    message="Review this chapter and try again";
-  }else{
-    message="Let’s practise more";
-  }
+    function disableOptions() {
+        const buttons = document.getElementsByClassName('btn-opt');
+        for (let b of buttons) { b.disabled = true; }
+    }
 
-  document.getElementById("resultMessage").textContent=message;
-  document.getElementById("finalScore").textContent="Your Score: "+score+" out of "+questions.length;
-}
+    function showFeedback(type, message) {
+        const box = document.getElementById('feedback');
+        box.className = `feedback-box ${type}`;
+        box.innerText = message;
+        box.classList.remove('hidden');
+    }
 
-function restartQuiz(){
-  resultScreen.classList.remove("active");
-  quizScreen.classList.add("active");
-  startQuiz();
-}
+    function handleNext() {
+        currentQ++;
+        if (currentQ < dataset.length) {
+            loadQuestion();
+        } else {
+            showResults();
+        }
+    }
 
-function toggleMute(){
-  muted=!muted;
-  document.getElementById("muteBtn").textContent=muted?"🔇 Sound Off":"🔊 Sound On";
-}
+    function showResults() {
+        clearInterval(timerInterval);
+        document.getElementById('game-screen').classList.add('hidden');
+        const screen = document.getElementById('result-screen');
+        screen.classList.remove('hidden');
+        
+        let finalPercent = (score / dataset.length) * 100;
+        let msg = `You got ${score} / ${dataset.length} stars! ⭐`;
+        
+        if (finalPercent >= 75) {
+            msg += "\nGood job! 🏆[cite: 2]";
+        } else if (finalPercent >= 40) {
+            msg += "\nReview this chapter and try again 📚[cite: 2]";
+        } else {
+            msg += "\nLet's practise more 💪[cite: 2]";
+        }
+        
+        document.getElementById('result-text').innerText = msg;
+    }
 
-function playSound(sound){
-  if(muted)return;
-  sound.currentTime=0;
-  sound.play().catch(()=>{});
-}
+    function restartInteractive() {
+        currentQ = 0;
+        score = 0;
+        document.getElementById('score-val').innerText = score;
+        document.getElementById('result-screen').classList.add('hidden');
+        document.getElementById('game-screen').classList.remove('hidden');
+        loadQuestion();
+    }
 
-function launchConfetti(){
-  const colors=["#f59e0b","#10b981","#3b82f6","#ef4444","#8b5cf6"];
-  for(let i=0;i<30;i++){
-    const piece=document.createElement("div");
-    piece.className="confetti";
-    piece.style.left=Math.random()*100+"vw";
-    piece.style.background=colors[Math.floor(Math.random()*colors.length)];
-    piece.style.animationDuration=(Math.random()*0.8+0.8)+"s";
-    document.body.appendChild(piece);
-    setTimeout(()=>piece.remove(),1500);
-  }
-}
+    // Exploding canvas particle system for validation feedback
+    function triggerVisualSparklers() {
+        const canvas = document.getElementById('confetti-canvas');
+        canvas.classList.remove('hidden');
+        const ctx = canvas.getContext('2d');
+        canvas.width = canvas.parentElement.offsetWidth;
+        canvas.height = canvas.parentElement.offsetHeight;
+        
+        let particles = [];
+        for (let i = 0; i < 30; i++) {
+            particles.push({
+                x: canvas.width / 2,
+                y: canvas.height / 3,
+                vx: (Math.random() - 0.5) * 7,
+                vy: (Math.random() - 0.5) * 7,
+                color: `hsl(${Math.random() * 360}, 100%, 65%)`,
+                size: Math.random() * 5 + 4,
+                alpha: 1
+            });
+        }
+        
+        let animationFrame;
+        function update() {
+            ctx.clearRect(0,0, canvas.width, canvas.height);
+            let alive = false;
+            particles.forEach(p => {
+                p.x += p.vx;
+                p.y += p.vy;
+                p.alpha -= 0.03;
+                if (p.alpha > 0) {
+                    alive = true;
+                    ctx.fillStyle = p.color;
+                    ctx.globalAlpha = p.alpha;
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            });
+            if (alive) {
+                animationFrame = requestAnimationFrame(update);
+            } else {
+                canvas.classList.add('hidden');
+                cancelAnimationFrame(animationFrame);
+            }
+        }
+        update();
+    }
 </script>
-
 </body>
 </html>
