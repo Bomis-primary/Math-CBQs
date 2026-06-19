@@ -178,7 +178,6 @@ body{
   background:#eef6ff;
 }
 
-/* Styled imagery layout inside the selection option buttons */
 .option img{
   height:45px;
   width:auto;
@@ -310,12 +309,11 @@ body{
 <audio id="clapSound" src="assets/freesound_community-claps-44774.mp3"></audio>
 
 <script>
-// Options have been upgraded to objects supporting text metadata and image URLs side-by-side where applicable
 const questions=[
 {
 q:"Misha is looking at the main entrance door of her classroom. If she wants to paint a shape that looks exactly like the face of the door, which flat shape should she choose?",
 visualType:"images",
-images:["door.png","rectangle.png"],
+images:["door.png"], // Removed rectangle.png from visual area
 options:[
   {text:"A perfectly even square", img:"square.png"},
   {text:"A tall, wide rectangle", img:"rectangle.png"},
@@ -557,7 +555,6 @@ function loadQuestion(){
     const btn=document.createElement("button");
     btn.className="option";
     
-    // Dynamic generation structure to append images directly into the choice option buttons if configured
     if(option.img) {
       const imgEl = document.createElement("img");
       imgEl.src = `assets/${option.img}`;
