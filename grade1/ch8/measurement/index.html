@@ -58,19 +58,19 @@
 <div class="container">
     <canvas id="confetti-canvas" class="hidden"></canvas>
 
+    <!-- Splash Screen (Strict 5 Seconds Guard) -->
     <div id="splash-screen">
         <img src="assets/logo.png" alt="Logo">
     </div>
 
-    <div id="intro-screen" class="hidden" style="text-align: center; padding-top: 20px;">
-        <h2>📏 Chapter 8: Measurement</h2>
-        <div class="visual-emoji-display">✏️⚖️🚪🥛</div>
-        <p style="margin-bottom: 25px; font-size: 1.3rem; color: #495057; font-weight: bold;">
-            15 Master Competency-Based Suite 🚀
-        </p>
+    <!-- Intro Screen -->
+    <div id="intro-screen" class="hidden" style="text-align: center; padding-top: 40px;">
+        <h2>Measurement Mastery Challenge</h2>
+        <div class="visual-emoji-display" style="margin-top: 25px; margin-bottom: 35px;">✏️⚖️🚪🥛</div>
         <button class="btn-action" onclick="startInteractive()">START CHALLENGE 👉</button>
     </div>
 
+    <!-- Main Game Screen -->
     <div id="game-screen" class="hidden">
         <div class="header-meta">
             <div class="score-box">⭐ <span id="score-val">0</span> / <span id="q-total">15</span></div>
@@ -88,6 +88,7 @@
         <button id="next-btn" class="btn-action hidden" onclick="handleNext()">NEXT QUESTION 👉</button>
     </div>
 
+    <!-- Final Score Analytics Screen -->
     <div id="result-screen" class="hidden" style="text-align: center; padding-top: 20px;">
         <h2 id="result-title">🎉 Evaluation Complete!</h2>
         <div id="result-emoji" class="visual-emoji-display">🏆👏✨</div>
@@ -100,103 +101,103 @@
     const dataset = [
         {
             emoji: "✏️",
-            context: "A pencil is 5 paper clips long. A crayon is 3 paper clips long. Which statement is true? [cite: 2]",
+            context: "A pencil is 5 paper clips long. A crayon is 3 paper clips long. Which statement is true?",
             options: [
-                "The crayon is longer than the pencil. [cite: 3]",
-                "The pencil is longer than the crayon. [cite: 4]",
-                "They are the same length. [cite: 5]",
-                "The pencil is shorter than the crayon. [cite: 6]"
+                "The crayon is longer than the pencil.",
+                "The pencil is longer than the crayon.",
+                "They are the same length.",
+                "The pencil is shorter than the crayon."
             ],
             answer: 1,
-            hint: "Compare the number of units. Is 5 more or less than 3? [cite: 8]",
-            exp: "5 units is more than 3 units, so the pencil has a greater length. [cite: 8]"
+            hint: "Compare the number of units. Is 5 more or less than 3?",
+            exp: "5 units is more than 3 units, so the pencil has a greater length."
         },
         {
             emoji: "🪣",
-            context: "A bucket can hold 10 mugs of water. A jug can hold 3 mugs of water. Which has more capacity? [cite: 30]",
-            options: ["The jug [cite: 31]", "The mug [cite: 32]", "The bucket [cite: 33]", "They are the same [cite: 34]"],
+            context: "A bucket can hold 10 mugs of water. A jug can hold 3 mugs of water. Which has more capacity?",
+            options: ["The jug", "The mug", "The bucket", "They are the same"],
             answer: 2,
-            hint: "Which container takes a larger count of mugs to fill up completely? [cite: 30]",
-            exp: "The bucket holds more units (10) than the jug (3). [cite: 36]"
+            hint: "Which container takes a larger count of mugs to fill up completely?",
+            exp: "The bucket holds more units (10) than the jug (3)."
         },
         {
             emoji: "🧼",
-            context: "If an eraser is \"shorter than\" a pen, then the pen is ________ the eraser. [cite: 37]",
-            options: ["Shorter than [cite: 38]", "Lighter than [cite: 39]", "Longer than [cite: 40]", "As long as [cite: 41]"],
+            context: "If an eraser is \"shorter than\" a pen, then the pen is ________ the eraser.",
+            options: ["Shorter than", "Lighter than", "Longer than", "As long as"],
             answer: 2,
-            hint: "Flip the perspective! What is the opposite matching term for shorter? [cite: 43]",
-            exp: "\"Longer than\" is the structural opposite of \"shorter than.\" [cite: 43]"
+            hint: "Flip the perspective! What is the opposite matching term for shorter?",
+            exp: "\"Longer than\" is the structural opposite of \"shorter than.\""
         },
         {
             emoji: "📚",
-            context: "Which of these would you use to measure the weight of a book using non-standard units? [cite: 44]",
-            options: ["A spoon [cite: 45]", "Marbles or blocks [cite: 46]", "A piece of string [cite: 47]", "A cup of water [cite: 48]"],
+            context: "Which of these would you use to measure the weight of a book using non-standard units?",
+            options: ["A spoon", "Marbles or blocks", "A piece of string", "A cup of water"],
             answer: 1,
-            hint: "We need solid, heavy, unvarying pieces that balance well on a scale. [cite: 50]",
-            exp: "We can use several small, equal-weight items like blocks to see how many it takes to balance the weight of a book. [cite: 50]"
+            hint: "We need solid, heavy, unvarying pieces that balance well on a scale.",
+            exp: "We can use several small, equal-weight items like blocks to see how many it takes to balance the weight of a book."
         },
         {
             emoji: "🚪",
-            context: "To measure the length of your classroom door, which non-standard unit would be most practical? [cite: 58]",
-            options: ["Paper clips [cite: 59]", "Finger widths [cite: 60]", "Arm spans [cite: 61]", "Grains of rice [cite: 62]"],
+            context: "To measure the length of your classroom door, which non-standard unit would be most practical?",
+            options: ["Paper clips", "Finger widths", "Arm spans", "Grains of rice"],
             answer: 2,
-            hint: "Using tiny items for a big door takes too long. Choose a larger bodily unit! [cite: 64]",
-            exp: "Arm spans are larger units, making it faster and easier to measure a large object like a door. [cite: 64]"
+            hint: "Using tiny items for a big door takes too long. Choose a larger bodily unit!",
+            exp: "Arm spans are larger units, making it faster and easier to measure a large object like a door."
         },
         {
             emoji: "🫖",
-            context: "A teapot fills 5 teacups. A water bottle fills 8 teacups. Which statement is correct? [cite: 65]",
+            context: "A teapot fills 5 teacups. A water bottle fills 8 teacups. Which statement is correct?",
             options: [
-                "The teapot holds more than the bottle. [cite: 66]",
-                "The bottle holds less than the teapot. [cite: 67]",
-                "The teapot holds less than the bottle. [cite: 68]",
-                "They have the same capacity. [cite: 69]"
+                "The teapot holds more than the bottle.",
+                "The bottle holds less than the teapot.",
+                "The teapot holds less than the bottle.",
+                "They have the same capacity."
             ],
             answer: 2,
-            hint: "Compare the fluid unit count. Is 5 cups less or more than 8 cups? [cite: 71]",
-            exp: "5 cups is a smaller amount than 8 cups, meaning the teapot holds less. [cite: 71]"
+            hint: "Compare the fluid unit count. Is 5 cups less or more than 8 cups?",
+            exp: "5 cups is a smaller amount than 8 cups, meaning the teapot holds less."
         },
         {
             emoji: "🍉",
-            context: "If a watermelon is heavier than a mango, then the mango is ________ the watermelon. [cite: 79]",
-            options: ["Heavier than [cite: 80]", "Lighter than [cite: 81]", "Larger than [cite: 82]", "As heavy as [cite: 83]"],
+            context: "If a watermelon is heavier than a mango, then the mango is ________ the watermelon.",
+            options: ["Heavier than", "Lighter than", "Larger than", "As heavy as"],
             answer: 1,
-            hint: "If a big item tips the scale down, what does the smaller item feel like? [cite: 85]",
-            exp: "Math comparisons work in pairs. If one object is heavier, the other must be lighter. [cite: 85]"
+            hint: "If a big item tips the scale down, what does the smaller item feel like?",
+            exp: "Math comparisons work in pairs. If one object is heavier, the other must be lighter."
         },
         {
             emoji: "🎈",
-            context: "If a balloon and a ball are the same size, are they always the same weight? [cite: 114]",
+            context: "If a balloon and a ball are the same size, are they always the same weight?",
             options: [
-                "Yes, always. [cite: 115]",
-                "No, the ball is usually heavier. [cite: 116]",
-                "No, the balloon is usually heavier. [cite: 117]",
-                "Yes, because they look the same. [cite: 118]"
+                "Yes, always.",
+                "No, the ball is usually heavier.",
+                "No, the balloon is usually heavier.",
+                "Yes, because they look the same."
             ],
             answer: 1,
-            hint: "Think about what is stuffed inside. Air vs a dense, solid toy material! [cite: 120]",
-            exp: "Size does not determine weight. A ball is solid/dense, while a balloon is filled with light air. [cite: 120]"
+            hint: "Think about what is stuffed inside. Air vs a dense, solid toy material!",
+            exp: "Size does not determine weight. A ball is solid/dense, while a balloon is filled with light air."
         },
         {
             emoji: "🖐️",
-            context: "If you measure a table using your handspan and your teacher measures it using their handspan, will the number be the same? [cite: 128]",
+            context: "If you measure a table using your handspan and your teacher measures it using their handspan, will the number be the same?",
             options: [
-                "Yes, because the table doesn't change. [cite: 129]",
-                "No, because the teacher's hand is likely larger. [cite: 130]",
-                "Yes, because handspans are standard units. [cite: 131]",
-                "No, because the table grows. [cite: 132]"
+                "Yes, because the table doesn't change.",
+                "No, because the teacher's hand is likely larger.",
+                "Yes, because handspans are standard units.",
+                "No, because the table grows."
             ],
             answer: 1,
-            hint: "Whose hand takes up more space in a single baseline stretch? [cite: 130]",
-            exp: "Since handspans are non-standard and vary in size, the count will be different. [cite: 134]"
+            hint: "Whose hand takes up more space in a single baseline stretch?",
+            exp: "Since handspans are non-standard and vary in size, the count will be different."
         },
         {
             emoji: "🥛",
-            context: "An empty glass is ________ a glass full of milk. [cite: 135]",
-            options: ["Heavier than [cite: 136]", "Lighter than [cite: 137]", "Longer than [cite: 138]", "Shorter than [cite: 139]"],
+            context: "An empty glass is ________ a glass full of milk.",
+            options: ["Heavier than", "Lighter than", "Longer than", "Shorter than"],
             answer: 1,
-            hint: "Does adding a liquid into a container add weight or make it vanish? [cite: 141]",
-            exp: "The milk adds weight to the glass, so the empty one is lighter. [cite: 141]"
+            hint: "Does adding a liquid into a container add weight or make it vanish?",
+            exp: "The milk adds weight to the glass, so the empty one is lighter."
         },
         {
             emoji: "🎗️",
