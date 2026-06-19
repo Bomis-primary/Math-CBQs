@@ -25,12 +25,12 @@ body{margin:0;font-family:Arial,sans-serif;background:#f3f8ff;color:#1f2937}
 .option:hover{background:#eef6ff}
 .option.correct{background:#d1fae5;border-color:#047857}
 .option.wrong{background:#fee2e2;border-color:#b91c1c}
-.feedback{min-height:34px;margin-top:14px;font-size:19px;font-weight:bold;text-align:center}
+.feedback{min-height:48px;margin-top:14px;font-size:19px;font-weight:bold;text-align:center;padding:0 10px;line-height:1.4}
 .controls{margin-top:14px;text-align:center}
 .primary{background:#1f4e79;color:white;border:none;border-radius:14px;padding:14px 28px;font-size:19px;font-weight:bold;cursor:pointer}
 #nextBtn{display:none}
 .result-title{font-size:34px;font-weight:bold;text-align:center;margin-bottom:14px}
-.result-score{font-size:23px;text-align:center;margin-bottom:20px}
+.result-score{font-size:21px;text-align:center;margin-bottom:20px;line-height:1.5;color:#4b5563}
 .confetti{position:fixed;width:10px;height:10px;top:-10px;animation:fall 1.2s linear forwards;pointer-events:none}
 @keyframes fall{to{transform:translateY(110vh) rotate(360deg);opacity:0}}
 @media(max-width:700px){
@@ -87,21 +87,117 @@ body{margin:0;font-family:Arial,sans-serif;background:#f3f8ff;color:#1f2937}
 
 <script>
 const questions=[
-{q:"A baker baked 19 cupcakes. He has 4 cupcakes left in the tray. How many cupcakes did he sell?",visual:"🧁 19 − 4",visualText:"Take away 4 from 19.",options:["14","15","16","23"],answer:1},
-{q:"Look at the number line. If you start at 15 and jump back 3 steps, which number will you land on?",visual:"15 → 14 → 13 → 12",visualText:"Jumping back means subtraction.",options:["12","13","14","18"],answer:0},
-{q:"Arya has 7 pencils and she gives all 7 pencils to her friend. How many pencils does Arya have now?",visual:"✏️ 7 − 7",visualText:"When all are given away, none are left.",options:["7","1","0","14"],answer:2},
-{q:"Which shows the correct horizontal subtraction for twelve minus five?",visual:"Twelve minus five",visualText:"Write subtraction from left to right.",options:["12 + 5 = 17","5 − 12 = 7","12 − 5 = 7","10 − 5 = 5"],answer:2},
-{q:"What is the predecessor of 19?",visual:"__ , 19",visualText:"The predecessor comes just before a number.",options:["20","18","17","19"],answer:1},
-{q:"A tree had 14 birds. None of the birds flew away. How many birds are still on the tree?",visual:"🐦 14 − 0",visualText:"Subtracting zero keeps the number the same.",options:["0","1","13","14"],answer:3},
-{q:"Solve: 18 − 6",visual:"18 − 6",visualText:"Subtract 6 from 18.",options:["10","11","12","24"],answer:2},
-{q:"In the number 17, if we subtract 1 ten, what number is left?",visual:"17 − 10",visualText:"Removing 1 ten leaves 7 ones.",options:["16","10","7","0"],answer:2},
-{q:"A shopkeeper has 19 kites. He sells 15 kites. How many kites are remaining?",visual:"🪁 19 − 15",visualText:"Subtract the kites sold.",options:["4","5","6","34"],answer:0},
-{q:"Rahul needs 20 stickers to complete his album. He currently has 13 stickers. How many more stickers does he need?",visual:"20 − 13",visualText:"Find how many more are needed.",options:["5","6","7","8"],answer:2},
-{q:"A fruit seller has 16 apples. He throws away 6 spoiled apples. How many good apples are left?",visual:"🍎 16 − 6",visualText:"Subtract the spoiled apples.",options:["10","6","22","12"],answer:0},
-{q:"Which subtraction sentence matches: Take away 8 from 18?",visual:"18 − 8",visualText:"Take away means subtract.",options:["8 − 18 = 10","18 − 8 = 10","18 − 10 = 8","18 + 8 = 26"],answer:1}
+{
+q:"A baker baked 19 cupcakes. He has 4 cupcakes left in the tray. How many cupcakes did he sell?",
+visual:"🧁 19 − 4",
+visualText:"Take away 4 from 19.",
+options:["14","15","16","23"],
+answer:1,
+hint:"Count backwards 4 steps from 19.",
+explanation:"19 cupcakes minus the 4 left over means 15 cupcakes were sold."
+},
+{
+q:"Look at the number line. If you start at 15 and jump back 3 steps, which number will you land on?",
+visual:"15 → 14 → 13 → 12",
+visualText:"Jumping back means subtraction.",
+options:["12","13","14","18"],
+answer:0,
+hint:"Trace 3 complete jumps back starting from 15.",
+explanation:"Taking 3 steps back from 15 lands exactly on 12."
+},
+{
+q:"Arya has 7 pencils and she gives all 7 pencils to her friend. How many pencils does Arya have now?",
+visual:"✏️ 7 − 7",
+visualText:"When all are given away, none are left.",
+options:["7","1","0","14"],
+answer:2,
+hint:"Subtracting a number from itself always leaves nothing.",
+explanation:"7 minus 7 leaves exactly 0 pencils."
+},
+{
+q:"Which shows the correct horizontal subtraction for twelve minus five?",
+visual:"Twelve minus five",
+visualText:"Write subtraction from left to right.",
+options:["12 + 5 = 17","5 − 12 = 7","12 − 5 = 7","10 − 5 = 5"],
+answer:2,
+hint:"Find the math sentence that starts with 12 and uses a minus sign followed by 5.",
+explanation:"'Twelve minus five' translates directly into the horizontal equation 12 − 5 = 7."
+},
+{
+q:"What is the predecessor of 19?",
+visual:"__ , 19",
+visualText:"The predecessor comes just before a number.",
+options:["20","18","17","19"],
+answer:1,
+hint:"Subtract 1 from 19 to discover its predecessor.",
+explanation:"The number that comes immediately before 19 is 18."
+},
+{
+q:"A tree had 14 birds. None of the birds flew away. How many birds are still on the tree?",
+visual:"🐦 14 − 0",
+visualText:"Subtracting zero keeps the number the same.",
+options:["0","1","13","14"],
+answer:3,
+hint:"Since 0 birds left, the count does not change at all.",
+explanation:"14 minus 0 leaves the original group of 14 birds completely unchanged."
+},
+{
+q:"Solve: 18 − 6",
+visual:"18 − 6",
+visualText:"Subtract 6 from 18.",
+options:["10","11","12","24"],
+answer:2,
+hint:"Focus on the ones column: what is 8 ones minus 6 ones?",
+explanation:"Subtracting 6 from 18 leaves 12 remaining."
+},
+{
+q:"In the number 17, if we subtract 1 ten, what number is left?",
+visual:"17 − 10",
+visualText:"Removing 1 ten leaves 7 ones.",
+options:["16","10","7","0"],
+answer:2,
+hint:"17 is made of 1 ten and 7 ones. Take away that 1 ten.",
+explanation:"Subtracting 10 removes the tens place entirely, leaving only 7 ones."
+},
+{
+q:"A shopkeeper has 19 kites. He sells 15 kites. How many kites are remaining?",
+visual:"🪁 19 − 15",
+visualText:"Subtract the kites sold.",
+options:["4","5","6","34"],
+answer:0,
+hint:"Work out 19 minus 15 by finding the difference between 9 and 5 in the ones column.",
+explanation:"19 kites minus the 15 sold leaves 4 kites remaining."
+},
+{
+q:"Rahul needs 20 stickers to complete his album. He currently has 13 stickers. How many more stickers does he need?",
+visual:"20 − 13",
+visualText:"Find how many more are needed.",
+options:["5","6","7","8"],
+answer:2,
+hint:"Count up from 13 to 20 to find the missing gap.",
+explanation:"20 minus 13 equals 7, so he needs 7 more stickers."
+},
+{
+q:"A fruit seller has 16 apples. He throws away 6 spoiled apples. How many good apples are left?",
+visual:"🍎 16 − 6",
+visualText:"Subtract the spoiled apples.",
+options:["10","6","22","12"],
+answer:0,
+hint:"Removing 6 ones from 16 leaves just the full ten.",
+explanation:"16 minus 6 leaves exactly 10 good apples."
+},
+{
+q:"Which subtraction sentence matches: Take away 8 from 18?",
+visual:"18 − 8",
+visualText:"Take away means subtract.",
+options:["8 − 18 = 10","18 − 8 = 10","18 − 10 = 8","18 + 8 = 26"],
+answer:1,
+hint:"You start with 18 and remove 8 from it.",
+explanation:"The expression 'Take away 8 from 18' is written down as 18 − 8 = 10."
+}
 ];
 
-let current=0,score=0,attempts=0,answered=false,timeLeft=60,timerInterval,muted=false;
+let current=0,score=0,firstAttemptCorrect=0,attempts=0,answered=false,timeLeft=60,timerInterval,muted=false;
 
 const logoScreen=document.getElementById("logoScreen");
 const quizScreen=document.getElementById("quizScreen");
@@ -127,14 +223,14 @@ setTimeout(()=>{
 function startQuiz(){
   current=0;
   score=0;
-  timeLeft=60;
+  firstAttemptCorrect=0;
   scoreBox.textContent=score;
-  timerBox.textContent=timeLeft;
   loadQuestion();
-  startTimer();
 }
 
 function startTimer(){
+  timeLeft=60;
+  timerBox.textContent=timeLeft;
   clearInterval(timerInterval);
   timerInterval=setInterval(()=>{
     timeLeft--;
@@ -150,6 +246,7 @@ function loadQuestion(){
   attempts=0;
   answered=false;
   feedback.textContent="";
+  feedback.style.color="#1f2937";
   nextBtn.style.display="none";
 
   const item=questions[current];
@@ -165,19 +262,30 @@ function loadQuestion(){
     btn.onclick=()=>checkAnswer(btn,index);
     optionsBox.appendChild(btn);
   });
+  
+  startTimer();
 }
 
 function checkAnswer(button,selected){
   if(answered)return;
-  const correctIndex=questions[current].answer;
+  const currentQuestion=questions[current];
+  const correctIndex=currentQuestion.answer;
 
   if(selected===correctIndex){
+    clearInterval(timerInterval);
     answered=true;
     score++;
+    
+    if(attempts===0){
+      firstAttemptCorrect++;
+    }
+    
     scoreBox.textContent=score;
     button.classList.add("correct");
     feedback.textContent="Correct!";
+    feedback.style.color="#047857";
     playSound(correctSound);
+    playSound(clapSound);
     launchConfetti();
     disableOptions();
     nextBtn.style.display="inline-block";
@@ -187,11 +295,14 @@ function checkAnswer(button,selected){
     playSound(wrongSound);
 
     if(attempts===1){
-      feedback.textContent="Try again.";
+      feedback.textContent="Hint: "+currentQuestion.hint;
+      feedback.style.color="#b45309";
       button.disabled=true;
     }else{
+      clearInterval(timerInterval);
       answered=true;
-      feedback.textContent="Incorrect. The correct answer is highlighted.";
+      feedback.textContent="Incorrect. "+currentQuestion.explanation;
+      feedback.style.color="#b91c1c";
       showCorrectAnswer();
       disableOptions();
       nextBtn.style.display="inline-block";
@@ -222,7 +333,7 @@ function showResult(){
   quizScreen.classList.remove("active");
   resultScreen.classList.add("active");
 
-  const percentage=(score/questions.length)*100;
+  const percentage=(firstAttemptCorrect/questions.length)*100;
   let message="";
 
   if(percentage>=75){
@@ -236,7 +347,7 @@ function showResult(){
   }
 
   document.getElementById("resultMessage").textContent=message;
-  document.getElementById("finalScore").textContent="Your Score: "+score+" out of "+questions.length;
+  document.getElementById("finalScore").innerHTML="Total Questions Solved: "+score+" / "+questions.length+"<br>First-Attempt Correct: "+firstAttemptCorrect+" / "+questions.length;
 }
 
 function restartQuiz(){
@@ -262,7 +373,7 @@ function launchConfetti(){
     const piece=document.createElement("div");
     piece.className="confetti";
     piece.style.left=Math.random()*100+"vw";
-    piece.style.background=colors[Math.floor(Math.random()*colors.length)];
+    piece.style.background=colors[colors.length*Math.random()|0];
     piece.style.animationDuration=(Math.random()*0.8+0.8)+"s";
     document.body.appendChild(piece);
     setTimeout(()=>piece.remove(),1500);
