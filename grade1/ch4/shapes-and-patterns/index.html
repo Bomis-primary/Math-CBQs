@@ -155,7 +155,7 @@ body{
 .question{
   font-size:24px;
   font-weight:bold;
-  line-height:1.35;
+  line-height:1.45;
   margin:16px 0;
 }
 
@@ -339,16 +339,16 @@ hint:"A door has two long sides and two shorter sides.",
 explanation:"A door is taller than it is wide, making it a rectangle!"
 },
 {
-q:"Which of these items can roll smoothly across the floor without stopping?",
+q:'Which of these items can <strong style="color: #b45309; background: #fef3c7; padding: 2px 6px; border-radius: 6px;">roll</strong> smoothly across the floor without stopping?',
 visualType:"images",
-images:["coin.png"],
+images:["cube.png","eraser.png","rubics-cube.png","coin.png"],
 options:[
   {text:"A toy block", img:"cube.png"},
-  {text:"A round coin", img:"coin.png"},
   {text:"An eraser", img:"eraser.png"},
-  {text:"A Rubik's cube", img:"cube.png"}
+  {text:"A Rubik's cube", img:"rubics-cube.png"},
+  {text:"A round coin", img:"coin.png"}
 ],
-answer:1,
+answer:3,
 hint:"Look for the shape with no corners and zero straight sides.",
 explanation:"A coin is round and has no sharp corners, so it rolls perfectly!"
 },
@@ -558,7 +558,8 @@ function loadQuestion(){
     document.getElementById("quizScreen").querySelector('.card').style.borderColor = "";
   }
   
-  questionText.textContent=item.q;
+  // Changed innerText to innerHTML to process the highlight tags correctly
+  questionText.innerHTML=item.q;
   optionsBox.innerHTML="";
   renderVisual(item);
 
