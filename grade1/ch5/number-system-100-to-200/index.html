@@ -43,6 +43,8 @@ body{
   border-radius:22px;
   padding:20px;
   box-shadow:0 8px 24px rgba(0,0,0,0.15);
+  border: 3px solid transparent;
+  transition: border-color 0.3s ease;
 }
 
 .topbar{
@@ -75,16 +77,22 @@ body{
   margin-bottom:16px;
   text-align:center;
   min-height:130px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
 }
 
 .visual{
-  font-size:52px;
+  font-size:42px;
+  font-weight:bold;
   margin-bottom:8px;
   line-height:1.2;
+  color:#1f4e79;
 }
 
 .visual-text{
-  font-size:19px;
+  font-size:18px;
   font-weight:bold;
   color:#4c1d95;
 }
@@ -171,9 +179,11 @@ body{
 }
 
 .result-score{
-  font-size:23px;
+  font-size:21px;
   text-align:center;
   margin-bottom:20px;
+  line-height:1.5;
+  color:#4b5563;
 }
 
 .confetti{
@@ -198,8 +208,8 @@ body{
   .question{font-size:21px}
   .options{grid-template-columns:1fr;gap:11px}
   .option{min-height:58px;font-size:18px;padding:12px}
-  .visual{font-size:46px}
-  .visual-text{font-size:17px}
+  .visual{font-size:32px}
+  .visual-text{font-size:15px}
   .primary{width:100%}
   .badge,.sound-btn{font-size:14px}
 }
@@ -215,10 +225,10 @@ body{
 <div id="quizScreen" class="screen">
   <div class="card">
     <div class="topbar">
-      <div class="badge">Question <span id="qNo">1</span>/12</div>
+      <div class="badge" id="qLabel">Question <span id="qNo">1</span>/12</div>
       <div class="badge">Score: <span id="score">0</span></div>
       <div class="badge">Time: <span id="timer">60</span>s</div>
-      <button class="sound-btn" onclick="toggleMute()" id="muteBtn">🔊 Sound On</button>
+      <button class="sound-btn" onclick="toggleMute()" id="muteBtn">🔈 Sound Off</button>
     </div>
 
     <div class="visual-box" id="visualBox"></div>
@@ -247,125 +257,155 @@ body{
 <script>
 const questions=[
 {
-q:"How many tens do you need to group together to make 100?",
-visual:"10 + 10 + 10 + 10 + 10 + 10 + 10 + 10 + 10 + 10",
-visualText:"Ten groups of ten make one hundred.",
-options:["1","5","10","100"],
-answer:2
+q:"How many packs of 10 juice boxes do you need to make 100 juice boxes in total?",
+visual:"10, 20, 30, 40, 50, 60, 70, 80, 90, 100",
+visualText:"Let's count up by tens to get to one hundred!",
+options:["1 pack","5 packs","10 packs","100 packs"],
+answer:2,
+hint:"Try counting on your fingers by tens: 10, 20, 30... how many fingers do you hold up?",
+explanation:"Ten packs of 10 make 100 juice boxes!"
 },
 {
-q:"What is the number that comes just after 159?",
-visual:"158, 159, __",
-visualText:"Add 1 to get the next number.",
+q:"You are counting blocks. What number comes next right after 159?",
+visual:"157, 158, 159, [ ? ]",
+visualText:"What is the very next number?",
 options:["158","160","150","170"],
-answer:1
+answer:1,
+hint:"When you count regular numbers, what comes right after 59? Now put a 1 in front of it!",
+explanation:"The number that comes right after 159 is 160!"
 },
 {
-q:"In the number 174, what is the place value of the digit 7?",
-visual:"174",
-visualText:"The digit 7 is in the tens place.",
-options:["7","70","700","1"],
-answer:1
+q:"Look at the number 174. How many tens are sitting in the middle room?",
+visual:"1 7 4",
+visualText:"Hundreds | Tens | Ones",
+options:["7 ones","7 tens","7 hundreds","1 ten"],
+answer:1,
+hint:"The first room is Hundreds, the middle room is Tens, and the last room is Ones.",
+explanation:"The number 174 has 7 tens in the middle room, which stands for 70!"
 },
 {
-q:"Which of the following is the expanded form of 135?",
+q:"Let's break the number 135 apart into its number rooms. What does it look like?",
 visual:"135",
-visualText:"1 hundred, 3 tens and 5 ones",
+visualText:"Break it down into hundreds, tens, and ones.",
 options:["100 + 3 + 5","1 + 3 + 5","100 + 30 + 5","10 + 30 + 5"],
-answer:2
+answer:2,
+hint:"135 has one 100, three 10s (30), and five 1s (5). Find the option that shows this.",
+explanation:"Breaking it apart gives us 100 + 30 + 5!"
 },
 {
-q:"Which number sits between 188 and 190?",
-visual:"188, __, 190",
-visualText:"Find the number in the middle.",
+q:"Three friends stand in a line. Tim is number 188. Sam is number 190. Who stands between them?",
+visual:"188, [ ? ], 190",
+visualText:"Find the missing missing buddy in the middle.",
 options:["187","191","189","199"],
-answer:2
+answer:2,
+hint:"Count out loud starting from 185: 186, 187, 188... what do you say next?",
+explanation:"The number 189 sits right between 188 and 190!"
 },
 {
-q:"What is the face value of the digit 1 in the number 142?",
-visual:"142",
-visualText:"Face value means the digit itself.",
-options:["100","10","1","142"],
-answer:2
+q:"What number do you see when you look directly at the middle face of 142?",
+visual:"1 [ 4 ] 2",
+visualText:"Just look at the digit itself!",
+options:["40","4","400","142"],
+answer:1,
+hint:"Face value means exactly what your eyes see when you look at that single digit.",
+explanation:"The digit you see is just 4!"
 },
 {
-q:"Which symbol makes the statement true? 165 ___ 156",
-visual:"165 ___ 156",
-visualText:"Compare the two numbers.",
-options:["<",">","=","+"],
-answer:1
+q:"An alligator wants to eat the biggest pile of fish. Which way should its mouth open? 165 ___ 156",
+visual:"165 [   ] 156",
+visualText:"The alligator always snaps its mouth open toward the bigger number!",
+options:["< (opens to 156)","> (opens to 165)","=","+"],
+answer:1,
+hint:"Look at the tens! 165 has 6 tens, but 156 only has 5 tens. Which one is bigger?",
+explanation:"165 is bigger than 156, so the mouth opens toward 165 (>)."
 },
 {
-q:"Arrange these numbers in ascending order: 120, 110, 150.",
-visual:"Smallest → Largest",
-visualText:"Ascending order means smallest to largest.",
+q:"Let's line up these toy cars from the smallest number to the biggest number: 120, 110, 150.",
+visual:"Smallest ➔ Biggest",
+visualText:"Start with the tiniest number and go up.",
 options:["150, 120, 110","110, 150, 120","110, 120, 150","120, 110, 150"],
-answer:2
+answer:2,
+hint:"Compare the middle numbers. 10 is smaller than 20, and 20 is smaller than 50.",
+explanation:"Lining them up from smallest to biggest gives us 110, 120, then 150!"
 },
 {
-q:"Which number is 1 less than 200?",
-visual:"200 − 1",
-visualText:"The number before 200 is called its predecessor.",
+q:"If you take away exactly 1 block from a stack of 200, how many blocks are left?",
+visual:"200 − 1 = [ ? ]",
+visualText:"Go backward by 1 step.",
 options:["100","190","199","201"],
-answer:2
+answer:2,
+hint:"What number comes right before 200 when you are counting?",
+explanation:"The number right before 200 is 199!"
 },
 {
-q:"What is the standard form of 100 + 0 + 7?",
-visual:"100 + 0 + 7",
-visualText:"Combine hundreds, tens and ones.",
+q:"Put these numbers together into a single number: 100 + 0 + 7.",
+visual:"100 + 0 + 7 = [ ? ]",
+visualText:"Put the rooms back together.",
 options:["170","107","17","1007"],
-answer:1
+answer:1,
+hint:"There is 1 hundred, 0 tens in the middle, and 7 ones at the end.",
+explanation:"Putting them together makes 107!"
 },
 {
-q:"Arrange these numbers in descending order: 144, 188, 166.",
-visual:"Largest → Smallest",
-visualText:"Descending order means largest to smallest.",
+q:"Let's line up these book numbers from the biggest number down to the smallest number: 144, 188, 166.",
+visual:"Biggest ➔ Smallest",
+visualText:"Start with the giant number and go down.",
 options:["188, 166, 144","144, 166, 188","166, 188, 144","188, 144, 166"],
-answer:0
+answer:0,
+hint:"Look at the tens! 80 is the biggest, then 60, and 40 is the smallest.",
+explanation:"Lining them up from biggest to smallest gives us 188, 166, then 144!"
 },
 {
-q:"Which number is greater than 179 but less than 181?",
-visual:"179 < __ < 181",
-visualText:"Find the number between 179 and 181.",
+q:"Which sneaky number is bigger than 179 but still smaller than 181?",
+visual:"179 < [ ? ] < 181",
+visualText:"Find the hidden number in the middle.",
 options:["178","182","170","180"],
-answer:3
+answer:3,
+hint:"What number do you say right after 179 and right before 181?",
+explanation:"The number 180 is bigger than 179 and smaller than 181!"
 }
 ];
 
-let current=0,score=0,attempts=0,answered=false,timeLeft=60,timerInterval,muted=false;
+let current=0,score=0,firstAttemptCorrect=0,attempts=0,answered=false,timeLeft=60,timerInterval,muted=true;
+let currentCorrectIndex = 0;
 
-const logoScreen=document.getElementById("logoScreen");
-const quizScreen=document.getElementById("quizScreen");
-const resultScreen=document.getElementById("resultScreen");
-const qNo=document.getElementById("qNo");
-const scoreBox=document.getElementById("score");
-const timerBox=document.getElementById("timer");
-const visualBox=document.getElementById("visualBox");
-const questionText=document.getElementById("questionText");
-const optionsBox=document.getElementById("optionsBox");
-const feedback=document.getElementById("feedback");
-const nextBtn=document.getElementById("nextBtn");
-const correctSound=document.getElementById("correctSound");
-const wrongSound=document.getElementById("wrongSound");
-const clapSound=document.getElementById("clapSound");
+let logoScreen, quizScreen, resultScreen, qNo, qLabel, scoreBox, timerBox, visualBox, questionText, optionsBox, feedback, nextBtn, correctSound, wrongSound, clapSound;
 
-setTimeout(()=>{
-  logoScreen.classList.remove("active");
-  quizScreen.classList.add("active");
-  startQuiz();
-},5000);
+document.addEventListener("DOMContentLoaded", () => {
+  logoScreen=document.getElementById("logoScreen");
+  quizScreen=document.getElementById("quizScreen");
+  resultScreen=document.getElementById("resultScreen");
+  qNo=document.getElementById("qNo");
+  qLabel=document.getElementById("qLabel");
+  scoreBox=document.getElementById("score");
+  timerBox=document.getElementById("timer");
+  visualBox=document.getElementById("visualBox");
+  questionText=document.getElementById("questionText");
+  optionsBox=document.getElementById("optionsBox");
+  feedback=document.getElementById("feedback");
+  nextBtn=document.getElementById("nextBtn");
+  correctSound=document.getElementById("correctSound");
+  wrongSound=document.getElementById("wrongSound");
+  clapSound=document.getElementById("clapSound");
+
+  setTimeout(()=>{
+    logoScreen.classList.remove("active");
+    quizScreen.classList.add("active");
+    startQuiz();
+  },5000);
+});
 
 function startQuiz(){
   current=0;
   score=0;
-  timeLeft=60;
+  firstAttemptCorrect=0;
   scoreBox.textContent=score;
-  timerBox.textContent=timeLeft;
   loadQuestion();
-  startTimer();
 }
 
 function startTimer(){
+  timeLeft=60;
+  timerBox.textContent=timeLeft;
   clearInterval(timerInterval);
   timerInterval=setInterval(()=>{
     timeLeft--;
@@ -381,35 +421,61 @@ function loadQuestion(){
   attempts=0;
   answered=false;
   feedback.textContent="";
+  feedback.style.color="#1f2937";
   nextBtn.style.display="none";
 
   const item=questions[current];
-  qNo.textContent=current+1;
-  questionText.textContent=item.q;
+  
+  if (current >= questions.length - 2) {
+    qLabel.innerHTML = `⚡ Challenge <span id="qNo">${current + 1}</span>/${questions.length}`;
+    document.getElementById("quizScreen").querySelector('.card').style.borderColor = "#8b5cf6";
+  } else {
+    qLabel.innerHTML = `Question <span id="qNo">${current + 1}</span>/${questions.length}`;
+    document.getElementById("quizScreen").querySelector('.card').style.borderColor = "transparent";
+  }
+  
+  questionText.innerHTML=item.q;
   visualBox.innerHTML=`<div class="visual">${item.visual}</div><div class="visual-text">${item.visualText}</div>`;
   optionsBox.innerHTML="";
 
-  item.options.forEach((option,index)=>{
+  let shuffledOptions = item.options.map((opt, idx) => ({ text: opt, originalIndex: idx }));
+  shuffledOptions.sort(() => Math.random() - 0.5);
+
+  shuffledOptions.forEach((option, index)=>{
     const btn=document.createElement("button");
     btn.className="option";
-    btn.textContent=option;
-    btn.onclick=()=>checkAnswer(btn,index);
+    btn.textContent=option.text;
+    
+    if(option.originalIndex === item.answer) {
+      currentCorrectIndex = index;
+    }
+
+    btn.onclick=()=>checkAnswer(btn, index);
     optionsBox.appendChild(btn);
   });
+
+  startTimer();
 }
 
 function checkAnswer(button,selected){
   if(answered)return;
+  const currentQuestion=questions[current];
 
-  const correctIndex=questions[current].answer;
-
-  if(selected===correctIndex){
+  if(selected===currentCorrectIndex){
+    clearInterval(timerInterval);
     answered=true;
     score++;
+    
+    if(attempts===0){
+      firstAttemptCorrect++;
+    }
+    
     scoreBox.textContent=score;
     button.classList.add("correct");
     feedback.textContent="Correct!";
+    feedback.style.color="#047857";
     playSound(correctSound);
+    playSound(clapSound);
     launchConfetti();
     disableOptions();
     nextBtn.style.display="inline-block";
@@ -419,11 +485,14 @@ function checkAnswer(button,selected){
     playSound(wrongSound);
 
     if(attempts===1){
-      feedback.textContent="Try again.";
+      feedback.textContent="Hint: " + currentQuestion.hint;
+      feedback.style.color="#b45309";
       button.disabled=true;
     }else{
+      clearInterval(timerInterval);
       answered=true;
-      feedback.textContent="Incorrect. The correct answer is highlighted.";
+      feedback.textContent="Not quite. " + currentQuestion.explanation;
+      feedback.style.color="#b91c1c";
       showCorrectAnswer();
       disableOptions();
       nextBtn.style.display="inline-block";
@@ -432,8 +501,7 @@ function checkAnswer(button,selected){
 }
 
 function showCorrectAnswer(){
-  const correctIndex=questions[current].answer;
-  document.querySelectorAll(".option")[correctIndex].classList.add("correct");
+  document.querySelectorAll(".option")[currentCorrectIndex].classList.add("correct");
 }
 
 function disableOptions(){
@@ -451,25 +519,24 @@ function nextQuestion(){
 
 function showResult(){
   clearInterval(timerInterval);
-
   quizScreen.classList.remove("active");
   resultScreen.classList.add("active");
 
-  const percentage=(score/questions.length)*100;
+  const percentage=(firstAttemptCorrect/questions.length)*100;
   let message="";
 
   if(percentage>=75){
-    message="Good job";
+    message="Good job!";
     launchConfetti();
     playSound(clapSound);
   }else if(percentage>=40){
-    message="Review this chapter and try again";
+    message="Try again to get a better score!";
   }else{
-    message="Let’s practise more";
+    message="Let's practice some more!";
   }
 
   document.getElementById("resultMessage").textContent=message;
-  document.getElementById("finalScore").textContent="Your Score: "+score+" out of "+questions.length;
+  document.getElementById("finalScore").innerHTML="Total Solved: "+score+" / "+questions.length+"<br>First-Attempt Correct: "+firstAttemptCorrect+" / "+questions.length;
 }
 
 function restartQuiz(){
