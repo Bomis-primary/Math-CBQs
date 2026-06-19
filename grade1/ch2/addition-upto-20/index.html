@@ -25,7 +25,7 @@ body{margin:0;font-family:Arial,sans-serif;background:#f3f8ff;color:#1f2937}
 .option:hover{background:#eef6ff}
 .option.correct{background:#d1fae5;border-color:#047857}
 .option.wrong{background:#fee2e2;border-color:#b91c1c}
-.feedback{min-height:34px;margin-top:14px;font-size:19px;font-weight:bold;text-align:center}
+.feedback{min-height:48px;margin-top:14px;font-size:19px;font-weight:bold;text-align:center;padding:0 10px;line-height:1.4}
 .controls{margin-top:14px;text-align:center}
 .primary{background:#1f4e79;color:white;border:none;border-radius:14px;padding:14px 28px;font-size:19px;font-weight:bold;cursor:pointer}
 #nextBtn{display:none}
@@ -92,84 +92,108 @@ q:"Rohan has 8 pencils. His teacher gives him 1 more pencil. Rohan says he now h
 visual:"✏️ 8 + 1",
 visualText:"Add one more pencil to 8.",
 options:["No, he has 9 pencils.","No, he has 12 pencils.","No, he has 13 pencils.","Yes, he has 10 pencils."],
-answer:0
+answer:0,
+hint:"Count forward exactly 1 step from 8.",
+explanation:"8 plus 1 more makes 9 pencils, so Rohan's guess of 10 is incorrect."
 },
 {
 q:"There are 18 students. The teacher has 10 sticks in one box and 8 sticks in another box. Does she have enough sticks?",
 visual:"10 + 8 = 18",
 visualText:"One stick is needed for each student.",
 options:["Yes, she has enough","No, she has 1 stick less","No, she has 2 sticks less","Yes, she has more than needed"],
-answer:0
+answer:0,
+hint:"Find the sum of 10 sticks and 8 sticks first.",
+explanation:"10 + 8 equals exactly 18. Since there are 18 students, she has the exact amount needed."
 },
 {
 q:"Juhi uses 5 white shells and 5 yellow shells to make a necklace. How many shells did she use?",
 visual:"🐚 5 + 5",
 visualText:"Add the shells used.",
 options:["7","8","9","10"],
-answer:3
+answer:3,
+hint:"Think about addition doubles. What is 5 and 5 more?",
+explanation:"Adding 5 and 5 together equals 10 total shells."
 },
 {
 q:"A frog is on number 7 on a number line. How many jumps forward should it take to land on 10?",
 visual:"7 → 8 → 9 → 10",
 visualText:"Count the forward jumps.",
 options:["3","4","1","2"],
-answer:0
+answer:0,
+hint:"Count the intervals or hops between 7 and 10 on the diagram.",
+explanation:"The frog takes hops to 8, 9, and then 10. That is a total of 3 jumps."
 },
 {
 q:"Andy bakes 2 chocochip cookies in the morning and 4 chocochip cookies in the evening. How many chocochip cookies did he bake?",
 visual:"🍪 2 + 4",
 visualText:"Add only the chocochip cookies.",
 options:["14","15","11","6"],
-answer:3
+answer:3,
+hint:"Combine the morning baking total of 2 with the evening total of 4.",
+explanation:"2 cookies plus 4 more cookies equals 6 cookies in total."
 },
 {
 q:"A number is more than 1 + 3 but less than 2 + 4. Sonam says the number is 6. Is she correct?",
 visual:"1 + 3 = 4,  2 + 4 = 6",
 visualText:"The number must be between 4 and 6.",
 options:["Yes, 6 fits the rule","No, the number is 5","No, the number is 4","Yes, the number can be 6 or 5"],
-answer:1
+answer:1,
+hint:"The mystery number must be larger than 4 but smaller than 6.",
+explanation:"The only whole number greater than 4 and less than 6 is 5. So Sonam is wrong; it cannot be 6."
 },
 {
 q:"Maya adds 12 + 3 and writes the answer as 1 ten and 4 ones. What mistake did she make?",
 visual:"12 + 3 = ?",
 visualText:"Counting 3 steps from 12 gives 15.",
 options:["She added 3 tens instead of 3 ones.","She added one less in the ones place.","She added 5 more in the ones place.","The answer is correct."],
-answer:1
+answer:1,
+hint:"12 + 3 equals 15 (which is 1 ten and 5 ones). Compare this to Maya's answer.",
+explanation:"Maya wrote 4 ones instead of 5 ones, meaning she counted one less in the ones column."
 },
 {
 q:"Romi has 14 pebbles, Sid has 15, Noor has 16 and Vinu has 15. Who brought the same number of pebbles?",
 visual:"Sid = 15, Vinu = 15",
 visualText:"Compare the totals.",
 options:["Noor and Vinu","Vinu and Sid","Sid and Romi","Romi and Noor"],
-answer:1
+answer:1,
+hint:"Look for the two children who both have the number 15.",
+explanation:"Both Sid and Vinu have exactly 15 pebbles."
 },
 {
 q:"Team A scored 5 + 5 points. Team B scored 4 + 6 points. Which statement is true?",
 visual:"5 + 5 = 10   and   4 + 6 = 10",
 visualText:"Different pairs can make the same total.",
 options:["Team A scored more points.","Team B scored more points.","Both teams scored equal points.","Team A scored 1 point more."],
-answer:2
+answer:2,
+hint:"Calculate both sums. How does Team A's total compare to Team B's?",
+explanation:"Since 5 + 5 = 10 and 4 + 6 = 10, both teams finished with identical, equal scores."
 },
 {
 q:"Tina uses 8 red beads and 1 white bead. How many beads does she use in all?",
 visual:"🔴 8 + ⚪ 1",
 visualText:"Add red and white beads.",
 options:["7","2","5","9"],
-answer:3
+answer:3,
+hint:"Adding 1 to any number gives the very next counting number.",
+explanation:"8 beads plus 1 more bead results in a total of 9 beads."
 },
 {
 q:"Which of these sums does NOT equal 15?",
 visual:"Find the odd one out.",
 visualText:"Three options make 15. One does not.",
 options:["10 + 5","12 + 3","14 + 1","10 + 2"],
-answer:3
+answer:3,
+hint:"Calculate the answer for each option. Look for the one that totals 12 instead.",
+explanation:"10 + 2 equals 12, while all other options correctly add up to 15."
 },
 {
 q:"A box has 13 chocolates. Jamie adds 4 more chocolates. How many chocolates are there now?",
 visual:"🍫 13 + 4",
 visualText:"Add 4 more to 13.",
 options:["17","18","19","16"],
-answer:0
+answer:0,
+hint:"Count up 4 steps starting from 13.",
+explanation:"13 plus 4 more equals 17 chocolates."
 }
 ];
 
@@ -199,14 +223,13 @@ setTimeout(()=>{
 function startQuiz(){
   current=0;
   score=0;
-  timeLeft=60;
   scoreBox.textContent=score;
-  timerBox.textContent=timeLeft;
   loadQuestion();
-  startTimer();
 }
 
 function startTimer(){
+  timeLeft=60;
+  timerBox.textContent=timeLeft;
   clearInterval(timerInterval);
   timerInterval=setInterval(()=>{
     timeLeft--;
@@ -222,6 +245,7 @@ function loadQuestion(){
   attempts=0;
   answered=false;
   feedback.textContent="";
+  feedback.style.color="#1f2937";
   nextBtn.style.display="none";
 
   const item=questions[current];
@@ -237,19 +261,25 @@ function loadQuestion(){
     btn.onclick=()=>checkAnswer(btn,index);
     optionsBox.appendChild(btn);
   });
+  
+  startTimer();
 }
 
 function checkAnswer(button,selected){
   if(answered)return;
-  const correctIndex=questions[current].answer;
+  const currentQuestion=questions[current];
+  const correctIndex=currentQuestion.answer;
 
   if(selected===correctIndex){
+    clearInterval(timerInterval);
     answered=true;
     score++;
     scoreBox.textContent=score;
     button.classList.add("correct");
     feedback.textContent="Correct!";
+    feedback.style.color="#047857";
     playSound(correctSound);
+    playSound(clapSound);
     launchConfetti();
     disableOptions();
     nextBtn.style.display="inline-block";
@@ -259,11 +289,14 @@ function checkAnswer(button,selected){
     playSound(wrongSound);
 
     if(attempts===1){
-      feedback.textContent="Try again.";
+      feedback.textContent="Hint: "+currentQuestion.hint;
+      feedback.style.color="#b45309";
       button.disabled=true;
     }else{
+      clearInterval(timerInterval);
       answered=true;
-      feedback.textContent="Incorrect. The correct answer is highlighted.";
+      feedback.textContent="Incorrect. "+currentQuestion.explanation;
+      feedback.style.color="#b91c1c";
       showCorrectAnswer();
       disableOptions();
       nextBtn.style.display="inline-block";
@@ -334,7 +367,7 @@ function launchConfetti(){
     const piece=document.createElement("div");
     piece.className="confetti";
     piece.style.left=Math.random()*100+"vw";
-    piece.style.background=colors[Math.floor(Math.random()*colors.length)];
+    piece.style.background=colors[colors.length*Math.random()|0];
     piece.style.animationDuration=(Math.random()*0.8+0.8)+"s";
     document.body.appendChild(piece);
     setTimeout(()=>piece.remove(),1500);
