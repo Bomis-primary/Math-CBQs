@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>CBQ Interactive - Number System 100 to 200</title>
+<title>CBQ Interactive - Numbers 100 to 200</title>
 
 <style>
 *{box-sizing:border-box}
@@ -257,22 +257,22 @@ body{
 <script>
 const questions=[
 {
-q:"How many packs of 10 juice boxes do you need to make 100 juice boxes in total?",
-visual:"10, 20, 30, 40, 50, 60, 70, 80, 90, 100",
-visualText:"Let's count up by tens to get to one hundred!",
-options:["1 pack","5 packs","10 packs","100 packs"],
-answer:2,
-hint:"Try counting on your fingers by tens: 10, 20, 30... how many fingers do you hold up?",
-explanation:"Ten packs of 10 make 100 juice boxes!"
+q:"A teacher opens a fresh box containing 100 star stickers. She also finds 4 loose star stickers on her desk. How many total stickers does she have to give out?",
+visual:"100 stickers + 4 stickers = [ ? ]",
+visualText:"Count forward four steps starting from one hundred!",
+options:["140 stickers","104 stickers","114 stickers","204 stickers"],
+answer:1,
+hint:"Start counting upward from 100 four times: 101, 102, 103...",
+explanation:"One full box of 100 plus 4 individual ones equals 104 stickers!"
 },
 {
-q:"You are counting blocks. What number comes next right after 159?",
+q:"You are counting building blocks. What number comes next right after 159?",
 visual:"157, 158, 159, [ ? ]",
 visualText:"What is the very next number?",
 options:["158","160","150","170"],
 answer:1,
-hint:"When you count regular numbers, what comes right after 59? Now put a 1 in front of it!",
-explanation:"The number that comes right after 159 is 160!"
+hint:"When you count regular numbers, what comes right after 59? Now keep the 1 in front of it!",
+explanation:"The number that comes right after 159 is 160."
 },
 {
 q:"Look at the number 174. How many tens are sitting in the middle room?",
@@ -280,8 +280,8 @@ visual:"1 7 4",
 visualText:"Hundreds | Tens | Ones",
 options:["7 ones","7 tens","7 hundreds","1 ten"],
 answer:1,
-hint:"The first room is Hundreds, the middle room is Tens, and the last room is Ones.",
-explanation:"The number 174 has 7 tens in the middle room, which stands for 70!"
+hint:"The first room belongs to Hundreds, the middle room belongs to Tens, and the last room is for Ones.",
+explanation:"The number 174 has 7 tens in the middle room, which is the value of 70!"
 },
 {
 q:"Let's break the number 135 apart into its number rooms. What does it look like?",
@@ -289,8 +289,8 @@ visual:"135",
 visualText:"Break it down into hundreds, tens, and ones.",
 options:["100 + 3 + 5","1 + 3 + 5","100 + 30 + 5","10 + 30 + 5"],
 answer:2,
-hint:"135 has one 100, three 10s (30), and five 1s (5). Find the option that shows this.",
-explanation:"Breaking it apart gives us 100 + 30 + 5!"
+hint:"135 has one 100, three 10s (which is 30), and five 1s (which is 5). Find the matching list.",
+explanation:"Breaking it apart into rooms gives us 100 + 30 + 5!"
 },
 {
 q:"Three friends stand in a line. Tim is number 188. Sam is number 190. Who stands between them?",
@@ -299,7 +299,7 @@ visualText:"Find the missing missing buddy in the middle.",
 options:["187","191","189","199"],
 answer:2,
 hint:"Count out loud starting from 185: 186, 187, 188... what do you say next?",
-explanation:"The number 189 sits right between 188 and 190!"
+explanation:"The number 189 sits right between 188 and 190."
 },
 {
 q:"What number do you see when you look directly at the middle face of 142?",
@@ -307,8 +307,8 @@ visual:"1 [ 4 ] 2",
 visualText:"Just look at the digit itself!",
 options:["40","4","400","142"],
 answer:1,
-hint:"Face value means exactly what your eyes see when you look at that single digit.",
-explanation:"The digit you see is just 4!"
+hint:"Face value means exactly what your eyes see when you look at that single digit, no matter its room.",
+explanation:"The digit you see in the middle is just 4!"
 },
 {
 q:"An alligator wants to eat the biggest pile of fish. Which way should its mouth open? 165 ___ 156",
@@ -316,7 +316,7 @@ visual:"165 [   ] 156",
 visualText:"The alligator always snaps its mouth open toward the bigger number!",
 options:["< (opens to 156)","> (opens to 165)","=","+"],
 answer:1,
-hint:"Look at the tens! 165 has 6 tens, but 156 only has 5 tens. Which one is bigger?",
+hint:"Look at the middle rooms! 165 has 6 tens, but 156 only has 5 tens. Which one is more fish?",
 explanation:"165 is bigger than 156, so the mouth opens toward 165 (>)."
 },
 {
@@ -344,7 +344,7 @@ visualText:"Put the rooms back together.",
 options:["170","107","17","1007"],
 answer:1,
 hint:"There is 1 hundred, 0 tens in the middle, and 7 ones at the end.",
-explanation:"Putting them together makes 107!"
+explanation:"Putting them together into a standard number makes 107!"
 },
 {
 q:"Let's line up these book numbers from the biggest number down to the smallest number: 144, 188, 166.",
@@ -352,7 +352,7 @@ visual:"Biggest ➔ Smallest",
 visualText:"Start with the giant number and go down.",
 options:["188, 166, 144","144, 166, 188","166, 188, 144","188, 144, 166"],
 answer:0,
-hint:"Look at the tens! 80 is the biggest, then 60, and 40 is the smallest.",
+hint:"Look at the tens place rooms! 80 is the biggest, then 60, and 40 is the smallest.",
 explanation:"Lining them up from biggest to smallest gives us 188, 166, then 144!"
 },
 {
@@ -361,7 +361,7 @@ visual:"179 < [ ? ] < 181",
 visualText:"Find the hidden number in the middle.",
 options:["178","182","170","180"],
 answer:3,
-hint:"What number do you say right after 179 and right before 181?",
+hint:"What number do you say right after 179 and right before 181 when counting?",
 explanation:"The number 180 is bigger than 179 and smaller than 181!"
 }
 ];
