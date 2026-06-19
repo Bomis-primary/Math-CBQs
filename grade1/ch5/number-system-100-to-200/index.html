@@ -3,51 +3,54 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Grade 1 Math: Numbers 100 to 200</title>
+    <title>Grade 1 Math: 100 to 200</title>
     <style>
         :root {
             --primary: #ff6b6b;
             --secondary: #4dadf7;
             --success: #2ecc71;
             --danger: #e74c3c;
-            --bg: #fdfbf7;
+            --bg: #fff9db;
             --text: #2c3e50;
         }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Comic Sans MS', 'Chalkboard SE', 'Segoe UI', sans-serif; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Comic Sans MS', 'Chalkboard SE', sans-serif; }
         body { background-color: var(--bg); color: var(--text); display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 10px; }
-        .container { background: white; width: 100%; max-width: 600px; border-radius: 20px; box-shadow: 0 8px 16px rgba(0,0,0,0.06); padding: 20px; position: relative; overflow: hidden; border: 4px solid #ffd43b; }
+        .container { background: white; width: 100%; max-width: 500px; border-radius: 24px; box-shadow: 0 10px 20px rgba(0,0,0,0.08); padding: 20px; position: relative; min-height: 420px; border: 5px solid #ff922b; }
         
-        /* Splash Screen */
-        #splash-screen { position: absolute; top:0; left:0; width:100%; height:100%; background: white; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 10; }
-        #splash-screen img { max-width: 180px; height: auto; margin-bottom: 15px; }
-        
-        /* Layout Elements */
+        /* Full Page Splash Screen */
+        #splash-screen { position: absolute; top:0; left:0; width:100%; height:100%; background: #ffffff; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 100; border-radius: 18px; }
+        #splash-screen img { width: 180px; height: auto; margin-bottom: 20px; }
+        .loader-dots { font-size: 2rem; color: var(--secondary); animation: blink 1.4s infinite both; }
+        @keyframes blink { 0% { opacity: .2; } 20% { opacity: 1; } 100% { opacity: .2; } }
+
         .hidden { display: none !important; }
-        .header-meta { display: flex; justify-content: space-between; align-items: center; font-size: 1.1rem; font-weight: bold; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 3px dashed #eee; }
-        .timer { color: var(--danger); background: #fff5f5; padding: 4px 10px; border-radius: 10px; }
-        .score-box { color: var(--secondary); background: #e7f5ff; padding: 4px 10px; border-radius: 10px; }
         
-        /* Context and Text styling */
-        h2 { font-size: 1.5rem; text-align: center; margin-bottom: 15px; color: #e64980; }
-        .q-context { background: #f1f3f5; padding: 12px 15px; border-radius: 12px; margin-bottom: 15px; font-size: 1.05rem; line-height: 1.4; color: #495057; }
-        h3 { font-size: 1.2rem; margin-bottom: 15px; color: var(--text); }
+        /* Header Stats */
+        .header-meta { display: flex; justify-content: space-between; align-items: center; font-size: 1.2rem; font-weight: bold; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 4px dashed #ffd8a8; }
+        .timer { color: var(--danger); background: #fff5f5; padding: 5px 12px; border-radius: 12px; border: 2px solid #ffc9c9; }
+        .score-box { color: #2b8a3e; background: #ebfbee; padding: 5px 12px; border-radius: 12px; border: 2px solid #b2f2bb; }
         
-        /* Choices / Grid layout */
+        /* Box Text Formats */
+        h2 { font-size: 1.6rem; text-align: center; margin-bottom: 15px; color: #e64980; }
+        .q-context { background: #f1f3f5; padding: 12px; border-radius: 16px; margin-bottom: 15px; font-size: 1.2rem; text-align: center; border: 2px dashed #ced4da; }
+        h3 { font-size: 1.3rem; text-align: center; margin-bottom: 15px; color: #102a43; }
+        
+        /* Grid Buttons */
         .options-grid { display: grid; grid-template-columns: 1fr; gap: 12px; margin-bottom: 15px; }
-        .btn-opt { background: #f8f9fa; border: 3px solid #dee2e6; border-radius: 15px; padding: 14px; text-align: left; font-size: 1.1rem; font-weight: bold; cursor: pointer; transition: all 0.15s; width: 100%; -webkit-tap-highlight-color: transparent; }
-        @media(hover: hover) { .btn-opt:hover { border-color: var(--secondary); background: #e7f5ff; } }
-        .btn-opt.correct { background-color: #d4edda !important; border-color: var(--success) !important; color: #155724; }
-        .btn-opt.wrong { background-color: #f8d7da !important; border-color: var(--danger) !important; color: #721c24; }
+        .btn-opt { background: #f8f9fa; border: 3px solid #dee2e6; border-radius: 16px; padding: 15px; text-align: center; font-size: 1.2rem; font-weight: bold; cursor: pointer; transition: all 0.1s; width: 100%; -webkit-tap-highlight-color: transparent; box-shadow: 0 4px #e9ecef; }
+        .btn-opt:active { transform: translateY(2px); box-shadow: 0 2px #e9ecef; }
+        .btn-opt.correct { background-color: #d4edda !important; border-color: var(--success) !important; color: #155724; box-shadow: 0 4px #c3e6cb; }
+        .btn-opt.wrong { background-color: #f8d7da !important; border-color: var(--danger) !important; color: #721c24; box-shadow: 0 4px #f5c6cb; }
         
-        /* Dialog boxes */
-        .feedback-box { padding: 12px 15px; border-radius: 12px; margin-bottom: 15px; font-weight: bold; font-size: 1rem; text-align: center; }
+        /* Visual Dialogs */
+        .feedback-box { padding: 12px; border-radius: 16px; margin-bottom: 15px; font-weight: bold; font-size: 1.1rem; text-align: center; }
         .feedback-box.hint { background: #fff3cd; color: #856404; border: 2px solid #ffeeba; }
         .feedback-box.explanation { background: #e3fafc; color: #0b7285; border: 2px solid #c5f6fa; }
 
-        /* General Action Button */
-        .btn-action { background: var(--primary); color: white; border: none; padding: 14px; font-size: 1.1rem; border-radius: 15px; cursor: pointer; width: 100%; font-weight: bold; box-shadow: 0 4px #e03131; }
+        /* Action Keys */
+        .btn-action { background: var(--primary); color: white; border: none; padding: 15px; font-size: 1.2rem; border-radius: 16px; cursor: pointer; width: 100%; font-weight: bold; box-shadow: 0 5px #e03131; }
         .btn-action:active { transform: translateY(2px); box-shadow: 0 2px #e03131; }
-        .audio-ctrl { background: none; border: none; font-size: 1.6rem; cursor: pointer; }
+        .audio-ctrl { background: none; border: none; font-size: 1.8rem; cursor: pointer; }
         
         #confetti-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 5; }
     </style>
@@ -59,15 +62,15 @@
 
     <div id="splash-screen">
         <img src="assets/innovine-logo.png" alt="Innovine Logo">
-        <h3 style="color: #666;">Fun Math Games Loading...</h3>
+        <div class="loader-dots">🎈 Loading Game... 🎈</div>
     </div>
 
-    <div id="intro-screen" class="hidden" style="text-align: center;">
-        <h2>Let's Play with Numbers!</h2>
-        <p style="margin-bottom: 20px; font-size: 1.1rem; color: #495057; line-height: 1.5;">
-            Join the counting fun from 100 to 200. Solve puzzles using simple objects, patterns, and positioning!
+    <div id="intro-screen" class="hidden" style="text-align: center; padding-top: 20px;">
+        <h2>🔢 Fun Math Game!</h2>
+        <p style="margin-bottom: 25px; font-size: 1.2rem; color: #495057; line-height: 1.4; font-weight: bold;">
+            Let's count from 100 to 200 with pictures and blocks! ⭐
         </p>
-        <button class="btn-action" onclick="startInteractive()">Play Game 🚀</button>
+        <button class="btn-action" onclick="startInteractive()">Let's Play! 🚀</button>
     </div>
 
     <div id="game-screen" class="hidden">
@@ -78,104 +81,104 @@
         </div>
         
         <div id="question-box">
-            <div id="q-text" class="q-context">Loading scenario...</div>
-            <h3 id="q-body">Loading question...</h3>
+            <div id="q-text" class="q-context"></div>
+            <h3 id="q-body"></h3>
             <div class="options-grid" id="options-container"></div>
         </div>
 
         <div id="feedback" class="feedback-box hidden"></div>
-        <button id="next-btn" class="btn-action hidden" onclick="handleNext()">Next Question 👉</button>
+        <button id="next-btn" class="btn-action hidden" onclick="handleNext()">Next Card 👉</button>
     </div>
 
-    <div id="result-screen" class="hidden" style="text-align: center;">
-        <h2 id="result-title">Game Finished!</h2>
-        <p id="result-text" style="font-size: 1.2rem; margin-bottom: 20px; line-height: 1.4; font-weight: bold;"></p>
+    <div id="result-screen" class="hidden" style="text-align: center; padding-top: 20px;">
+        <h2>🎉 Game Over!</h2>
+        <p id="result-text" style="font-size: 1.3rem; margin-bottom: 25px; font-weight: bold; color: #2c3e50;"></p>
         <button class="btn-action" onclick="restartInteractive()">Play Again 🔄</button>
     </div>
 </div>
 
 <script>
-    // Grade 1 Appropriate Competency Questions (100 to 200)
+    // Ultra-short texts with high-density visual cue symbols for 1st graders
     const dataset = [
         {
-            context: "Anu has 10 crayon packets. Each individual packet has exactly 10 crayons inside.",
-            question: "How many total crayons does Anu have altogether?",
-            options: ["10 crayons", "100 crayons", "20 crayons", "50 crayons"],
+            context: "Anu has 10 crayon packs. 🖍️ Each pack has 10 crayons.",
+            question: "How many crayons does Anu have in total?",
+            options: ["10 crayons 🖍️", "100 crayons 🖍️", "20 crayons 🖍️", "50 crayons 🖍️"],
             answer: 1,
-            hint: "Let's skip-count by tens! 10, 20, 30... up to 10 packets matches 100.",
-            exp: "Ten groups of 10 crayons equal exactly 100 crayons!"
+            hint: "Skip-count by 10s: 10, 20, 30... up to 10 packs!",
+            exp: "10 packs of 10 makes exactly 100 crayons! 🌟"
         },
         {
-            context: "Leo is counting building blocks. He just counted block number 149.",
-            question: "What number block should Leo count next?",
-            options: ["148", "160", "150", "200"],
+            context: "Leo counts blocks. 🧱 He just counted block 149.",
+            question: "What number block comes next?",
+            options: ["148 🧱", "160 🧱", "150 🧱", "200 🧱"],
             answer: 2,
-            hint: "What number comes immediately after 49 when you count normal numbers?",
-            exp: "The next counting number right after 149 is 150."
+            hint: "What comes right after 49 when counting? 🔢",
+            exp: "150 comes right after 149! 🎉"
         },
         {
-            context: "Ali sets up three toy cars in a row. The numbers on the cars are 115, ___, and 117.",
-            question: "Which number car is missing from the middle space?",
-            options: ["114", "116", "118", "120"],
+            context: "Look at the toy cars: 115 🚗 ,  ___ 🚗 , 117 🚗.",
+            question: "What car number is missing in the middle?",
+            options: ["114 🚗", "116 🚗", "118 🚗", "120 🚗"],
             answer: 1,
-            hint: "Count out loud: 114, 115, what's next, 117?",
-            exp: "116 sits right in between 115 and 117."
+            hint: "Count up: 115, then what, then 117? 🔢",
+            exp: "116 is in between 115 and 117! ✨"
         },
         {
-            context: "Maya looks at the three-digit house number 184.",
-            question: "What value does the middle number 8 show us here?",
-            options: ["8 blocks", "80 blocks", "800 blocks", "1 block"],
+            context: "Look at the big house number: 184 🏠.",
+            question: "What is the value of the middle number 8?",
+            options: ["8 ones 🟥", "80 tens 🟩", "800 hundreds 🟦", "8 ones 🟦"],
             answer: 1,
-            hint: "The 8 is in the middle tens column. It means 8 bundles of ten.",
-            exp: "The 8 in the tens spot stands for 80."
+            hint: "The 8 is in the tens room! 🚪",
+            exp: "The 8 means 8 tens, which is 80! 🎈"
         },
         {
-            context: "Sita breaks down the code 135 using number cards.",
-            question: "Which card bundle layout shows exactly 135?",
-            options: ["10 + 30 + 5", "100 + 3 + 5", "100 + 30 + 5", "1 + 3 + 5"],
+            context: "Sita wants to make the number 135 🧩.",
+            question: "Which collection card shows 135?",
+            options: ["10 + 30 + 5 🧩", "100 + 3 + 5 🧩", "100 + 30 + 5 🧩", "1 + 3 + 5 🧩"],
             answer: 2,
-            hint: "Listen to the words carefully: One-hundred, thirty, five.",
-            exp: "135 is built from 100, 30, and 5."
+            hint: "Say it out loud: One-hundred, thirty, five! 🗣️",
+            exp: "100 and 30 and 5 makes 135! ⭐"
         },
         {
-            context: "A math board shows this spread-out problem: 100 + 90 + 2.",
-            question: "What number does this make when you put it back together?",
-            options: ["192", "129", "102", "190"],
+            context: "The card reads: 100 + 90 + 2 📇.",
+            question: "What number does this make together?",
+            options: ["192 📇", "129 📇", "102 📇", "190 📇"],
             answer: 0,
-            hint: "Combine the numbers: 1 hundred, 9 tens, and 2 ones.",
-            exp: "Putting 100, 90, and 2 together forms 192."
+            hint: "Put the hundreds, tens, and ones together! 🧩",
+            exp: "100 + 90 + 2 joins to make 192! 🎨"
         },
         {
-            context: "Tina checks two full sticker books. Book A has 167 stickers. Book B has 176 stickers.",
-            question: "Which statement tells us the true comparison?",
-            options: ["167 is bigger than 176", "167 is the same as 176", "167 is smaller than 176", "176 is smaller than 167"],
+            context: "Book A has 167 stickers 🦋. Book B has 176 stickers 🦋.",
+            question: "Which statement is true?",
+            options: ["167 is bigger 🔼", "167 is equal 🟡", "167 is smaller 🔽", "176 is smaller 🔽"],
             answer: 2,
-            hint: "Look at the tens! 6 tens is less than 7 tens.",
-            exp: "167 is smaller than 176."
+            hint: "Look at the tens! 6 tens is less than 7 tens. 🔢",
+            exp: "167 is smaller than 176! 🌸"
         },
         {
-            context: "Four toy trains have number stamps: 112, 189, 145, and 123.",
-            question: "Which line organizes the trains from smallest to biggest?",
-            options: ["189, 145, 123, 112", "112, 123, 145, 189", "112, 145, 123, 189", "123, 112, 145, 189"],
+            context: "Sort these number trains: 112 🚂, 189 🚂, 145 🚂, 123 🚂.",
+            question: "Which row goes from smallest to biggest?",
+            options: ["189, 145, 123, 112 🚂", "112, 123, 145, 189 🚂", "112, 145, 123, 189 🚂", "123, 112, 145, 189 🚂"],
             answer: 1,
-            hint: "Find the lowest number first, then progress step-by-step to the largest.",
-            exp: "Sorted from lowest to highest, the order is 112, 123, 145, and 189."
+            hint: "Find the lowest number first! 🚂",
+            exp: "From smallest to biggest: 112, 123, 145, 189! 🌟"
         },
         {
-            context: "Rohan says: 'In the number 143, the absolute face identity of the number 4 is forty.'",
-            question: "Is Rohan's idea right or wrong?",
-            options: ["Right, because it sits in the tens room", "Wrong, the face value is just 4 itself", "Wrong, it should be 400", "Right, because numbers never change name"],
+            context: "Rohan says: 'In 143 💎, the face value of 4 is forty.'",
+            question: "Is Rohan correct?",
+            options: ["Yes, it is in the tens room 👍", "No, the face value is just 4 🛑", "No, it is 400 🛑", "Yes, numbers never change 👍"],
             answer: 1,
-            hint: "Face value means looking at the number alone! What is that single number's face?",
-            exp: "The position is worth 40, but the face name value is just 4."
+            hint: "Face value means what the number looks like on its own! 👀",
+            exp: "The place value is 40, but the face name value is just 4! ✔️"
         },
         {
-            context: "Twenty children form a straight line for lunch.",
-            question: "What is the proper position word order for the 12th child and the 20th child?",
-            options: ["Twelve, Twenty", "Twelfth, Twentieth", "Second, Tenth", "Light, Last"],
+            context: "Look at the children in line: 🏃‍♂️🏃‍♀️🏃‍♂️...",
+            question: "What are the position names for line numbers 12 and 20?",
+            options: ["Twelve, Twenty 🔢", "Twelfth, Twentieth 🥇", "Second, Tenth 🥇", "Light, Last 🔢"],
             answer: 1,
-            hint: "When checking positions, we say words like first, second, or third.",
-            exp: "Child 12 is the 'Twelfth' child, and child 20 is the 'Twentieth' child."
+            hint: "Use position words like first, second, third! 🏆",
+            exp: "Line position 12 is Twelfth and 20 is Twentieth! 🎖️"
         }
     ];
 
@@ -183,17 +186,18 @@
     let score = 0;
     let attempts = 0;
     let timerInterval = null;
-    let timeRemaining = 60; // Grade 1: 60s per question rule
+    let timeRemaining = 60; // Grade 1: 60 seconds
     let isMuted = false;
 
     const audioCorrect = new Audio('assets/correct.mp3');
     const audioWrong = new Audio('assets/wrong.mp3');
 
+    // Strict 5 seconds splash screen layout trigger
     window.addEventListener('load', () => {
         setTimeout(() => {
             document.getElementById('splash-screen').classList.add('hidden');
             document.getElementById('intro-screen').classList.remove('hidden');
-        }, 5000); // 5-second logo rule
+        }, 5000);
     });
 
     function startInteractive() {
@@ -211,10 +215,10 @@
         if (isMuted) return;
         if (type === 'correct') {
             audioCorrect.currentTime = 0;
-            audioCorrect.play().catch(e => console.log("Audio deferred"));
+            audioCorrect.play().catch(() => {});
         } else {
             audioWrong.currentTime = 0;
-            audioWrong.play().catch(e => console.log("Audio deferred"));
+            audioWrong.play().catch(() => {});
         }
     }
 
@@ -242,7 +246,7 @@
         
         let qData = dataset[currentQ];
         document.getElementById('q-text').innerText = qData.context;
-        document.getElementById('q-body').innerText = `Q${currentQ + 1}: ${qData.question}`;
+        document.getElementById('q-body').innerText = qData.question;
         
         const container = document.getElementById('options-container');
         container.innerHTML = '';
@@ -264,11 +268,11 @@
             clearInterval(timerInterval);
             clickedBtn.classList.add('correct');
             playSound('correct');
-            triggerSparklers();
+            triggerVisualSparklers();
             score++;
             document.getElementById('score-val').innerText = score;
             disableOptions();
-            showFeedback('explanation', `🎈 Great Job! ${qData.exp}`);
+            showFeedback('explanation', `🎉 ${qData.exp}`);
             document.getElementById('next-btn').classList.remove('hidden');
         } else {
             attempts++;
@@ -277,12 +281,12 @@
             clickedBtn.disabled = true;
             
             if (attempts === 1) {
-                showFeedback('hint', `✨ Try Again! Hint: ${qData.hint}`);
+                showFeedback('hint', `✨ ${qData.hint}`);
             } else {
                 clearInterval(timerInterval);
                 disableOptions();
                 buttons[qData.answer].classList.add('correct');
-                showFeedback('explanation', `Let's learn: ${qData.exp}`);
+                showFeedback('explanation', `Let's see: ${qData.exp}`);
                 document.getElementById('next-btn').classList.remove('hidden');
             }
         }
@@ -325,14 +329,14 @@
         screen.classList.remove('hidden');
         
         let finalPercent = (score / dataset.length) * 100;
-        let msg = `You got ${score} out of ${dataset.length} stars! `;
+        let msg = `You earned ${score} out of ${dataset.length} stars! ⭐`;
         
         if (finalPercent >= 75) {
-            msg += "Good job! 🌟";
+            msg += "\nSuper Job! 🏆🏆";
         } else if (finalPercent >= 40) {
-            msg += "Review this chapter and try again. 📚";
+            msg += "\nGood try! Let's practice again! 📚";
         } else {
-            msg += "Let’s practise more. 💪";
+            msg += "\nLet's try one more time! 💪";
         }
         
         document.getElementById('result-text').innerText = msg;
@@ -347,8 +351,8 @@
         loadQuestion();
     }
 
-    // Interactive FX Confetti
-    function triggerSparklers() {
+    // High performance localized visual confetti particle burst effect
+    function triggerVisualSparklers() {
         const canvas = document.getElementById('confetti-canvas');
         canvas.classList.remove('hidden');
         const ctx = canvas.getContext('2d');
@@ -356,14 +360,14 @@
         canvas.height = canvas.parentElement.offsetHeight;
         
         let particles = [];
-        for (let i = 0; i < 35; i++) {
+        for (let i = 0; i < 30; i++) {
             particles.push({
                 x: canvas.width / 2,
                 y: canvas.height / 3,
-                vx: (Math.random() - 0.5) * 6,
-                vy: (Math.random() - 0.5) * 6,
-                color: `hsl(${Math.random() * 360}, 100%, 60%)`,
-                size: Math.random() * 5 + 3,
+                vx: (Math.random() - 0.5) * 7,
+                vy: (Math.random() - 0.5) * 7,
+                color: `hsl(${Math.random() * 360}, 100%, 65%)`,
+                size: Math.random() * 5 + 4,
                 alpha: 1
             });
         }
@@ -375,7 +379,7 @@
             particles.forEach(p => {
                 p.x += p.vx;
                 p.y += p.vy;
-                p.alpha -= 0.025;
+                p.alpha -= 0.03;
                 if (p.alpha > 0) {
                     alive = true;
                     ctx.fillStyle = p.color;
