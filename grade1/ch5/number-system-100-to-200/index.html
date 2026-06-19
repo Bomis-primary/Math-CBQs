@@ -1,574 +1,399 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>CBQ Interactive - Numbers 100 to 200</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grade 1 Math: Numbers 100 to 200</title>
+    <style>
+        :root {
+            --primary: #ff6b6b;
+            --secondary: #4dadf7;
+            --success: #2ecc71;
+            --danger: #e74c3c;
+            --bg: #fdfbf7;
+            --text: #2c3e50;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Comic Sans MS', 'Chalkboard SE', 'Segoe UI', sans-serif; }
+        body { background-color: var(--bg); color: var(--text); display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 10px; }
+        .container { background: white; width: 100%; max-width: 600px; border-radius: 20px; box-shadow: 0 8px 16px rgba(0,0,0,0.06); padding: 20px; position: relative; overflow: hidden; border: 4px solid #ffd43b; }
+        
+        /* Splash Screen */
+        #splash-screen { position: absolute; top:0; left:0; width:100%; height:100%; background: white; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 10; }
+        #splash-screen img { max-width: 180px; height: auto; margin-bottom: 15px; }
+        
+        /* Layout Elements */
+        .hidden { display: none !important; }
+        .header-meta { display: flex; justify-content: space-between; align-items: center; font-size: 1.1rem; font-weight: bold; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 3px dashed #eee; }
+        .timer { color: var(--danger); background: #fff5f5; padding: 4px 10px; border-radius: 10px; }
+        .score-box { color: var(--secondary); background: #e7f5ff; padding: 4px 10px; border-radius: 10px; }
+        
+        /* Context and Text styling */
+        h2 { font-size: 1.5rem; text-align: center; margin-bottom: 15px; color: #e64980; }
+        .q-context { background: #f1f3f5; padding: 12px 15px; border-radius: 12px; margin-bottom: 15px; font-size: 1.05rem; line-height: 1.4; color: #495057; }
+        h3 { font-size: 1.2rem; margin-bottom: 15px; color: var(--text); }
+        
+        /* Choices / Grid layout */
+        .options-grid { display: grid; grid-template-columns: 1fr; gap: 12px; margin-bottom: 15px; }
+        .btn-opt { background: #f8f9fa; border: 3px solid #dee2e6; border-radius: 15px; padding: 14px; text-align: left; font-size: 1.1rem; font-weight: bold; cursor: pointer; transition: all 0.15s; width: 100%; -webkit-tap-highlight-color: transparent; }
+        @media(hover: hover) { .btn-opt:hover { border-color: var(--secondary); background: #e7f5ff; } }
+        .btn-opt.correct { background-color: #d4edda !important; border-color: var(--success) !important; color: #155724; }
+        .btn-opt.wrong { background-color: #f8d7da !important; border-color: var(--danger) !important; color: #721c24; }
+        
+        /* Dialog boxes */
+        .feedback-box { padding: 12px 15px; border-radius: 12px; margin-bottom: 15px; font-weight: bold; font-size: 1rem; text-align: center; }
+        .feedback-box.hint { background: #fff3cd; color: #856404; border: 2px solid #ffeeba; }
+        .feedback-box.explanation { background: #e3fafc; color: #0b7285; border: 2px solid #c5f6fa; }
 
-<style>
-*{box-sizing:border-box}
-
-body{
-  margin:0;
-  font-family:Arial,sans-serif;
-  background:#f3f8ff;
-  color:#1f2937;
-}
-
-.screen{
-  display:none;
-  min-height:100vh;
-  padding:16px;
-}
-
-.screen.active{
-  display:flex;
-  align-items:center;
-  justify-content:center;
-}
-
-#logoScreen{
-  background:white;
-}
-
-.logo{
-  max-width:420px;
-  width:80%;
-}
-
-.card{
-  width:100%;
-  max-width:880px;
-  background:white;
-  border-radius:22px;
-  padding:20px;
-  box-shadow:0 8px 24px rgba(0,0,0,0.15);
-  border: 3px solid transparent;
-  transition: border-color 0.3s ease;
-}
-
-.topbar{
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:10px;
-  margin-bottom:16px;
-}
-
-.badge,.sound-btn{
-  background:#e0f2fe;
-  color:#0f3f5f;
-  padding:10px;
-  border-radius:14px;
-  font-weight:bold;
-  font-size:16px;
-  text-align:center;
-}
-
-.sound-btn{
-  border:none;
-  cursor:pointer;
-}
-
-.visual-box{
-  background:#f5f3ff;
-  border:2px solid #c4b5fd;
-  border-radius:18px;
-  padding:16px;
-  margin-bottom:16px;
-  text-align:center;
-  min-height:130px;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-}
-
-.visual{
-  font-size:42px;
-  font-weight:bold;
-  margin-bottom:8px;
-  line-height:1.2;
-  color:#1f4e79;
-}
-
-.visual-text{
-  font-size:18px;
-  font-weight:bold;
-  color:#4c1d95;
-}
-
-.question{
-  font-size:24px;
-  font-weight:bold;
-  line-height:1.35;
-  margin:16px 0;
-}
-
-.options{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:14px;
-}
-
-.option{
-  width:100%;
-  min-height:72px;
-  padding:14px 16px;
-  font-size:19px;
-  font-weight:bold;
-  line-height:1.3;
-  border:2px solid #1f4e79;
-  background:white;
-  color:#111827;
-  border-radius:16px;
-  cursor:pointer;
-  text-align:center;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  white-space:normal;
-}
-
-.option:hover{
-  background:#eef6ff;
-}
-
-.option.correct{
-  background:#d1fae5;
-  border-color:#047857;
-}
-
-.option.wrong{
-  background:#fee2e2;
-  border-color:#b91c1c;
-}
-
-.feedback{
-  min-height:34px;
-  margin-top:14px;
-  font-size:19px;
-  font-weight:bold;
-  text-align:center;
-}
-
-.controls{
-  margin-top:14px;
-  text-align:center;
-}
-
-.primary{
-  background:#1f4e79;
-  color:white;
-  border:none;
-  border-radius:14px;
-  padding:14px 28px;
-  font-size:19px;
-  font-weight:bold;
-  cursor:pointer;
-}
-
-#nextBtn{
-  display:none;
-}
-
-.result-title{
-  font-size:34px;
-  font-weight:bold;
-  text-align:center;
-  margin-bottom:14px;
-}
-
-.result-score{
-  font-size:21px;
-  text-align:center;
-  margin-bottom:20px;
-  line-height:1.5;
-  color:#4b5563;
-}
-
-.confetti{
-  position:fixed;
-  width:10px;
-  height:10px;
-  top:-10px;
-  animation:fall 1.2s linear forwards;
-  pointer-events:none;
-}
-
-@keyframes fall{
-  to{
-    transform:translateY(110vh) rotate(360deg);
-    opacity:0;
-  }
-}
-
-@media(max-width:700px){
-  .card{padding:15px}
-  .topbar{grid-template-columns:1fr 1fr}
-  .question{font-size:21px}
-  .options{grid-template-columns:1fr;gap:11px}
-  .option{min-height:58px;font-size:18px;padding:12px}
-  .visual{font-size:32px}
-  .visual-text{font-size:15px}
-  .primary{width:100%}
-  .badge,.sound-btn{font-size:14px}
-}
-</style>
+        /* General Action Button */
+        .btn-action { background: var(--primary); color: white; border: none; padding: 14px; font-size: 1.1rem; border-radius: 15px; cursor: pointer; width: 100%; font-weight: bold; box-shadow: 0 4px #e03131; }
+        .btn-action:active { transform: translateY(2px); box-shadow: 0 2px #e03131; }
+        .audio-ctrl { background: none; border: none; font-size: 1.6rem; cursor: pointer; }
+        
+        #confetti-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 5; }
+    </style>
 </head>
-
 <body>
 
-<div id="logoScreen" class="screen active">
-  <img src="assets/logo.png" alt="Innovine Solutions Logo" class="logo" />
-</div>
+<div class="container">
+    <canvas id="confetti-canvas" class="hidden"></canvas>
 
-<div id="quizScreen" class="screen">
-  <div class="card">
-    <div class="topbar">
-      <div class="badge" id="qLabel">Question <span id="qNo">1</span>/12</div>
-      <div class="badge">Score: <span id="score">0</span></div>
-      <div class="badge">Time: <span id="timer">60</span>s</div>
-      <button class="sound-btn" onclick="toggleMute()" id="muteBtn">🔈 Sound Off</button>
+    <div id="splash-screen">
+        <img src="assets/innovine-logo.png" alt="Innovine Logo">
+        <h3 style="color: #666;">Fun Math Games Loading...</h3>
     </div>
 
-    <div class="visual-box" id="visualBox"></div>
-    <div class="question" id="questionText"></div>
-    <div class="options" id="optionsBox"></div>
-    <div class="feedback" id="feedback"></div>
-
-    <div class="controls">
-      <button class="primary" id="nextBtn" onclick="nextQuestion()">Next</button>
+    <div id="intro-screen" class="hidden" style="text-align: center;">
+        <h2>Let's Play with Numbers!</h2>
+        <p style="margin-bottom: 20px; font-size: 1.1rem; color: #495057; line-height: 1.5;">
+            Join the counting fun from 100 to 200. Solve puzzles using simple objects, patterns, and positioning!
+        </p>
+        <button class="btn-action" onclick="startInteractive()">Play Game 🚀</button>
     </div>
-  </div>
-</div>
 
-<div id="resultScreen" class="screen">
-  <div class="card">
-    <div class="result-title" id="resultMessage"></div>
-    <div class="result-score" id="finalScore"></div>
-    <button class="primary" onclick="restartQuiz()">Play Again</button>
-  </div>
-</div>
+    <div id="game-screen" class="hidden">
+        <div class="header-meta">
+            <div class="score-box">⭐ Score: <span id="score-val">0</span></div>
+            <button class="audio-ctrl" id="mute-btn" onclick="toggleMute()">🔊</button>
+            <div class="timer">⏳ <span id="timer-val">60</span>s</div>
+        </div>
+        
+        <div id="question-box">
+            <div id="q-text" class="q-context">Loading scenario...</div>
+            <h3 id="q-body">Loading question...</h3>
+            <div class="options-grid" id="options-container"></div>
+        </div>
 
-<audio id="correctSound" src="assets/correct.mp3"></audio>
-<audio id="wrongSound" src="assets/wrong.mp3"></audio>
-<audio id="clapSound" src="assets/freesound_community-claps-44774.mp3"></audio>
+        <div id="feedback" class="feedback-box hidden"></div>
+        <button id="next-btn" class="btn-action hidden" onclick="handleNext()">Next Question 👉</button>
+    </div>
+
+    <div id="result-screen" class="hidden" style="text-align: center;">
+        <h2 id="result-title">Game Finished!</h2>
+        <p id="result-text" style="font-size: 1.2rem; margin-bottom: 20px; line-height: 1.4; font-weight: bold;"></p>
+        <button class="btn-action" onclick="restartInteractive()">Play Again 🔄</button>
+    </div>
+</div>
 
 <script>
-const questions=[
-{
-q:"A teacher opens a fresh box containing 100 star stickers. She also finds 4 loose star stickers on her desk. How many total stickers does she have to give out?",
-visual:"100 stickers + 4 stickers = [ ? ]",
-visualText:"Count forward four steps starting from one hundred!",
-options:["140 stickers","104 stickers","114 stickers","204 stickers"],
-answer:1,
-hint:"Start counting upward from 100 four times: 101, 102, 103...",
-explanation:"One full box of 100 plus 4 individual ones equals 104 stickers!"
-},
-{
-q:"You are counting building blocks. What number comes next right after 159?",
-visual:"157, 158, 159, [ ? ]",
-visualText:"What is the very next number?",
-options:["158","160","150","170"],
-answer:1,
-hint:"When you count regular numbers, what comes right after 59? Now keep the 1 in front of it!",
-explanation:"The number that comes right after 159 is 160."
-},
-{
-q:"Look at the number 174. How many tens are sitting in the middle room?",
-visual:"1 7 4",
-visualText:"Hundreds | Tens | Ones",
-options:["7 ones","7 tens","7 hundreds","1 ten"],
-answer:1,
-hint:"The first room belongs to Hundreds, the middle room belongs to Tens, and the last room is for Ones.",
-explanation:"The number 174 has 7 tens in the middle room, which is the value of 70!"
-},
-{
-q:"Let's break the number 135 apart into its number rooms. What does it look like?",
-visual:"135",
-visualText:"Break it down into hundreds, tens, and ones.",
-options:["100 + 3 + 5","1 + 3 + 5","100 + 30 + 5","10 + 30 + 5"],
-answer:2,
-hint:"135 has one 100, three 10s (which is 30), and five 1s (which is 5). Find the matching list.",
-explanation:"Breaking it apart into rooms gives us 100 + 30 + 5!"
-},
-{
-q:"Three friends stand in a line. Tim is number 188. Sam is number 190. Who stands between them?",
-visual:"188, [ ? ], 190",
-visualText:"Find the missing missing buddy in the middle.",
-options:["187","191","189","199"],
-answer:2,
-hint:"Count out loud starting from 185: 186, 187, 188... what do you say next?",
-explanation:"The number 189 sits right between 188 and 190."
-},
-{
-q:"What number do you see when you look directly at the middle face of 142?",
-visual:"1 [ 4 ] 2",
-visualText:"Just look at the digit itself!",
-options:["40","4","400","142"],
-answer:1,
-hint:"Face value means exactly what your eyes see when you look at that single digit, no matter its room.",
-explanation:"The digit you see in the middle is just 4!"
-},
-{
-q:"An alligator wants to eat the biggest pile of fish. Which way should its mouth open? 165 ___ 156",
-visual:"165 [   ] 156",
-visualText:"The alligator always snaps its mouth open toward the bigger number!",
-options:["< (opens to 156)","> (opens to 165)","=","+"],
-answer:1,
-hint:"Look at the middle rooms! 165 has 6 tens, but 156 only has 5 tens. Which one is more fish?",
-explanation:"165 is bigger than 156, so the mouth opens toward 165 (>)."
-},
-{
-q:"Let's line up these toy cars from the smallest number to the biggest number: 120, 110, 150.",
-visual:"Smallest ➔ Biggest",
-visualText:"Start with the tiniest number and go up.",
-options:["150, 120, 110","110, 150, 120","110, 120, 150","120, 110, 150"],
-answer:2,
-hint:"Compare the middle numbers. 10 is smaller than 20, and 20 is smaller than 50.",
-explanation:"Lining them up from smallest to biggest gives us 110, 120, then 150!"
-},
-{
-q:"If you take away exactly 1 block from a stack of 200, how many blocks are left?",
-visual:"200 − 1 = [ ? ]",
-visualText:"Go backward by 1 step.",
-options:["100","190","199","201"],
-answer:2,
-hint:"What number comes right before 200 when you are counting?",
-explanation:"The number right before 200 is 199!"
-},
-{
-q:"Put these numbers together into a single number: 100 + 0 + 7.",
-visual:"100 + 0 + 7 = [ ? ]",
-visualText:"Put the rooms back together.",
-options:["170","107","17","1007"],
-answer:1,
-hint:"There is 1 hundred, 0 tens in the middle, and 7 ones at the end.",
-explanation:"Putting them together into a standard number makes 107!"
-},
-{
-q:"Let's line up these book numbers from the biggest number down to the smallest number: 144, 188, 166.",
-visual:"Biggest ➔ Smallest",
-visualText:"Start with the giant number and go down.",
-options:["188, 166, 144","144, 166, 188","166, 188, 144","188, 144, 166"],
-answer:0,
-hint:"Look at the tens place rooms! 80 is the biggest, then 60, and 40 is the smallest.",
-explanation:"Lining them up from biggest to smallest gives us 188, 166, then 144!"
-},
-{
-q:"Which sneaky number is bigger than 179 but still smaller than 181?",
-visual:"179 < [ ? ] < 181",
-visualText:"Find the hidden number in the middle.",
-options:["178","182","170","180"],
-answer:3,
-hint:"What number do you say right after 179 and right before 181 when counting?",
-explanation:"The number 180 is bigger than 179 and smaller than 181!"
-}
-];
+    // Grade 1 Appropriate Competency Questions (100 to 200)
+    const dataset = [
+        {
+            context: "Anu has 10 crayon packets. Each individual packet has exactly 10 crayons inside.",
+            question: "How many total crayons does Anu have altogether?",
+            options: ["10 crayons", "100 crayons", "20 crayons", "50 crayons"],
+            answer: 1,
+            hint: "Let's skip-count by tens! 10, 20, 30... up to 10 packets matches 100.",
+            exp: "Ten groups of 10 crayons equal exactly 100 crayons!"
+        },
+        {
+            context: "Leo is counting building blocks. He just counted block number 149.",
+            question: "What number block should Leo count next?",
+            options: ["148", "160", "150", "200"],
+            answer: 2,
+            hint: "What number comes immediately after 49 when you count normal numbers?",
+            exp: "The next counting number right after 149 is 150."
+        },
+        {
+            context: "Ali sets up three toy cars in a row. The numbers on the cars are 115, ___, and 117.",
+            question: "Which number car is missing from the middle space?",
+            options: ["114", "116", "118", "120"],
+            answer: 1,
+            hint: "Count out loud: 114, 115, what's next, 117?",
+            exp: "116 sits right in between 115 and 117."
+        },
+        {
+            context: "Maya looks at the three-digit house number 184.",
+            question: "What value does the middle number 8 show us here?",
+            options: ["8 blocks", "80 blocks", "800 blocks", "1 block"],
+            answer: 1,
+            hint: "The 8 is in the middle tens column. It means 8 bundles of ten.",
+            exp: "The 8 in the tens spot stands for 80."
+        },
+        {
+            context: "Sita breaks down the code 135 using number cards.",
+            question: "Which card bundle layout shows exactly 135?",
+            options: ["10 + 30 + 5", "100 + 3 + 5", "100 + 30 + 5", "1 + 3 + 5"],
+            answer: 2,
+            hint: "Listen to the words carefully: One-hundred, thirty, five.",
+            exp: "135 is built from 100, 30, and 5."
+        },
+        {
+            context: "A math board shows this spread-out problem: 100 + 90 + 2.",
+            question: "What number does this make when you put it back together?",
+            options: ["192", "129", "102", "190"],
+            answer: 0,
+            hint: "Combine the numbers: 1 hundred, 9 tens, and 2 ones.",
+            exp: "Putting 100, 90, and 2 together forms 192."
+        },
+        {
+            context: "Tina checks two full sticker books. Book A has 167 stickers. Book B has 176 stickers.",
+            question: "Which statement tells us the true comparison?",
+            options: ["167 is bigger than 176", "167 is the same as 176", "167 is smaller than 176", "176 is smaller than 167"],
+            answer: 2,
+            hint: "Look at the tens! 6 tens is less than 7 tens.",
+            exp: "167 is smaller than 176."
+        },
+        {
+            context: "Four toy trains have number stamps: 112, 189, 145, and 123.",
+            question: "Which line organizes the trains from smallest to biggest?",
+            options: ["189, 145, 123, 112", "112, 123, 145, 189", "112, 145, 123, 189", "123, 112, 145, 189"],
+            answer: 1,
+            hint: "Find the lowest number first, then progress step-by-step to the largest.",
+            exp: "Sorted from lowest to highest, the order is 112, 123, 145, and 189."
+        },
+        {
+            context: "Rohan says: 'In the number 143, the absolute face identity of the number 4 is forty.'",
+            question: "Is Rohan's idea right or wrong?",
+            options: ["Right, because it sits in the tens room", "Wrong, the face value is just 4 itself", "Wrong, it should be 400", "Right, because numbers never change name"],
+            answer: 1,
+            hint: "Face value means looking at the number alone! What is that single number's face?",
+            exp: "The position is worth 40, but the face name value is just 4."
+        },
+        {
+            context: "Twenty children form a straight line for lunch.",
+            question: "What is the proper position word order for the 12th child and the 20th child?",
+            options: ["Twelve, Twenty", "Twelfth, Twentieth", "Second, Tenth", "Light, Last"],
+            answer: 1,
+            hint: "When checking positions, we say words like first, second, or third.",
+            exp: "Child 12 is the 'Twelfth' child, and child 20 is the 'Twentieth' child."
+        }
+    ];
 
-let current=0,score=0,firstAttemptCorrect=0,attempts=0,answered=false,timeLeft=60,timerInterval,muted=true;
-let currentCorrectIndex = 0;
+    let currentQ = 0;
+    let score = 0;
+    let attempts = 0;
+    let timerInterval = null;
+    let timeRemaining = 60; // Grade 1: 60s per question rule
+    let isMuted = false;
 
-let logoScreen, quizScreen, resultScreen, qNo, qLabel, scoreBox, timerBox, visualBox, questionText, optionsBox, feedback, nextBtn, correctSound, wrongSound, clapSound;
+    const audioCorrect = new Audio('assets/correct.mp3');
+    const audioWrong = new Audio('assets/wrong.mp3');
 
-document.addEventListener("DOMContentLoaded", () => {
-  logoScreen=document.getElementById("logoScreen");
-  quizScreen=document.getElementById("quizScreen");
-  resultScreen=document.getElementById("resultScreen");
-  qNo=document.getElementById("qNo");
-  qLabel=document.getElementById("qLabel");
-  scoreBox=document.getElementById("score");
-  timerBox=document.getElementById("timer");
-  visualBox=document.getElementById("visualBox");
-  questionText=document.getElementById("questionText");
-  optionsBox=document.getElementById("optionsBox");
-  feedback=document.getElementById("feedback");
-  nextBtn=document.getElementById("nextBtn");
-  correctSound=document.getElementById("correctSound");
-  wrongSound=document.getElementById("wrongSound");
-  clapSound=document.getElementById("clapSound");
+    window.addEventListener('load', () => {
+        setTimeout(() => {
+            document.getElementById('splash-screen').classList.add('hidden');
+            document.getElementById('intro-screen').classList.remove('hidden');
+        }, 5000); // 5-second logo rule
+    });
 
-  setTimeout(()=>{
-    logoScreen.classList.remove("active");
-    quizScreen.classList.add("active");
-    startQuiz();
-  },5000);
-});
-
-function startQuiz(){
-  current=0;
-  score=0;
-  firstAttemptCorrect=0;
-  scoreBox.textContent=score;
-  loadQuestion();
-}
-
-function startTimer(){
-  timeLeft=60;
-  timerBox.textContent=timeLeft;
-  clearInterval(timerInterval);
-  timerInterval=setInterval(()=>{
-    timeLeft--;
-    timerBox.textContent=timeLeft;
-    if(timeLeft<=0){
-      clearInterval(timerInterval);
-      showResult();
-    }
-  },1000);
-}
-
-function loadQuestion(){
-  attempts=0;
-  answered=false;
-  feedback.textContent="";
-  feedback.style.color="#1f2937";
-  nextBtn.style.display="none";
-
-  const item=questions[current];
-  
-  if (current >= questions.length - 2) {
-    qLabel.innerHTML = `⚡ Challenge <span id="qNo">${current + 1}</span>/${questions.length}`;
-    document.getElementById("quizScreen").querySelector('.card').style.borderColor = "#8b5cf6";
-  } else {
-    qLabel.innerHTML = `Question <span id="qNo">${current + 1}</span>/${questions.length}`;
-    document.getElementById("quizScreen").querySelector('.card').style.borderColor = "transparent";
-  }
-  
-  questionText.innerHTML=item.q;
-  visualBox.innerHTML=`<div class="visual">${item.visual}</div><div class="visual-text">${item.visualText}</div>`;
-  optionsBox.innerHTML="";
-
-  let shuffledOptions = item.options.map((opt, idx) => ({ text: opt, originalIndex: idx }));
-  shuffledOptions.sort(() => Math.random() - 0.5);
-
-  shuffledOptions.forEach((option, index)=>{
-    const btn=document.createElement("button");
-    btn.className="option";
-    btn.textContent=option.text;
-    
-    if(option.originalIndex === item.answer) {
-      currentCorrectIndex = index;
+    function startInteractive() {
+        document.getElementById('intro-screen').classList.add('hidden');
+        document.getElementById('game-screen').classList.remove('hidden');
+        loadQuestion();
     }
 
-    btn.onclick=()=>checkAnswer(btn, index);
-    optionsBox.appendChild(btn);
-  });
-
-  startTimer();
-}
-
-function checkAnswer(button,selected){
-  if(answered)return;
-  const currentQuestion=questions[current];
-
-  if(selected===currentCorrectIndex){
-    clearInterval(timerInterval);
-    answered=true;
-    score++;
-    
-    if(attempts===0){
-      firstAttemptCorrect++;
+    function toggleMute() {
+        isMuted = !isMuted;
+        document.getElementById('mute-btn').innerText = isMuted ? "🔇" : "🔊";
     }
-    
-    scoreBox.textContent=score;
-    button.classList.add("correct");
-    feedback.textContent="Correct!";
-    feedback.style.color="#047857";
-    playSound(correctSound);
-    playSound(clapSound);
-    launchConfetti();
-    disableOptions();
-    nextBtn.style.display="inline-block";
-  }else{
-    attempts++;
-    button.classList.add("wrong");
-    playSound(wrongSound);
 
-    if(attempts===1){
-      feedback.textContent="Hint: " + currentQuestion.hint;
-      feedback.style.color="#b45309";
-      button.disabled=true;
-    }else{
-      clearInterval(timerInterval);
-      answered=true;
-      feedback.textContent="Not quite. " + currentQuestion.explanation;
-      feedback.style.color="#b91c1c";
-      showCorrectAnswer();
-      disableOptions();
-      nextBtn.style.display="inline-block";
+    function playSound(type) {
+        if (isMuted) return;
+        if (type === 'correct') {
+            audioCorrect.currentTime = 0;
+            audioCorrect.play().catch(e => console.log("Audio deferred"));
+        } else {
+            audioWrong.currentTime = 0;
+            audioWrong.play().catch(e => console.log("Audio deferred"));
+        }
     }
-  }
-}
 
-function showCorrectAnswer(){
-  document.querySelectorAll(".option")[currentCorrectIndex].classList.add("correct");
-}
+    function startTimer() {
+        clearInterval(timerInterval);
+        timeRemaining = 60;
+        document.getElementById('timer-val').innerText = timeRemaining;
+        timerInterval = setInterval(() => {
+            timeRemaining--;
+            document.getElementById('timer-val').innerText = timeRemaining;
+            if (timeRemaining <= 0) {
+                clearInterval(timerInterval);
+                handleTimeout();
+            }
+        }, 1000);
+    }
 
-function disableOptions(){
-  document.querySelectorAll(".option").forEach(btn=>btn.disabled=true);
-}
+    function loadQuestion() {
+        clearInterval(timerInterval);
+        startTimer();
+        
+        attempts = 0;
+        document.getElementById('feedback').classList.add('hidden');
+        document.getElementById('next-btn').classList.add('hidden');
+        
+        let qData = dataset[currentQ];
+        document.getElementById('q-text').innerText = qData.context;
+        document.getElementById('q-body').innerText = `Q${currentQ + 1}: ${qData.question}`;
+        
+        const container = document.getElementById('options-container');
+        container.innerHTML = '';
+        
+        qData.options.forEach((opt, idx) => {
+            let btn = document.createElement('button');
+            btn.className = 'btn-opt';
+            btn.innerText = opt;
+            btn.onclick = () => selectOption(idx, btn);
+            container.appendChild(btn);
+        });
+    }
 
-function nextQuestion(){
-  current++;
-  if(current<questions.length){
-    loadQuestion();
-  }else{
-    showResult();
-  }
-}
+    function selectOption(selectedIndex, clickedBtn) {
+        let qData = dataset[currentQ];
+        const buttons = document.getElementsByClassName('btn-opt');
+        
+        if (selectedIndex === qData.answer) {
+            clearInterval(timerInterval);
+            clickedBtn.classList.add('correct');
+            playSound('correct');
+            triggerSparklers();
+            score++;
+            document.getElementById('score-val').innerText = score;
+            disableOptions();
+            showFeedback('explanation', `🎈 Great Job! ${qData.exp}`);
+            document.getElementById('next-btn').classList.remove('hidden');
+        } else {
+            attempts++;
+            playSound('wrong');
+            clickedBtn.classList.add('wrong');
+            clickedBtn.disabled = true;
+            
+            if (attempts === 1) {
+                showFeedback('hint', `✨ Try Again! Hint: ${qData.hint}`);
+            } else {
+                clearInterval(timerInterval);
+                disableOptions();
+                buttons[qData.answer].classList.add('correct');
+                showFeedback('explanation', `Let's learn: ${qData.exp}`);
+                document.getElementById('next-btn').classList.remove('hidden');
+            }
+        }
+    }
 
-function showResult(){
-  clearInterval(timerInterval);
-  quizScreen.classList.remove("active");
-  resultScreen.classList.add("active");
+    function handleTimeout() {
+        disableOptions();
+        let qData = dataset[currentQ];
+        const buttons = document.getElementsByClassName('btn-opt');
+        buttons[qData.answer].classList.add('correct');
+        showFeedback('explanation', `⏰ Time's up! ${qData.exp}`);
+        document.getElementById('next-btn').classList.remove('hidden');
+    }
 
-  const percentage=(firstAttemptCorrect/questions.length)*100;
-  let message="";
+    function disableOptions() {
+        const buttons = document.getElementsByClassName('btn-opt');
+        for (let b of buttons) { b.disabled = true; }
+    }
 
-  if(percentage>=75){
-    message="Good job!";
-    launchConfetti();
-    playSound(clapSound);
-  }else if(percentage>=40){
-    message="Try again to get a better score!";
-  }else{
-    message="Let's practice some more!";
-  }
+    function showFeedback(type, message) {
+        const box = document.getElementById('feedback');
+        box.className = `feedback-box ${type}`;
+        box.innerText = message;
+        box.classList.remove('hidden');
+    }
 
-  document.getElementById("resultMessage").textContent=message;
-  document.getElementById("finalScore").innerHTML="Total Solved: "+score+" / "+questions.length+"<br>First-Attempt Correct: "+firstAttemptCorrect+" / "+questions.length;
-}
+    function handleNext() {
+        currentQ++;
+        if (currentQ < dataset.length) {
+            loadQuestion();
+        } else {
+            showResults();
+        }
+    }
 
-function restartQuiz(){
-  resultScreen.classList.remove("active");
-  quizScreen.classList.add("active");
-  startQuiz();
-}
+    function showResults() {
+        clearInterval(timerInterval);
+        document.getElementById('game-screen').classList.add('hidden');
+        const screen = document.getElementById('result-screen');
+        screen.classList.remove('hidden');
+        
+        let finalPercent = (score / dataset.length) * 100;
+        let msg = `You got ${score} out of ${dataset.length} stars! `;
+        
+        if (finalPercent >= 75) {
+            msg += "Good job! 🌟";
+        } else if (finalPercent >= 40) {
+            msg += "Review this chapter and try again. 📚";
+        } else {
+            msg += "Let’s practise more. 💪";
+        }
+        
+        document.getElementById('result-text').innerText = msg;
+    }
 
-function toggleMute(){
-  muted=!muted;
-  document.getElementById("muteBtn").textContent=muted?"🔇 Sound Off":"🔊 Sound On";
-}
+    function restartInteractive() {
+        currentQ = 0;
+        score = 0;
+        document.getElementById('score-val').innerText = score;
+        document.getElementById('result-screen').classList.add('hidden');
+        document.getElementById('game-screen').classList.remove('hidden');
+        loadQuestion();
+    }
 
-function playSound(sound){
-  if(muted)return;
-  sound.currentTime=0;
-  sound.play().catch(()=>{});
-}
-
-function launchConfetti(){
-  const colors=["#f59e0b","#10b981","#3b82f6","#ef4444","#8b5cf6"];
-  for(let i=0;i<30;i++){
-    const piece=document.createElement("div");
-    piece.className="confetti";
-    piece.style.left=Math.random()*100+"vw";
-    piece.style.background=colors[Math.floor(Math.random()*colors.length)];
-    piece.style.animationDuration=(Math.random()*0.8+0.8)+"s";
-    document.body.appendChild(piece);
-    setTimeout(()=>piece.remove(),1500);
-  }
-}
+    // Interactive FX Confetti
+    function triggerSparklers() {
+        const canvas = document.getElementById('confetti-canvas');
+        canvas.classList.remove('hidden');
+        const ctx = canvas.getContext('2d');
+        canvas.width = canvas.parentElement.offsetWidth;
+        canvas.height = canvas.parentElement.offsetHeight;
+        
+        let particles = [];
+        for (let i = 0; i < 35; i++) {
+            particles.push({
+                x: canvas.width / 2,
+                y: canvas.height / 3,
+                vx: (Math.random() - 0.5) * 6,
+                vy: (Math.random() - 0.5) * 6,
+                color: `hsl(${Math.random() * 360}, 100%, 60%)`,
+                size: Math.random() * 5 + 3,
+                alpha: 1
+            });
+        }
+        
+        let animationFrame;
+        function update() {
+            ctx.clearRect(0,0, canvas.width, canvas.height);
+            let alive = false;
+            particles.forEach(p => {
+                p.x += p.vx;
+                p.y += p.vy;
+                p.alpha -= 0.025;
+                if (p.alpha > 0) {
+                    alive = true;
+                    ctx.fillStyle = p.color;
+                    ctx.globalAlpha = p.alpha;
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            });
+            if (alive) {
+                animationFrame = requestAnimationFrame(update);
+            } else {
+                canvas.classList.add('hidden');
+                cancelAnimationFrame(animationFrame);
+            }
+        }
+        update();
+    }
 </script>
-
 </body>
 </html>
