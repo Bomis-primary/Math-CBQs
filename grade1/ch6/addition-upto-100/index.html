@@ -3,37 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Grade 1 Math: Number System (100 to 200)</title>
+    <title>Grade 1 Math: Addition up to 100</title>
     <style>
         :root {
-            --primary: #ff6b6b;
+            --primary: #e64980;
             --secondary: #4dadf7;
             --success: #2ecc71;
             --danger: #e74c3c;
-            --bg: #fff9db;
+            --bg: #fff0f6;
             --text: #2c3e50;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Comic Sans MS', 'Chalkboard SE', sans-serif; }
         body { background-color: var(--bg); color: var(--text); display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 10px; }
-        .container { background: white; width: 100%; max-width: 460px; border-radius: 24px; box-shadow: 0 10px 20px rgba(0,0,0,0.08); padding: 20px; position: relative; min-height: 440px; border: 5px solid #ff922b; overflow: hidden; }
+        .container { background: white; width: 100%; max-width: 460px; border-radius: 24px; box-shadow: 0 10px 20px rgba(0,0,0,0.08); padding: 20px; position: relative; min-height: 440px; border: 5px solid #f783ac; overflow: hidden; }
         
         /* Strict 5-Second Splash Guard Layout */
         #splash-screen { position: absolute; top:0; left:0; width:100%; height:100%; background: #ffffff; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 100; border-radius: 18px; }
         #splash-screen img { width: 190px; height: auto; margin-bottom: 20px; }
-        .loader-dots { font-size: 1.8rem; color: var(--secondary); animation: blink 1.4s infinite both; }
+        .loader-dots { font-size: 1.8rem; color: var(--primary); animation: blink 1.4s infinite both; }
         @keyframes blink { 0% { opacity: .2; } 20% { opacity: 1; } 100% { opacity: .2; } }
 
         .hidden { display: none !important; }
         
         /* Interactive Dashboard Meta */
-        .header-meta { display: flex; justify-content: space-between; align-items: center; font-size: 1.3rem; font-weight: bold; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 4px dashed #ffd8a8; }
+        .header-meta { display: flex; justify-content: space-between; align-items: center; font-size: 1.3rem; font-weight: bold; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 4px dashed #ffdeeb; }
         .timer { color: var(--danger); background: #fff5f5; padding: 5px 12px; border-radius: 12px; border: 2px solid #ffc9c9; }
         .score-box { color: #2b8a3e; background: #ebfbee; padding: 5px 12px; border-radius: 12px; border: 2px solid #b2f2bb; }
         
         /* Simple Layout Typography */
-        h2 { font-size: 1.7rem; text-align: center; margin-bottom: 15px; color: #e64980; line-height: 1.3; }
+        h2 { font-size: 1.7rem; text-align: center; margin-bottom: 15px; color: #d6336c; line-height: 1.3; }
         .visual-emoji-display { font-size: 3.8rem; text-align: center; margin: 10px 0; user-select: none; }
-        .q-context { background: #f1f3f5; padding: 15px; border-radius: 16px; margin-bottom: 15px; font-size: 1.35rem; text-align: center; font-weight: bold; color: #102a43; line-height: 1.4; border: 2px dashed #cbd5e1; }
+        .q-context { background: #f1f3f5; padding: 15px; border-radius: 16px; margin-bottom: 15px; font-size: 1.35rem; text-align: center; font-weight: bold; color: #102a43; line-height: 1.4; border: 2px dashed #faa2c1; }
         
         /* Responsive High-Contrast Tap Targets */
         .options-grid { display: grid; grid-template-columns: 1fr; gap: 12px; margin-bottom: 15px; }
@@ -48,8 +48,8 @@
         .feedback-box.explanation { background: #e3fafc; color: #0b7285; border: 2px solid #c5f6fa; }
 
         /* General UI Actions */
-        .btn-action { background: var(--primary); color: white; border: none; padding: 15px; font-size: 1.4rem; border-radius: 16px; cursor: pointer; width: 100%; font-weight: bold; box-shadow: 0 5px #e03131; }
-        .btn-action:active { transform: translateY(2px); box-shadow: 0 2px #e03131; }
+        .btn-action { background: var(--primary); color: white; border: none; padding: 15px; font-size: 1.4rem; border-radius: 16px; cursor: pointer; width: 100%; font-weight: bold; box-shadow: 0 5px #c2255c; }
+        .btn-action:active { transform: translateY(2px); box-shadow: 0 2px #c2255c; }
         .audio-ctrl { background: none; border: none; font-size: 2rem; cursor: pointer; }
         
         #confetti-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 5; }
@@ -60,20 +60,23 @@
 <div class="container">
     <canvas id="confetti-canvas" class="hidden"></canvas>
 
+    <!-- Splash Screen (Strict 5 Seconds Rule) -->
     <div id="splash-screen">
         <img src="assets/innovine-logo.png" alt="Innovine Logo">
-        <div class="loader-dots">🎈 Loading Game... 🎈</div>
+        <div class="loader-dots">✨ Loading Fun Math... ✨</div>
     </div>
 
+    <!-- Intro Instructions Screen -->
     <div id="intro-screen" class="hidden" style="text-align: center; padding-top: 20px;">
-        <h2>🔢 Let's Count!</h2>
-        <div class="visual-emoji-display">🧱🚗🏠</div>
+        <h2>➕ Adding Up!</h2>
+        <div class="visual-emoji-display">🪵🌹🌸</div>
         <p style="margin-bottom: 25px; font-size: 1.35rem; color: #495057; font-weight: bold;">
-            Numbers 100 to 200 Game ⭐
+            Addition up to 100 Game ⭐
         </p>
         <button class="btn-action" onclick="startInteractive()">PLAY! 🚀</button>
     </div>
 
+    <!-- Main Active Game Loop -->
     <div id="game-screen" class="hidden">
         <div class="header-meta">
             <div class="score-box">⭐ <span id="score-val">0</span></div>
@@ -91,112 +94,113 @@
         <button id="next-btn" class="btn-action hidden" onclick="handleNext()">NEXT 👉</button>
     </div>
 
+    <!-- Final Score Display -->
     <div id="result-screen" class="hidden" style="text-align: center; padding-top: 20px;">
         <h2>🎉 Finished!</h2>
-        <div class="visual-emoji-display">🏆👑✨</div>
+        <div class="visual-emoji-display">🏆🌟👑</div>
         <p id="result-text" style="font-size: 1.35rem; margin-bottom: 25px; font-weight: bold; color: #2c3e50; white-space: pre-line;"></p>
         <button class="btn-action" onclick="restartInteractive()">PLAY AGAIN 🔄</button>
     </div>
 </div>
 
 <script>
-    // 12 Chapter-aligned questions with child-friendly text adaptations and structural icons
+    // 12 Selected/Formatted Chapter-aligned questions from source text[cite: 4]
     const dataset = [
         {
-            emoji: "🦖",
-            context: "What number comes next right after 159?",
-            options: ["158 🦖", "160 🦖", "150 🦖", "170 🦖"],
-            answer: 1,
-            hint: "Add 1 more to 159! What comes after 59? 🔢",
-            exp: "160 comes just after 159! 🎉"
-        },
-        {
-            emoji: "🧱",
-            context: "Look at number 174. What is the value of the middle 7?",
-            options: ["7 ones 🟥", "70 tens 🟩", "700 hundreds 🟦", "1 one 🟨"],
-            answer: 1,
-            hint: "The 7 is standing in the middle tens place! 🚪",
-            exp: "7 in the tens place means 70! 🎈"
-        },
-        {
-            emoji: "✏️",
-            context: "Which matches the expanded break-up form of 135?",
-            options: ["100 + 3 + 5 ✏️", "1 + 3 + 5 ✏️", "100 + 30 + 5 ✏️", "10 + 30 + 5 ✏️"],
+            emoji: "🪵",
+            context: "Simi has 1 bundle of 10 sticks and another bundle of 39 sticks. How many altogether?[cite: 4]",
+            options: ["29 sticks 🪵", "43 sticks 🪵", "49 sticks 🪵", "40 sticks 🪵"],
             answer: 2,
-            hint: "Say it aloud: One-hundred, thirty, five! 🗣️",
-            exp: "135 is 100 and 30 and 5! ⭐"
+            hint: "Add 10 more to 39. Count up by one ten! 🔢",
+            exp: "10 + 39 = 49 sticks in total! 🌟[cite: 4]"
         },
         {
-            emoji: "🚗",
-            context: "Which friendly number sits between 188 and 190?",
-            options: ["187 🚗", "191 🚗", "189 🚗", "199 🚗"],
-            answer: 2,
-            hint: "Count up: 188, then what number, then 190? 🔢",
-            exp: "189 sits in the middle of 188 and 190! ✨"
-        },
-        {
-            emoji: "💎",
-            context: "What is the true face value of digit 1 in number 142?",
-            options: ["100 💎", "10 💎", "1 💎", "142 💎"],
-            answer: 2,
-            hint: "Face value is what the number looks like on its own! 👀",
-            exp: "The face name value of 1 is just 1! ✔️"
-        },
-        {
-            emoji: "⚖️",
-            context: "Which matching sign fits here? 165 ___ 156",
-            options: ["< (Smaller)", "> (Bigger)", "= (Same)", "+ (Plus)"],
-            answer: 1,
-            hint: "Compare the tens! 6 tens is bigger than 5 tens. 🔼",
-            exp: "165 is greater than 156! 🌸"
-        },
-        {
-            emoji: "🚂",
-            context: "Sort from smallest to biggest: 120, 110, 150.",
-            options: ["150, 120, 110 🚂", "110, 150, 120 🚂", "110, 120, 150 🚂", "120, 110, 150 🚂"],
-            answer: 2,
-            hint: "Find the lowest starting counting number first! 🚂",
-            exp: "Smallest to biggest is 110, 120, 150! 🌟"
-        },
-        {
-            emoji: "🍎",
-            context: "In the word 'APPLE', what position is the letter 'L'?",
-            options: ["Second 🥈", "Sixth 🏅", "Fifth 🎖️", "Fourth 🥇"],
+            emoji: "🧩",
+            context: "To solve 45 + 23 correctly, which breakdown group is correct?[cite: 4]",
+            options: ["40 + 50 + 2 + 3 🧩", "4 + 5 + 2 + 3 🧩", "40 + 20 + 50 + 30 🧩", "40 + 20 + 5 + 3 🧩"],
             answer: 3,
-            hint: "Count the letters from start to finish: A, P, P, L... 🔢",
-            exp: "'L' is the fourth letter in APPLE! 🏆"
+            hint: "Separate your tens together and your ones together! 🏠",
+            exp: "We add tens (40 + 20) and ones (5 + 3) separately! 💎[cite: 4]"
         },
         {
-            emoji: "🚌",
-            context: "Line order: Candy, Danny, Freddy, Polly. Who is third?",
-            options: ["Danny 🎒", "Freddy 🎒", "Polly 🎒", "Edward 🎒"],
+            emoji: "⚡",
+            context: "Let's add: 52 + 16 = ___[cite: 4]",
+            options: ["68 ⚡", "58 ⚡", "78 ⚡", "66 ⚡"],
+            answer: 0,
+            hint: "First add the ones (2 + 6), then add the tens (5 + 1)! 🔢",
+            exp: "2 + 6 = 8 ones and 5 + 1 = 6 tens. Total is 68! 🎉[cite: 4]"
+        },
+        {
+            emoji: "🌹",
+            context: "A florist has 44 red roses and 35 yellow roses. How many roses in total?[cite: 4]",
+            options: ["70 roses 🌹", "79 roses 🌹", "89 roses 🌹", "11 roses 🌹"],
             answer: 1,
-            hint: "Count down the queue line positions from Candy! 🏃‍♂️",
-            exp: Freddy sits in the third spot! 🎖️"
+            hint: "Add 4 + 5 for ones, then 4 + 3 for tens. 🌸",
+            exp: "44 + 35 equals 79 total roses! 🎈[cite: 4]"
         },
         {
             emoji: "🎈",
-            context: "Which number is exactly 1 less than 200?",
-            options: ["100 🎈", "190 🎈", "199 🎈", "201 🎈"],
-            answer: 2,
-            hint: "What number comes right before you reach 200? 🛑",
-            exp: "Take 1 away from 200 to get 199! 🎨"
+            context: "Which of these addition sums equals exactly 100?[cite: 4]",
+            options: ["50 + 40 🎈", "90 + 10 🎈", "80 + 10 🎈", "70 + 20 🎈"],
+            answer: 1,
+            hint: "Adding 1 ten to 9 tens gives 10 tens! 🔢",
+            exp: "90 + 10 adds up perfectly to 100! ✨[cite: 4]"
+        },
+        {
+            emoji: "⭐",
+            context: "Reena has 18 stickers and gets 12 more. How many does she have now?[cite: 4]",
+            options: ["20 stickers ⭐", "30 stickers ⭐", "28 stickers ⭐", "40 stickers ⭐"],
+            answer: 1,
+            hint: "8 + 2 gives 10, so remember to carry 1 over to the tens! 📦",
+            exp: "18 + 12 = 30 with a carry over! 🌸[cite: 4]"
         },
         {
             emoji: "🍭",
-            context: "What is the short standard form of 100 + 0 + 7?",
-            options: ["170 🍭", "107 🍭", "17 🍭", "1007 🍭"],
+            context: "Find the total sum: 72 + 27 = ___[cite: 4]",
+            options: ["90 🍭", "99 🍭", "100 🍭", "89 🍭"],
             answer: 1,
-            hint: "Combine them safely: 1 hundred, 0 tens, and 7 ones. 🧩",
-            exp: "It joins together to make 107! 🌸"
+            hint: "Add ones (2 + 7) and then tens (7 + 2)! 🧩",
+            exp: "Both places add up to 9, making it 99! 🎨[cite: 4]"
         },
         {
-            emoji: "⭐️",
-            context: "Which number has a 5 in the ones place?",
-            options: ["152 ⭐", "501 ⭐", "125 ⭐", "160 ⭐"],
+            emoji: "🏏",
+            context: "A player scored 55 runs in match one and 44 runs in match two. Total score?[cite: 4]",
+            options: ["88 runs 🏏", "99 runs 🏏", "100 runs 🏏", "95 runs 🏏"],
+            answer: 1,
+            hint: "Add 5 + 4 for the ones place and 5 + 4 for the tens place! 🔢",
+            exp: "55 + 44 equals 99 runs! 🏆[cite: 4]"
+        },
+        {
+            emoji: "🎒",
+            context: "There are 23 boys and 26 girls in a class. How many altogether?[cite: 4]",
+            options: ["49 students 🎒", "50 students 🎒", "43 students 🎒", "59 students 🎒"],
+            answer: 0,
+            hint: "Add 3 + 6 for ones, and 2 + 2 for tens! 🚪",
+            exp: "23 + 26 gives 49 total students! 🎖️[cite: 4]"
+        },
+        {
+            emoji: "🍩",
+            context: "If you add 0 to 88, the final sum is:[cite: 4]",
+            options: ["0 🍩", "80 🍩", "88 🍩", "89 🍩"],
             answer: 2,
-            hint: "Look at the very last digit on the right side! 📦",
-            exp: "In 125, the last digit 5 is in the ones place! ✔️"
+            hint: "Adding zero to any number does not change its value! 👀",
+            exp: "The number stays exactly the same: 88! ✔️[cite: 4]"
+        },
+        {
+            emoji: "⚖️",
+            context: "Which of these sums requires a 'carry over' to the tens place?[cite: 4]",
+            options: ["12 + 13 ⚖️", "45 + 22 ⚖️", "36 + 15 ⚖️", "50 + 40 ⚖️"],
+            answer: 2,
+            hint: "Look for ones digits that add up to a number more than 9! 🔼",
+            exp: "36 + 15 requires carry over because 6 + 5 = 11! 🌟[cite: 4]"
+        },
+        {
+            emoji: "🌳",
+            context: "A farmer planted 62 mango trees and 28 apple trees. How many in all?[cite: 4]",
+            options: ["80 trees 🌳", "90 trees 🌳", "100 trees 🌳", "82 trees 🌳"],
+            answer: 1,
+            hint: "2 + 8 makes 10, carry 1 over to add with 6 and 2! 🏃‍♂️",
+            exp: "62 + 28 equals 90 total trees! 🎉[cite: 4]"
         }
     ];
 
@@ -204,13 +208,13 @@
     let score = 0;
     let attempts = 0;
     let timerInterval = null;
-    let timeRemaining = 60; // Grade 1 minimum runtime limit rule
+    let timeRemaining = 60; // Grade 1 threshold limit[cite: 2]
     let isMuted = false;
 
     const audioCorrect = new Audio('assets/correct.mp3');
     const audioWrong = new Audio('assets/wrong.mp3');
 
-    // Strict 5-second asynchronous splash guard screen trigger
+    // Asynchronous 5000ms splash guard execution block[cite: 2]
     window.addEventListener('load', () => {
         setTimeout(() => {
             document.getElementById('splash-screen').classList.add('hidden');
@@ -298,7 +302,7 @@
             clickedBtn.classList.add('wrong');
             clickedBtn.disabled = true;
             
-            if (attempts === 1) { // 2 attempts feedback rules
+            if (attempts === 1) { // 2 attempts constraint loop rules[cite: 2]
                 showFeedback('hint', `✨ Hint: ${qData.hint}`);
             } else {
                 clearInterval(timerInterval);
@@ -350,11 +354,11 @@
         let msg = `You got ${score} / ${dataset.length} stars! ⭐`;
         
         if (finalPercent >= 75) {
-            msg += "\nGood job! 🏆";
+            msg += "\nGood job! 🏆[cite: 2]";
         } else if (finalPercent >= 40) {
-            msg += "\nReview this chapter and try again 📚";
+            msg += "\nReview this chapter and try again 📚[cite: 2]";
         } else {
-            msg += "\nLet's practise more 💪";
+            msg += "\nLet's practise more 💪[cite: 2]";
         }
         
         document.getElementById('result-text').innerText = msg;
@@ -369,7 +373,7 @@
         loadQuestion();
     }
 
-    // Canvas particle sparklers framework
+    // Exploding canvas particle system for validation feedback
     function triggerVisualSparklers() {
         const canvas = document.getElementById('confetti-canvas');
         canvas.classList.remove('hidden');
