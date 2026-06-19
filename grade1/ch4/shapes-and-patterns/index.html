@@ -184,6 +184,19 @@ body{
   white-space:normal;
 }
 
+/* Mixed content (Image + Text) Question Variant Styling */
+.option.has-image {
+  flex-direction: column;
+  min-height: 120px;
+  gap: 10px;
+}
+
+.option img{
+  height:45px;
+  width:45px;
+  object-fit:contain;
+}
+
 .option:hover{
   background:#eef6ff;
 }
@@ -263,6 +276,7 @@ body{
   .question{font-size:21px}
   .options{grid-template-columns:1fr;gap:11px}
   .option{min-height:75px;font-size:16px;padding:10px}
+  .option.has-image{min-height:105px}
   .visual-img{max-width:90px;max-height:90px}
   .visual-img.big{max-width:110px;max-height:100px}
   .visual-img.large-square{max-width:100px;max-height:100px}
@@ -320,10 +334,10 @@ q:"Misha is looking at the main entrance door of her classroom. If she wants to 
 visualType:"images",
 images:["door.png"],
 options:[
-  {text:"A perfectly even square"},
-  {text:"A sharp triangle"},
-  {text:"A tall, wide rectangle"},
-  {text:"A smooth round circle"}
+  {text:"Square", img:"square.png"},
+  {text:"Triangle", img:"triangle.png"},
+  {text:"Rectangle", img:"rectangle.png"},
+  {text:"Circle", img:"circle.png"}
 ],
 answer:2,
 hint:"A door has two long sides and two shorter sides.",
@@ -553,12 +567,20 @@ function loadQuestion(){
   optionsBox.innerHTML="";
   renderVisual(item);
 
-  let shuffledOptions = item.options.map((opt, idx) => ({ text: opt.text, originalIndex: idx }));
+  let shuffledOptions = item.options.map((opt, idx) => ({ text: opt.text, img: opt.img, originalIndex: idx }));
   shuffledOptions.sort(() => Math.random() - 0.5);
 
   shuffledOptions.forEach((option, index)=>{
     const btn=document.createElement("button");
     btn.className="option";
+    
+    if(option.img) {
+      btn.classList.add("has-image");
+      const imgEl = document.createElement("img");
+      imgEl.src = `assets/${option.img}`;
+      imgEl.alt = option.text;
+      btn.appendChild(imgEl);
+    }
     
     const textSpan = document.createElement("span");
     textSpan.textContent = option.text;
