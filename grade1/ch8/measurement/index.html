@@ -58,19 +58,16 @@
 <div class="container">
     <canvas id="confetti-canvas" class="hidden"></canvas>
 
-    <!-- Splash Screen (Strict 5 Seconds Guard) -->
     <div id="splash-screen">
         <img src="assets/logo.png" alt="Logo">
     </div>
 
-    <!-- Intro Screen -->
     <div id="intro-screen" class="hidden" style="text-align: center; padding-top: 40px;">
         <h2>Measurement Mastery Challenge</h2>
         <div class="visual-emoji-display" style="margin-top: 25px; margin-bottom: 35px;">✏️⚖️🚪🥛</div>
         <button class="btn-action" onclick="startInteractive()">START CHALLENGE 👉</button>
     </div>
 
-    <!-- Main Game Screen -->
     <div id="game-screen" class="hidden">
         <div class="header-meta">
             <div class="score-box">⭐ <span id="score-val">0</span> / <span id="q-total">15</span></div>
@@ -88,7 +85,6 @@
         <button id="next-btn" class="btn-action hidden" onclick="handleNext()">NEXT QUESTION 👉</button>
     </div>
 
-    <!-- Final Score Analytics Screen -->
     <div id="result-screen" class="hidden" style="text-align: center; padding-top: 20px;">
         <h2 id="result-title">🎉 Evaluation Complete!</h2>
         <div id="result-emoji" class="visual-emoji-display">🏆👏✨</div>
@@ -104,35 +100,35 @@
             context: "A pencil is 5 paper clips long. A crayon is 3 paper clips long. Which statement is true?",
             options: [
                 "The crayon is longer than the pencil.",
-                "The pencil is longer than the crayon.",
                 "They are the same length.",
+                "The pencil is longer than the crayon.",
                 "The pencil is shorter than the crayon."
             ],
-            answer: 1,
+            answer: 2, // Choice 3
             hint: "Compare the number of units. Is 5 more or less than 3?",
             exp: "5 units is more than 3 units, so the pencil has a greater length."
         },
         {
             emoji: "🪣",
             context: "A bucket can hold 10 mugs of water. A jug can hold 3 mugs of water. Which has more capacity?",
-            options: ["The jug", "The mug", "The bucket", "They are the same"],
-            answer: 2,
+            options: ["The bucket", "The jug", "The mug", "They are the same"],
+            answer: 0, // Choice 1
             hint: "Which container takes a larger count of mugs to fill up completely?",
             exp: "The bucket holds more units (10) than the jug (3)."
         },
         {
             emoji: "🧼",
             context: "If an eraser is \"shorter than\" a pen, then the pen is ________ the eraser.",
-            options: ["Shorter than", "Lighter than", "Longer than", "As long as"],
-            answer: 2,
+            options: ["Shorter than", "Longer than", "Lighter than", "As long as"],
+            answer: 1, // Choice 2
             hint: "Flip the perspective! What is the opposite matching term for shorter?",
             exp: "\"Longer than\" is the structural opposite of \"shorter than.\""
         },
         {
             emoji: "📚",
             context: "Which of these would you use to measure the weight of a book using non-standard units?",
-            options: ["A spoon", "Marbles or blocks", "A piece of string", "A cup of water"],
-            answer: 1,
+            options: ["A spoon", "A piece of string", "A cup of water", "Marbles or blocks"],
+            answer: 3, // Choice 4
             hint: "We need solid, heavy, unvarying pieces that balance well on a scale.",
             exp: "We can use several small, equal-weight items like blocks to see how many it takes to balance the weight of a book."
         },
@@ -140,7 +136,7 @@
             emoji: "🚪",
             context: "To measure the length of your classroom door, which non-standard unit would be most practical?",
             options: ["Paper clips", "Finger widths", "Arm spans", "Grains of rice"],
-            answer: 2,
+            answer: 2, // Choice 3
             hint: "Using tiny items for a big door takes too long. Choose a larger bodily unit!",
             exp: "Arm spans are larger units, making it faster and easier to measure a large object like a door."
         },
@@ -148,20 +144,20 @@
             emoji: "🫖",
             context: "A teapot fills 5 teacups. A water bottle fills 8 teacups. Which statement is correct?",
             options: [
+                "The teapot holds less than the bottle.",
                 "The teapot holds more than the bottle.",
                 "The bottle holds less than the teapot.",
-                "The teapot holds less than the bottle.",
                 "They have the same capacity."
             ],
-            answer: 2,
+            answer: 0, // Choice 1
             hint: "Compare the fluid unit count. Is 5 cups less or more than 8 cups?",
             exp: "5 cups is a smaller amount than 8 cups, meaning the teapot holds less."
         },
         {
             emoji: "🍉",
             context: "If a watermelon is heavier than a mango, then the mango is ________ the watermelon.",
-            options: ["Heavier than", "Lighter than", "Larger than", "As heavy as"],
-            answer: 1,
+            options: ["Heavier than", "Larger than", "As heavy as", "Lighter than"],
+            answer: 3, // Choice 4
             hint: "If a big item tips the scale down, what does the smaller item feel like?",
             exp: "Math comparisons work in pairs. If one object is heavier, the other must be lighter."
         },
@@ -170,11 +166,11 @@
             context: "If a balloon and a ball are the same size, are they always the same weight?",
             options: [
                 "Yes, always.",
-                "No, the ball is usually heavier.",
                 "No, the balloon is usually heavier.",
-                "Yes, because they look the same."
+                "Yes, because they look the same.",
+                "No, the ball is usually heavier."
             ],
-            answer: 1,
+            answer: 3, // Choice 4
             hint: "Think about what is stuffed inside. Air vs a dense, solid toy material!",
             exp: "Size does not determine weight. A ball is solid/dense, while a balloon is filled with light air."
         },
@@ -187,15 +183,15 @@
                 "Yes, because handspans are standard units.",
                 "No, because the table grows."
             ],
-            answer: 1,
+            answer: 1, // Choice 2
             hint: "Whose hand takes up more space in a single baseline stretch?",
             exp: "Since handspans are non-standard and vary in size, the count will be different."
         },
         {
             emoji: "🥛",
             context: "An empty glass is ________ a glass full of milk.",
-            options: ["Heavier than", "Lighter than", "Longer than", "Shorter than"],
-            answer: 1,
+            options: ["Heavier than", "Longer than", "Lighter than", "Shorter than"],
+            answer: 2, // Choice 3
             hint: "Does adding a liquid into a container add weight or make it vanish?",
             exp: "The milk adds weight to the glass, so the empty one is lighter."
         },
@@ -203,12 +199,12 @@
             emoji: "🎗️",
             context: "A blue ribbon is longer than a yellow ribbon. The yellow ribbon is longer than a pink ribbon. Which statement must be true?",
             options: [
-                "The pink ribbon is the longest.",
                 "The blue ribbon is the longest.",
+                "The pink ribbon is the longest.",
                 "The blue ribbon is shorter than the pink ribbon.",
                 "All three ribbons are equal."
             ],
-            answer: 1,
+            answer: 0, // Choice 1
             hint: "Line them up mentally! If Blue beats Yellow, and Yellow beats Pink, who is biggest?",
             exp: "Transitive property logic: If Blue > Yellow and Yellow > Pink, then Blue is automatically the longest."
         },
@@ -218,10 +214,10 @@
             options: [
                 "There is more juice now because the bowl is wide.",
                 "There is less juice now because the bowl is short.",
-                "The amount of juice stays exactly the same.",
-                "The juice disappears."
+                "The juice disappears.",
+                "The amount of juice stays exactly the same."
             ],
-            answer: 2,
+            answer: 3, // Choice 4
             hint: "Did you add any new juice or drink any away during the pouring?",
             exp: "Conservation of volume: Changing container shape does not change the amount of liquid."
         },
@@ -229,12 +225,12 @@
             emoji: "🪵",
             context: "Two sticks are on a table. Stick A's top reaches higher, but Stick B's bottom starts further down. How do you find out which is longer?",
             options: [
-                "Look at whichever reaches highest on the page.",
                 "Line up their bottom edges flat at the exact same starting line.",
+                "Look at whichever reaches highest on the page.",
                 "Check which stick is brighter.",
                 "Roll them to see which goes faster."
             ],
-            answer: 1,
+            answer: 0, // Choice 1
             hint: "To compare heights fairly, items must share a flat, equal starting baseline floor.",
             exp: "Objects must share a common baseline starting line to be directly and accurately compared."
         },
@@ -242,20 +238,20 @@
             emoji: "⚖️",
             context: "You place a heavy structural block on the left pan of a balance scale and a light feather on the right pan. What will happen?",
             options: [
-                "The left pan with the block will tip all the way down.",
                 "The right pan with the feather will tip all the way down.",
+                "The left pan with the block will tip all the way down.",
                 "The scale will stay level and balanced.",
                 "Both pans will fly up together."
             ],
-            answer: 0,
+            answer: 1, // Choice 2
             hint: "Think about gravity! Does gravity pull heavier objects down or lift them into the air?",
             exp: "Gravity pulls harder on heavier weights, causing that side of a balance scale to sink down."
         },
         {
             emoji: "☕",
             context: "It takes 5 big mugs of water to fill a bucket. If you switch to using a very tiny teacup instead, will it take more or fewer teacups?",
-            options: ["Fewer than 5 teacups.", "Exactly 5 teacups.", "More than 5 teacups.", "Zero teacups."],
-            answer: 2,
+            options: ["Fewer than 5 teacups.", "More than 5 teacups.", "Exactly 5 teacups.", "Zero teacups."],
+            answer: 1, // Choice 2
             hint: "If each new cup holds much less space, do you need to scoop more times or fewer times?",
             exp: "Smaller units mean a higher unit count is required to fill the exact same total space."
         }
