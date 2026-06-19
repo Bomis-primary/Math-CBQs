@@ -74,7 +74,10 @@ body{
   padding:16px;
   margin-bottom:16px;
   text-align:center;
-  min-height:170px;
+  min-height:140px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
 }
 
 .visual-row{
@@ -83,17 +86,16 @@ body{
   justify-content:center;
   gap:18px;
   flex-wrap:wrap;
-  margin-bottom:10px;
 }
 
 .visual-img{
   width:105px;
   height:105px;
   object-fit:contain;
-  background:white;
-  border-radius:18px;
-  padding:8px;
-  box-shadow:0 3px 10px rgba(0,0,0,0.12);
+  background:transparent;
+  border-radius:0;
+  padding:0;
+  box-shadow:none;
 }
 
 .visual-img.big{
@@ -105,10 +107,10 @@ body{
   width:72px;
   height:72px;
   object-fit:contain;
-  background:white;
-  border-radius:16px;
-  padding:8px;
-  box-shadow:0 3px 10px rgba(0,0,0,0.12);
+  background:transparent;
+  border-radius:0;
+  padding:0;
+  box-shadow:none;
 }
 
 .pattern-number{
@@ -136,12 +138,6 @@ body{
   justify-content:center;
   font-size:38px;
   font-weight:bold;
-}
-
-.visual-text{
-  font-size:19px;
-  font-weight:bold;
-  color:#7c2d12;
 }
 
 .question{
@@ -259,7 +255,6 @@ body{
   .visual-img.big{width:120px;height:95px}
   .pattern-img,.pattern-number,.qmark{width:56px;height:56px}
   .pattern-number{font-size:28px}
-  .visual-text{font-size:17px}
   .primary{width:100%}
   .badge,.sound-btn{font-size:14px}
 }
@@ -307,139 +302,127 @@ body{
 <script>
 const questions=[
 {
-q:"Look at the main entrance door of your classroom. Which flat shape does its face resemble most?",
+q:"Misha is painting a picture of her school bus. She wants to add the glass windows on the side of the bus. Which flat shape should she paint them?",
 visualType:"images",
 images:["door.png","rectangle.png"],
-text:"A door looks like a rectangle.",
-options:["Square","Triangle","Rectangle","Circle"],
-answer:2,
-hint:"Think about an object that has two long parallel sides and two shorter sides.",
-explanation:"A standard room door is taller than it is wide, giving it a distinct rectangular face."
+options:["A tall, wide rectangle","A perfectly even square","A sharp triangle","A smooth round circle"],
+answer:0,
+hint:"Think about an object or window that is wider than it is tall, with two long sides and two shorter sides.",
+explanation:"Bus side windows are wide and long rather than perfectly square, making them rectangles."
 },
 {
-q:"Kabir is searching for objects in his room. Which of these items has only curved lines and zero straight edges?",
+q:"Zayan is playing a game where he can only pick up toys that spin or roll smoothly across the carpet without hitting a flat edge. Which item can he pick up?",
 visualType:"images",
 images:["coin.png","circle.png"],
-text:"A coin has a round curved edge.",
-options:["A wooden ruler","A play dice","A round coin","A story textbook"],
-answer:2,
-hint:"Look for the item that can roll smoothly across a table without hitting flat edges.",
-explanation:"Rulers and books have straight sides, but a coin is perfectly round all the way around."
+options:["A wooden building block","A shiny round coin","A flat plastic ruler","A square puzzle box"],
+answer:1,
+hint:"Look for the item that has zero corners and a single curved line wrapping all the way around.",
+explanation:"A coin has a perfectly curved, round border with no corners to stop it from rolling smoothly."
 },
 {
-q:"Reema is sorting cutout blocks. She finds two pieces that both have exactly 4 straight sides and 4 corners. What are they?",
+q:"Avani cuts out two secret origami shapes. She tells her brother: 'Both of my flat paper pieces have exactly 4 straight sides and 4 sharp corners.' What did she cut out?",
 visualType:"images",
 images:["rectangle.png","square.png"],
-text:"Both shapes have 4 sides and 4 corners.",
-options:["Triangle and Rectangle","Rectangle and Square","Square and Circle","Circle and Triangle"],
-answer:1,
-hint:"Triangles only have 3 corners, and circles have none. Eliminate those choices.",
+options:["A rectangle and a square","A triangle and a rectangle","A square and a circle","A circle and a triangle"],
+answer:0,
+hint:"Triangles only have 3 corners, and circles have none. Focus on the four-sided shapes.",
 explanation:"Both rectangles and squares are built using exactly four straight lines and four corners."
 },
 {
-q:"Sanya throws a toy across the grass. Which solid shape is shaped like a tennis ball and can roll easily in any direction?",
+q:"Dev steps into a sports shop and kicks a soft soccer ball across the floor. What is the mathematical name for this round, solid 3D shape?",
 visualType:"images",
 images:["ball.png","sphere.png"],
-text:"A ball is shaped like a sphere.",
 options:["Cube","Sphere","Cylinder","Cone"],
 answer:1,
-hint:"This shape has no flat edges or sharp corners at all.",
-explanation:"A ball is a perfect solid round shape, which in mathematics is called a sphere."
+hint:"It is a solid ball shape that is perfectly round from every single side, not a flat drawing.",
+explanation:"A ball is a solid 3D round shape, which is geometrically called a sphere."
 },
 {
-q:"A colorful birthday party hat is an example of which solid 3D shape?",
+q:"Tara is dressing up as a magical wizard for a play. She puts on a tall, pointed party hat that stands on a flat round base. What 3D shape is her hat?",
 visualType:"images",
 images:["party-hat.png","cone.png"],
-text:"A party hat has a pointed top like a cone.",
-options:["Cube","Sphere","Cone","Cylinder"],
+options:["A sharp pyramid","A flat square","A pointed cone","A rolling cylinder"],
 answer:2,
-hint:"It has a circular flat bottom that goes up to a sharp pointed tip.",
-explanation:"A shape that stands on a circular base and tapers to a fine point is a cone."
+hint:"This shape has a flat circle at the bottom that narrows all the way up into a single pointed tip.",
+explanation:"An object with a flat circular bottom that tapers up to a sharp top point is a cone."
 },
 {
-q:"Identify the next missing shape in this wallpaper pattern: Circle, Square, Circle, Square, ____",
+q:"Look at this tile pattern on the swimming pool floor: Circle, Square, Circle, Square. What tile comes next to keep the pattern going?",
 visualType:"pattern",
 items:["circle.png","square.png","circle.png","square.png","?"],
-text:"The pattern repeats circle and square.",
-options:["Triangle","Rectangle","Circle","Star"],
+options:["A three-sided triangle","A long rectangle","A round circle","A five-pointed star"],
 answer:2,
-hint:"Look at what shape always shows up right after a square finishes.",
-explanation:"The sequence swaps back and forth: Circle, then Square. Following the square, a circle returns."
+hint:"Watch the repeating sequence closely. Look at what always comes right after a square.",
+explanation:"The pattern swaps back and forth cleanly. Every time a square ends, a circle returns next."
 },
 {
-q:"Rohan points to a triangular highway warning sign. How many sharp corners can he count on it?",
+q:"Rohit looks out the car window and sees a bright red 'Yield' traffic sign. If he counts the sharp points where the straight lines meet, how many corners will he find?",
 visualType:"images",
 images:["triangle.png"],
-text:"Count the corners of the sign.",
-options:["2","3","4","0"],
+options:["2 corners","3 corners","4 corners","0 corners"],
 answer:1,
-hint:"Count the sharp points where the straight side lines meet.",
-explanation:"A triangle is constructed of 3 straight edges, creating exactly 3 corners."
+hint:"A Yield sign is a flat triangle shape. Count the points on a triangle.",
+explanation:"A triangle shape is built from 3 straight edges, which always join together to create exactly 3 corners."
 },
 {
-q:"Which solid object in a kitchen can both roll on its side and slide when placed on its flat ends?",
+q:"Ananya wants to store her soup can in the pantry. She discovers it slides smoothly when stood upright, but rolls away when laid on its side! What 3D shape is the can?",
 visualType:"images",
 images:["cylinder.png"],
-text:"A cylinder rolls on its curved side and slides on its flat ends.",
-options:["A block box","A play marble","A soup cylinder can","A pointed pyramid tile"],
+options:["A flat box","A round sphere","A tube cylinder","A pointed cone"],
 answer:2,
-hint:"Look for a shape like a soda can that has both a round side and flat circular ends.",
-explanation:"A cylinder slides when placed on its flat top/bottom, and rolls when laid on its side."
+hint:"Look for a tube-like shape that has a curved middle section but two flat circular faces at both ends.",
+explanation:"A cylinder can slide when standing on its flat round face and roll easily when tipped onto its curved side."
 },
 {
-q:"Look at the written letter S and the letter L. Which sentence describes their lines correctly?",
+q:"Imagine tracing the shapes of the written letters 'S' and 'L' with your finger. Which sentence describes the lines of these letters perfectly?",
 visualType:"images",
 images:["S.png","L.png"],
-text:"S is curved. L is made of straight lines.",
 options:[
-"S is a straight line, L is a curved line.",
-"Both are made of straight lines.",
-"S is a curved line, L is made of straight lines.",
-"Both are made of curved lines."
+"S is made of a straight line, but L is made of a curved line.",
+"Both letters are built out of completely straight lines.",
+"S is made of a curved line, but L is made of straight lines.",
+"Both letters are built out of completely curved lines."
 ],
 answer:2,
-hint:"Trace the shapes with your finger. One winds around smoothly, while the other makes a sharp corner turn.",
-explanation:"The letter S has smooth bends (curved line), while L is formed by two flat straight paths joining."
+hint:"One letter loops around smoothly without corners, while the other makes a single sharp corner turn.",
+explanation:"The letter S bends smoothly without any corners (curved), while L is made of two straight lines joined at a corner."
 },
 {
-q:"Look at a bicycle wheel and a circular dinner plate. What geometric shape do they both share?",
+q:"Siddharth looks down at his breakfast table and notices his round bicycle wheel sticker matches the outer rim of his cereal bowl. What shape do they share?",
 visualType:"images",
 images:["wheel.png","plate.png","circle.png"],
-text:"Both are round like a circle.",
 options:["Square","Triangle","Circle","Rectangle"],
 answer:2,
-hint:"Both items have zero straight borders and can spin or turn smoothly.",
-explanation:"Wheels and dining plates are completely round, matching a circle."
+hint:"Think of the flat, perfectly round shape that has no corners and no straight edges.",
+explanation:"Bicycle wheels and dining bowls are completely round on the outside, matching the definition of a circle."
 },
 {
-q:"Aarav is holding a standard game dice. Which statement is true about its surfaces?",
+q:"Meera is rolling a standard game dice during a board game. Which of these facts is true about the surfaces of her dice?",
 visualType:"images",
 images:["dice.png","cube.png"],
-text:"A cube has flat surfaces.",
 options:[
-"It has no corners or edges.",
-"It has only curved round surfaces.",
-"It has flat surfaces and can slide.",
-"It is a completely flat 2D drawing."
+"It is a flat 2D drawing with no depth.",
+"It has only round, curved surfaces that roll everywhere.",
+"It has flat square surfaces that let it slide to a stop.",
+"It has absolutely no corners or edges."
 ],
 answer:2,
-hint:"Think about sliding a dice across a smooth game board tile.",
-explanation:"A cube is built out of six flat square faces, allowing it to slide smoothly across surfaces."
+hint:"Think about what a dice is made of—six flat square walls that help it stop spinning and land on a flat face.",
+explanation:"A game dice is a solid cube with six flat faces, which allows it to slide cleanly across a surface and rest flat."
 },
 {
-q:"You compare two round items: a tiny clothing shirt button and a large kitchen pan. Which statement is correct?",
+q:"You place a tiny plastic shirt button right next to a giant family frying pan. Both are perfectly round. Which statement describes them correctly?",
 visualType:"images",
 images:["button.png","plate.png"],
-text:"They are the same shape but different sizes.",
 options:[
-"They are different shapes because their sizes are different.",
-"They are the same shape but different sizes.",
-"The pan is a square and the button is a circle.",
-"They are exactly the same size."
+"They are different shapes because their sizes are not the same.",
+"They are the exact same shape but have different sizes.",
+"The pan is a square and the tiny button is a circle.",
+"They are exactly the same size in your hand."
 ],
 answer:1,
-hint:"Do they both keep the exact same round profile despite one being bigger?",
-explanation:"Size does not change the core geometric properties. Both remain circles."
+hint:"Does stretching an object or making it bigger change what shape it is?",
+explanation:"Changing the size of an object does not change its basic shape. Both items are still perfect circles."
 }
 ];
 
@@ -499,19 +482,18 @@ function loadQuestion(){
 
   const item=questions[current];
   
-  // Enforce Linear Structure with Final Challenge Indicator for last 2 questions 
   if (current >= questions.length - 2) {
     qLabel.innerHTML = `⚡ Challenge <span id="qNo">${current + 1}</span>/${questions.length}`;
     document.getElementById("quizScreen").querySelector('.card').style.borderColor = "#8b5cf6";
   } else {
     qLabel.innerHTML = `Question <span id="qNo">${current + 1}</span>/${questions.length}`;
+    document.getElementById("quizScreen").querySelector('.card').style.borderColor = "";
   }
   
   questionText.textContent=item.q;
   optionsBox.innerHTML="";
   renderVisual(item);
 
-  // Dynamic choice scrambling routine to avoid pattern recognition [cite: 71]
   let shuffledOptions = item.options.map((opt, idx) => ({ text: opt, originalIndex: idx }));
   shuffledOptions.sort(() => Math.random() - 0.5);
 
@@ -538,7 +520,6 @@ function renderVisual(item){
       html+=`<img class="visual-img big" src="assets/${img}" alt="">`;
     });
     html+='</div>';
-    html+=`<div class="visual-text">${item.text}</div>`;
     visualBox.innerHTML=html;
   }
 
@@ -552,7 +533,6 @@ function renderVisual(item){
       }
     });
     html+='</div>';
-    html+=`<div class="visual-text">${item.text}</div>`;
     visualBox.innerHTML=html;
   }
 }
@@ -574,7 +554,6 @@ function checkAnswer(button,selected){
     button.classList.add("correct");
     feedback.textContent="Correct!";
     feedback.style.color="#047857";
-    // Double audio indicator overlay execution [cite: 93]
     playSound(correctSound);
     playSound(clapSound);
     launchConfetti();
@@ -586,14 +565,12 @@ function checkAnswer(button,selected){
     playSound(wrongSound);
 
     if(attempts===1){
-      // Instantly show targeted scaffolding tip on first error [cite: 88]
       feedback.textContent="Hint: " + currentQuestion.hint;
       feedback.style.color="#b45309";
       button.disabled=true;
     }else{
       clearInterval(timerInterval);
       answered=true;
-      // Show explanation details after second failed attempt [cite: 89]
       feedback.textContent="Incorrect. " + currentQuestion.explanation;
       feedback.style.color="#b91c1c";
       showCorrectAnswer();
@@ -625,7 +602,6 @@ function showResult(){
   quizScreen.classList.remove("active");
   resultScreen.classList.add("active");
 
-  // Score metrics evaluated strictly against first-attempt milestones [cite: 123, 124, 125]
   const percentage=(firstAttemptCorrect/questions.length)*100;
   let message="";
 
