@@ -63,10 +63,10 @@
     </div>
 
     <div id="intro-screen" class="hidden" style="text-align: center; padding-top: 20px;">
-        <h2>Taking Away!</h2>
+        <h2>➖ Taking Away!</h2>
         <div class="visual-emoji-display">🍬🎈🧸</div>
         <p style="margin-bottom: 25px; font-size: 1.35rem; color: #495057; font-weight: bold;">
-            Subtraction up to 100⭐
+            Subtraction up to 100 Interactive Activity ⭐
         </p>
         <button class="btn-action" onclick="startInteractive()">START! 🚀</button>
     </div>
@@ -149,7 +149,7 @@
         {
             emoji: "🗣️",
             context: "Rohit and Sana are looking at the problem 85 − 30. Rohit says, 'The answer will have 5 in the ones place.' Sana says, 'The answer will have 5 in the tens place.' Who is making the correct claim?",
-            options: ["Only Rohit is correct 🛑", "Only Sana is correct 🛑", "Both Rohit and Sana are correct  ", "Neither is correct ❌"],
+            options: ["Only Rohit is correct 🛑", "Only Sana is correct 🛑", "Both Rohit and Sana are correct", "Neither is correct ❌"],
             answer: 2,
             hint: "Subtract 0 ones from 5 ones (5 − 0), then subtract 3 tens from 8 tens (8 − 3). 👀",
             exp: "85 − 30 = 55. The answer has a 5 in both the tens place and the ones place, meaning both statements are correct!"
@@ -196,7 +196,7 @@
         },
         {
             emoji: "⚖️",
-            context: "Which is smaller: (65 − 20) or (70 − 25)?",
+            context: "Which is smaller:<br>(65 − 20) or (70 − 25)?",
             options: ["65 − 20 is smaller ⚖️", "70 − 25 is smaller ⚖️", "Both are equal ⚖️", "Cannot say ⚖️"],
             answer: 2,
             hint: "Solve both sums! They both give the same number answer. 🧩",
@@ -243,7 +243,6 @@
         loadQuestion();
     }
 
-    // Audio & App Controls
     function toggleMute() {
         isMuted = !isMuted;
         document.getElementById('mute-btn').innerText = isMuted ? "🔇" : "🔊";
@@ -284,7 +283,9 @@
         
         let qData = dataset[currentQ];
         document.getElementById('q-emoji').innerText = qData.emoji;
-        document.getElementById('q-text').innerText = qData.context;
+        
+        // Render text using .innerHTML to correctly parse any strict <br> line breaks
+        document.getElementById('q-text').innerHTML = qData.context;
         
         const container = document.getElementById('options-container');
         container.innerHTML = '';
