@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Grade 1 Math: 100 to 200</title>
+    <title>Grade 1 Math: Number System (100 to 200)</title>
     <style>
         :root {
             --primary: #ff6b6b;
@@ -15,42 +15,42 @@
         }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Comic Sans MS', 'Chalkboard SE', sans-serif; }
         body { background-color: var(--bg); color: var(--text); display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 10px; }
-        .container { background: white; width: 100%; max-width: 500px; border-radius: 24px; box-shadow: 0 10px 20px rgba(0,0,0,0.08); padding: 20px; position: relative; min-height: 420px; border: 5px solid #ff922b; }
+        .container { background: white; width: 100%; max-width: 460px; border-radius: 24px; box-shadow: 0 10px 20px rgba(0,0,0,0.08); padding: 20px; position: relative; min-height: 440px; border: 5px solid #ff922b; overflow: hidden; }
         
-        /* Full Page Splash Screen */
+        /* Strict 5-Second Splash Guard Layout */
         #splash-screen { position: absolute; top:0; left:0; width:100%; height:100%; background: #ffffff; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 100; border-radius: 18px; }
-        #splash-screen img { width: 180px; height: auto; margin-bottom: 20px; }
-        .loader-dots { font-size: 2rem; color: var(--secondary); animation: blink 1.4s infinite both; }
+        #splash-screen img { width: 190px; height: auto; margin-bottom: 20px; }
+        .loader-dots { font-size: 1.8rem; color: var(--secondary); animation: blink 1.4s infinite both; }
         @keyframes blink { 0% { opacity: .2; } 20% { opacity: 1; } 100% { opacity: .2; } }
 
         .hidden { display: none !important; }
         
-        /* Header Stats */
-        .header-meta { display: flex; justify-content: space-between; align-items: center; font-size: 1.2rem; font-weight: bold; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 4px dashed #ffd8a8; }
+        /* Interactive Dashboard Meta */
+        .header-meta { display: flex; justify-content: space-between; align-items: center; font-size: 1.3rem; font-weight: bold; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 4px dashed #ffd8a8; }
         .timer { color: var(--danger); background: #fff5f5; padding: 5px 12px; border-radius: 12px; border: 2px solid #ffc9c9; }
         .score-box { color: #2b8a3e; background: #ebfbee; padding: 5px 12px; border-radius: 12px; border: 2px solid #b2f2bb; }
         
-        /* Box Text Formats */
-        h2 { font-size: 1.6rem; text-align: center; margin-bottom: 15px; color: #e64980; }
-        .q-context { background: #f1f3f5; padding: 12px; border-radius: 16px; margin-bottom: 15px; font-size: 1.2rem; text-align: center; border: 2px dashed #ced4da; }
-        h3 { font-size: 1.3rem; text-align: center; margin-bottom: 15px; color: #102a43; }
+        /* Simple Layout Typography */
+        h2 { font-size: 1.7rem; text-align: center; margin-bottom: 15px; color: #e64980; line-height: 1.3; }
+        .visual-emoji-display { font-size: 3.8rem; text-align: center; margin: 10px 0; user-select: none; }
+        .q-context { background: #f1f3f5; padding: 15px; border-radius: 16px; margin-bottom: 15px; font-size: 1.35rem; text-align: center; font-weight: bold; color: #102a43; line-height: 1.4; border: 2px dashed #cbd5e1; }
         
-        /* Grid Buttons */
+        /* Responsive High-Contrast Tap Targets */
         .options-grid { display: grid; grid-template-columns: 1fr; gap: 12px; margin-bottom: 15px; }
-        .btn-opt { background: #f8f9fa; border: 3px solid #dee2e6; border-radius: 16px; padding: 15px; text-align: center; font-size: 1.2rem; font-weight: bold; cursor: pointer; transition: all 0.1s; width: 100%; -webkit-tap-highlight-color: transparent; box-shadow: 0 4px #e9ecef; }
+        .btn-opt { background: #f8f9fa; border: 3px solid #dee2e6; border-radius: 16px; padding: 15px; text-align: center; font-size: 1.3rem; font-weight: bold; cursor: pointer; transition: all 0.1s; width: 100%; -webkit-tap-highlight-color: transparent; box-shadow: 0 4px #e9ecef; color: var(--text); }
         .btn-opt:active { transform: translateY(2px); box-shadow: 0 2px #e9ecef; }
-        .btn-opt.correct { background-color: #d4edda !important; border-color: var(--success) !important; color: #155724; box-shadow: 0 4px #c3e6cb; }
-        .btn-opt.wrong { background-color: #f8d7da !important; border-color: var(--danger) !important; color: #721c24; box-shadow: 0 4px #f5c6cb; }
+        .btn-opt.correct { background-color: #d4edda !important; border-color: var(--success) !important; color: #155724 !important; box-shadow: 0 4px #c3e6cb; }
+        .btn-opt.wrong { background-color: #f8d7da !important; border-color: var(--danger) !important; color: #721c24 !important; box-shadow: 0 4px #f5c6cb; }
         
-        /* Visual Dialogs */
-        .feedback-box { padding: 12px; border-radius: 16px; margin-bottom: 15px; font-weight: bold; font-size: 1.1rem; text-align: center; }
+        /* Feedback Callout Systems */
+        .feedback-box { padding: 14px; border-radius: 16px; margin-bottom: 15px; font-weight: bold; font-size: 1.15rem; text-align: center; line-height: 1.4; }
         .feedback-box.hint { background: #fff3cd; color: #856404; border: 2px solid #ffeeba; }
         .feedback-box.explanation { background: #e3fafc; color: #0b7285; border: 2px solid #c5f6fa; }
 
-        /* Action Keys */
-        .btn-action { background: var(--primary); color: white; border: none; padding: 15px; font-size: 1.2rem; border-radius: 16px; cursor: pointer; width: 100%; font-weight: bold; box-shadow: 0 5px #e03131; }
+        /* General UI Actions */
+        .btn-action { background: var(--primary); color: white; border: none; padding: 15px; font-size: 1.4rem; border-radius: 16px; cursor: pointer; width: 100%; font-weight: bold; box-shadow: 0 5px #e03131; }
         .btn-action:active { transform: translateY(2px); box-shadow: 0 2px #e03131; }
-        .audio-ctrl { background: none; border: none; font-size: 1.8rem; cursor: pointer; }
+        .audio-ctrl { background: none; border: none; font-size: 2rem; cursor: pointer; }
         
         #confetti-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 5; }
     </style>
@@ -66,119 +66,137 @@
     </div>
 
     <div id="intro-screen" class="hidden" style="text-align: center; padding-top: 20px;">
-        <h2>🔢 Fun Math Game!</h2>
-        <p style="margin-bottom: 25px; font-size: 1.2rem; color: #495057; line-height: 1.4; font-weight: bold;">
-            Let's count from 100 to 200 with pictures and blocks! ⭐
+        <h2>🔢 Let's Count!</h2>
+        <div class="visual-emoji-display">🧱🚗🏠</div>
+        <p style="margin-bottom: 25px; font-size: 1.35rem; color: #495057; font-weight: bold;">
+            Numbers 100 to 200 Game ⭐
         </p>
-        <button class="btn-action" onclick="startInteractive()">Let's Play! 🚀</button>
+        <button class="btn-action" onclick="startInteractive()">PLAY! 🚀</button>
     </div>
 
     <div id="game-screen" class="hidden">
         <div class="header-meta">
-            <div class="score-box">⭐ Score: <span id="score-val">0</span></div>
+            <div class="score-box">⭐ <span id="score-val">0</span></div>
             <button class="audio-ctrl" id="mute-btn" onclick="toggleMute()">🔊</button>
             <div class="timer">⏳ <span id="timer-val">60</span>s</div>
         </div>
         
         <div id="question-box">
+            <div id="q-emoji" class="visual-emoji-display"></div>
             <div id="q-text" class="q-context"></div>
-            <h3 id="q-body"></h3>
             <div class="options-grid" id="options-container"></div>
         </div>
 
         <div id="feedback" class="feedback-box hidden"></div>
-        <button id="next-btn" class="btn-action hidden" onclick="handleNext()">Next Card 👉</button>
+        <button id="next-btn" class="btn-action hidden" onclick="handleNext()">NEXT 👉</button>
     </div>
 
     <div id="result-screen" class="hidden" style="text-align: center; padding-top: 20px;">
-        <h2>🎉 Game Over!</h2>
-        <p id="result-text" style="font-size: 1.3rem; margin-bottom: 25px; font-weight: bold; color: #2c3e50;"></p>
-        <button class="btn-action" onclick="restartInteractive()">Play Again 🔄</button>
+        <h2>🎉 Finished!</h2>
+        <div class="visual-emoji-display">🏆👑✨</div>
+        <p id="result-text" style="font-size: 1.35rem; margin-bottom: 25px; font-weight: bold; color: #2c3e50; white-space: pre-line;"></p>
+        <button class="btn-action" onclick="restartInteractive()">PLAY AGAIN 🔄</button>
     </div>
 </div>
 
 <script>
-    // Ultra-short texts with high-density visual cue symbols for 1st graders
+    // 12 Chapter-aligned questions with child-friendly text adaptations and structural icons
     const dataset = [
         {
-            context: "Anu has 10 crayon packs. 🖍️ Each pack has 10 crayons.",
-            question: "How many crayons does Anu have in total?",
-            options: ["10 crayons 🖍️", "100 crayons 🖍️", "20 crayons 🖍️", "50 crayons 🖍️"],
+            emoji: "🦖",
+            context: "What number comes next right after 159?",
+            options: ["158 🦖", "160 🦖", "150 🦖", "170 🦖"],
             answer: 1,
-            hint: "Skip-count by 10s: 10, 20, 30... up to 10 packs!",
-            exp: "10 packs of 10 makes exactly 100 crayons! 🌟"
+            hint: "Add 1 more to 159! What comes after 59? 🔢",
+            exp: "160 comes just after 159! 🎉"
         },
         {
-            context: "Leo counts blocks. 🧱 He just counted block 149.",
-            question: "What number block comes next?",
-            options: ["148 🧱", "160 🧱", "150 🧱", "200 🧱"],
+            emoji: "🧱",
+            context: "Look at number 174. What is the value of the middle 7?",
+            options: ["7 ones 🟥", "70 tens 🟩", "700 hundreds 🟦", "1 one 🟨"],
+            answer: 1,
+            hint: "The 7 is standing in the middle tens place! 🚪",
+            exp: "7 in the tens place means 70! 🎈"
+        },
+        {
+            emoji: "✏️",
+            context: "Which matches the expanded break-up form of 135?",
+            options: ["100 + 3 + 5 ✏️", "1 + 3 + 5 ✏️", "100 + 30 + 5 ✏️", "10 + 30 + 5 ✏️"],
             answer: 2,
-            hint: "What comes right after 49 when counting? 🔢",
-            exp: "150 comes right after 149! 🎉"
+            hint: "Say it aloud: One-hundred, thirty, five! 🗣️",
+            exp: "135 is 100 and 30 and 5! ⭐"
         },
         {
-            context: "Look at the toy cars: 115 🚗 ,  ___ 🚗 , 117 🚗.",
-            question: "What car number is missing in the middle?",
-            options: ["114 🚗", "116 🚗", "118 🚗", "120 🚗"],
-            answer: 1,
-            hint: "Count up: 115, then what, then 117? 🔢",
-            exp: "116 is in between 115 and 117! ✨"
-        },
-        {
-            context: "Look at the big house number: 184 🏠.",
-            question: "What is the value of the middle number 8?",
-            options: ["8 ones 🟥", "80 tens 🟩", "800 hundreds 🟦", "8 ones 🟦"],
-            answer: 1,
-            hint: "The 8 is in the tens room! 🚪",
-            exp: "The 8 means 8 tens, which is 80! 🎈"
-        },
-        {
-            context: "Sita wants to make the number 135 🧩.",
-            question: "Which collection card shows 135?",
-            options: ["10 + 30 + 5 🧩", "100 + 3 + 5 🧩", "100 + 30 + 5 🧩", "1 + 3 + 5 🧩"],
+            emoji: "🚗",
+            context: "Which friendly number sits between 188 and 190?",
+            options: ["187 🚗", "191 🚗", "189 🚗", "199 🚗"],
             answer: 2,
-            hint: "Say it out loud: One-hundred, thirty, five! 🗣️",
-            exp: "100 and 30 and 5 makes 135! ⭐"
+            hint: "Count up: 188, then what number, then 190? 🔢",
+            exp: "189 sits in the middle of 188 and 190! ✨"
         },
         {
-            context: "The card reads: 100 + 90 + 2 📇.",
-            question: "What number does this make together?",
-            options: ["192 📇", "129 📇", "102 📇", "190 📇"],
-            answer: 0,
-            hint: "Put the hundreds, tens, and ones together! 🧩",
-            exp: "100 + 90 + 2 joins to make 192! 🎨"
-        },
-        {
-            context: "Book A has 167 stickers 🦋. Book B has 176 stickers 🦋.",
-            question: "Which statement is true?",
-            options: ["167 is bigger 🔼", "167 is equal 🟡", "167 is smaller 🔽", "176 is smaller 🔽"],
+            emoji: "💎",
+            context: "What is the true face value of digit 1 in number 142?",
+            options: ["100 💎", "10 💎", "1 💎", "142 💎"],
             answer: 2,
-            hint: "Look at the tens! 6 tens is less than 7 tens. 🔢",
-            exp: "167 is smaller than 176! 🌸"
+            hint: "Face value is what the number looks like on its own! 👀",
+            exp: "The face name value of 1 is just 1! ✔️"
         },
         {
-            context: "Sort these number trains: 112 🚂, 189 🚂, 145 🚂, 123 🚂.",
-            question: "Which row goes from smallest to biggest?",
-            options: ["189, 145, 123, 112 🚂", "112, 123, 145, 189 🚂", "112, 145, 123, 189 🚂", "123, 112, 145, 189 🚂"],
+            emoji: "⚖️",
+            context: "Which matching sign fits here? 165 ___ 156",
+            options: ["< (Smaller)", "> (Bigger)", "= (Same)", "+ (Plus)"],
             answer: 1,
-            hint: "Find the lowest number first! 🚂",
-            exp: "From smallest to biggest: 112, 123, 145, 189! 🌟"
+            hint: "Compare the tens! 6 tens is bigger than 5 tens. 🔼",
+            exp: "165 is greater than 156! 🌸"
         },
         {
-            context: "Rohan says: 'In 143 💎, the face value of 4 is forty.'",
-            question: "Is Rohan correct?",
-            options: ["Yes, it is in the tens room 👍", "No, the face value is just 4 🛑", "No, it is 400 🛑", "Yes, numbers never change 👍"],
-            answer: 1,
-            hint: "Face value means what the number looks like on its own! 👀",
-            exp: "The place value is 40, but the face name value is just 4! ✔️"
+            emoji: "🚂",
+            context: "Sort from smallest to biggest: 120, 110, 150.",
+            options: ["150, 120, 110 🚂", "110, 150, 120 🚂", "110, 120, 150 🚂", "120, 110, 150 🚂"],
+            answer: 2,
+            hint: "Find the lowest starting counting number first! 🚂",
+            exp: "Smallest to biggest is 110, 120, 150! 🌟"
         },
         {
-            context: "Look at the children in line: 🏃‍♂️🏃‍♀️🏃‍♂️...",
-            question: "What are the position names for line numbers 12 and 20?",
-            options: ["Twelve, Twenty 🔢", "Twelfth, Twentieth 🥇", "Second, Tenth 🥇", "Light, Last 🔢"],
+            emoji: "🍎",
+            context: "In the word 'APPLE', what position is the letter 'L'?",
+            options: ["Second 🥈", "Sixth 🏅", "Fifth 🎖️", "Fourth 🥇"],
+            answer: 3,
+            hint: "Count the letters from start to finish: A, P, P, L... 🔢",
+            exp: "'L' is the fourth letter in APPLE! 🏆"
+        },
+        {
+            emoji: "🚌",
+            context: "Line order: Candy, Danny, Freddy, Polly. Who is third?",
+            options: ["Danny 🎒", "Freddy 🎒", "Polly 🎒", "Edward 🎒"],
             answer: 1,
-            hint: "Use position words like first, second, third! 🏆",
-            exp: "Line position 12 is Twelfth and 20 is Twentieth! 🎖️"
+            hint: "Count down the queue line positions from Candy! 🏃‍♂️",
+            exp: Freddy sits in the third spot! 🎖️"
+        },
+        {
+            emoji: "🎈",
+            context: "Which number is exactly 1 less than 200?",
+            options: ["100 🎈", "190 🎈", "199 🎈", "201 🎈"],
+            answer: 2,
+            hint: "What number comes right before you reach 200? 🛑",
+            exp: "Take 1 away from 200 to get 199! 🎨"
+        },
+        {
+            emoji: "🍭",
+            context: "What is the short standard form of 100 + 0 + 7?",
+            options: ["170 🍭", "107 🍭", "17 🍭", "1007 🍭"],
+            answer: 1,
+            hint: "Combine them safely: 1 hundred, 0 tens, and 7 ones. 🧩",
+            exp: "It joins together to make 107! 🌸"
+        },
+        {
+            emoji: "⭐️",
+            context: "Which number has a 5 in the ones place?",
+            options: ["152 ⭐", "501 ⭐", "125 ⭐", "160 ⭐"],
+            answer: 2,
+            hint: "Look at the very last digit on the right side! 📦",
+            exp: "In 125, the last digit 5 is in the ones place! ✔️"
         }
     ];
 
@@ -186,13 +204,13 @@
     let score = 0;
     let attempts = 0;
     let timerInterval = null;
-    let timeRemaining = 60; // Grade 1: 60 seconds
+    let timeRemaining = 60; // Grade 1 minimum runtime limit rule
     let isMuted = false;
 
     const audioCorrect = new Audio('assets/correct.mp3');
     const audioWrong = new Audio('assets/wrong.mp3');
 
-    // Strict 5 seconds splash screen layout trigger
+    // Strict 5-second asynchronous splash guard screen trigger
     window.addEventListener('load', () => {
         setTimeout(() => {
             document.getElementById('splash-screen').classList.add('hidden');
@@ -245,8 +263,8 @@
         document.getElementById('next-btn').classList.add('hidden');
         
         let qData = dataset[currentQ];
+        document.getElementById('q-emoji').innerText = qData.emoji;
         document.getElementById('q-text').innerText = qData.context;
-        document.getElementById('q-body').innerText = qData.question;
         
         const container = document.getElementById('options-container');
         container.innerHTML = '';
@@ -272,7 +290,7 @@
             score++;
             document.getElementById('score-val').innerText = score;
             disableOptions();
-            showFeedback('explanation', `🎉 ${qData.exp}`);
+            showFeedback('explanation', `🎉 Correct! ${qData.exp}`);
             document.getElementById('next-btn').classList.remove('hidden');
         } else {
             attempts++;
@@ -280,13 +298,13 @@
             clickedBtn.classList.add('wrong');
             clickedBtn.disabled = true;
             
-            if (attempts === 1) {
-                showFeedback('hint', `✨ ${qData.hint}`);
+            if (attempts === 1) { // 2 attempts feedback rules
+                showFeedback('hint', `✨ Hint: ${qData.hint}`);
             } else {
                 clearInterval(timerInterval);
                 disableOptions();
                 buttons[qData.answer].classList.add('correct');
-                showFeedback('explanation', `Let's see: ${qData.exp}`);
+                showFeedback('explanation', `Answer: ${qData.exp}`);
                 document.getElementById('next-btn').classList.remove('hidden');
             }
         }
@@ -297,7 +315,7 @@
         let qData = dataset[currentQ];
         const buttons = document.getElementsByClassName('btn-opt');
         buttons[qData.answer].classList.add('correct');
-        showFeedback('explanation', `⏰ Time's up! ${qData.exp}`);
+        showFeedback('explanation', `⏰ Time's Up! ${qData.exp}`);
         document.getElementById('next-btn').classList.remove('hidden');
     }
 
@@ -329,14 +347,14 @@
         screen.classList.remove('hidden');
         
         let finalPercent = (score / dataset.length) * 100;
-        let msg = `You earned ${score} out of ${dataset.length} stars! ⭐`;
+        let msg = `You got ${score} / ${dataset.length} stars! ⭐`;
         
         if (finalPercent >= 75) {
-            msg += "\nSuper Job! 🏆🏆";
+            msg += "\nGood job! 🏆";
         } else if (finalPercent >= 40) {
-            msg += "\nGood try! Let's practice again! 📚";
+            msg += "\nReview this chapter and try again 📚";
         } else {
-            msg += "\nLet's try one more time! 💪";
+            msg += "\nLet's practise more 💪";
         }
         
         document.getElementById('result-text').innerText = msg;
@@ -351,7 +369,7 @@
         loadQuestion();
     }
 
-    // High performance localized visual confetti particle burst effect
+    // Canvas particle sparklers framework
     function triggerVisualSparklers() {
         const canvas = document.getElementById('confetti-canvas');
         canvas.classList.remove('hidden');
