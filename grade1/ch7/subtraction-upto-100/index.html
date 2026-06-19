@@ -66,7 +66,7 @@
         <h2>➖ Taking Away!</h2>
         <div class="visual-emoji-display">🍬🎈🧸</div>
         <p style="margin-bottom: 25px; font-size: 1.35rem; color: #495057; font-weight: bold;">
-            Subtraction up to 100 ⭐
+            Subtraction up to 100 Interactive Activity ⭐
         </p>
         <button class="btn-action" onclick="startInteractive()">START! 🚀</button>
     </div>
@@ -97,7 +97,6 @@
 </div>
 
 <script>
-    // 12 Selected/Formatted Chapter-aligned questions (Question 5 removed and substituted)
     const dataset = [
         {
             emoji: "🍬",
@@ -130,6 +129,46 @@
             answer: 1,
             hint: "Subtract the ones place first: 5 − 5 = 0. Then do the tens! 🔢",
             exp: "45 − 15 leaves exactly 30 marbles! 🌸"
+        },
+        {
+            emoji: "📝",
+            context: "Meera solved: 34 − 12 = 22. Is she correct?",
+            options: ["Yes ✅", "No ❌", "Maybe 🤷", "Cannot say ❓"],
+            answer: 0,
+            hint: "Check the math: 4 − 2 in the ones place and 3 − 1 in the tens place!",
+            exp: "34 − 12 = 22 is correct!"
+        },
+        {
+            emoji: "🪵",
+            context: "Kabir has a box with 4 bundles of sticks. Each bundle has exactly 10 sticks (40 sticks in total). He unties one bundle and gives 5 single sticks to his sister. How many sticks does Kabir have left now?",
+            options: ["30 sticks 🪵", "35 sticks 🪵", "25 sticks 🪵", "45 sticks 🪵"],
+            answer: 1,
+            hint: "If he starts with 40 sticks and gives away 5, count backward by ones from 40! 🔢",
+            exp: "40 minus 5 leaves 3 tens and 5 ones, which equals 35 sticks."
+        },
+        {
+            emoji: "🗣️",
+            context: "Rohit and Sana are looking at the problem 85 − 30. Rohit says, 'The answer will have 5 in the ones place.' Sana says, 'The answer will have 5 in the tens place.' Who is making the correct claim?",
+            options: ["Only Rohit is correct 🛑", "Only Sana is correct 🛑", "Both Rohit and Sana are correct  ", "Neither is correct ❌"],
+            answer: 2,
+            hint: "Subtract 0 ones from 5 ones (5 − 0), then subtract 3 tens from 8 tens (8 − 3). 👀",
+            exp: "85 − 30 = 55. The answer has a 5 in both the tens place and the ones place, meaning both statements are correct!"
+        },
+        {
+            emoji: "🌸",
+            context: "A flower garland has 75 beads in total. Some beads break and fall off. Now, there are only 50 beads left on the garland. How many beads broke off?",
+            options: ["20 beads 🌸", "25 beads 🌸", "30 beads 🌸", "35 beads 🌸"],
+            answer: 1,
+            hint: "Find the difference between the starting number of beads (75) and the leftover beads (50). 🔍",
+            exp: "Subtracting 50 from 75 (75 − 50) tells us that exactly 25 beads broke off."
+        },
+        {
+            emoji: "🔍",
+            context: "Which subtraction statement is incorrect?",
+            options: ["52 − 20 = 32", "45 − 15 = 30", "63 − 21 = 42", "72 − 22 = 40"],
+            answer: 3,
+            hint: "Work out each answer. One equation does not match up correctly!",
+            exp: "72 − 22 = 40 is incorrect! The correct answer is 50, not 40."
         },
         {
             emoji: "✏️",
@@ -178,22 +217,6 @@
             answer: 1,
             hint: "Count backward by tens from 100 three times! 🔢",
             exp: "100 − 30 leaves 70 toys! ✔️"
-        },
-        {
-            emoji: "🚌",
-            context: "A bus has 80 seats. 60 are filled. How many are empty?",
-            options: ["10 empty 🚌", "20 empty 🚌", "30 empty 🚌", "40 empty 🚌"],
-            answer: 1,
-            hint: "Take 6 tens away from 8 tens! 🔢",
-            exp: "80 − 60 = 20 empty seats! 🌟"
-        },
-        {
-            emoji: "📐",
-            context: "Find the missing value: 84 − 12 = ___",
-            options: ["72 📐", "73 📐", "74 📐", "75 📐"],
-            answer: 0,
-            hint: "Subtract 2 from 4 in the ones place, then subtract 1 from 8 in the tens place! 🔢",
-            exp: "84 − 12 equals 72! 🎖️"
         }
     ];
 
@@ -207,7 +230,6 @@
     const audioCorrect = new Audio('assets/correct.mp3');
     const audioWrong = new Audio('assets/wrong.mp3');
 
-    // Asynchronous 5000ms splash guard execution block
     window.addEventListener('load', () => {
         setTimeout(() => {
             document.getElementById('splash-screen').classList.add('hidden');
@@ -221,6 +243,7 @@
         loadQuestion();
     }
 
+    // Audio & App Controls
     function toggleMute() {
         isMuted = !isMuted;
         document.getElementById('mute-btn').innerText = isMuted ? "🔇" : "🔊";
