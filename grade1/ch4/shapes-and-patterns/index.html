@@ -184,7 +184,6 @@ body{
   white-space:normal;
 }
 
-/* Mixed content (Image + Text) Question Variant Styling */
 .option.has-image {
   flex-direction: column;
   min-height: 120px;
@@ -301,7 +300,7 @@ body{
       <div class="badge" id="qLabel">Question <span id="qNo">1</span>/12</div>
       <div class="badge">Score: <span id="score">0</span></div>
       <div class="badge">Time: <span id="timer">60</span>s</div>
-      <button class="sound-btn" onclick="toggleMute()" id="muteBtn">🔊 Sound On</button>
+      <button class="sound-btn" onclick="toggleMute()" id="muteBtn">🔈 Sound Off</button>
     </div>
 
     <div class="visual-box" id="visualBox"></div>
@@ -471,3 +470,279 @@ explanation:"Wheels and bowls are round, meaning they are circles!"
 },
 {
 q:"Meera is rolling a standard game dice during a board game. Which of these facts is true about the surfaces of her dice?",
+visualType:"images",
+images:["dice.png","cube.png"],
+options:[
+  {text:"It has absolutely no corners or edges."},
+  {text:"It has flat square surfaces that let it slide to a stop."},
+  {text:"It is a flat 2D drawing with no depth."},
+  {text:"It has only round, curved surfaces that roll everywhere."}
+],
+answer:1,
+hint:"Look closely at a dice—each of its six walls is a perfect flat shape.",
+explanation:"A dice is a cube made out of six flat squares!"
+},
+{
+q:"You place a tiny plastic shirt button right next to a giant family frying pan. Both are perfectly round. Which statement describes them correctly?",
+visualType:"largeImages",
+images:["button.png","plate.png"],
+options:[
+  {text:"They are different shapes because their sizes are not the same."},
+  {text:"The pan is a square and the tiny button is a circle."},
+  {text:"They are the exact same shape but have different sizes."},
+  {text:"They are exactly the same size in your hand."}
+],
+answer:2,
+hint:"Does making a round circle bigger turn it into a triangle or square?",
+explanation:"Size doesn't change the shape. A tiny circle and a giant circle are still both circles!"
+}
+];
+
+let current=0,score=0,firstAttemptCorrect=0,attempts=0,answered=false,timeLeft=60,timerInterval,muted=true;
+let currentCorrectIndex = 0;
+
+let logoScreen, quizScreen, resultScreen, qNo, qLabel, scoreBox, timerBox, visualBox, questionText, optionsBox, feedback, nextBtn, correctSound, wrongSound, clapSound;
+
+// Safe structural wrapper ensures elements load completely before running logic
+document.addEventListener("DOMContentLoaded", () => {
+  logoScreen=document.getElementById("logoScreen");
+  quizScreen=document.getElementById("quizScreen");
+  resultScreen=document.getElementById("resultScreen");
+  qNo=document.getElementById("qNo");
+  qLabel=document.getElementById("qLabel");
+  scoreBox=document.getElementById("score");
+  timerBox=document.getElementById("timer");
+  visualBox=document.getElementById("visualBox");
+  questionText=document.getElementById("questionText");
+  optionsBox=document.getElementById("optionsBox");
+  feedback=document.getElementById("feedback");
+  nextBtn=document.getElementById("nextBtn");
+  correctSound=document.getElementById("correctSound");
+  wrongSound=document.getElementById("wrongSound");
+  clapSound=document.getElementById("clapSound");
+
+  setTimeout(()=>{
+    logoScreen.classList.remove("active");
+    quizScreen.classList.add("active");
+    startQuiz();
+  },5000);
+});
+
+function startQuiz(){
+  current=0;
+  score=0;
+  firstAttemptCorrect=0;
+  scoreBox.textContent=score;
+  loadQuestion();
+}
+
+function startTimer(){
+  timeLeft=60;
+  timerBox.textContent=timeLeft;
+  clearInterval(timerInterval);
+  timerInterval=setInterval(()=>{
+    timeLeft--;
+    timerBox.textContent=timeLeft;
+    if(timeLeft<=0){
+      clearInterval(timerInterval);
+      showResult();
+    }
+  },1000);
+}
+
+function loadQuestion(){
+  attempts=0;
+  answered=false;
+  feedback.textContent="";
+  feedback.style.color="#1f2937";
+  nextBtn.style.display="none";
+
+  const item=questions[current];
+  
+  if (current >= questions.length - 2) {
+    qLabel.innerHTML = `⚡ Challenge <span id="qNo">${current + 1}</span>/${questions.length}`;
+    document.getElementById("quizScreen").querySelector('.card').style.borderColor = "#8b5cf6";
+  } else {
+    qLabel.innerHTML = `Question <span id="qNo">${current + 1}</span>/${questions.length}`;
+    document.getElementById("quizScreen").querySelector('.card').style.borderColor = "";
+  }
+  
+  questionText.innerHTML=item.q;
+  optionsBox.innerHTML="";
+  renderVisual(item);
+
+  let shuffledOptions = item.options.map((opt, idx) => ({ text: opt.text, img: opt.img, originalIndex: idx }));
+  shuffledOptions.sort(() => Math.random() - 0.5);
+
+  shuffledOptions.forEach((option, index)=>{
+    const btn=document.createElement("button");
+    btn.className="option";
+    
+    if(option.img) {
+      btn.classList.add("has-image");
+      const imgEl = document.createElement("img");
+      imgEl.src = `assets/${option.img}`;
+      imgEl.alt = option.text;
+      btn.appendChild(imgEl);
+    }
+    
+    const textSpan = document.createElement("span");
+    textSpan.textContent = option.text;
+    btn.appendChild(textSpan);
+    
+    if(option.originalIndex === item.answer) {
+      currentCorrectIndex = index;
+    }
+
+    btn.onclick=()=>checkAnswer(btn, index);
+    optionsBox.appendChild(btn);
+  });
+
+  startTimer();
+}
+
+function renderVisual(item){
+  if(item.visualType==="images" || item.visualType==="largeImages"){
+    let html='<div class="visual-row">';
+    const sizeClass = item.visualType === "largeImages" ? "large-square" : "big";
+    item.images.forEach(img=>{
+      const srcPath = img.startsWith("image_") ? img : `assets/${img}`;
+      html+=`<img class="visual-img ${sizeClass}" src="${srcPath}" alt="">`;
+    });
+    html+='</div>';
+    visualBox.innerHTML=html;
+  }
+
+  if(item.visualType==="pattern"){
+    let html='<div class="visual-row">';
+    item.items.forEach(it=>{
+      if(it==="?"){
+        html+='<div class="qmark">?</div>';
+      }else{
+        html+=`<img class="pattern-img" src="assets/${it}" alt="">`;
+      }
+    });
+    html+='</div>';
+    visualBox.innerHTML=html;
+  }
+
+  if(item.visualType==="word"){
+    visualBox.innerHTML=`<div class="word-display">${item.word}</div>`;
+  }
+}
+
+function checkAnswer(button,selected){
+  if(answered)return;
+  const currentQuestion=questions[current];
+
+  if(selected===currentCorrectIndex){
+    clearInterval(timerInterval);
+    answered=true;
+    score++;
+    
+    if(attempts===0){
+      firstAttemptCorrect++;
+    }
+    
+    scoreBox.textContent=score;
+    button.classList.add("correct");
+    feedback.textContent="Correct!";
+    feedback.style.color="#047857";
+    playSound(correctSound);
+    playSound(clapSound);
+    launchConfetti();
+    disableOptions();
+    nextBtn.style.display="inline-block";
+  }else{
+    attempts++;
+    button.classList.add("wrong");
+    playSound(wrongSound);
+
+    if(attempts===1){
+      feedback.textContent="Hint: " + currentQuestion.hint;
+      feedback.style.color="#b45309";
+      button.disabled=true;
+    }else{
+      clearInterval(timerInterval);
+      answered=true;
+      feedback.textContent="Not quite. " + currentQuestion.explanation;
+      feedback.style.color="#b91c1c";
+      showCorrectAnswer();
+      disableOptions();
+      nextBtn.style.display="inline-block";
+    }
+  }
+}
+
+function showCorrectAnswer(){
+  document.querySelectorAll(".option")[currentCorrectIndex].classList.add("correct");
+}
+
+function disableOptions(){
+  document.querySelectorAll(".option").forEach(btn=>btn.disabled=true);
+}
+
+function nextQuestion(){
+  current++;
+  if(current<questions.length){
+    loadQuestion();
+  }else{
+    showResult();
+  }
+}
+
+function showResult(){
+  clearInterval(timerInterval);
+  quizScreen.classList.remove("active");
+  resultScreen.classList.add("active");
+
+  const percentage=(firstAttemptCorrect/questions.length)*100;
+  let message="";
+
+  if(percentage>=75){
+    message="Good job!";
+    launchConfetti();
+    playSound(clapSound);
+  }else if(percentage>=40){
+    message="Review this chapter and try again!";
+  }else{
+    message="Let’s practice some more!";
+  }
+
+  document.getElementById("resultMessage").textContent=message;
+  document.getElementById("finalScore").innerHTML="Total Solved: "+score+" / "+questions.length+"<br>First-Attempt Correct: "+firstAttemptCorrect+" / "+questions.length;
+}
+
+function restartQuiz(){
+  resultScreen.classList.remove("active");
+  quizScreen.classList.add("active");
+  startQuiz();
+}
+
+function toggleMute(){
+  muted=!muted;
+  document.getElementById("muteBtn").textContent=muted?"🔇 Sound Off":"🔊 Sound On";
+}
+
+function playSound(sound){
+  if(muted)return;
+  sound.currentTime=0;
+  sound.play().catch(()=>{});
+}
+
+function launchConfetti(){
+  const colors=["#f59e0b","#10b981","#3b82f6","#ef4444","#8b5cf6"];
+  for(let i=0;i<30;i++){
+    const piece=document.createElement("div");
+    piece.className="confetti";
+    piece.style.left=Math.random()*100+"vw";
+    piece.style.background=colors[Math.floor(Math.random()*colors.length)];
+    piece.style.animationDuration=(Math.random()*0.8+0.8)+"s";
+    document.body.appendChild(piece);
+    setTimeout(()=>piece.remove(),1500);
+  }
+}
+</script>
+
+</body>
+</html>
