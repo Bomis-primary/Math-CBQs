@@ -58,12 +58,10 @@
 <div class="container">
     <canvas id="confetti-canvas" class="hidden"></canvas>
 
-    <!-- Splash Screen (Strict 5 Seconds Rule) with Correct Filename -->
     <div id="splash-screen">
         <img src="assets/logo.png" alt="Logo">
     </div>
 
-    <!-- Intro Instructions Screen -->
     <div id="intro-screen" class="hidden" style="text-align: center; padding-top: 20px;">
         <h2>➖ Taking Away!</h2>
         <div class="visual-emoji-display">🍬🎈🧸</div>
@@ -73,7 +71,6 @@
         <button class="btn-action" onclick="startInteractive()">START! 🚀</button>
     </div>
 
-    <!-- Main Active Game Loop -->
     <div id="game-screen" class="hidden">
         <div class="header-meta">
             <div class="score-box">⭐ <span id="score-val">0</span></div>
@@ -91,7 +88,6 @@
         <button id="next-btn" class="btn-action hidden" onclick="handleNext()">NEXT 👉</button>
     </div>
 
-    <!-- Final Score Display -->
     <div id="result-screen" class="hidden" style="text-align: center; padding-top: 20px;">
         <h2>🎉 Finished!</h2>
         <div class="visual-emoji-display">🏆⭐👑</div>
@@ -101,103 +97,103 @@
 </div>
 
 <script>
-    // 12 Selected/Formatted Chapter-aligned questions from source text[cite: 5]
+    // 12 Selected/Formatted Chapter-aligned questions (Question 5 removed and substituted)
     const dataset = [
         {
             emoji: "🍬",
-            context: "Diya has 50 candies. She gives 20 to her friend. How many candies are left?[cite: 5]",
+            context: "Diya has 50 candies. She gives 20 to her friend. How many candies are left?",
             options: ["20 candies 🍬", "30 candies 🍬", "40 candies 🍬", "50 candies 🍬"],
             answer: 1,
             hint: "Count backward by tens from 50 two times! 🔢",
-            exp: "50 − 20 = 30 candies left! 🎉[cite: 5]"
+            exp: "50 − 20 = 30 candies left! 🎉"
         },
         {
             emoji: "🎈",
-            context: "A shop has 80 balloons. 30 balloons are sold. How many remain?[cite: 5]",
+            context: "A shop has 80 balloons. 30 balloons are sold. How many remain?",
             options: ["40 balloons 🎈", "50 balloons 🎈", "60 balloons 🎈", "70 balloons 🎈"],
             answer: 1,
             hint: "Take 3 tens away from 8 tens! 🔢",
-            exp: "80 − 30 = 50 balloons left! ✨[cite: 5]"
+            exp: "80 − 30 = 50 balloons left! ✨"
         },
         {
             emoji: "🔮",
-            context: "Which number should be subtracted from 60 to get 40?[cite: 5]",
+            context: "Which number should be subtracted from 60 to get 40?",
             options: ["10 🔮", "20 🔮", "30 🔮", "40 🔮"],
             answer: 1,
             hint: "6 tens minus how many tens leaves 4 tens? 🧱",
-            exp: "60 − 20 = 40! ⭐[cite: 5]"
+            exp: "60 − 20 = 40! ⭐"
         },
         {
             emoji: "🟢",
-            context: "Sam has 45 marbles. He loses 15 marbles. How many are left?[cite: 5]",
+            context: "Sam has 45 marbles. He loses 15 marbles. How many are left?",
             options: ["25 marbles 🟢", "30 marbles 🟢", "35 marbles 🟢", "40 marbles 🟢"],
             answer: 1,
             hint: "Subtract the ones place first: 5 − 5 = 0. Then do the tens! 🔢",
-            exp: "45 − 15 leaves exactly 30 marbles! 🌸[cite: 5]"
+            exp: "45 − 15 leaves exactly 30 marbles! 🌸"
         },
         {
             emoji: "✏️",
-            context: "A boy has 72 pencils. He gives away 30 pencils. How many are left?[cite: 5]",
+            context: "A boy has 72 pencils. He gives away 30 pencils. How many are left?",
             options: ["32 pencils ✏️", "42 pencils ✏️", "52 pencils ✏️", "62 pencils ✏️"],
             answer: 1,
             hint: "Subtract 0 from 2 ones, and 3 tens from 7 tens! 🎒",
-            exp: "72 − 30 = 42 pencils! 🎈[cite: 5]"
+            exp: "72 − 30 = 42 pencils! 🎈"
         },
         {
             emoji: "🍎",
-            context: "Which subtraction sum needs borrowing from the tens place?[cite: 5]",
+            context: "Which subtraction sum needs borrowing from the tens place?",
             options: ["54 − 12 🍎", "63 − 21 🍎", "72 − 35 🍎", "80 − 20 🍎"],
             answer: 2,
             hint: "Look for a sum where the top ones digit is smaller than the bottom ones digit! 👀",
-            exp: "72 − 35 needs borrowing because 2 is smaller than 5! 🌟[cite: 5]"
+            exp: "72 − 35 needs borrowing because 2 is smaller than 5! 🌟"
         },
         {
             emoji: "🍏",
-            context: "A basket has 90 apples. 45 are taken away. How many remain?[cite: 5]",
+            context: "A basket has 90 apples. 45 are taken away. How many remain?",
             options: ["35 apples 🍏", "45 apples 🍏", "55 apples 🍏", "65 apples 🍏"],
             answer: 1,
             hint: "Borrow 1 ten to make the ones place 10 − 5! 🔢",
-            exp: "90 − 45 leaves exactly 45 apples! 🏆[cite: 5]"
+            exp: "90 − 45 leaves exactly 45 apples! 🏆"
         },
         {
             emoji: "⚖️",
-            context: "Which is smaller: (65 − 20) or (70 − 25)?[cite: 5]",
+            context: "Which is smaller: (65 − 20) or (70 − 25)?",
             options: ["65 − 20 is smaller ⚖️", "70 − 25 is smaller ⚖️", "Both are equal ⚖️", "Cannot say ⚖️"],
             answer: 2,
             hint: "Solve both sums! They both give the same number answer. 🧩",
-            exp: "Both equal 45, so they are perfectly equal! 🎨[cite: 5]"
+            exp: "Both equal 45, so they are perfectly equal! 🎨"
         },
         {
             emoji: "🍫",
-            context: "A child has 60 chocolates. He eats 25. How many are left?[cite: 5]",
+            context: "A child has 60 chocolates. He eats 25. How many are left?",
             options: ["35 chocolates 🍫", "30 chocolates 🍫", "40 chocolates 🍫", "45 chocolates 🍫"],
             answer: 0,
             hint: "Borrow 1 ten from 6 to change 0 into 10! 🔢",
-            exp: "60 − 25 = 35 chocolates left! 🍩[cite: 5]"
+            exp: "60 − 25 = 35 chocolates left! 🍩"
         },
         {
             emoji: "🧸",
-            context: "A shop had 100 toys. 30 were sold. How many are left?[cite: 5]",
+            context: "A shop had 100 toys. 30 were sold. How many are left?",
             options: ["60 toys 🧸", "70 toys 🧸", "80 toys 🧸", "90 toys 🧸"],
             answer: 1,
             hint: "Count backward by tens from 100 three times! 🔢",
-            exp: "100 − 30 leaves 70 toys! ✔️[cite: 5]"
+            exp: "100 − 30 leaves 70 toys! ✔️"
         },
         {
             emoji: "🚌",
-            context: "A bus has 80 seats. 60 are filled. How many are empty?[cite: 5]",
+            context: "A bus has 80 seats. 60 are filled. How many are empty?",
             options: ["10 empty 🚌", "20 empty 🚌", "30 empty 🚌", "40 empty 🚌"],
             answer: 1,
             hint: "Take 6 tens away from 8 tens! 🔢",
-            exp: "80 − 60 = 20 empty seats! 🌟[cite: 5]"
+            exp: "80 − 60 = 20 empty seats! 🌟"
         },
         {
-            emoji: "⭐",
-            context: "What must be subtracted from 75 to get 50?[cite: 5]",
-            options: ["20 ⭐", "25 ⭐", "30 ⭐", "35 ⭐"],
-            answer: 1,
-            hint: "Subtract 50 from 75 to find the missing part! 🧩",
-            exp: "75 − 25 = 50! 🎖️[cite: 5]"
+            emoji: "📐",
+            context: "Find the missing value: 84 − 12 = ___",
+            options: ["72 📐", "73 📐", "74 📐", "75 📐"],
+            answer: 0,
+            hint: "Subtract 2 from 4 in the ones place, then subtract 1 from 8 in the tens place! 🔢",
+            exp: "84 − 12 equals 72! 🎖️"
         }
     ];
 
@@ -205,13 +201,13 @@
     let score = 0;
     let attempts = 0;
     let timerInterval = null;
-    let timeRemaining = 60; // Grade 1 threshold limit[cite: 2]
+    let timeRemaining = 60; 
     let isMuted = false;
 
     const audioCorrect = new Audio('assets/correct.mp3');
     const audioWrong = new Audio('assets/wrong.mp3');
 
-    // Asynchronous 5000ms splash guard execution block[cite: 2]
+    // Asynchronous 5000ms splash guard execution block
     window.addEventListener('load', () => {
         setTimeout(() => {
             document.getElementById('splash-screen').classList.add('hidden');
@@ -299,7 +295,7 @@
             clickedBtn.classList.add('wrong');
             clickedBtn.disabled = true;
             
-            if (attempts === 1) { // 2 attempts constraint loop rules[cite: 2]
+            if (attempts === 1) { 
                 showFeedback('hint', `✨ Hint: ${qData.hint}`);
             } else {
                 clearInterval(timerInterval);
@@ -351,11 +347,11 @@
         let msg = `You got ${score} / ${dataset.length} stars! ⭐`;
         
         if (finalPercent >= 75) {
-            msg += "\nGood job! 🏆[cite: 2]";
+            msg += "\nGood job! 🏆";
         } else if (finalPercent >= 40) {
-            msg += "\nReview this chapter and try again 📚[cite: 2]";
+            msg += "\nReview this chapter and try again 📚";
         } else {
-            msg += "\nLet's practise more 💪[cite: 2]";
+            msg += "\nLet's practise more 💪";
         }
         
         document.getElementById('result-text').innerText = msg;
