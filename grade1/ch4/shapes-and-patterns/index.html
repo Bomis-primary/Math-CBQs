@@ -89,8 +89,8 @@ body{
 }
 
 .visual-img{
-  width:105px;
-  height:105px;
+  max-width:130px;
+  max-height:130px;
   object-fit:contain;
   background:transparent;
   border-radius:0;
@@ -99,13 +99,13 @@ body{
 }
 
 .visual-img.big{
-  width:150px;
-  height:120px;
+  max-width:160px;
+  max-height:140px;
 }
 
 .visual-img.large-square {
-  width: 140px;
-  height: 140px;
+  max-width:140px;
+  max-height:140px;
 }
 
 .pattern-img{
@@ -143,6 +143,13 @@ body{
   justify-content:center;
   font-size:38px;
   font-weight:bold;
+}
+
+.word-display{
+  font-size:42px;
+  font-weight:bold;
+  letter-spacing:6px;
+  color:#1f4e79;
 }
 
 .question{
@@ -184,8 +191,8 @@ body{
 }
 
 .option img{
-  height:60px;
-  width:60px;
+  height:45px;
+  width:45px;
   object-fit:contain;
 }
 
@@ -265,11 +272,12 @@ body{
   .options{grid-template-columns:1fr;gap:11px}
   .option{min-height:95px;font-size:16px;padding:10px}
   .option img{height:45px;width:45px}
-  .visual-img{width:86px;height:86px}
-  .visual-img.big{width:120px;height:95px}
-  .visual-img.large-square{width:110px;height:110px}
+  .visual-img{max-width:90px;max-height:90px}
+  .visual-img.big{max-width:110px;max-height:100px}
+  .visual-img.large-square{max-width:100px;max-height:100px}
   .pattern-img,.pattern-number,.qmark{width:56px;height:56px}
   .pattern-number{font-size:28px}
+  .word-display{font-size:32px}
   .primary{width:100%}
   .badge,.sound-btn{font-size:14px}
 }
@@ -317,16 +325,16 @@ body{
 <script>
 const questions=[
 {
-q:"Look at the door. What flat shape matches the face of a door?",
+q:"Misha is looking at the main entrance door of her classroom. If she wants to paint a shape that looks exactly like the face of the door, which flat shape should she choose?",
 visualType:"images",
-images:["door.png"],
+images:["door.png","rectangle.png"],
 options:[
-  {text:"Square", img:"square.png"},
-  {text:"Rectangle", img:"rectangle.png"},
-  {text:"Circle", img:"circle.png"},
-  {text:"Triangle", img:"triangle.png"}
+  {text:"A perfectly even square", img:"square.png"},
+  {text:"A sharp triangle", img:"triangle.png"},
+  {text:"A tall, wide rectangle", img:"rectangle.png"},
+  {text:"A smooth round circle", img:"circle.png"}
 ],
-answer:1,
+answer:2,
 hint:"A door has two long sides and two shorter sides.",
 explanation:"A door is taller than it is wide, making it a rectangle!"
 },
@@ -337,24 +345,24 @@ images:["coin.png"],
 options:[
   {text:"A toy block", img:"cube.png"},
   {text:"A round coin", img:"coin.png"},
-  {text:"A plastic ruler", img:"rectangle.png"},
-  {text:"A puzzle box", img:"square.png"}
+  {text:"An eraser", img:"eraser.png"},
+  {text:"A Rubik's cube", img:"cube.png"}
 ],
 answer:1,
 hint:"Look for the shape with no corners and zero straight sides.",
 explanation:"A coin is round and has no sharp corners, so it rolls perfectly!"
 },
 {
-q:"Which two flat shapes have exactly 4 sides and 4 corners?",
+q:"Avani cuts out two secret origami shapes. She tells her brother: 'Both of my flat paper pieces have exactly 4 straight sides and 4 sharp corners.' What did she cut out?",
 visualType:"images",
 images:["rectangle.png","square.png"],
 options:[
-  {text:"Rectangle and Square"},
-  {text:"Triangle and Rectangle"},
-  {text:"Square and Circle"},
-  {text:"Circle and Triangle"}
+  {text:"A triangle and a rectangle", img:"triangle.png"},
+  {text:"A square and a circle", img:"circle.png"},
+  {text:"A circle and a triangle", img:"triangle.png"},
+  {text:"A rectangle and a square", img:"rectangle.png"}
 ],
-answer:0,
+answer:3,
 hint:"Triangles only have 3 corners, and circles have none.",
 explanation:"Both squares and rectangles are made with exactly 4 sides and 4 corners!"
 },
@@ -378,7 +386,7 @@ visualType:"images",
 images:["party-hat.png"],
 options:[
   {text:"Pyramid", img:"pyramid.png"},
-  {text:"Cube Box", img:"cube.png"},
+  {text:"Cube", img:"cube.png"},
   {text:"Cone", img:"cone.png"},
   {text:"Cylinder", img:"cylinder.png"}
 ],
@@ -387,28 +395,28 @@ hint:"This shape has a round flat bottom that goes up to a sharp tip.",
 explanation:"A party hat has a circle on the bottom and a point at the top, which is a cone!"
 },
 {
-q:"Look at the pattern: Circle, Square, Circle, Square. What comes next?",
+q:"Look at this tile pattern on the swimming pool floor: Circle, Square, Circle, Square. What tile comes next to keep the pattern going?",
 visualType:"pattern",
 items:["circle.png","square.png","circle.png","square.png","?"],
 options:[
-  {text:"A round circle", img:"circle.png"},
-  {text:"A triangle", img:"triangle.png"},
-  {text:"A star", img:"star.png"},
-  {text:"A rectangle", img:"rectangle.png"}
+  {text:"A round circle"},
+  {text:"A three-sided triangle"},
+  {text:"A five-pointed star"},
+  {text:"A long rectangle"}
 ],
 answer:0,
 hint:"What always comes right after a square in this line?",
 explanation:"The pattern changes back and forth. A circle always comes after a square!"
 },
 {
-q:"Look at this red traffic sign. How many corners does it have?",
+q:"Rohit looks out the car window and sees a bright red 'Yield' traffic sign. If he counts the sharp points where the straight lines meet, how many corners will he find?",
 visualType:"images",
 images:["image_65c945.jpg"],
 options:[
-  {text:"2 corners"},
-  {text:"3 corners"},
   {text:"4 corners"},
-  {text:"0 corners"}
+  {text:"3 corners"},
+  {text:"0 corners"},
+  {text:"2 corners"}
 ],
 answer:1,
 hint:"Count the sharp points on the triangle sign.",
@@ -417,30 +425,30 @@ explanation:"A triangle shape always has exactly 3 corners!"
 {
 q:"This soup can slides when upright but rolls on its side. What 3D shape is it?",
 visualType:"images",
-images:["cylinder.png"],
+images:["can.png"],
 options:[
-  {text:"Box Box", img:"cube.png"},
-  {text:"Sphere Ball", img:"sphere.png"},
-  {text:"Cylinder Tube", img:"cylinder.png"},
-  {text:"Cone Hat", img:"cone.png"}
+  {text:"Cube", img:"cube.png"},
+  {text:"Cone", img:"cone.png"},
+  {text:"Sphere", img:"sphere.png"},
+  {text:"Cylinder", img:"cylinder.png"}
 ],
-answer:2,
+answer:3,
 hint:"Look for a tube shape with flat circles at both ends.",
 explanation:"A tube-like shape with two flat circular ends is called a cylinder."
 },
 {
-q:"Look at the letters S and L. Which sentence is completely true?",
-visualType:"images",
-images:["S.png","L.png"],
+q:"Look carefully at the letters in the words below. Which four-letter word is made up entirely of completely straight lines with absolutely no curves?",
+visualType:"word",
+word:"KITE",
 options:[
-  {text:"S has a curved line, but L has straight lines."},
-  {text:"Both letters use completely straight lines."},
-  {text:"S has straight lines, but L has a curved line."},
-  {text:"Both letters use completely curved lines."}
+  {text:"ROSE"},
+  {text:"KITE"},
+  {text:"LAMP"},
+  {text:"GATE"}
 ],
-answer:0,
-hint:"Which letter has smooth curves, and which one has a sharp corner?",
-explanation:"The letter S twists smoothly (curved), while L is made of straight sticks!"
+answer:1,
+hint:"Look for the word where every single letter (K, I, T, E) is built using only straight sticks!",
+explanation:"The letters K, I, T, and E use completely straight segments, whereas R, O, S, P, and G contain rounded lines."
 },
 {
 q:"A bicycle wheel and a food bowl share which flat geometric shape?",
@@ -457,30 +465,30 @@ hint:"Think of a shape that is perfectly round with no sides.",
 explanation:"Wheels and bowls are round, meaning they are circles!"
 },
 {
-q:"You roll a game dice. What is true about the flat sides of the dice?",
+q:"Meera is rolling a standard game dice during a board game. Which of these facts is true about the surfaces of her dice?",
 visualType:"images",
 images:["dice.png","cube.png"],
 options:[
-  {text:"It has flat square sides."},
-  {text:"It has only round sides."},
-  {text:"It is a flat 2D drawing."},
-  {text:"It has no corners at all."}
+  {text:"It has absolutely no corners or edges."},
+  {text:"It has flat square surfaces that let it slide to a stop."},
+  {text:"It is a flat 2D drawing with no depth."},
+  {text:"It has only round, curved surfaces that roll everywhere."}
 ],
-answer:0,
+answer:1,
 hint:"Look closely at a dice—each of its six walls is a perfect flat shape.",
 explanation:"A dice is a cube made out of six flat squares!"
 },
 {
-q:"Look at the tiny button and the big pan. What is true about their shapes?",
+q:"You place a tiny plastic shirt button right next to a giant family frying pan. Both are perfectly round. Which statement describes them correctly?",
 visualType:"largeImages",
 images:["button.png","plate.png"],
 options:[
-  {text:"They are the same shape, just different sizes."},
-  {text:"They are completely different shapes."},
-  {text:"The large pan is a perfect square."},
-  {text:"They are exactly the same size."}
+  {text:"They are different shapes because their sizes are not the same."},
+  {text:"The pan is a square and the tiny button is a circle."},
+  {text:"They are the exact same shape but have different sizes."},
+  {text:"They are exactly the same size in your hand."}
 ],
-answer:0,
+answer:2,
 hint:"Does making a round circle bigger turn it into a triangle or square?",
 explanation:"Size doesn't change the shape. A tiny circle and a giant circle are still both circles!"
 }
@@ -588,7 +596,8 @@ function renderVisual(item){
     let html='<div class="visual-row">';
     const sizeClass = item.visualType === "largeImages" ? "large-square" : "big";
     item.images.forEach(img=>{
-      html+=`<img class="visual-img ${sizeClass}" src="assets/${img}" alt="">`;
+      const srcPath = img.startsWith("image_") ? img : `assets/${img}`;
+      html+=`<img class="visual-img ${sizeClass}" src="${srcPath}" alt="">`;
     });
     html+='</div>';
     visualBox.innerHTML=html;
@@ -605,6 +614,10 @@ function renderVisual(item){
     });
     html+='</div>';
     visualBox.innerHTML=html;
+  }
+
+  if(item.visualType==="word"){
+    visualBox.innerHTML=`<div class="word-display">${item.word}</div>`;
   }
 }
 
