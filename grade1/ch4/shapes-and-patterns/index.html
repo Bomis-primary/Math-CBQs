@@ -319,7 +319,7 @@ const questions=[
 {
 q:"Look at the door. What flat shape matches the face of a door?",
 visualType:"images",
-images:["door.png"], // Removed circle.png comparison asset
+images:["door.png"],
 options:[
   {text:"Square", img:"square.png"},
   {text:"Rectangle", img:"rectangle.png"},
@@ -333,7 +333,7 @@ explanation:"A door is taller than it is wide, making it a rectangle!"
 {
 q:"Which of these items can roll smoothly across the floor without stopping?",
 visualType:"images",
-images:["coin.png"], // Removed circle.png comparison asset
+images:["coin.png"],
 options:[
   {text:"A toy block", img:"cube.png"},
   {text:"A round coin", img:"coin.png"},
@@ -361,7 +361,7 @@ explanation:"Both squares and rectangles are made with exactly 4 sides and 4 cor
 {
 q:"What 3D mathematical name belongs to a round, solid soccer ball?",
 visualType:"images",
-images:["ball.png"], // Removed sphere.png comparison asset
+images:["ball.png"],
 options:[
   {text:"Cube", img:"cube.png"},
   {text:"Sphere", img:"sphere.png"},
@@ -375,7 +375,7 @@ explanation:"A solid, round ball shape is called a sphere."
 {
 q:"What 3D shape looks exactly like a pointed party hat?",
 visualType:"images",
-images:["party-hat.png"], // Removed cone.png comparison asset
+images:["party-hat.png"],
 options:[
   {text:"Pyramid", img:"pyramid.png"},
   {text:"Cube Box", img:"cube.png"},
@@ -555,4 +555,171 @@ function loadQuestion(){
   renderVisual(item);
 
   let shuffledOptions = item.options.map((opt, idx) => ({ text: opt.text, img: opt.img, originalIndex: idx }));
-  shuffledOptions.sort(() =>
+  shuffledOptions.sort(() => Math.random() - 0.5);
+
+  shuffledOptions.forEach((option, index)=>{
+    const btn=document.createElement("button");
+    btn.className="option";
+    
+    if(option.img) {
+      const imgEl = document.createElement("img");
+      imgEl.src = `assets/${option.img}`;
+      imgEl.alt = option.text;
+      btn.appendChild(imgEl);
+    }
+    
+    const textSpan = document.createElement("span");
+    textSpan.textContent = option.text;
+    btn.appendChild(textSpan);
+    
+    if(option.originalIndex === item.answer) {
+      currentCorrectIndex = index;
+    }
+
+    btn.onclick=()=>checkAnswer(btn, index);
+    optionsBox.appendChild(btn);
+  });
+
+  startTimer();
+}
+
+function renderVisual(item){
+  if(item.visualType==="images" || item.visualType==="largeImages"){
+    let html='<div class="visual-row">';
+    const sizeClass = item.visualType === "largeImages" ? "large-square" : "big";
+    item.images.forEach(img=>{
+      html+=`<img class="visual-img ${sizeClass}" src="assets/${img}" alt="">`;
+    });
+    html+='</div>';
+    visualBox.innerHTML=html;
+  }
+
+  if(item.visualType==="pattern"){
+    let html='<div class="visual-row">';
+    item.items.forEach(it=>{
+      if(it==="?"){
+        html+='<div class="qmark">?</div>';
+      }else{
+        html+=`<img class="pattern-img" src="assets/${it}" alt="">`;
+      }
+    });
+    html+='</div>';
+    visualBox.innerHTML=html;
+  }
+}
+
+function checkAnswer(button,selected){
+  if(answered)return;
+  const currentQuestion=questions[current];
+
+  if(selected===currentCorrectIndex){
+    clearInterval(timerInterval);
+    answered=true;
+    score++;
+    
+    if(attempts===0){
+      firstAttemptCorrect++;
+    }
+    
+    scoreBox.textContent=score;
+    button.classList.add("correct");
+    feedback.textContent="Correct!";
+    feedback.style.color="#047857";
+    playSound(correctSound);
+    playSound(clapSound);
+    launchConfetti();
+    disableOptions();
+    nextBtn.style.display="inline-block";
+  }else{
+    attempts++;
+    button.classList.add("wrong");
+    playSound(wrongSound);
+
+    if(attempts===1){
+      feedback.textContent="Hint: " + currentQuestion.hint;
+      feedback.style.color="#b45309";
+      button.disabled=true;
+    }else{
+      clearInterval(timerInterval);
+      answered=true;
+      feedback.textContent="Not quite. " + currentQuestion.explanation;
+      feedback.style.color="#b91c1c";
+      showCorrectAnswer();
+      disableOptions();
+      nextBtn.style.display="inline-block";
+    }
+  }
+}
+
+function showCorrectAnswer(){
+  document.querySelectorAll(".option")[currentCorrectIndex].classList.add("correct");
+}
+
+function disableOptions(){
+  document.querySelectorAll(".option").forEach(btn=>btn.disabled=true);
+}
+
+function nextQuestion(){
+  current++;
+  if(current<questions.length){
+    loadQuestion();
+  }else{
+    showResult();
+  }
+}
+
+function showResult(){
+  clearInterval(timerInterval);
+  quizScreen.classList.remove("active");
+  resultScreen.classList.add("active");
+
+  const percentage=(firstAttemptCorrect/questions.length)*100;
+  let message="";
+
+  if(percentage>=75){
+    message="Good job!";
+    launchConfetti();
+    playSound(clapSound);
+  }else if(percentage>=40){
+    message="Review this chapter and try again!";
+  }else{
+    message="Let’s practice some more!";
+  }
+
+  document.getElementById("resultMessage").textContent=message;
+  document.getElementById("finalScore").innerHTML="Total Solved: "+score+" / "+questions.length+"<br>First-Attempt Correct: "+firstAttemptCorrect+" / "+questions.length;
+}
+
+function restartQuiz(){
+  resultScreen.classList.remove("active");
+  quizScreen.classList.add("active");
+  startQuiz();
+}
+
+function toggleMute(){
+  muted=!muted;
+  document.getElementById("muteBtn").textContent=muted?"🔇 Sound Off":"🔊 Sound On";
+}
+
+function playSound(sound){
+  if(muted)return;
+  sound.currentTime=0;
+  sound.play().catch(()=>{});
+}
+
+function launchConfetti(){
+  const colors=["#f59e0b","#10b981","#3b82f6","#ef4444","#8b5cf6"];
+  for(let i=0;i<30;i++){
+    const piece=document.createElement("div");
+    piece.className="confetti";
+    piece.style.left=Math.random()*100+"vw";
+    piece.style.background=colors[Math.floor(Math.random()*colors.length)];
+    piece.style.animationDuration=(Math.random()*0.8+0.8)+"s";
+    document.body.appendChild(piece);
+    setTimeout(()=>piece.remove(),1500);
+  }
+}
+</script>
+
+</body>
+</html>
