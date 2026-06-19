@@ -198,6 +198,7 @@ explanation:"Taking away 8 from 18 is structurally written down as 18 − 8 = 10
 ];
 
 let current=0,score=0,firstAttemptCorrect=0,attempts=0,answered=false,timeLeft=60,timerInterval,muted=false;
+let currentCorrectIndex = 0; // Tracks shuffled correct index position dynamically
 
 const logoScreen=document.getElementById("logoScreen");
 const quizScreen=document.getElementById("quizScreen");
@@ -255,11 +256,23 @@ function loadQuestion(){
   visualBox.innerHTML=`<div class="visual">${item.visual}</div><div class="visual-text">${item.visualText}</div>`;
   optionsBox.innerHTML="";
 
-  item.options.forEach((option,index)=>{
+  // Create an array of options maps to retain original indexing connection
+  let shuffledOptions = item.options.map((opt, idx) => ({ text: opt, originalIndex: idx }));
+  
+  // Shuffle option structures randomly on-the-fly
+  shuffledOptions.sort(() => Math.random() - 0.5);
+
+  shuffledOptions.forEach((option, index)=>{
     const btn=document.createElement("button");
     btn.className="option";
-    btn.textContent=option;
-    btn.onclick=()=>checkAnswer(btn,index);
+    btn.textContent=option.text;
+    
+    // Check if this shuffled slot holds the original correct answer value
+    if(option.originalIndex === item.answer) {
+      currentCorrectIndex = index;
+    }
+
+    btn.onclick=()=>checkAnswer(btn, index);
     optionsBox.appendChild(btn);
   });
   
@@ -269,9 +282,8 @@ function loadQuestion(){
 function checkAnswer(button,selected){
   if(answered)return;
   const currentQuestion=questions[current];
-  const correctIndex=currentQuestion.answer;
 
-  if(selected===correctIndex){
+  if(selected===currentCorrectIndex){
     clearInterval(timerInterval);
     answered=true;
     score++;
@@ -311,8 +323,7 @@ function checkAnswer(button,selected){
 }
 
 function showCorrectAnswer(){
-  const correctIndex=questions[current].answer;
-  document.querySelectorAll(".option")[correctIndex].classList.add("correct");
+  document.querySelectorAll(".option")[currentCorrectIndex].classList.add("correct");
 }
 
 function disableOptions(){
