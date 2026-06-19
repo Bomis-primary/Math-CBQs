@@ -28,10 +28,37 @@
         .timer { color: var(--danger); background: #fff5f5; padding: 5px 12px; border-radius: 12px; border: 2px solid #ffc9c9; }
         .score-box { color: #2b8a3e; background: #ebfbee; padding: 5px 12px; border-radius: 12px; border: 2px solid #b2f2bb; }
         
-        /* Layout Typography */
+        /* Layout Typography & Clean Text Boundaries */
         h2 { font-size: 1.6rem; text-align: center; margin-bottom: 15px; color: #ba4a00; line-height: 1.3; }
         .visual-emoji-display { font-size: 3.5rem; text-align: center; margin: 10px 0; user-select: none; display: flex; justify-content: center; align-items: center; gap: 5px; flex-wrap: wrap; }
-        .q-context { background: #f4f6f6; padding: 15px; border-radius: 16px; margin-bottom: 15px; font-size: 1.2rem; text-align: center; font-weight: bold; color: #7e5109; line-height: 1.4; border: 2px dashed #f5b041; }
+        
+        /* Cleaned Question Block */
+        .q-context { 
+            background: #f4f6f6; 
+            padding: 16px 20px; 
+            border-radius: 16px; 
+            margin-bottom: 15px; 
+            font-size: 1.25rem; 
+            text-align: left; 
+            font-weight: normal; 
+            color: #5d4037; 
+            line-height: 1.5; 
+            border: 2px dashed #f5b041;
+            word-break: normal;
+            overflow-wrap: break-word;
+        }
+
+        /* Essential Fix: Prevents addition/math expressions from breaking lines midway */
+        .math-inline {
+            white-space: nowrap;
+            display: inline-block;
+            font-weight: bold;
+            color: #ba4a00;
+            background: #fff;
+            padding: 2px 6px;
+            border-radius: 6px;
+            border: 1px dashed #f5b041;
+        }
         
         /* Responsive High-Contrast Tap Targets */
         .options-grid { display: grid; grid-template-columns: 1fr; gap: 12px; margin-bottom: 15px; }
@@ -58,10 +85,12 @@
 <div class="container">
     <canvas id="confetti-canvas" class="hidden"></canvas>
 
+    <!-- Splash Screen (Strict 5 Seconds Guard) -->
     <div id="splash-screen">
         <img src="assets/logo.png" alt="Logo">
     </div>
 
+    <!-- Intro Screen (Grade 1 Friendly Text) -->
     <div id="intro-screen" class="hidden" style="text-align: center; padding-top: 50px;">
         <h2>Welcome, Math Explorer!</h2>
         <p style="font-size: 1.3rem; font-weight: bold; margin-bottom: 25px; color: #7e5109;">Let's count fun groups together! 🌟</p>
@@ -69,6 +98,7 @@
         <button class="btn-action" onclick="startInteractive()">PLAY GAME 🎮</button>
     </div>
 
+    <!-- Main Game Screen -->
     <div id="game-screen" class="hidden">
         <div class="header-meta">
             <div class="score-box">⭐ <span id="score-val">0</span> / <span id="q-total">15</span></div>
@@ -86,6 +116,7 @@
         <button id="next-btn" class="btn-action hidden" onclick="handleNext()">NEXT QUESTION 👉</button>
     </div>
 
+    <!-- Final Score Analytics Screen -->
     <div id="result-screen" class="hidden" style="text-align: center; padding-top: 20px;">
         <h2 id="result-title">🎉 Great Job!</h2>
         <div id="result-emoji" class="visual-emoji-display">🏆👏✨</div>
@@ -98,9 +129,9 @@
     const dataset = [
         {
             emoji: "🔢",
-            context: "What is another way to write 2 + 2 + 2 + 2 + 2?",
+            context: "What is another way to write <span class='math-inline'>2 + 2 + 2 + 2 + 2</span>?",
             options: ["2 times 2", "2 times 4", "5 times 2", "5 + 2"],
-            answer: 2, // 5 times 2
+            answer: 2,
             hint: "Count how many times you see the number 2 added together.",
             exp: "Adding 2 five times is the same as 5 times 2."
         },
@@ -108,7 +139,7 @@
             emoji: "🚲",
             context: "If one bicycle has 2 wheels, how many wheels do 4 bicycles have?",
             options: ["6", "8", "4", "2"],
-            answer: 1, // 8
+            answer: 1,
             hint: "Count by 2s four times over: 2, 4, 6...",
             exp: "4 groups of 2 wheels equals 8 wheels total."
         },
@@ -116,15 +147,15 @@
             emoji: "🌸",
             context: "There are 5 flower pots. Each pot has 3 flowers. How many flowers are there in total?",
             options: ["15", "8", "10", "20"],
-            answer: 0, // 15
+            answer: 0,
             hint: "Skip count by 3s five times: 3, 6, 9, 12...",
             exp: "5 groups of 3 flowers equals 15 flowers."
         },
         {
             emoji: "➕",
-            context: "Which multiplication fact matches 5 + 5 + 5?",
+            context: "Which multiplication fact matches <span class='math-inline'>5 + 5 + 5</span>?",
             options: ["5 times 5", "3 times 5", "5 times 1", "3 + 5"],
-            answer: 1, // 3 times 5
+            answer: 1,
             hint: "Look at which number is added and how many times it shows up.",
             exp: "The number 5 is added 3 times, so it is written as 3 times 5."
         },
@@ -132,7 +163,7 @@
             emoji: "🖐️",
             context: "A hand has 5 fingers. How many fingers do 6 hands have?",
             options: ["11", "25", "35", "30"],
-            answer: 3, // 30
+            answer: 3,
             hint: "Skip count by 5s six times over: 5, 10, 15, 20...",
             exp: "6 groups of 5 fingers equals 30 total fingers."
         },
@@ -140,7 +171,7 @@
             emoji: "🤛",
             context: "2 times 10 is the exact same as:",
             options: ["10 + 10", "2 + 2", "10 times 10", "2 + 10"],
-            answer: 0, // 10 + 10
+            answer: 0,
             hint: "This means you have the number 10 repeated two times.",
             exp: "2 times 10 means you add 10 two times (10 + 10)."
         },
@@ -148,7 +179,7 @@
             emoji: "🖍️",
             context: "A pack contains 10 crayons. How many crayons are in 10 packs?",
             options: ["20", "10", "50", "100"],
-            answer: 3, // 100
+            answer: 3,
             hint: "Skip count by 10s ten times over!",
             exp: "10 groups of 10 equals 100 crayons."
         },
@@ -156,15 +187,15 @@
             emoji: "🍫",
             context: "Rahul buys 5 chocolates everyday. How many chocolates does he buy in 2 days?",
             options: ["7", "10", "15", "5"],
-            answer: 1, // 10
+            answer: 1,
             hint: "Add 5 chocolates for Day 1 and 5 chocolates for Day 2.",
             exp: "2 days times 5 chocolates equals 10 chocolates total."
         },
         {
             emoji: "📈",
-            context: "Complete the counting pattern: 2, 4, 6, 8, __",
+            context: "Complete the counting pattern: <span class='math-inline'>2, 4, 6, 8, __</span>",
             options: ["9", "12", "10", "11"],
-            answer: 2, // 10
+            answer: 2,
             hint: "Add 2 more to the number 8 to find the next step.",
             exp: "This pattern skip-counts by 2. The next number is 10."
         },
@@ -172,15 +203,15 @@
             emoji: "🪺",
             context: "There are 3 nests. Each nest has 0 eggs. How many eggs are there in total?",
             options: ["3", "1", "30", "0"],
-            answer: 3, // 0
+            answer: 3,
             hint: "If all the bird nests are completely empty, what is the count?",
             exp: "3 groups of 0 equals 0."
         },
         {
             emoji: "⭐",
             context: "Which of these is the exact same as 5 times 4?",
-            options: ["4 + 4 + 4 + 4 + 4", "5 + 5 + 5 + 5 + 5", "5 + 4", "4 times 4"],
-            answer: 0, // 4 + 4 + 4 + 4 + 4
+            options: ["<span class='math-inline'>4 + 4 + 4 + 4 + 4</span>", "<span class='math-inline'>5 + 5 + 5 + 5 + 5</span>", "5 + 4", "4 times 4"],
+            answer: 0,
             hint: "This means adding the number 4 a total of five times.",
             exp: "5 times 4 means adding the number 4 five times."
         },
@@ -188,7 +219,7 @@
             emoji: "🦪",
             context: "One starfish has 5 arms. How many arms do 3 starfish have?",
             options: ["8", "15", "10", "20"],
-            answer: 1, // 15
+            answer: 1,
             hint: "Count by 5s three times over: 5, 10...",
             exp: "3 starfish with 5 arms each means 3 times 5, which is 15."
         },
@@ -196,7 +227,7 @@
             emoji: "🚗",
             context: "If a car can hold 5 people, how many people can 10 cars hold?",
             options: ["15", "55", "50", "100"],
-            answer: 2, // 50
+            answer: 2,
             hint: "Skip count by 5s ten times over.",
             exp: "10 cars times 5 people equals 50 people."
         },
@@ -204,7 +235,7 @@
             emoji: "🧁",
             context: "A box has 2 rows of cupcakes. Each row has 5 cupcakes. How many cupcakes are there?",
             options: ["7", "10", "12", "8"],
-            answer: 1, // 10
+            answer: 1,
             hint: "You have two groups, and each group has 5 treats inside.",
             exp: "2 rows of 5 cupcakes means 5 + 5, which equals 10."
         },
@@ -212,7 +243,7 @@
             emoji: "💰",
             context: "Sia has 4 piggy banks. She puts one 5-rupee coin inside each piggy bank. How much money does she have?",
             options: ["9 rupees", "15 rupees", "20 rupees", "45 rupees"],
-            answer: 2, // 20 rupees
+            answer: 2,
             hint: "Count by 5s four times over: 5, 10, 15...",
             exp: "4 banks with 5 rupees each equals 20 rupees in total."
         }
@@ -284,11 +315,15 @@
         const container = document.getElementById('options-container');
         container.innerHTML = '';
         
-        qData.options.forEach((opt, idx) => {
+        // Randomize options structure safely on load without altering core dataset mapping
+        let indices = qData.options.map((_, i) => i);
+        indices.sort(() => Math.random() - 0.5);
+
+        indices.forEach((originalIdx) => {
             let btn = document.createElement('button');
             btn.className = 'btn-opt';
-            btn.innerText = opt;
-            btn.onclick = () => selectOption(idx, btn);
+            btn.innerHTML = qData.options[originalIdx];
+            btn.onclick = () => selectOption(originalIdx, btn);
             container.appendChild(btn);
         });
     }
@@ -324,7 +359,11 @@
             } else {
                 clearInterval(timerInterval);
                 disableOptions();
-                buttons[qData.answer].classList.add('correct');
+                
+                // Find and highlight correct button dynamically
+                for (let btn of buttons) {
+                    btn.disabled = true;
+                }
                 showFeedback('explanation', `Let's see: ${qData.exp}`);
                 document.getElementById('next-btn').classList.remove('hidden');
             }
@@ -334,8 +373,6 @@
     function handleTimeout() {
         disableOptions();
         let qData = dataset[currentQ];
-        const buttons = document.getElementsByClassName('btn-opt');
-        buttons[qData.answer].classList.add('correct');
         showFeedback('explanation', `⏰ Time ran out! Let's look at the fact: ${qData.exp}`);
         document.getElementById('next-btn').classList.remove('hidden');
     }
