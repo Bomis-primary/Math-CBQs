@@ -146,10 +146,12 @@ body{
 }
 
 .word-display{
-  font-size:42px;
+  font-size:36px;
   font-weight:bold;
-  letter-spacing:6px;
+  letter-spacing:12px;
   color:#1f4e79;
+  word-spacing:20px;
+  text-align:center;
 }
 
 .question{
@@ -281,7 +283,7 @@ body{
   .visual-img.large-square{max-width:100px;max-height:100px}
   .pattern-img,.pattern-number,.qmark{width:56px;height:56px}
   .pattern-number{font-size:28px}
-  .word-display{font-size:32px}
+  .word-display{font-size:24px;letter-spacing:4px;word-spacing:10px}
   .primary{width:100%}
   .badge,.sound-btn{font-size:14px}
 }
@@ -441,9 +443,9 @@ hint:"Look for a tube shape with flat circles at both ends.",
 explanation:"A tube-like shape with two flat circular ends is called a cylinder."
 },
 {
-q:"Look carefully at the letters in the words below. Which four-letter word is made up entirely of completely straight lines with absolutely no curves?",
+q:"Which word is made up entirely of straight lines with no curves?",
 visualType:"word",
-word:"KITE", "GATE", "LAMP", "ROSE"
+word:"ROSE LAMP KITE GATE",
 options:[
   {text:"ROSE"},
   {text:"KITE"},
@@ -451,8 +453,8 @@ options:[
   {text:"GATE"}
 ],
 answer:1,
-hint:"Look for the word where every single letter (K, I, T, E) is built using only straight sticks!",
-explanation:"The letters K, I, T, and E use completely straight segments, whereas R, O, S, P, and G contain rounded lines."
+hint:"Look for the word where every single letter is built using only straight sticks!",
+explanation:"The letters K, I, T, and E use completely straight segments, whereas R, O, S, and G contain curves."
 },
 {
 q:"A bicycle wheel and a food bowl share which flat geometric shape?",
