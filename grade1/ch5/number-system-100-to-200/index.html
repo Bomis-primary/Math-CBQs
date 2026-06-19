@@ -3,53 +3,51 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Grade 1 Math: Number System (100 to 200)</title>
+    <title>Grade 1 Math: Number System (13 CBQ Master Suite)</title>
     <style>
         :root {
-            --primary: #ff6b6b;
-            --secondary: #4dadf7;
+            --primary: #d35400;
+            --secondary: #2c3e50;
             --success: #2ecc71;
             --danger: #e74c3c;
-            --bg: #fff9db;
+            --bg: #fdf2e9;
             --text: #2c3e50;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Comic Sans MS', 'Chalkboard SE', sans-serif; }
         body { background-color: var(--bg); color: var(--text); display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 10px; }
-        .container { background: white; width: 100%; max-width: 460px; border-radius: 24px; box-shadow: 0 10px 20px rgba(0,0,0,0.08); padding: 20px; position: relative; min-height: 440px; border: 5px solid #ff922b; overflow: hidden; }
+        .container { background: white; width: 100%; max-width: 460px; border-radius: 24px; box-shadow: 0 10px 20px rgba(0,0,0,0.08); padding: 20px; position: relative; min-height: 480px; border: 5px solid #f5b041; overflow: hidden; }
         
         /* Strict 5-Second Splash Guard Layout */
         #splash-screen { position: absolute; top:0; left:0; width:100%; height:100%; background: #ffffff; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 100; border-radius: 18px; }
-        #splash-screen img { width: 190px; height: auto; margin-bottom: 20px; }
-        .loader-dots { font-size: 1.8rem; color: var(--secondary); animation: blink 1.4s infinite both; }
-        @keyframes blink { 0% { opacity: .2; } 20% { opacity: 1; } 100% { opacity: .2; } }
+        #splash-screen img { width: 190px; height: auto; }
 
         .hidden { display: none !important; }
         
         /* Interactive Dashboard Meta */
-        .header-meta { display: flex; justify-content: space-between; align-items: center; font-size: 1.3rem; font-weight: bold; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 4px dashed #ffd8a8; }
+        .header-meta { display: flex; justify-content: space-between; align-items: center; font-size: 1.3rem; font-weight: bold; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 4px dashed #f5b041; }
         .timer { color: var(--danger); background: #fff5f5; padding: 5px 12px; border-radius: 12px; border: 2px solid #ffc9c9; }
         .score-box { color: #2b8a3e; background: #ebfbee; padding: 5px 12px; border-radius: 12px; border: 2px solid #b2f2bb; }
         
-        /* Simple Layout Typography */
-        h2 { font-size: 1.7rem; text-align: center; margin-bottom: 15px; color: #e64980; line-height: 1.3; }
-        .visual-emoji-display { font-size: 3.8rem; text-align: center; margin: 10px 0; user-select: none; }
-        .q-context { background: #f1f3f5; padding: 15px; border-radius: 16px; margin-bottom: 15px; font-size: 1.35rem; text-align: center; font-weight: bold; color: #102a43; line-height: 1.4; border: 2px dashed #cbd5e1; }
+        /* Layout Typography */
+        h2 { font-size: 1.6rem; text-align: center; margin-bottom: 15px; color: #ba4a00; line-height: 1.3; }
+        .visual-emoji-display { font-size: 3.5rem; text-align: center; margin: 10px 0; user-select: none; display: flex; justify-content: center; align-items: center; gap: 5px; flex-wrap: wrap; }
+        .q-context { background: #f4f6f6; padding: 15px; border-radius: 16px; margin-bottom: 15px; font-size: 1.2rem; text-align: center; font-weight: bold; color: #7e5109; line-height: 1.4; border: 2px dashed #f5b041; }
         
         /* Responsive High-Contrast Tap Targets */
         .options-grid { display: grid; grid-template-columns: 1fr; gap: 12px; margin-bottom: 15px; }
-        .btn-opt { background: #f8f9fa; border: 3px solid #dee2e6; border-radius: 16px; padding: 15px; text-align: center; font-size: 1.3rem; font-weight: bold; cursor: pointer; transition: all 0.1s; width: 100%; -webkit-tap-highlight-color: transparent; box-shadow: 0 4px #e9ecef; color: var(--text); }
+        .btn-opt { background: #f8f9fa; border: 3px solid #dee2e6; border-radius: 16px; padding: 14px; text-align: center; font-size: 1.2rem; font-weight: bold; cursor: pointer; transition: all 0.1s; width: 100%; -webkit-tap-highlight-color: transparent; box-shadow: 0 4px #e9ecef; color: var(--text); }
         .btn-opt:active { transform: translateY(2px); box-shadow: 0 2px #e9ecef; }
         .btn-opt.correct { background-color: #d4edda !important; border-color: var(--success) !important; color: #155724 !important; box-shadow: 0 4px #c3e6cb; }
         .btn-opt.wrong { background-color: #f8d7da !important; border-color: var(--danger) !important; color: #721c24 !important; box-shadow: 0 4px #f5c6cb; }
         
         /* Feedback Callout Systems */
-        .feedback-box { padding: 14px; border-radius: 16px; margin-bottom: 15px; font-weight: bold; font-size: 1.15rem; text-align: center; line-height: 1.4; }
+        .feedback-box { padding: 14px; border-radius: 16px; margin-bottom: 15px; font-weight: bold; font-size: 1.1rem; text-align: center; line-height: 1.4; }
         .feedback-box.hint { background: #fff3cd; color: #856404; border: 2px solid #ffeeba; }
-        .feedback-box.explanation { background: #e3fafc; color: #0b7285; border: 2px solid #c5f6fa; }
+        .feedback-box.explanation { background: #e8f8f5; color: #117a65; border: 2px solid #a3e4d7; }
 
         /* General UI Actions */
-        .btn-action { background: var(--primary); color: white; border: none; padding: 15px; font-size: 1.4rem; border-radius: 16px; cursor: pointer; width: 100%; font-weight: bold; box-shadow: 0 5px #e03131; }
-        .btn-action:active { transform: translateY(2px); box-shadow: 0 2px #e03131; }
+        .btn-action { background: #e67e22; color: white; border: none; padding: 15px; font-size: 1.4rem; border-radius: 16px; cursor: pointer; width: 100%; font-weight: bold; box-shadow: 0 5px #a04000; }
+        .btn-action:active { transform: translateY(2px); box-shadow: 0 2px #a04000; }
         .audio-ctrl { background: none; border: none; font-size: 2rem; cursor: pointer; }
         
         #confetti-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 5; }
@@ -61,22 +59,21 @@
     <canvas id="confetti-canvas" class="hidden"></canvas>
 
     <div id="splash-screen">
-        <img src="assets/innovine-logo.png" alt="Innovine Logo">
-        <div class="loader-dots">🎈 Loading Game... 🎈</div>
+        <img src="assets/logo.png" alt="Logo">
     </div>
 
     <div id="intro-screen" class="hidden" style="text-align: center; padding-top: 20px;">
-        <h2>🔢 Let's Count!</h2>
-        <div class="visual-emoji-display">🧱🚗🏠</div>
-        <p style="margin-bottom: 25px; font-size: 1.35rem; color: #495057; font-weight: bold;">
-            Numbers 100 to 200 Game ⭐
+        <h2>🧩 13 Master CBQ Challenge</h2>
+        <div class="visual-emoji-display">🎯📦🚌🏫</div>
+        <p style="margin-bottom: 25px; font-size: 1.3rem; color: #495057; font-weight: bold;">
+            Numbers 100 to 200 Competency Check 🚀
         </p>
-        <button class="btn-action" onclick="startInteractive()">PLAY! 🚀</button>
+        <button class="btn-action" onclick="startInteractive()">START SUITE 👉</button>
     </div>
 
     <div id="game-screen" class="hidden">
         <div class="header-meta">
-            <div class="score-box">⭐ <span id="score-val">0</span></div>
+            <div class="score-box">⭐ <span id="score-val">0</span> / <span id="q-total">13</span></div>
             <button class="audio-ctrl" id="mute-btn" onclick="toggleMute()">🔊</button>
             <div class="timer">⏳ <span id="timer-val">60</span>s</div>
         </div>
@@ -88,115 +85,122 @@
         </div>
 
         <div id="feedback" class="feedback-box hidden"></div>
-        <button id="next-btn" class="btn-action hidden" onclick="handleNext()">NEXT 👉</button>
+        <button id="next-btn" class="btn-action hidden" onclick="handleNext()">NEXT QUESTION 👉</button>
     </div>
 
     <div id="result-screen" class="hidden" style="text-align: center; padding-top: 20px;">
-        <h2>🎉 Finished!</h2>
-        <div class="visual-emoji-display">🏆👑✨</div>
-        <p id="result-text" style="font-size: 1.35rem; margin-bottom: 25px; font-weight: bold; color: #2c3e50; white-space: pre-line;"></p>
-        <button class="btn-action" onclick="restartInteractive()">PLAY AGAIN 🔄</button>
+        <h2 id="result-title">🎉 Analytics Complete!</h2>
+        <div id="result-emoji" class="visual-emoji-display">🏆👏✨</div>
+        <p id="result-text" style="font-size: 1.3rem; margin-bottom: 25px; font-weight: bold; color: #2c3e50; white-space: pre-line;"></p>
+        <button class="btn-action" onclick="restartInteractive()">RESTART CHALLENGE 🔄</button>
     </div>
 </div>
 
 <script>
-    // 12 Chapter-aligned questions with child-friendly text adaptations and structural icons
     const dataset = [
         {
-            emoji: "🦖",
-            context: "What number comes next right after 159?",
-            options: ["158 🦖", "160 🦖", "150 🦖", "170 🦖"],
-            answer: 1,
-            hint: "Add 1 more to 159! What comes after 59? 🔢",
-            exp: "160 comes just after 159! 🎉"
-        },
-        {
-            emoji: "🧱",
-            context: "Look at number 174. What is the value of the middle 7?",
-            options: ["7 ones 🟥", "70 tens 🟩", "700 hundreds 🟦", "1 one 🟨"],
-            answer: 1,
-            hint: "The 7 is standing in the middle tens place! 🚪",
-            exp: "7 in the tens place means 70! 🎈"
-        },
-        {
-            emoji: "✏️",
-            context: "Which matches the expanded break-up form of 135?",
-            options: ["100 + 3 + 5 ✏️", "1 + 3 + 5 ✏️", "100 + 30 + 5 ✏️", "10 + 30 + 5 ✏️"],
+            emoji: "📦",
+            context: "How many ‘tens’ do you need to group together to make 100?",
+            options: ["1", "5", "10", "100"],
             answer: 2,
-            hint: "Say it aloud: One-hundred, thirty, five! 🗣️",
-            exp: "135 is 100 and 30 and 5! ⭐"
-        },
-        {
-            emoji: "🚗",
-            context: "Which friendly number sits between 188 and 190?",
-            options: ["187 🚗", "191 🚗", "189 🚗", "199 🚗"],
-            answer: 2,
-            hint: "Count up: 188, then what number, then 190? 🔢",
-            exp: "189 sits in the middle of 188 and 190! ✨"
-        },
-        {
-            emoji: "💎",
-            context: "What is the true face value of digit 1 in number 142?",
-            options: ["100 💎", "10 💎", "1 💎", "142 💎"],
-            answer: 2,
-            hint: "Face value is what the number looks like on its own! 👀",
-            exp: "The face name value of 1 is just 1! ✔️"
-        },
-        {
-            emoji: "⚖️",
-            context: "Which matching sign fits here? 165 ___ 156",
-            options: ["< (Smaller)", "> (Bigger)", "= (Same)", "+ (Plus)"],
-            answer: 1,
-            hint: "Compare the tens! 6 tens is bigger than 5 tens. 🔼",
-            exp: "165 is greater than 156! 🌸"
-        },
-        {
-            emoji: "🚂",
-            context: "Sort from smallest to biggest: 120, 110, 150.",
-            options: ["150, 120, 110 🚂", "110, 150, 120 🚂", "110, 120, 150 🚂", "120, 110, 150 🚂"],
-            answer: 2,
-            hint: "Find the lowest starting counting number first! 🚂",
-            exp: "Smallest to biggest is 110, 120, 150! 🌟"
-        },
-        {
-            emoji: "🍎",
-            context: "In the word 'APPLE', what position is the letter 'L'?",
-            options: ["Second 🥈", "Sixth 🏅", "Fifth 🎖️", "Fourth 🥇"],
-            answer: 3,
-            hint: "Count the letters from start to finish: A, P, P, L... 🔢",
-            exp: "'L' is the fourth letter in APPLE! 🏆"
+            hint: "Try skip counting by 10 until you reach 100. How many counts?",
+            exp: "10 groups of ten (10 × 10) bundle together perfectly to make 100!"
         },
         {
             emoji: "🚌",
-            context: "Line order: Candy, Danny, Freddy, Polly. Who is third?",
-            options: ["Danny 🎒", "Freddy 🎒", "Polly 🎒", "Edward 🎒"],
+            context: "Candy, Danny, Freddy, Polly, Edward, and Suzi are standing in a line for the bus, starting with Candy at the front. Who is third in the line?",
+            options: ["Danny", "Freddy", "Polly", "Edward"],
             answer: 1,
-            hint: "Count down the queue line positions from Candy! 🏃‍♂️",
-            exp: Freddy sits in the third spot! 🎖️"
+            hint: "Candy is 1st, Danny is 2nd. Who is next?",
+            exp: "Counting directly from Candy at the front, Freddy holds the third position."
         },
         {
-            emoji: "🎈",
-            context: "Which number is exactly 1 less than 200?",
-            options: ["100 🎈", "190 🎈", "199 🎈", "201 🎈"],
-            answer: 2,
-            hint: "What number comes right before you reach 200? 🛑",
-            exp: "Take 1 away from 200 to get 199! 🎨"
-        },
-        {
-            emoji: "🍭",
-            context: "What is the short standard form of 100 + 0 + 7?",
-            options: ["170 🍭", "107 🍭", "17 🍭", "1007 🍭"],
+            emoji: "🏫",
+            context: "In a school assembly row, Deepa is 5th in line and she is the last student. How many students are standing in that row?",
+            options: ["7", "5", "3", "1"],
             answer: 1,
-            hint: "Combine them safely: 1 hundred, 0 tens, and 7 ones. 🧩",
-            exp: "It joins together to make 107! 🌸"
+            hint: "If she is number 5 and there is no one behind her, that defines the total count.",
+            exp: "Since she is 5th and last, there are exactly 5 students total in that row."
         },
         {
-            emoji: "⭐️",
-            context: "Which number has a 5 in the ones place?",
-            options: ["152 ⭐", "501 ⭐", "125 ⭐", "160 ⭐"],
+            emoji: "🚶‍♀️",
+            context: "A girl is standing in a queue. There are 10 people in front of her. What is her ordinal position in the queue?",
+            options: ["10th", "9th", "11th", "12th"],
             answer: 2,
-            hint: "Look at the very last digit on the right side! 📦",
-            exp: "In 125, the last digit 5 is in the ones place! ✔️"
+            hint: "If 10 spots are already taken up ahead of her, what turn is she?",
+            exp: "With 10 people in front of her, she occupies the next spot, which is the 11th position."
+        },
+        {
+            emoji: "🍎",
+            context: "In the word \"APPLE\", what is the position of 'L'?",
+            options: ["second", "sixth", "fifth", "fourth"],
+            answer: 3,
+            hint: "Count each letter sequentially from left to right.",
+            exp: "'L' is the fourth letter when counting out the word structure."
+        },
+        {
+            emoji: "🎟️",
+            context: "What is the standard form of 100 + 0 + 7?",
+            options: ["170", "107", "17", "1007"],
+            answer: 1,
+            hint: "Combine 1 hundred, 0 tens, and 7 ones directly into their places.",
+            exp: "Putting together 1 hundred, 0 tens, and 7 ones constructs the number 107."
+        },
+        {
+            emoji: "💎",
+            context: "What is the face value of the digit 1 in the number 142?",
+            options: ["100", "10", "1", "142"],
+            answer: 2,
+            hint: "Face value is what a digit looks like on its own, ignoring its column place.",
+            exp: "The face value of any digit is always just the digit itself, so it is 1!"
+        },
+        {
+            emoji: "💯",
+            context: "How many hundreds are there in the number 200?",
+            options: ["1", "2", "0", "20"],
+            answer: 1,
+            hint: "How many chunks of 100 combine to make up 200?",
+            exp: "The number 200 consists of exactly 2 completed bundles of hundreds."
+        },
+        {
+            emoji: "📝",
+            context: "In the number 106, which digit is in the tens place?",
+            options: ["1", "6", "0", "10"],
+            answer: 2,
+            hint: "Look at the middle placeholder digit that sits between hundreds and ones.",
+            exp: "106 is written as 1 Hundred, 0 Tens, and 6 Ones. The middle tracking digit is 0."
+        },
+        {
+            emoji: "⚖️",
+            context: "Which number is greater than 179 but less than 181?",
+            options: ["178", "180", "182", "170"],
+            answer: 1,
+            hint: "What number sits right between 179 and 181 on the number line?",
+            exp: "180 is the exact consecutive number situated between 179 and 181."
+        },
+        {
+            emoji: "📊",
+            context: "Which statement is correct?",
+            options: ["165 > 156", "165 < 156", "165 = 156", "156 > 165"],
+            answer: 0,
+            hint: "Compare the tens place: 6 tens is larger than 5 tens.",
+            exp: "165 is greater than 156 because 6 tens (60) is greater than 5 tens (50)."
+        },
+        {
+            emoji: "📉",
+            context: "Arrange these numbers in descending order: 144, 188, 166.",
+            options: ["188, 166, 144", "144, 166, 188", "166, 188, 144", "188, 144, 166"],
+            answer: 0,
+            hint: "Descending order means organizing from the largest value down to the smallest.",
+            exp: "Sorting from greatest to least gives us 188, then 166, and finally 144."
+        },
+        {
+            emoji: "🪵",
+            context: "If you have 1 bundle of 100 sticks, 3 bundles of 10 sticks, and 5 loose sticks, what number do you have?",
+            options: ["135", "153", "531", "130"],
+            answer: 0,
+            hint: "Group them by place: 1 hundred + 3 tens + 5 ones.",
+            exp: "Combining 1 hundred, 3 tens, and 5 ones models the number 135 perfectly."
         }
     ];
 
@@ -204,14 +208,15 @@
     let score = 0;
     let attempts = 0;
     let timerInterval = null;
-    let timeRemaining = 60; // Grade 1 minimum runtime limit rule
+    let timeRemaining = 60; 
     let isMuted = false;
 
     const audioCorrect = new Audio('assets/correct.mp3');
     const audioWrong = new Audio('assets/wrong.mp3');
+    const audioClaps = new Audio('assets/freesound_community-claps-44774.mp3');
 
-    // Strict 5-second asynchronous splash guard screen trigger
     window.addEventListener('load', () => {
+        document.getElementById('q-total').innerText = dataset.length;
         setTimeout(() => {
             document.getElementById('splash-screen').classList.add('hidden');
             document.getElementById('intro-screen').classList.remove('hidden');
@@ -231,13 +236,9 @@
 
     function playSound(type) {
         if (isMuted) return;
-        if (type === 'correct') {
-            audioCorrect.currentTime = 0;
-            audioCorrect.play().catch(() => {});
-        } else {
-            audioWrong.currentTime = 0;
-            audioWrong.play().catch(() => {});
-        }
+        if (type === 'correct') { audioCorrect.currentTime = 0; audioCorrect.play().catch(() => {}); }
+        else if (type === 'wrong') { audioWrong.currentTime = 0; audioWrong.play().catch(() => {}); }
+        else if (type === 'claps') { audioClaps.currentTime = 0; audioClaps.play().catch(() => {}); }
     }
 
     function startTimer() {
@@ -264,7 +265,7 @@
         
         let qData = dataset[currentQ];
         document.getElementById('q-emoji').innerText = qData.emoji;
-        document.getElementById('q-text').innerText = qData.context;
+        document.getElementById('q-text').innerHTML = qData.context;
         
         const container = document.getElementById('options-container');
         container.innerHTML = '';
@@ -286,11 +287,17 @@
             clearInterval(timerInterval);
             clickedBtn.classList.add('correct');
             playSound('correct');
-            triggerVisualSparklers();
-            score++;
-            document.getElementById('score-val').innerText = score;
+            
+            if (attempts === 0) {
+                score++;
+                document.getElementById('score-val').innerText = score;
+                triggerVisualSparklers();
+                showFeedback('explanation', `🎉 First-Attempt Star! ${qData.exp}`);
+            } else {
+                showFeedback('explanation', `👍 Correct! ${qData.exp}`);
+            }
+            
             disableOptions();
-            showFeedback('explanation', `🎉 Correct! ${qData.exp}`);
             document.getElementById('next-btn').classList.remove('hidden');
         } else {
             attempts++;
@@ -298,13 +305,13 @@
             clickedBtn.classList.add('wrong');
             clickedBtn.disabled = true;
             
-            if (attempts === 1) { // 2 attempts feedback rules
-                showFeedback('hint', `✨ Hint: ${qData.hint}`);
+            if (attempts === 1) { 
+                showFeedback('hint', `💡 Hint: ${qData.hint}`);
             } else {
                 clearInterval(timerInterval);
                 disableOptions();
                 buttons[qData.answer].classList.add('correct');
-                showFeedback('explanation', `Answer: ${qData.exp}`);
+                showFeedback('explanation', `Review Rule: ${qData.exp}`);
                 document.getElementById('next-btn').classList.remove('hidden');
             }
         }
@@ -315,7 +322,7 @@
         let qData = dataset[currentQ];
         const buttons = document.getElementsByClassName('btn-opt');
         buttons[qData.answer].classList.add('correct');
-        showFeedback('explanation', `⏰ Time's Up! ${qData.exp}`);
+        showFeedback('explanation', `⏰ Time's up! Here is the core structure: ${qData.exp}`);
         document.getElementById('next-btn').classList.remove('hidden');
     }
 
@@ -327,7 +334,7 @@
     function showFeedback(type, message) {
         const box = document.getElementById('feedback');
         box.className = `feedback-box ${type}`;
-        box.innerText = message;
+        box.innerHTML = message;
         box.classList.remove('hidden');
     }
 
@@ -345,16 +352,23 @@
         document.getElementById('game-screen').classList.add('hidden');
         const screen = document.getElementById('result-screen');
         screen.classList.remove('hidden');
+        playSound('claps');
         
         let finalPercent = (score / dataset.length) * 100;
-        let msg = `You got ${score} / ${dataset.length} stars! ⭐`;
+        let msg = `You earned ${score} / ${dataset.length} flawless first-attempt stars! ⭐`;
         
-        if (finalPercent >= 75) {
-            msg += "\nGood job! 🏆";
-        } else if (finalPercent >= 40) {
-            msg += "\nReview this chapter and try again 📚";
+        if (finalPercent >= 80) {
+            document.getElementById('result-title').innerText = "👑 Math Structural Master!";
+            document.getElementById('result-emoji').innerText = "🏆🏅✨";
+            msg += "\nIncredible spatial and placeholder logic! You completely master sequence dynamics, ordinal limits, and base-10 systems.";
+        } else if (finalPercent >= 50) {
+            document.getElementById('result-title').innerText = "🚀 Terrific Work!";
+            document.getElementById('result-emoji').innerText = "✏️📈💡";
+            msg += "\nGreat job! Visualizing empty placeholders and positional lines carefully will help you reach a flawless score.";
         } else {
-            msg += "\nLet's practise more 💪";
+            document.getElementById('result-title').innerText = "🧱 Keep Building!";
+            document.getElementById('result-emoji').innerText = "🎒📖🔄";
+            msg += "\nUsing models and blocks makes these clear. Give it another try to secure your master stars!";
         }
         
         document.getElementById('result-text').innerText = msg;
@@ -369,7 +383,6 @@
         loadQuestion();
     }
 
-    // Canvas particle sparklers framework
     function triggerVisualSparklers() {
         const canvas = document.getElementById('confetti-canvas');
         canvas.classList.remove('hidden');
@@ -378,12 +391,12 @@
         canvas.height = canvas.parentElement.offsetHeight;
         
         let particles = [];
-        for (let i = 0; i < 30; i++) {
+        for (let i = 0; i < 35; i++) {
             particles.push({
                 x: canvas.width / 2,
                 y: canvas.height / 3,
-                vx: (Math.random() - 0.5) * 7,
-                vy: (Math.random() - 0.5) * 7,
+                vx: (Math.random() - 0.5) * 8,
+                vy: (Math.random() - 0.5) * 8,
                 color: `hsl(${Math.random() * 360}, 100%, 65%)`,
                 size: Math.random() * 5 + 4,
                 alpha: 1
