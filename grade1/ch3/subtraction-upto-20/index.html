@@ -1,188 +1,116 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>CBQ Master Engine v2 - Subtraction</title>
-
-<style>
-body{margin:0;font-family:Arial;background:#f3f8ff}
-.screen{display:none;min-height:100vh;align-items:center;justify-content:center}
-.screen.active{display:flex}
-#logoScreen{background:#fff}
-.logo{width:70%;max-width:420px}
-
-.card{background:#fff;padding:20px;border-radius:18px;max-width:900px;width:95%;box-shadow:0 8px 20px rgba(0,0,0,0.15)}
-
-.topbar{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:15px}
-.badge{background:#e0f2fe;padding:10px;border-radius:12px;font-weight:bold;text-align:center}
-
-.question{font-size:22px;font-weight:bold;margin:15px 0}
-.visual{text-align:center}
-.visual img{max-width:100%;border-radius:12px;margin-bottom:10px}
-
-.options{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.option{padding:14px;border-radius:14px;border:2px solid #1f4e79;background:#fff;font-size:18px;font-weight:bold;cursor:pointer}
-
-.option.correct{background:#d1fae5}
-.option.wrong{background:#fee2e2}
-
-.feedback{min-height:40px;margin-top:10px;font-weight:bold;text-align:center}
-
-.btn{margin-top:12px;padding:12px 20px;background:#1f4e79;color:#fff;border:none;border-radius:12px;font-size:18px}
-
-#nextBtn{display:none}
-
-.result{text-align:center}
-
-@media(max-width:700px){
-.options{grid-template-columns:1fr}
-}
-</style>
-</head>
-
-<body>
-
-<!-- LOGO -->
-<div id="logoScreen" class="screen active">
-  <img src="assets/logo.png" class="logo"/>
-</div>
-
-<!-- GAME -->
-<div id="game" class="screen">
-<div class="card">
-
-<div class="topbar">
-<div class="badge">Q <span id="qno"></span></div>
-<div class="badge">Score <span id="score"></span></div>
-<div class="badge">Time <span id="time"></span>s</div>
-<div class="badge">CBQ v2</div>
-</div>
-
-<div class="visual">
-  <img id="visualImg" src="" />
-</div>
-
-<div id="question" class="question"></div>
-
-<div id="options" class="options"></div>
-
-<div id="feedback" class="feedback"></div>
-
-<button id="nextBtn" class="btn" onclick="nextQ()">Next</button>
-
-</div>
-</div>
-
-<!-- RESULT -->
-<div id="result" class="screen">
-<div class="card result">
-<h1 id="msg"></h1>
-<p id="final"></p>
-<button class="btn" onclick="restart()">Play Again</button>
-</div>
-</div>
-
 <script>
 
-setTimeout(()=>{
-document.getElementById("logoScreen").classList.remove("active");
-document.getElementById("game").classList.add("active");
-start();
-},5000);
-
-// 🔥 CBQ QUESTION BANK (FULL APPLICATION BASED)
-
-let bank = [
+let questions = [
 {
-type:"numberline",
-q:"Riya stands at 15 on a number line. She takes 3 equal backward jumps. Where does she land?",
-img:"assets/number-line.png",
-answer:12,
-options:[14,13,12,11]
-},
-{
-type:"case",
-q:"A shopkeeper had 19 stickers. 4 were damaged and removed. How many usable stickers remain?",
-img:"",
-answer:15,
-options:[14,15,16,13]
-},
-{
-type:"reason",
-q:"Why does subtracting zero not change a number?",
-img:"",
-answer:1,
-options:[
-"It becomes zero",
-"It keeps value same",
-"It increases value",
-"It doubles"
-]
-},
-{
-type:"error",
-q:"A student says 17 − 9 = 7. What is correct?",
-img:"",
-answer:1,
-options:[7,8,9,6]
-},
-{
-type:"data",
-q:"Books read: A=5, B=8, C=6. Which student read most?",
-img:"",
-answer:1,
-options:["A","B","C","A & C"]
-},
-{
-type:"case",
-q:"A bus had 18 children. 6 got down. How many are left inside?",
-img:"",
-answer:12,
-options:[11,12,13,14]
-},
-{
-type:"reason",
-q:"What is the predecessor of a number?",
-img:"",
+q:"A baker had 19 cupcakes. He gave away 4. How many are left?",
+visual:"🧁 19 − 4",
+options:["15","14","16","13"],
 answer:0,
-options:[
-"The number before it",
-"The number after it",
-"Double of it",
-"Zero"
-]
+hint:"Take away 4 from 19 step by step.",
+explanation:"19 − 4 = 15"
 },
 {
-type:"odd",
-q:"Which number does NOT belong?",
-img:"",
-answer:3,
-options:[14,16,18,19]
+q:"Riya is at 15 on a number line. She moves 3 steps back. Where does she land?",
+visual:"assets/number-line.png",
+options:["12","13","11","14"],
+answer:0,
+hint:"Start at 15 and move backward.",
+explanation:"15 − 3 = 12"
 },
 {
-type:"case",
-q:"Ravi had 20 chocolates. He gave 7 to his friend. How many remain?",
-img:"",
-answer:13,
-options:[11,12,13,14]
+q:"A bus had 18 children. 6 got down. How many remain?",
+visual:"🚌 18 − 6",
+options:["12","11","13","10"],
+answer:0,
+hint:"Remove 6 from 18.",
+explanation:"18 − 6 = 12"
 },
 {
-type:"data",
-q:"Which day had least sales? Mon=12, Tue=15, Wed=9",
-img:"",
-answer:2,
-options:["Mon","Tue","Wed","All same"]
+q:"Arya had 7 pencils. She gave all away. How many are left?",
+visual:"✏️ 7 − 7",
+options:["0","1","7","2"],
+answer:0,
+hint:"When you take all away, nothing remains.",
+explanation:"7 − 7 = 0"
+},
+{
+q:"A shop has 16 apples. 5 are sold. How many remain?",
+visual:"🍎 16 − 5",
+options:["11","10","12","9"],
+answer:0,
+hint:"Start from 16 and take away 5.",
+explanation:"16 − 5 = 11"
+},
+{
+q:"There were 14 birds on a tree. 3 flew away. How many remain?",
+visual:"🐦 14 − 3",
+options:["11","10","12","9"],
+answer:0,
+hint:"Subtract 3 from 14.",
+explanation:"14 − 3 = 11"
+},
+{
+q:"Rohan had 20 balloons. 8 burst. How many remain?",
+visual:"🎈 20 − 8",
+options:["12","11","13","10"],
+answer:0,
+hint:"Take away 8 from 20.",
+explanation:"20 − 8 = 12"
+},
+{
+q:"A basket had 12 oranges. 2 were eaten. How many left?",
+visual:"🍊 12 − 2",
+options:["10","9","11","8"],
+answer:0,
+hint:"Subtract 2 from 12.",
+explanation:"12 − 2 = 10"
+},
+{
+q:"Meera had 17 stickers. She gave 5 away. How many remain?",
+visual:"⭐ 17 − 5",
+options:["12","11","13","10"],
+answer:0,
+hint:"Take away 5 from 17.",
+explanation:"17 − 5 = 12"
+},
+{
+q:"A bag had 13 chocolates. 4 were eaten. How many left?",
+visual:"🍫 13 − 4",
+options:["9","8","10","7"],
+answer:0,
+hint:"Subtract 4 from 13.",
+explanation:"13 − 4 = 9"
+},
+{
+q:"A shopkeeper had 15 pens. He sold 3. How many remain?",
+visual:"🖊️ 15 − 3",
+options:["12","11","13","10"],
+answer:0,
+hint:"Take away 3 from 15.",
+explanation:"15 − 3 = 12"
+},
+{
+q:"There were 11 ducks in a pond. 2 left. How many remain?",
+visual:"🦆 11 − 2",
+options:["9","8","10","7"],
+answer:0,
+hint:"Subtract 2 from 11.",
+explanation:"11 − 2 = 9"
 }
 ];
 
-let order=[],i=0,score=0,answered=false;
+// ---------------- SAFE RANDOMIZATION ----------------
+let order=[];
+let i=0, score=0, answered=false;
 
-function shuffle(a){return a.sort(()=>Math.random()-0.5);}
+function shuffle(arr){
+return arr.sort(()=>Math.random()-0.5);
+}
 
 function start(){
-order = shuffle([...bank]); // 🔥 RANDOM QUESTIONS EVERY START
-i=0;score=0;
+order = shuffle([...questions]); // shuffle questions safely
+i=0;
+score=0;
 load();
 }
 
@@ -193,24 +121,31 @@ document.getElementById("nextBtn").style.display="none";
 
 let q = order[i];
 
-// visual
-document.getElementById("visualImg").src = q.img || "";
-document.getElementById("question").innerText = q.q;
+// visual handling (image or emoji)
+if(q.visual.includes("assets/")){
+document.getElementById("visualBox").innerHTML =
+`<img src="${q.visual}" style="max-width:100%;border-radius:10px">`;
+}else{
+document.getElementById("visualBox").innerText = q.visual;
+}
 
-// shuffle options
+document.getElementById("questionText").innerText = q.q;
+
+// shuffle options safely
 let opt = q.options.map(v=>v);
 opt = shuffle(opt);
 
 let correctValue = q.options[q.answer];
 
-document.getElementById("qno").innerText=i+1;
+document.getElementById("qNo").innerText=i+1;
 document.getElementById("score").innerText=score;
-document.getElementById("time").innerText=60;
 
-let box=document.getElementById("options");
+document.getElementById("feedback").innerText="";
+
+let box=document.getElementById("optionsBox");
 box.innerHTML="";
 
-opt.forEach((v)=>{
+opt.forEach(v=>{
 let b=document.createElement("button");
 b.className="option";
 b.innerText=v;
@@ -223,10 +158,10 @@ b.classList.add("correct");
 score++;
 answered=true;
 document.getElementById("feedback").innerText="Correct ✔";
-document.getElementById("nextBtn").style.display="block";
+document.getElementById("nextBtn").style.display="inline-block";
 }else{
 b.classList.add("wrong");
-document.getElementById("feedback").innerText="Try again";
+document.getElementById("feedback").innerText="Hint: "+q.hint;
 }
 };
 
@@ -234,23 +169,20 @@ box.appendChild(b);
 });
 }
 
-function nextQ(){
+function nextQuestion(){
 i++;
 if(i>=order.length){
-document.getElementById("game").classList.remove("active");
-document.getElementById("result").classList.add("active");
-document.getElementById("msg").innerText="Great Work!";
-document.getElementById("final").innerText="Score: "+score+"/"+order.length;
+document.getElementById("quizScreen").classList.remove("active");
+document.getElementById("resultScreen").classList.add("active");
+document.getElementById("resultMessage").innerText="Good Job!";
+document.getElementById("finalScore").innerText="Score: "+score+"/"+order.length;
 }else{
 load();
 }
 }
 
-function restart(){
+function restartQuiz(){
 location.reload();
 }
 
 </script>
-
-</body>
-</html>
