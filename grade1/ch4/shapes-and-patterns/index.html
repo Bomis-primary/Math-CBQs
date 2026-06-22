@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>CBQ Interactive - Shapes and Patterns</title>
+<title>Shapes and Patterns</title>
 
 <style>
 *{box-sizing:border-box}
@@ -293,7 +293,7 @@ body{
 <body>
 
 <div id="logoScreen" class="screen active">
-  <img src="assets/logo.png" alt="Innovine Solutions Logo" class="logo" />
+  <img src="assets/logo.png" alt="Logo" class="logo" />
 </div>
 
 <div id="quizScreen" class="screen">
@@ -324,12 +324,11 @@ body{
   </div>
 </div>
 
-<audio id="correctSound" src="assets/correct.mp3"></audio>
+<audio id="correctSound" src="assets/claps.mp3"></audio>
 <audio id="wrongSound" src="assets/wrong.mp3"></audio>
-<audio id="clapSound" src="assets/freesound_community-claps-44774.mp3"></audio>
 
 <script>
-const questions=[
+const questionPool=[
 {
 q:"Misha is looking at the main entrance door of her classroom. If she wants to paint a shape that looks exactly like the face of the door, which flat shape should she choose?",
 visualType:"images",
@@ -345,7 +344,7 @@ hint:"A door has two long sides and two shorter sides.",
 explanation:"A door is taller than it is wide, making it a rectangle!"
 },
 {
-q:'Which of these items can <strong style="color: #b45309; background: #fef3c7; padding: 2px 6px; border-radius: 6px;">roll</strong> smoothly across the floor without stopping? (A toy block, An eraser, A Rubik\'s cube, A round coin)',
+q:'Which of these items can <strong style="color: #b45309; background: #fef3c7; padding: 2px 6px; border-radius: 6px;">roll</strong> smoothly across the floor without stopping?',
 visualType:"images",
 images:["cube.png","eraser.png","rubics-cube.png","coin.png"],
 options:[
@@ -500,10 +499,11 @@ explanation:"Size doesn't change the shape. A tiny circle and a giant circle are
 }
 ];
 
+let questions=[];
 let current=0,score=0,firstAttemptCorrect=0,attempts=0,answered=false,timeLeft=60,timerInterval,muted=true;
 let currentCorrectIndex = 0;
 
-let logoScreen, quizScreen, resultScreen, qNo, qLabel, scoreBox, timerBox, visualBox, questionText, optionsBox, feedback, nextBtn, correctSound, wrongSound, clapSound;
+let logoScreen, quizScreen, resultScreen, qNo, qLabel, scoreBox, timerBox, visualBox, questionText, optionsBox, feedback, nextBtn, correctSound, wrongSound;
 
 document.addEventListener("DOMContentLoaded", () => {
   logoScreen=document.getElementById("logoScreen");
@@ -520,7 +520,6 @@ document.addEventListener("DOMContentLoaded", () => {
   nextBtn=document.getElementById("nextBtn");
   correctSound=document.getElementById("correctSound");
   wrongSound=document.getElementById("wrongSound");
-  clapSound=document.getElementById("clapSound");
 
   setTimeout(()=>{
     logoScreen.classList.remove("active");
@@ -530,6 +529,9 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 function startQuiz(){
+  let shuffledPool = [...questionPool].sort(() => Math.random() - 0.5);
+  questions = shuffledPool.slice(0, 12);
+  
   current=0;
   score=0;
   firstAttemptCorrect=0;
@@ -546,7 +548,12 @@ function startTimer(){
     timerBox.textContent=timeLeft;
     if(timeLeft<=0){
       clearInterval(timerInterval);
-      showResult();
+      answered=true;
+      feedback.textContent="Time's up! " + questions[current].explanation;
+      feedback.style.color="#b91c1c";
+      showCorrectAnswer();
+      disableOptions();
+      nextBtn.style.display="inline-block";
     }
   },1000);
 }
@@ -560,13 +567,8 @@ function loadQuestion(){
 
   const item=questions[current];
   
-  if (current >= questions.length - 2) {
-    qLabel.innerHTML = `⚡ Challenge <span id="qNo">${current + 1}</span>/${questions.length}`;
-    document.getElementById("quizScreen").querySelector('.card').style.borderColor = "#8b5cf6";
-  } else {
-    qLabel.innerHTML = `Question <span id="qNo">${current + 1}</span>/${questions.length}`;
-    document.getElementById("quizScreen").querySelector('.card').style.borderColor = "";
-  }
+  qLabel.innerHTML = `Question <span id="qNo">${current + 1}</span>/12`;
+  document.getElementById("quizScreen").querySelector('.card').style.borderColor = "";
   
   questionText.innerHTML=item.q;
   optionsBox.innerHTML="";
@@ -649,7 +651,6 @@ function checkAnswer(button,selected){
     feedback.textContent="Correct!";
     feedback.style.color="#047857";
     playSound(correctSound);
-    playSound(clapSound);
     launchConfetti();
     disableOptions();
     nextBtn.style.display="inline-block";
@@ -699,11 +700,11 @@ function showResult(){
   const percentage=(firstAttemptCorrect/questions.length)*100;
   let message="";
 
-  if(percentage>=75){
+  if(percentage >= 75){
     message="Good job!";
     launchConfetti();
-    playSound(clapSound);
-  }else if(percentage>=40){
+    playSound(correctSound);
+  }else if(percentage >= 40){
     message="Review this chapter and try again!";
   }else{
     message="Let’s practice some more!";
