@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Addition Upto 20</title>
+<title>Subtraction Upto 100</title>
 
 <style>
 *{box-sizing:border-box}
@@ -60,34 +60,6 @@ body{margin:0;font-family:Arial,sans-serif;background:#f3f8ff;color:#1f2937;min-
   font-weight: bold;
   font-size: 16px;
   text-align: center;
-}
-
-.visual-box {
-  background: #fff7ed;
-  border: 2px solid #fdba74;
-  border-radius: 18px;
-  padding: 16px;
-  margin-bottom: 16px;
-  text-align: center;
-  min-height: 130px;
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.visual {
-  font-size: 54px;
-  line-height: 1.2;
-}
-
-.visual-box img {
-  max-width: 100%; 
-  max-height: 220px; 
-  object-fit: contain; 
-  border-radius: 12px;
-  display: block;
-  margin: 0 auto;
 }
 
 .question {
@@ -173,13 +145,12 @@ body{margin:0;font-family:Arial,sans-serif;background:#f3f8ff;color:#1f2937;min-
 <div id="quizScreen" class="screen">
   <div class="card">
     <div class="topbar">
-      <div class="badge"><span id="qTypeBadge">Flow</span>: <span id="qNo">1</span>/<span id="totalQuestions">4</span></div>
+      <div class="badge"><span id="qTypeBadge">Flow</span>: <span id="qNo">1</span>/<span id="totalQuestions">12</span></div>
       <div class="badge">Score <span id="score">0</span></div>
       <div class="badge">Time <span id="timer">60</span>s</div>
       <div class="badge">Subtraction</div>
     </div>
 
-    <div class="visual-box" id="visualBox"></div>
     <div class="question" id="questionText"></div>
     <div class="options" id="optionsBox"></div>
     <div class="feedback" id="feedback"></div>
@@ -200,31 +171,83 @@ body{margin:0;font-family:Arial,sans-serif;background:#f3f8ff;color:#1f2937;min-
 
 <script>
 
-/* ================= QUESTIONS (UNCHANGED CONTENT) ================= */
+/* ================= QUESTIONS POOL ================= */
 const questionPool = [
   {
-    q:"Diya has 50 candies. She gives 20 to her friend. How many candies are left?",
-    options:["20 candies","30 candies","40 candies","50 candies"],
-    answer:1
+    type: "Flow",
+    q: "Diya has 50 candies. She gives 20 to her friend. How many candies are left?",
+    options: ["20 candies", "30 candies", "40 candies", "50 candies"],
+    answer: 1
   },
   {
-    q:"A shop has 80 balloons. 30 balloons are sold. How many remain?",
-    options:["40 balloons","50 balloons","60 balloons","70 balloons"],
-    answer:1
+    type: "Flow",
+    q: "A shop has 80 balloons. 30 balloons are sold. How many remain?",
+    options: ["40 balloons", "50 balloons", "60 balloons", "70 balloons"],
+    answer: 1
   },
   {
-    q:"Which number should be subtracted from 60 to get 40?",
-    options:["10","20","30","40"],
-    answer:1
+    type: "Flow",
+    q: "Which number should be subtracted from 60 to get 40?",
+    options: ["10", "20", "30", "40"],
+    answer: 1
   },
   {
-    q:"Sam has 45 marbles. He loses 15 marbles. How many are left?",
-    options:["25","30","35","40"],
-    answer:1
+    type: "Flow",
+    q: "Sam has 45 marbles. He loses 15 marbles. How many are left?",
+    options: ["25", "30", "35", "40"],
+    answer: 1
+  },
+  {
+    type: "Flow",
+    q: "A bus has 35 children. 10 children get down at the first stop. How many children are left in the bus?",
+    options: ["15 children", "20 children", "25 children", "30 children"],
+    answer: 2
+  },
+  {
+    type: "Flow",
+    q: "Rehan needs 70 paper cups for a party. He already has 40 cups. How many more cups does he need to buy?",
+    options: ["20 cups", "30 cups", "40 cups", "50 cups"],
+    answer: 1
+  },
+  {
+    type: "Flow",
+    q: "A book has 90 pages. Isha has read 50 pages. How many pages are left for her to read?",
+    options: ["30 pages", "40 pages", "50 pages", "60 pages"],
+    answer: 1
+  },
+  {
+    type: "Flow",
+    q: "Tina had 65 cents. She spent 25 cents on a pencil. How much money does she have left?",
+    options: ["30 cents", "35 cents", "40 cents", "45 cents"],
+    answer: 2
+  },
+  {
+    type: "Flow",
+    q: "Kabir has 85 blocks. He uses 35 blocks to build a tower. How many unused blocks does he have left?",
+    options: ["40 blocks", "50 blocks", "60 blocks", "70 blocks"],
+    answer: 1
+  },
+  {
+    type: "Flow",
+    q: "A fruit seller has 75 apples. He finds that 15 apples are spoiled and throws them away. How many good apples are left?",
+    options: ["50 apples", "55 apples", "60 apples", "65 apples"],
+    answer: 2
+  },
+  {
+    type: "Flow",
+    q: "Rohan has 40 colored pencils. Shreya has 20 colored pencils. How many more pencils does Rohan have than Shreya?",
+    options: ["10 pencils", "20 pencils", "30 pencils", "40 pencils"],
+    answer: 1
+  },
+  {
+    type: "Challenge",
+    q: "A bakery made 95 cupcakes in the morning. By evening, 65 cupcakes were sold. How many cupcakes are left unsold?",
+    options: ["20 cupcakes", "25 cupcakes", "30 cupcakes", "35 cupcakes"],
+    answer: 2
   }
 ];
 
-/* ================= ENGINE (ADAPTED TO VISUAL LAYOUT) ================= */
+/* ================= ENGINE ================= */
 let questions = [];
 let current = 0;
 let score = 0;
@@ -243,7 +266,7 @@ function changeScreen(fromId, toId) {
 function init() {
   setTimeout(() => {
     changeScreen("logoScreen", "introScreen");
-  }, 3500); // Unified auto-clear splash timer
+  }, 3500);
 }
 
 function startQuiz() {
@@ -299,9 +322,6 @@ function loadQuestion() {
   document.getElementById("feedback").innerText = "";
   document.getElementById("nextBtn").style.display = "none";
   document.getElementById("questionText").innerText = q.q;
-
-  // Visual text panel display placeholder compatible with template structure
-  document.getElementById("visualBox").innerHTML = `<div class="visual">🔢</div>`;
 
   let box = document.getElementById("optionsBox");
   box.innerHTML = "";
