@@ -195,6 +195,22 @@
 </div>
 
 <script>
+    // --- AUDIO SYSTEM CONFIGURATION ---
+    const audioSFX = {
+        correct: new Audio('assets/correct.mp3'),
+        wrong: new Audio('assets/wrong.mp3')
+    };
+
+    // Helper function to handle audio triggers cleanly
+    function playSound(audioObject) {
+        if (audioObject) {
+            audioObject.currentTime = 0; // Rewind track to start
+            audioObject.play().catch(err => {
+                console.log("Audio playback caught by browser autoplay rules:", err);
+            });
+        }
+    }
+
     // Automate Splash Screen Exit Sequence at exactly 5 seconds
     window.addEventListener('DOMContentLoaded', () => {
         setTimeout(() => {
@@ -295,6 +311,10 @@
     let current = 0, score = 0, attempts = 0, timer, timeLeft = 60;
 
     document.getElementById('start-btn').onclick = () => {
+        // Pre-load and prime audio elements via user interaction block to pass browser constraints
+        audioSFX.correct.load();
+        audioSFX.wrong.load();
+
         document.getElementById('intro-view').classList.add('hidden');
         document.getElementById('quiz-view').classList.remove('hidden');
         loadQuestion();
@@ -341,19 +361,25 @@
             timeLeft--;
             document.getElementById('timer-text').innerText = timeLeft + "s";
             document.getElementById('timer-bar').style.width = (timeLeft / 60 * 100) + "%";
-            if(timeLeft <= 0) { clearInterval(timer); endTurn(); }
+            if(timeLeft <= 0) { 
+                clearInterval(timer); 
+                playSound(audioSFX.wrong); // Play wrong sound when timer runs out
+                endTurn(); 
+            }
         }, 1000);
     }
 
     function check(i, b) {
         if(i === pool[current].ans) {
             clearInterval(timer);
+            playSound(audioSFX.correct); // Play correct sound asset
             b.classList.add('correct');
             score++;
             document.getElementById('score-val').innerText = score;
             endTurn();
         } else {
             attempts++;
+            playSound(audioSFX.wrong); // Play wrong sound asset
             b.classList.add('wrong');
             b.disabled = true;
             if(attempts === 1) {
