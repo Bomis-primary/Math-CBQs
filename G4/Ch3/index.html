@@ -196,6 +196,19 @@
 </div>
 
 <script>
+    // --- AUDIO CONTROLLER ENGINE ---
+    const sfx = {
+        correct: new Audio('assets/correct.mp3'),
+        wrong: new Audio('assets/wrong.mp3')
+    };
+
+    function playSound(track) {
+        if (track) {
+            track.currentTime = 0; // Reset track to avoid lag over rapid taps
+            track.play().catch(err => console.log("User interaction required to initialize sound engine: ", err));
+        }
+    }
+
     // Automate Splash Screen Exit Sequence at exactly 5 seconds
     window.addEventListener('DOMContentLoaded', () => {
         setTimeout(() => {
@@ -296,6 +309,10 @@
     let current = 0, score = 0, attempts = 0, timer, timeLeft = 60;
 
     document.getElementById('start-btn').onclick = () => {
+        // Prime and load resources inside user interaction thread to confirm standard permissions
+        sfx.correct.load();
+        sfx.wrong.load();
+
         document.getElementById('intro-view').classList.add('hidden');
         document.getElementById('quiz-view').classList.remove('hidden');
         loadQuestion();
@@ -343,19 +360,25 @@
             timeLeft--;
             document.getElementById('timer-text').innerText = timeLeft + "s";
             document.getElementById('timer-bar').style.width = (timeLeft / 60 * 100) + "%";
-            if(timeLeft <= 0) { clearInterval(timer); endTurn(); }
+            if(timeLeft <= 0) { 
+                clearInterval(timer); 
+                playSound(sfx.wrong); // Run out of time audio cue
+                endTurn(); 
+            }
         }, 1000);
     }
 
     function check(i, b) {
         if(i === pool[current].ans) {
             clearInterval(timer);
+            playSound(sfx.correct); // Success validation trigger
             b.classList.add('correct');
             score++;
             document.getElementById('score-val').innerText = score;
             endTurn();
         } else {
             attempts++;
+            playSound(sfx.wrong); // Error notification trigger
             b.classList.add('wrong');
             b.disabled = true;
             if(attempts === 1) {
