@@ -80,6 +80,27 @@ body{
   cursor:pointer;
 }
 
+/* Dynamic visual container for question assets */
+.visual-box{
+  background:#fff7ed;
+  border:2px solid #fdba74;
+  border-radius:20px;
+  padding:16px;
+  margin-bottom:16px;
+  text-align:center;
+  min-height:250px;
+  display:none; /* Managed dynamically via JavaScript */
+  align-items:center;
+  justify-content:center;
+}
+
+.visual-image-display {
+  max-height: 220px;
+  width: auto;
+  max-width: 100%;
+  object-fit: contain;
+}
+
 .question{
   font-size:24px;
   font-weight:bold;
@@ -197,9 +218,11 @@ body{
   .card{padding:15px}
   .title-header{font-size: 30px; margin-bottom: 24px;}
   .topbar{grid-template-columns:1fr 1fr}
+  .visual-box{min-height: 180px;}
   .question{font-size:21px; margin: 18px 0;}
   .options{grid-template-columns:1fr;gap:11px}
   .option{min-height:75px;font-size:16px;padding:10px}
+  .visual-image-display{max-height:160px}
   .primary{width:100%}
   .badge,.sound-btn{font-size:14px}
 }
@@ -228,6 +251,7 @@ body{
       <button class="sound-btn" onclick="toggleMute()" id="muteBtn">🔈 Sound Off</button>
     </div>
 
+    <div class="visual-box" id="visualBox"></div>
     <div class="question" id="questionText"></div>
     <div class="options" id="optionsBox"></div>
     <div class="feedback" id="feedback"></div>
@@ -259,7 +283,8 @@ const questionPool=[
     explanation: "10 groups of ten (10 × 10) bundle together perfectly to make 100!"
   },
   {
-    q: "Candy, Danny, Freddy, Polly, Edward, and Suzi are standing in a line for the bus, starting with Candy at the front. Who is third in the line?",
+    image: "assets/line.png",
+    q: "Candy, Danny, Freddy, Polly, Edward, and Suzi are standing in a line for the bus, starting with Candy at the front in the same order as given. Who is third in the line?",
     options: ["Danny", "Freddy", "Polly", "Edward"],
     answer: 1,
     hint: "Candy is 1st, Danny is 2nd. Who is next?",
@@ -336,6 +361,7 @@ const questionPool=[
     explanation: "Sorting from greatest to least gives us 188, then 166, and finally 144."
   },
   {
+    image: "assets/bundles.png",
     q: "If you have 1 bundle of 100 sticks, 3 bundles of 10 sticks, and 5 loose sticks, what number do you have?",
     options: ["135", "153", "531", "130"],
     answer: 0,
@@ -348,7 +374,7 @@ let questions=[];
 let current=0,score=0,firstAttemptCorrect=0,attempts=0,answered=false,timeLeft=60,timerInterval,muted=true;
 let currentCorrectIndex = 0;
 
-let logoScreen, titleScreen, quizScreen, resultScreen, qNo, qLabel, scoreBox, timerBox, questionText, optionsBox, feedback, nextBtn, correctSound, wrongSound;
+let logoScreen, titleScreen, quizScreen, resultScreen, qNo, qLabel, scoreBox, timerBox, visualBox, questionText, optionsBox, feedback, nextBtn, correctSound, wrongSound;
 
 document.addEventListener("DOMContentLoaded", () => {
   logoScreen=document.getElementById("logoScreen");
@@ -359,6 +385,7 @@ document.addEventListener("DOMContentLoaded", () => {
   qLabel=document.getElementById("qLabel");
   scoreBox=document.getElementById("score");
   timerBox=document.getElementById("timer");
+  visualBox=document.getElementById("visualBox");
   questionText=document.getElementById("questionText");
   optionsBox=document.getElementById("optionsBox");
   feedback=document.getElementById("feedback");
@@ -422,6 +449,15 @@ function loadQuestion(){
   questionText.innerHTML=item.q;
   optionsBox.innerHTML="";
 
+  // Manage visibility of the graphic box dynamically based on content presence
+  if (item.image) {
+    visualBox.innerHTML = `<img src="${item.image}" alt="Question Graphic" class="visual-image-display" />`;
+    visualBox.style.display = "flex";
+  } else {
+    visualBox.innerHTML = "";
+    visualBox.style.display = "none";
+  }
+
   let shuffledOptions = item.options.map((opt, idx) => ({ text: opt, originalIndex: idx }));
   shuffledOptions.sort(() => Math.random() - 0.5);
 
@@ -432,133 +468,3 @@ function loadQuestion(){
     const textSpan = document.createElement("span");
     textSpan.textContent = option.text;
     btn.appendChild(textSpan);
-    
-    if(option.originalIndex === item.answer) {
-      currentCorrectIndex = index;
-    }
-
-    btn.onclick=()=>checkAnswer(btn, index);
-    optionsBox.appendChild(btn);
-  });
-
-  startTimer();
-}
-
-function checkAnswer(button,selected){
-  if(answered)return;
-  const currentQuestion=questions[current];
-
-  if(selected===currentCorrectIndex){
-    clearInterval(timerInterval);
-    answered=true;
-    score++;
-    
-    if(attempts===0){
-      firstAttemptCorrect++;
-    }
-    
-    scoreBox.textContent=score;
-    button.classList.add("correct");
-    feedback.textContent=attempts === 0 ? `🎉 First-Attempt Star! ${currentQuestion.explanation}` : `👍 Correct! ${currentQuestion.explanation}`;
-    feedback.style.color="#047857";
-    playSound(correctSound);
-    launchConfetti();
-    disableOptions();
-    nextBtn.style.display="inline-block";
-  }else{
-    attempts++;
-    button.classList.add("wrong");
-    playSound(wrongSound);
-
-    if(attempts===1){
-      feedback.textContent="Hint: " + currentQuestion.hint;
-      feedback.style.color="#b45309";
-      button.disabled=true;
-    }else{
-      clearInterval(timerInterval);
-      answered=true;
-      feedback.textContent="Review Rule: " + currentQuestion.explanation;
-      feedback.style.color="#b91c1c";
-      showCorrectAnswer();
-      disableOptions();
-      nextBtn.style.display="inline-block";
-    }
-  }
-}
-
-function showCorrectAnswer(){
-  document.querySelectorAll(".option")[currentCorrectIndex].classList.add("correct");
-}
-
-function disableOptions(){
-  document.querySelectorAll(".option").forEach(btn=>btn.disabled=true);
-}
-
-function nextQuestion(){
-  current++;
-  if(current<questions.length){
-    loadQuestion();
-  }else{
-    showResult();
-  }
-}
-
-function showResult(){
-  clearInterval(timerInterval);
-  quizScreen.classList.remove("active");
-  resultScreen.classList.add("active");
-
-  const percentage=(firstAttemptCorrect/questions.length)*100;
-  let title="";
-  let msg=`You earned ${firstAttemptCorrect} / ${questions.length} flawless first-attempt stars! ⭐\n\n`;
-
-  if(percentage >= 80){
-    title="👑 Math Structural Master!";
-    msg += "Incredible spatial and placeholder logic! You completely master sequence dynamics, ordinal limits, and base-10 systems.";
-    launchConfetti();
-    playSound(correctSound);
-  }else if(percentage >= 50){
-    title="🚀 Terrific Work!";
-    msg += "Great job! Visualizing empty placeholders and positional lines carefully will help you reach a flawless score.";
-    playSound(correctSound);
-  }else{
-    title="🧱 Keep Building!";
-    msg += "Using models and blocks makes these clear. Give it another try to secure your master stars!";
-  }
-
-  document.getElementById("resultMessage").textContent=title;
-  document.getElementById("finalScore").innerText=msg;
-}
-
-function restartQuiz(){
-  resultScreen.classList.remove("active");
-  titleScreen.classList.add("active");
-}
-
-function toggleMute(){
-  muted=!muted;
-  document.getElementById("muteBtn").textContent=muted?"🔇 Sound Off":"🔊 Sound On";
-}
-
-function playSound(sound){
-  if(muted)return;
-  sound.currentTime=0;
-  sound.play().catch(()=>{});
-}
-
-function launchConfetti(){
-  const colors=["#f59e0b","#10b981","#3b82f6","#ef4444","#8b5cf6"];
-  for(let i=0;i<30;i++){
-    const piece=document.createElement("div");
-    piece.className="confetti";
-    piece.style.left=Math.random()*100+"vw";
-    piece.style.background=colors[Math.floor(Math.random()*colors.length)];
-    piece.style.animationDuration=(Math.random()*0.8+0.8)+"s";
-    document.body.appendChild(piece);
-    setTimeout(()=>piece.remove(),1500);
-  }
-}
-</script>
-
-</body>
-</html>
