@@ -1,447 +1,592 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Grade 1 Math: Addition up to 100 (CBQ Challenge)</title>
-    <style>
-        :root {
-            --primary: #3498db;
-            --secondary: #e67e22;
-            --success: #2ecc71;
-            --danger: #e74c3c;
-            --bg: #ebf5fb;
-            --text: #2c3e50;
-        }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Comic Sans MS', 'Chalkboard SE', sans-serif; }
-        body { background-color: var(--bg); color: var(--text); display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 10px; }
-        .container { background: white; width: 100%; max-width: 460px; border-radius: 24px; box-shadow: 0 10px 20px rgba(0,0,0,0.08); padding: 20px; position: relative; min-height: 460px; border: 5px solid #5dade2; overflow: hidden; }
-        
-        /* Strict 5-Second Splash Guard Layout */
-        #splash-screen { position: absolute; top:0; left:0; width:100%; height:100%; background: #ffffff; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 100; border-radius: 18px; }
-        #splash-screen img { width: 190px; height: auto; }
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Grade 1 Math: Addition up to 100 - Master Suite</title>
 
-        .hidden { display: none !important; }
-        
-        /* Interactive Dashboard Meta */
-        .header-meta { display: flex; justify-content: space-between; align-items: center; font-size: 1.3rem; font-weight: bold; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 4px dashed #a9dfbf; }
-        .timer { color: var(--danger); background: #fff5f5; padding: 5px 12px; border-radius: 12px; border: 2px solid #ffc9c9; }
-        .score-box { color: #2b8a3e; background: #ebfbee; padding: 5px 12px; border-radius: 12px; border: 2px solid #b2f2bb; }
-        
-        /* Simple Layout Typography */
-        h2 { font-size: 1.6rem; text-align: center; margin-bottom: 15px; color: #1f618d; line-height: 1.3; }
-        .visual-emoji-display { font-size: 3.5rem; text-align: center; margin: 10px 0; user-select: none; display: flex; justify-content: center; align-items: center; gap: 5px; flex-wrap: wrap; }
-        .q-context { background: #f4f6f6; padding: 15px; border-radius: 16px; margin-bottom: 15px; font-size: 1.2rem; text-align: center; font-weight: bold; color: #1f3a52; line-height: 1.4; border: 2px dashed #a9dfbf; }
-        
-        /* Responsive High-Contrast Tap Targets */
-        .options-grid { display: grid; grid-template-columns: 1fr; gap: 12px; margin-bottom: 15px; }
-        .btn-opt { background: #f8f9fa; border: 3px solid #dee2e6; border-radius: 16px; padding: 14px; text-align: center; font-size: 1.2rem; font-weight: bold; cursor: pointer; transition: all 0.1s; width: 100%; -webkit-tap-highlight-color: transparent; box-shadow: 0 4px #e9ecef; color: var(--text); }
-        .btn-opt:active { transform: translateY(2px); box-shadow: 0 2px #e9ecef; }
-        .btn-opt.correct { background-color: #d4edda !important; border-color: var(--success) !important; color: #155724 !important; box-shadow: 0 4px #c3e6cb; }
-        .btn-opt.wrong { background-color: #f8d7da !important; border-color: var(--danger) !important; color: #721c24 !important; box-shadow: 0 4px #f5c6cb; }
-        
-        /* Feedback Callout Systems */
-        .feedback-box { padding: 14px; border-radius: 16px; margin-bottom: 15px; font-weight: bold; font-size: 1.1rem; text-align: center; line-height: 1.4; }
-        .feedback-box.hint { background: #fff3cd; color: #856404; border: 2px solid #ffeeba; }
-        .feedback-box.explanation { background: #e8f8f5; color: #117a65; border: 2px solid #a3e4d7; }
+<style>
+*{box-sizing:border-box}
 
-        /* General UI Actions */
-        .btn-action { background: #1f618d; color: white; border: none; padding: 15px; font-size: 1.4rem; border-radius: 16px; cursor: pointer; width: 100%; font-weight: bold; box-shadow: 0 5px #154360; }
-        .btn-action:active { transform: translateY(2px); box-shadow: 0 2px #154360; }
-        .audio-ctrl { background: none; border: none; font-size: 2rem; cursor: pointer; }
-        
-        #confetti-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 5; }
-    </style>
+body{
+  margin:0;
+  font-family:Arial,sans-serif;
+  background:#f3f8ff;
+  color:#1f2937;
+}
+
+.screen{
+  display:none;
+  min-height:100vh;
+  padding:16px;
+}
+
+.screen.active{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+#logoScreen{
+  background:#ffffff;
+  cursor: pointer;
+}
+
+.logo{
+  max-width:420px;
+  width:80%;
+}
+
+.card{
+  width:100%;
+  max-width:900px;
+  background:#ffffff;
+  border-radius:24px;
+  padding:20px;
+  box-shadow:0 8px 24px rgba(0,0,0,0.16);
+}
+
+/* Title Screen Styling */
+.title-content {
+  text-align: center;
+  padding: 60px 20px;
+}
+
+.title-header {
+  font-size: 42px;
+  font-weight: bold;
+  color: #1f4e79;
+  margin-bottom: 32px;
+}
+
+.topbar{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:10px;
+  margin-bottom:16px;
+}
+
+.badge,.sound-btn{
+  background:#e0f2fe;
+  color:#0f3f5f;
+  padding:10px;
+  border-radius:14px;
+  font-weight:bold;
+  font-size:16px;
+  text-align:center;
+}
+
+.sound-btn{
+  border:none;
+  cursor:pointer;
+}
+
+.question{
+  font-size:24px;
+  font-weight:bold;
+  line-height:1.45;
+  margin:24px 0;
+}
+
+.options{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(220px,1fr));
+  gap:14px;
+}
+
+.option{
+  width:100%;
+  min-height:90px;
+  padding:14px 16px;
+  font-size:18px;
+  font-weight:bold;
+  line-height:1.3;
+  border:2px solid #1f4e79;
+  background:#ffffff;
+  color:#111827;
+  border-radius:16px;
+  cursor:pointer;
+  text-align:center;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  white-space:normal;
+}
+
+.option:hover{
+  background:#eef6ff;
+}
+
+.option.correct{
+  background:#d1fae5;
+  border-color:#047857;
+}
+
+.option.wrong{
+  background:#fee2e2;
+  border-color:#b91c1c;
+}
+
+.feedback{
+  min-height:34px;
+  margin-top:14px;
+  font-size:19px;
+  font-weight:bold;
+  text-align:center;
+}
+
+.controls{
+  margin-top:14px;
+  text-align:center;
+}
+
+.primary{
+  background:#1f4e79;
+  color:white;
+  border:none;
+  border-radius:14px;
+  padding:14px 28px;
+  font-size:19px;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+.primary.large {
+  padding: 16px 42px;
+  font-size: 22px;
+  border-radius: 18px;
+  box-shadow: 0 4px 12px rgba(31, 78, 121, 0.3);
+}
+
+#nextBtn{
+  display:none;
+}
+
+.result-title{
+  font-size:34px;
+  font-weight:bold;
+  text-align:center;
+  margin-bottom:14px;
+}
+
+.result-score{
+  font-size:21px;
+  text-align:center;
+  margin-bottom:20px;
+  line-height:1.5;
+  color:#4b5563;
+  white-space: pre-line;
+}
+
+.confetti{
+  position:fixed;
+  width:10px;
+  height:10px;
+  top:-10px;
+  animation:fall 1.2s linear forwards;
+  pointer-events:none;
+}
+
+@keyframes fall{
+  to{
+    transform:translateY(110vh) rotate(360deg);
+    opacity:0;
+  }
+}
+
+@media(max-width:700px){
+  .card{padding:15px}
+  .title-header{font-size: 30px; margin-bottom: 24px;}
+  .topbar{grid-template-columns:1fr 1fr}
+  .question{font-size:21px; margin: 18px 0;}
+  .options{grid-template-columns:1fr;gap:11px}
+  .option{min-height:75px;font-size:16px;padding:10px}
+  .primary{width:100%}
+  .badge,.sound-btn{font-size:14px}
+}
+</style>
 </head>
+
 <body>
 
-<div class="container">
-    <canvas id="confetti-canvas" class="hidden"></canvas>
-
-    <div id="splash-screen">
-        <img src="assets/logo.png" alt="Innovine Logo">
-    </div>
-
-    <div id="intro-screen" class="hidden" style="text-align: center; padding-top: 20px;">
-        <h2>🧩 Thinking Math!</h2>
-        <div class="visual-emoji-display">🧠🏫📦🌟</div>
-        <p style="margin-bottom: 25px; font-size: 1.3rem; color: #495057; font-weight: bold;">
-            Addition up to 100 Competency Challenge 🚀
-        </p>
-        <button class="btn-action" onclick="startInteractive()">START CHALLENGE! 👉</button>
-    </div>
-
-    <div id="game-screen" class="hidden">
-        <div class="header-meta">
-            <div class="score-box">⭐ <span id="score-val">0</span></div>
-            <button class="audio-ctrl" id="mute-btn" onclick="toggleMute()">🔊</button>
-            <div class="timer">⏳ <span id="timer-val">60</span>s</div>
-        </div>
-        
-        <div id="question-box">
-            <div id="q-emoji" class="visual-emoji-display"></div>
-            <div id="q-text" class="q-context"></div>
-            <div class="options-grid" id="options-container"></div>
-        </div>
-
-        <div id="feedback" class="feedback-box hidden"></div>
-        <button id="next-btn" class="btn-action hidden" onclick="handleNext()">NEXT QUESTION 👉</button>
-    </div>
-
-    <div id="result-screen" class="hidden" style="text-align: center; padding-top: 20px;">
-        <h2 id="result-title">🎉 Evaluation Done!</h2>
-        <div id="result-emoji" class="visual-emoji-display">🏆👑✨</div>
-        <p id="result-text" style="font-size: 1.3rem; margin-bottom: 25px; font-weight: bold; color: #2c3e50; white-space: pre-line;"></p>
-        <button class="btn-action" onclick="restartInteractive()">TRY AGAIN 🔄</button>
-    </div>
+<div id="logoScreen" class="screen active" onclick="skipLogo()">
+  <img id="logoImage" src="assets/logo.png" alt="Logo" class="logo" />
 </div>
 
+<div id="titleScreen" class="screen">
+  <div class="card title-content">
+    <div class="title-header">Addition up to 100 Competency Challenge</div>
+    <button class="primary large" onclick="handleStartClick()">Start</button>
+  </div>
+</div>
+
+<div id="quizScreen" class="screen">
+  <div class="card">
+    <div class="topbar">
+      <div class="badge" id="qLabel">Question <span id="qNo">1</span>/12</div>
+      <div class="badge">Score: <span id="score">0</span></div>
+      <div class="badge">Time: <span id="timer">60</span>s</div>
+      <button class="sound-btn" onclick="toggleMute()" id="muteBtn">🔇 Sound Off</button>
+    </div>
+
+    <div class="question" id="questionText"></div>
+    <div class="options" id="optionsBox"></div>
+    <div class="feedback" id="feedback"></div>
+
+    <div class="controls">
+      <button class="primary" id="nextBtn" onclick="nextQuestion()">Next</button>
+    </div>
+  </div>
+</div>
+
+<div id="resultScreen" class="screen">
+  <div class="card">
+    <div class="result-title" id="resultMessage"></div>
+    <div class="result-score" id="finalScore"></div>
+    <button class="primary" onclick="restartQuiz()">Play Again</button>
+  </div>
+</div>
+
+<audio id="correctSound" src="assets/claps.mp3"></audio>
+<audio id="wrongSound" src="assets/wrong.mp3"></audio>
+
 <script>
-    const dataset = [
-        {
-            emoji: "🪵",
-            context: "Simi counted 1 bundle of 10 sticks and another bundle of 39 sticks. How many sticks are there in the 2 bundles?",
-            options: ["29", "43", "49", "40"],
-            answer: 2,
-            hint: "Put the values together to find the total count: 10 + 39.",
-            exp: "10 + 39 = 49 sticks in total!"
-        },
-        {
-            emoji: "🧱",
-            context: "To solve 45 + 23 correctly, which of the given options shows the correct place value breakdown?",
-            options: ["40 + 50 + 2 + 3", "4 + 5 + 2 + 3", "40 + 20 + 50 + 30", "40 + 20 + 5 + 3"],
-            answer: 3,
-            hint: "Break each number into its tens group and ones group first.",
-            exp: "We add tens (40 + 20) and ones (5 + 3) separately to get the correct structural answer!"
-        },
-        {
-            emoji: "⚙️",
-            context: "Identify the correct expanded layout method to add 27 and 5.",
-            options: ["20 + 70 + 5", "20 + 50 + 7", "2 + 7 + 5", "20 + 7 + 5"],
-            answer: 3,
-            hint: "Decompose 27 into its tens and ones components first.",
-            exp: "27 is made of 20 + 7. Adding 5 more gives us the correct expanded expression: 20 + 7 + 5."
-        },
-        {
-            emoji: "🌹",
-            context: "A florist has 44 red roses and 35 yellow roses. How many roses does she have in total?",
-            options: ["70", "79", "89", "11"],
-            answer: 1,
-            hint: "Perform an explicit horizontal or column sum: 44 + 35.",
-            exp: "44 + 35 = 79 total roses in her inventory!"
-        },
-        {
-            emoji: "💯",
-            context: "Which of the following addition combinations equals 100 perfectly?",
-            options: ["50 + 40", "90 + 10", "80 + 10", "70 + 20"],
-            answer: 1,
-            hint: "Look for the bundle combination that completes exactly 10 full tens.",
-            exp: "Adding 1 ten (10) to 9 tens (90) gives 10 tens, which is exactly 100!"
-        },
-        {
-            emoji: "✨",
-            context: "Reena has 18 stickers and her brother gives her 12 more. How many stickers does she have now?",
-            options: ["20", "30", "28", "40"],
-            answer: 1,
-            hint: "Add 18 + 12. Keep an eye on what happens when the ones add up to 10.",
-            exp: "18 + 12 = 30. The 8 + 2 makes a brand new ten, giving us exactly 3 tens!"
-        },
-        {
-            emoji: "🧠",
-            context: "In the sum 56 + 19, how many \"tens\" will there be in the final answer after carrying over?",
-            options: ["6", "7", "5", "1"],
-            answer: 1,
-            hint: "6 + 9 makes 15 ones, which creates an extra ten to carry over to the tens column.",
-            exp: "6 + 9 = 15 (carry 1 ten). Then 1 (carried) + 5 + 1 = 7 tens in total!"
-        },
-        {
-            emoji: "🏏",
-            context: "A cricket player scored 55 runs in the first match and 44 runs in the second match. What is his total score?",
-            options: ["88", "99", "100", "95"],
-            answer: 1,
-            hint: "Add the digits in the ones columns together, then the digits in the tens columns.",
-            exp: "55 + 44 = 99 total runs scored!"
-        },
-        {
-            emoji: "🎨",
-            context: "Which of the following expression pairs add up to exactly 65?",
-            options: ["20 + 16", "25 + 30", "15 + 45", "30 + 35"],
-            answer: 3,
-            hint: "Test the values of the choices. Look for a sum that gives 5 ones and 6 tens.",
-            exp: "30 + 35 equals exactly 65!"
-        },
-        {
-            emoji: "📏",
-            context: "What is the sum of the largest 1-digit number and the smallest 2-digit number?",
-            options: ["10", "11", "19", "20"],
-            answer: 2,
-            hint: "The largest 1-digit number is 9, and the smallest 2-digit number is 10.",
-            exp: "Largest 1-digit number is 9. Smallest 2-digit number is 10. 9 + 10 = 19!"
-        },
-        {
-            emoji: "🏫",
-            context: "There are 23 boys and 26 girls in a classroom. How many students are there altogether?",
-            options: ["49", "50", "43", "59"],
-            answer: 0,
-            hint: "Combine the student groups together using addition: 23 + 26.",
-            exp: "23 + 26 = 49 total classroom students!"
-        },
-        {
-            emoji: "🎈",
-            context: "If you add 0 to 88, the final sum is:",
-            options: ["0", "80", "88", "89"],
-            answer: 2,
-            hint: "Think about what happens to a number's value when you add nothing to it.",
-            exp: "Adding zero to any number does not change its value at all. It remains 88!"
-        },
-        {
-            emoji: "🔍",
-            context: "Which of these given addition sums requires a \"carry over\" (regrouping) step?",
-            options: ["12 + 13", "45 + 22", "36 + 15", "50 + 40"],
-            answer: 2,
-            hint: "Check the ones place for each pair. Which one sums up to more than 9?",
-            exp: "In 36 + 15, 6 + 5 = 11, which is more than 9, so it requires carrying over 1 ten to the tens place!"
-        },
-        {
-            emoji: "🥭",
-            context: "A farmer planted 62 mango trees and 28 apple trees. How many trees did he plant in all?",
-            options: ["80", "90", "100", "82"],
-            answer: 1,
-            hint: "Set up 62 + 28. Don't forget to regroup the ones column if it reaches 10.",
-            exp: "62 + 28 = 90. The 2 + 8 makes a ten, plus 6 + 2 tens gives 9 tens total!"
-        }
-    ];
+const questionPool = [
+  {
+    q: "Simi counted 1 bundle of 10 sticks and another bundle of 39 sticks. How many sticks are there in the 2 bundles?",
+    options: ["29", "43", "49", "40"],
+    answer: 2,
+    hint: "Put the values together to find the total count: 10 + 39.",
+    explanation: "10 + 39 = 49 sticks in total!"
+  },
+  {
+    q: "To solve 45 + 23 correctly, which of the given options shows the correct place value breakdown?",
+    options: ["40 + 50 + 2 + 3", "4 + 5 + 2 + 3", "40 + 20 + 50 + 30", "40 + 20 + 5 + 3"],
+    answer: 3,
+    hint: "Break each number into its tens group and ones group first.",
+    explanation: "We add tens (40 + 20) and ones (5 + 3) separately to get the correct structural answer!"
+  },
+  {
+    q: "Identify the correct expanded layout method to add 27 and 5.",
+    options: ["20 + 70 + 5", "20 + 50 + 7", "2 + 7 + 5", "20 + 7 + 5"],
+    answer: 3,
+    hint: "Decompose 27 into its tens and ones components first.",
+    explanation: "27 is made of 20 + 7. Adding 5 more gives us the correct expanded expression: 20 + 7 + 5."
+  },
+  {
+    q: "A florist has 44 red roses and 35 yellow roses. How many roses does she have in total?",
+    options: ["70", "79", "89", "11"],
+    answer: 1,
+    hint: "Perform an explicit horizontal or column sum: 44 + 35.",
+    explanation: "44 + 35 = 79 total roses in her inventory!"
+  },
+  {
+    q: "Which of the following addition combinations equals 100 perfectly?",
+    options: ["50 + 40", "90 + 10", "80 + 10", "70 + 20"],
+    answer: 1,
+    hint: "Look for the bundle combination that completes exactly 10 full tens.",
+    explanation: "Adding 1 ten (10) to 9 tens (90) gives 10 tens, which is exactly 100!"
+  },
+  {
+    q: "Reena has 18 stickers and her brother gives her 12 more. How many stickers does she have now?",
+    options: ["20", "30", "28", "40"],
+    answer: 1,
+    hint: "Add 18 + 12. Keep an eye on what happens when the ones add up to 10.",
+    explanation: "18 + 12 = 30. The 8 + 2 makes a brand new ten, giving us exactly 3 tens!"
+  },
+  {
+    q: "In the sum 56 + 19, how many \"tens\" will there be in the final answer after carrying over?",
+    options: ["6", "7", "5", "1"],
+    answer: 1,
+    hint: "6 + 9 makes 15 ones, which creates an extra ten to carry over to the tens column.",
+    explanation: "6 + 9 = 15 (carry 1 ten). Then 1 (carried) + 5 + 1 = 7 tens in total!"
+  },
+  {
+    q: "A cricket player scored 55 runs in the first match and 44 runs in the second match. What is his total score?",
+    options: ["88", "99", "100", "95"],
+    answer: 1,
+    hint: "Add the digits in the ones columns together, then the digits in the tens columns.",
+    explanation: "55 + 44 = 99 total runs scored!"
+  },
+  {
+    q: "Which of the following expression pairs add up to exactly 65?",
+    options: ["20 + 16", "25 + 30", "15 + 45", "30 + 35"],
+    answer: 3,
+    hint: "Test the values of the choices. Look for a sum that gives 5 ones and 6 tens.",
+    explanation: "30 + 35 equals exactly 65!"
+  },
+  {
+    q: "What is the sum of the largest 1-digit number and the smallest 2-digit number?",
+    options: ["10", "11", "19", "20"],
+    answer: 2,
+    hint: "The largest 1-digit number is 9, and the smallest 2-digit number is 10.",
+    explanation: "Largest 1-digit number is 9. Smallest 2-digit number is 10. 9 + 10 = 19!"
+  },
+  {
+    q: "There are 23 boys and 26 girls in a classroom. How many students are there altogether?",
+    options: ["49", "50", "43", "59"],
+    answer: 0,
+    hint: "Combine the student groups together using addition: 23 + 26.",
+    explanation: "23 + 26 = 49 total classroom students!"
+  },
+  {
+    q: "If you add 0 to 88, the final sum is:",
+    options: ["0", "80", "88", "89"],
+    answer: 2,
+    hint: "Think about what happens to a number's value when you add nothing to it.",
+    explanation: "Adding zero to any number does not change its value at all. It remains 88!"
+  },
+  {
+    q: "Which of these given addition sums requires a \"carry over\" (regrouping) step?",
+    options: ["12 + 13", "45 + 22", "36 + 15", "50 + 40"],
+    answer: 2,
+    hint: "Check the ones place for each pair. Which one sums up to more than 9?",
+    explanation: "In 36 + 15, 6 + 5 = 11, which is more than 9, so it requires carrying over 1 ten to the tens place!"
+  },
+  {
+    q: "A farmer planted 62 mango trees and 28 apple trees. How many trees did he plant in all?",
+    options: ["80", "90", "100", "82"],
+    answer: 1,
+    hint: "Set up 62 + 28. Don't forget to regroup the ones column if it reaches 10.",
+    explanation: "62 + 28 = 90. The 2 + 8 makes a ten, plus 6 + 2 tens gives 9 tens total!"
+  }
+];
 
-    let currentQ = 0;
-    let score = 0;
-    let attempts = 0;
-    let timerInterval = null;
-    let timeRemaining = 60; 
-    let isMuted = false;
+let questions=[];
+let current=0,score=0,firstAttemptCorrect=0,attempts=0,answered=false,timeLeft=60,timerInterval,muted=true;
+let currentCorrectIndex = 0;
+let logoTimer;
 
-    // Explicit audio configurations mapping local project targets
-    const audioCorrect = new Audio('assets/correct.mp3');
-    const audioWrong = new Audio('assets/wrong.mp3');
+let logoScreen, titleScreen, quizScreen, resultScreen, qNo, qLabel, scoreBox, timerBox, questionText, optionsBox, feedback, nextBtn, correctSound, wrongSound;
 
-    window.addEventListener('load', () => {
-        setTimeout(() => {
-            document.getElementById('splash-screen').classList.add('hidden');
-            document.getElementById('intro-screen').classList.remove('hidden');
-        }, 5000); // Strict 5-second display configuration layout rule
-    });
+document.addEventListener("DOMContentLoaded", () => {
+  logoScreen=document.getElementById("logoScreen");
+  titleScreen=document.getElementById("titleScreen");
+  quizScreen=document.getElementById("quizScreen");
+  resultScreen=document.getElementById("resultScreen");
+  qNo=document.getElementById("qNo");
+  qLabel=document.getElementById("qLabel");
+  scoreBox=document.getElementById("score");
+  timerBox=document.getElementById("timer");
+  questionText=document.getElementById("questionText");
+  optionsBox=document.getElementById("optionsBox");
+  feedback=document.getElementById("feedback");
+  nextBtn=document.getElementById("nextBtn");
+  correctSound=document.getElementById("correctSound");
+  wrongSound=document.getElementById("wrongSound");
 
-    function startInteractive() {
-        document.getElementById('intro-screen').classList.add('hidden');
-        document.getElementById('game-screen').classList.remove('hidden');
-        loadQuestion();
+  const startLogoCountdown = () => {
+    if (!logoTimer) {
+      logoTimer = setTimeout(() => {
+        skipLogo();
+      }, 5000);
+    }
+  };
+
+  const imgElement = document.getElementById("logoImage");
+  if (imgElement.complete) {
+    startLogoCountdown();
+  } else {
+    imgElement.addEventListener("load", startLogoCountdown);
+    imgElement.addEventListener("error", startLogoCountdown);
+    setTimeout(startLogoCountdown, 200);
+  }
+});
+
+function skipLogo() {
+  if (logoScreen.classList.contains("active")) {
+    clearTimeout(logoTimer);
+    logoScreen.classList.remove("active");
+    titleScreen.classList.add("active");
+  }
+}
+
+function handleStartClick() {
+  titleScreen.classList.remove("active");
+  quizScreen.classList.add("active");
+  startQuiz();
+}
+
+function startQuiz(){
+  let shuffledPool = [...questionPool].sort(() => Math.random() - 0.5);
+  questions = shuffledPool.slice(0, 12);
+  
+  current=0;
+  score=0;
+  firstAttemptCorrect=0;
+  scoreBox.textContent=score;
+  loadQuestion();
+}
+
+function startTimer(){
+  timeLeft=60;
+  timerBox.textContent=timeLeft;
+  clearInterval(timerInterval);
+  timerInterval=setInterval(()=>{
+    timeLeft--;
+    timerBox.textContent=timeLeft;
+    if(timeLeft<=0){
+      clearInterval(timerInterval);
+      answered=true;
+      feedback.textContent="Time's up! " + questions[current].explanation;
+      feedback.style.color="#b91c1c";
+      showCorrectAnswer();
+      disableOptions();
+      nextBtn.style.display="inline-block";
+    }
+  },1000);
+}
+
+function loadQuestion(){
+  attempts=0;
+  answered=false;
+  feedback.textContent="";
+  feedback.style.color="#1f2937";
+  nextBtn.style.display="none";
+
+  const item=questions[current];
+  
+  qLabel.innerHTML = `Question <span id="qNo">${current + 1}</span>/12`;
+  questionText.innerHTML=item.q;
+  optionsBox.innerHTML="";
+
+  let shuffledOptions = item.options.map((opt, idx) => ({ text: opt, originalIndex: idx }));
+  shuffledOptions.sort(() => Math.random() - 0.5);
+
+  shuffledOptions.forEach((option, index)=>{
+    const btn=document.createElement("button");
+    btn.className="option";
+    
+    const textSpan = document.createElement("span");
+    textSpan.textContent = option.text;
+    btn.appendChild(textSpan);
+    
+    if(option.originalIndex === item.answer) {
+      currentCorrectIndex = index;
     }
 
-    function toggleMute() {
-        isMuted = !isMuted;
-        document.getElementById('mute-btn').innerText = isMuted ? "🔇" : "🔊";
-    }
+    btn.onclick=()=>checkAnswer(btn, index);
+    optionsBox.appendChild(btn);
+  });
 
-    function playSound(type) {
-        if (isMuted) return;
-        if (type === 'correct') {
-            audioCorrect.currentTime = 0;
-            audioCorrect.play().catch(() => {});
-        } else {
-            audioWrong.currentTime = 0;
-            audioWrong.play().catch(() => {});
-        }
-    }
+  startTimer();
+}
 
-    function startTimer() {
-        clearInterval(timerInterval);
-        timeRemaining = 60;
-        document.getElementById('timer-val').innerText = timeRemaining;
-        timerInterval = setInterval(() => {
-            timeRemaining--;
-            document.getElementById('timer-val').innerText = timeRemaining;
-            if (timeRemaining <= 0) {
-                clearInterval(timerInterval);
-                handleTimeout();
-            }
-        }, 1000);
-    }
+function checkAnswer(button,selected){
+  if(answered)return;
+  const currentQuestion=questions[current];
 
-    function loadQuestion() {
-        clearInterval(timerInterval);
-        startTimer();
-        
-        attempts = 0;
-        document.getElementById('feedback').classList.add('hidden');
-        document.getElementById('next-btn').classList.add('hidden');
-        
-        let qData = dataset[currentQ];
-        document.getElementById('q-emoji').innerText = qData.emoji;
-        document.getElementById('q-text').innerHTML = qData.context;
-        
-        const container = document.getElementById('options-container');
-        container.innerHTML = '';
-        
-        qData.options.forEach((opt, idx) => {
-            let btn = document.createElement('button');
-            btn.className = 'btn-opt';
-            btn.innerText = opt;
-            btn.onclick = () => selectOption(idx, btn);
-            container.appendChild(btn);
-        });
+  if(selected===currentCorrectIndex){
+    clearInterval(timerInterval);
+    answered=true;
+    score++;
+    
+    if(attempts===0){
+      firstAttemptCorrect++;
     }
+    
+    scoreBox.textContent=score;
+    button.classList.add("correct");
+    feedback.textContent=attempts === 0 ? `🎉 First-Attempt Star! ${currentQuestion.explanation}` : `👍 Correct! ${currentQuestion.explanation}`;
+    feedback.style.color="#047857";
+    playSound(correctSound);
+    launchConfetti();
+    disableOptions();
+    nextBtn.style.display="inline-block";
+  }else{
+    attempts++;
+    button.classList.add("wrong");
+    playSound(wrongSound);
 
-    function selectOption(selectedIndex, clickedBtn) {
-        let qData = dataset[currentQ];
-        const buttons = document.getElementsByClassName('btn-opt');
-        
-        if (selectedIndex === qData.answer) {
-            clearInterval(timerInterval);
-            clickedBtn.classList.add('correct');
-            playSound('correct');
-            
-            // Score increment mechanic constrained strictly to a correct first attempt
-            if (attempts === 0) {
-                score++;
-                document.getElementById('score-val').innerText = score;
-                triggerVisualSparklers();
-                showFeedback('explanation', `🎉 Brilliant! First try star earned! ${qData.exp}`);
-            } else {
-                showFeedback('explanation', `👍 Good job correcting your track! ${qData.exp}`);
-            }
-            
-            disableOptions();
-            document.getElementById('next-btn').classList.remove('hidden');
-        } else {
-            attempts++;
-            playSound('wrong');
-            clickedBtn.classList.add('wrong');
-            clickedBtn.disabled = true;
-            
-            if (attempts === 1) { 
-                // First incorrect action pulls up a targeted contextual hint
-                showFeedback('hint', `✨ Hint: ${qData.hint}`);
-            } else {
-                // Second incorrect action locks choices and renders the direct explanation
-                clearInterval(timerInterval);
-                disableOptions();
-                buttons[qData.answer].classList.add('correct');
-                showFeedback('explanation', `Review Breakdown: ${qData.exp}`);
-                document.getElementById('next-btn').classList.remove('hidden');
-            }
-        }
+    if(attempts===1){
+      feedback.textContent="Hint: " + currentQuestion.hint;
+      feedback.style.color="#b45309";
+      button.disabled=true;
+    }else{
+      clearInterval(timerInterval);
+      answered=true;
+      feedback.textContent="Review Rule: " + currentQuestion.explanation;
+      feedback.style.color="#b91c1c";
+      showCorrectAnswer();
+      disableOptions();
+      nextBtn.style.display="inline-block";
     }
+  }
+}
 
-    function handleTimeout() {
-        disableOptions();
-        let qData = dataset[currentQ];
-        const buttons = document.getElementsByClassName('btn-opt');
-        buttons[qData.answer].classList.add('correct');
-        showFeedback('explanation', `⏰ Time ran out! Here is the conceptual calculation breakdown: ${qData.exp}`);
-        document.getElementById('next-btn').classList.remove('hidden');
-    }
+function showCorrectAnswer(){
+  document.querySelectorAll(".option")[currentCorrectIndex].classList.add("correct");
+}
 
-    function disableOptions() {
-        const buttons = document.getElementsByClassName('btn-opt');
-        for (let b of buttons) { b.disabled = true; }
-    }
+function disableOptions(){
+  document.querySelectorAll(".option").forEach(btn=>btn.disabled=true);
+}
 
-    function showFeedback(type, message) {
-        const box = document.getElementById('feedback');
-        box.className = `feedback-box ${type}`;
-        box.innerHTML = message;
-        box.classList.remove('hidden');
-    }
+function nextQuestion(){
+  current++;
+  if(current<questions.length){
+    loadQuestion();
+  }else{
+    showResult();
+  }
+}
 
-    function handleNext() {
-        currentQ++;
-        if (currentQ < dataset.length) {
-            loadQuestion();
-        } else {
-            showResults();
-        }
-    }
+function showResult(){
+  clearInterval(timerInterval);
+  quizScreen.classList.remove("active");
+  resultScreen.classList.add("active");
 
-    function showResults() {
-        clearInterval(timerInterval);
-        document.getElementById('game-screen').classList.add('hidden');
-        const screen = document.getElementById('result-screen');
-        screen.classList.remove('hidden');
-        
-        let finalPercent = (score / dataset.length) * 100;
-        let msg = `You achieved ${score} / ${dataset.length} first-attempt stars! ⭐`;
-        
-        if (finalPercent >= 75) {
-            document.getElementById('result-title').innerText = "🎉 Addition Mastery!";
-            document.getElementById('result-emoji').innerText = "👑🏆🥇";
-            msg += "\nSensational place value and arithmetic reasoning skills! You are an official Math Hero.";
-        } else if (finalPercent >= 40) {
-            document.getElementById('result-title').innerText = "📚 Keep Practicing!";
-            document.getElementById('result-emoji').innerText = "✏️📖✨";
-            msg += "\nA solid attempt! Let's review regrouping columns and tens bundles to score higher next time. 💪";
-        } else {
-            document.getElementById('result-title').innerText = "💪 Review & Retry!";
-            document.getElementById('result-emoji').innerText = "🧱🧩🎈";
-            msg += "\nGoing over base-10 block structures will make this easy. Try the challenge once more!";
-        }
-        
-        document.getElementById('result-text').innerText = msg;
-    }
+  const percentage=(firstAttemptCorrect/questions.length)*100;
+  let title="";
+  let msg=`You earned ${firstAttemptCorrect} / ${questions.length} flawless first-attempt stars! ⭐\n\n`;
 
-    function restartInteractive() {
-        currentQ = 0;
-        score = 0;
-        document.getElementById('score-val').innerText = score;
-        document.getElementById('result-screen').classList.add('hidden');
-        document.getElementById('game-screen').classList.remove('hidden');
-        loadQuestion();
-    }
+  if(percentage >= 80){
+    title="👑 Addition Mastery!";
+    msg += "Sensational place value and arithmetic reasoning skills! You completely master regrouping columns and tens bundles.";
+    launchConfetti();
+    playSound(correctSound);
+  }else if(percentage >= 50){
+    title="🚀 Terrific Work!";
+    msg += "A solid attempt! Let's review regrouping columns and tens bundles to score higher next time.";
+    playSound(correctSound);
+  }else{
+    title="🧱 Keep Building!";
+    msg += "Going over base-10 block structures will make this easy. Give it another try to secure your master stars!";
+  }
 
-    function triggerVisualSparklers() {
-        const canvas = document.getElementById('confetti-canvas');
-        canvas.classList.remove('hidden');
-        const ctx = canvas.getContext('2d');
-        canvas.width = canvas.parentElement.offsetWidth;
-        canvas.height = canvas.parentElement.offsetHeight;
-        
-        let particles = [];
-        for (let i = 0; i < 30; i++) {
-            particles.push({
-                x: canvas.width / 2,
-                y: canvas.height / 3,
-                vx: (Math.random() - 0.5) * 7,
-                vy: (Math.random() - 0.5) * 7,
-                color: `hsl(${Math.random() * 360}, 100%, 65%)`,
-                size: Math.random() * 5 + 4,
-                alpha: 1
-            });
-        }
-        
-        let animationFrame;
-        function update() {
-            ctx.clearRect(0,0, canvas.width, canvas.height);
-            let alive = false;
-            particles.forEach(p => {
-                p.x += p.vx;
-                p.y += p.vy;
-                p.alpha -= 0.03;
-                if (p.alpha > 0) {
-                    alive = true;
-                    ctx.fillStyle = p.color;
-                    ctx.globalAlpha = p.alpha;
-                    ctx.beginPath();
-                    ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-                    ctx.fill();
-                }
-            });
-            if (alive) {
-                animationFrame = requestAnimationFrame(update);
-            } else {
-                canvas.classList.add('hidden');
-                cancelAnimationFrame(animationFrame);
-            }
-        }
-        update();
-    }
+  document.getElementById("resultMessage").textContent=title;
+  document.getElementById("finalScore").innerText=msg;
+}
+
+function restartQuiz(){
+  resultScreen.classList.remove("active");
+  titleScreen.classList.add("active");
+}
+
+function toggleMute(){
+  muted=!muted;
+  document.getElementById("muteBtn").textContent=muted?"🔇 Sound Off":"🔊 Sound On";
+}
+
+function playSound(sound){
+  if(muted)return;
+  sound.currentTime=0;
+  sound.play().catch(()=>{});
+}
+
+function launchConfetti(){
+  const colors=["#f59e0b","#10b981","#3b82f6","#ef4444","#8b5cf6"];
+  for(let i=0;i<30;i++){
+    const piece=document.createElement("div");
+    piece.className="confetti";
+    piece.style.left=Math.random()*100+"vw";
+    piece.style.background=colors[Math.floor(Math.random()*colors.length)];
+    piece.style.animationDuration=(Math.random()*0.8+0.8)+"s";
+    document.body.appendChild(piece);
+    setTimeout(()=>piece.remove(),1500);
+  }
+}
 </script>
+
 </body>
 </html>
