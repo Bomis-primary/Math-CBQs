@@ -114,13 +114,11 @@ button.next{
 
 <body>
 
-<!-- SPLASH -->
 <div id="splash">
-  <img src="assets/innovine-logo.png">
+  <img src="assets/logo.png" alt="Logo">
 </div>
 
-<!-- GAME -->
-<div id="game" class="screen active">
+<div id="game" class="screen">
   <div class="card">
 
     <div class="top">
@@ -139,7 +137,6 @@ button.next{
   </div>
 </div>
 
-<!-- RESULT -->
 <div id="result" class="screen">
   <div class="card result" id="resultText"></div>
 </div>
@@ -148,9 +145,13 @@ button.next{
 <audio id="wrong" src="assets/wrong.mp3"></audio>
 
 <script>
+let timerInterval;
 
+// Hide Splash Screen and Start Game after 5 seconds
 setTimeout(()=>{
   document.getElementById("splash").style.display="none";
+  document.getElementById("game").classList.add("active");
+  startTimer();
 },5000);
 
 const questions = [
@@ -210,9 +211,9 @@ a:["Yes","No","Exact","Less"],
 c:0
 },
 {
-q:"Which is greater: 690 or 609?",
-a:["690","609","Both","600"],
-c:0
+q:"Rahul counts backwards from 202. What is the next number?",
+a:["203","201","200","199"],
+c:1
 },
 {
 q:"Which number is 4 hundreds 5 tens 5 ones?",
@@ -269,7 +270,7 @@ function check(btn,ans){
 
   if(ans==questions[i].c){
     btn.classList.add("correct");
-    document.getElementById("correct").play();
+    try { document.getElementById("correct").play(); } catch(e){}
     score++;
     document.getElementById("score").innerText=score;
     locked=true;
@@ -277,7 +278,7 @@ function check(btn,ans){
   } else {
     attempt++;
     btn.classList.add("wrong");
-    document.getElementById("wrong").play();
+    try { document.getElementById("wrong").play(); } catch(e){}
 
     if(attempt>=2){
       locked=true;
@@ -296,6 +297,8 @@ function nextQ(){
 }
 
 function showResult(){
+  clearInterval(timerInterval);
+  document.getElementById("game").classList.remove("active");
   document.getElementById("game").style.display="none";
   document.getElementById("result").style.display="block";
 
@@ -310,18 +313,18 @@ function showResult(){
     `${msg}\nScore: ${score}/${questions.length}`;
 }
 
-/* TIMER */
-setInterval(()=>{
-  if(time>0){
-    time--;
-    document.getElementById("time").innerText=time;
-  } else {
-    showResult();
-  }
-},1000);
+function startTimer() {
+  timerInterval = setInterval(()=>{
+    if(time>0){
+      time--;
+      document.getElementById("time").innerText=time;
+    } else {
+      showResult();
+    }
+  },1000);
+}
 
 loadQ();
-
 </script>
 
 </body>
