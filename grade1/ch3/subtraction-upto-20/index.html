@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Subtraction up to 20</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CBQ Interactive - Subtraction up to 20</title>
 
 <style>
 *{box-sizing:border-box}
@@ -12,253 +12,301 @@ body{margin:0;font-family:Arial,sans-serif;background:#f3f8ff;color:#1f2937}
 .screen.active{display:flex;align-items:center;justify-content:center}
 #logoScreen{background:#fff}
 .logo{max-width:420px;width:80%}
-.card{width:100%;max-width:880px;background:#fff;border-radius:22px;padding:20px;box-shadow:0 8px 24px rgba(0,0,0,.15)}
-.topbar{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px}
-.badge,.sound-btn{background:#e0f2fe;color:#0f3f5f;padding:10px;border-radius:14px;font-weight:bold;font-size:16px;text-align:center}
-.sound-btn{border:none;cursor:pointer}
-.visual-box{background:#fff7ed;border:2px solid #fdba74;border-radius:18px;padding:16px;margin-bottom:16px;text-align:center;min-height:130px}
+
+.card{
+  width:100%;
+  max-width:880px;
+  background:#fff;
+  border-radius:22px;
+  padding:20px;
+  box-shadow:0 8px 24px rgba(0,0,0,.15);
+}
+
+.topbar{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:10px;
+  margin-bottom:16px;
+}
+
+.badge{
+  background:#e0f2fe;
+  color:#0f3f5f;
+  padding:10px;
+  border-radius:14px;
+  font-weight:bold;
+  font-size:16px;
+  text-align:center;
+}
+
+.visual-box{
+  background:#fff7ed;
+  border:2px solid #fdba74;
+  border-radius:18px;
+  padding:16px;
+  margin-bottom:16px;
+  text-align:center;
+  min-height:130px;
+}
+
 .visual{font-size:54px;margin-bottom:8px;line-height:1.2}
-.visual-text{font-size:19px;font-weight:bold;color:#7c2d12}
-.question{font-size:24px;font-weight:bold;line-height:1.35;margin:16px 0}
-.options{display:grid;grid-template-columns:repeat(2,minmax(220px,1fr));gap:14px}
-.option{width:100%;min-height:72px;padding:14px 16px;font-size:19px;font-weight:bold;line-height:1.3;border:2px solid #1f4e79;background:#fff;color:#111827;border-radius:16px;cursor:pointer;text-align:center;display:flex;align-items:center;justify-content:center;white-space:normal}
-.option:hover{background:#eef6ff}
+.visual img{max-width:100%;border-radius:12px}
+
+.question{
+  font-size:24px;
+  font-weight:bold;
+  line-height:1.35;
+  margin:16px 0;
+}
+
+.options{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(220px,1fr));
+  gap:14px;
+}
+
+.option{
+  width:100%;
+  min-height:72px;
+  padding:14px 16px;
+  font-size:19px;
+  font-weight:bold;
+  border:2px solid #1f4e79;
+  background:#fff;
+  border-radius:16px;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
 .option.correct{background:#d1fae5;border-color:#047857}
 .option.wrong{background:#fee2e2;border-color:#b91c1c}
-.feedback{min-height:48px;margin-top:14px;font-size:19px;font-weight:bold;text-align:center;padding:0 10px;line-height:1.4}
-.controls{margin-top:14px;text-align:center}
-.primary{background:#1f4e79;color:white;border:none;border-radius:14px;padding:14px 28px;font-size:19px;font-weight:bold;cursor:pointer}
+
+.feedback{
+  min-height:48px;
+  margin-top:14px;
+  font-size:19px;
+  font-weight:bold;
+  text-align:center;
+}
+
+.primary{
+  background:#1f4e79;
+  color:white;
+  border:none;
+  border-radius:14px;
+  padding:14px 28px;
+  font-size:19px;
+  font-weight:bold;
+  cursor:pointer;
+}
+
 #nextBtn{display:none}
-.result-title{font-size:34px;font-weight:bold;text-align:center;margin-bottom:14px}
-.result-score{font-size:21px;text-align:center;margin-bottom:20px;line-height:1.5;color:#4b5563}
-.confetti{position:fixed;width:10px;height:10px;top:-10px;animation:fall 1.2s linear forwards;pointer-events:none}
-@keyframes fall{to{transform:translateY(110vh) rotate(360deg);opacity:0}}
+
 @media(max-width:700px){
-.card{padding:15px}
-.topbar{grid-template-columns:1fr 1fr}
-.question{font-size:21px}
-.options{grid-template-columns:1fr;gap:11px}
-.option{min-height:58px;font-size:18px;padding:12px}
-.visual{font-size:46px}
-.visual-text{font-size:17px}
-.primary{width:100%}
-.badge,.sound-btn{font-size:14px}
+  .options{grid-template-columns:1fr}
 }
 </style>
 </head>
 
 <body>
 
+<!-- LOGO SCREEN -->
 <div id="logoScreen" class="screen active">
-  <img src="assets/logo.png" alt="Innovine Solutions Logo" class="logo" />
+  <img src="assets/logo.png" class="logo">
 </div>
 
+<!-- GAME SCREEN -->
 <div id="quizScreen" class="screen">
   <div class="card">
+
     <div class="topbar">
-      <div class="badge">Question <span id="qNo">1</span>/12</div>
-      <div class="badge">Score: <span id="score">0</span></div>
-      <div class="badge">Time: <span id="timer">60</span>s</div>
-      <button class="sound-btn" onclick="toggleMute()" id="muteBtn">🔊 Sound On</button>
+      <div class="badge">Q <span id="qNo">1</span></div>
+      <div class="badge">Score <span id="score">0</span></div>
+      <div class="badge">Time <span id="timer">60</span>s</div>
+      <div class="badge">Subtraction up to 20</div>
     </div>
 
     <div class="visual-box" id="visualBox"></div>
+
     <div class="question" id="questionText"></div>
+
     <div class="options" id="optionsBox"></div>
+
     <div class="feedback" id="feedback"></div>
 
-    <div class="controls">
+    <div style="text-align:center">
       <button class="primary" id="nextBtn" onclick="nextQuestion()">Next</button>
     </div>
+
   </div>
 </div>
 
+<!-- RESULT -->
 <div id="resultScreen" class="screen">
-  <div class="card">
-    <div class="result-title" id="resultMessage"></div>
-    <div class="result-score" id="finalScore"></div>
+  <div class="card" style="text-align:center">
+    <h1 id="resultMessage"></h1>
+    <p id="finalScore"></p>
     <button class="primary" onclick="restartQuiz()">Play Again</button>
   </div>
 </div>
 
-<audio id="correctSound" src="assets/correct.mp3"></audio>
-<audio id="wrongSound" src="assets/wrong.mp3"></audio>
-<audio id="clapSound" src="assets/freesound_community-claps-44774.mp3"></audio>
-
 <script>
-const questions=[
+
+/* ---------------- QUESTIONS ---------------- */
+
+const questions = [
 {
-q:"A baker baked 19 cupcakes. He has 4 cupcakes left in the tray. How many cupcakes did he sell?",
+q:"A baker baked 19 cupcakes. He has 4 left. How many did he sell?",
 visual:"🧁 19 − 4",
-visualText:"Take away 4 from 19.",
-options:["14","15","16","23"],
-answer:1,
-hint:"Count backward 4 units down from 19.",
-explanation:"Starting at 19 and removing the remaining 4 leaves exactly 15 cupcakes sold."
+options:["15","14","16","13"],
+answer:"15",
+hint:"Think 19 take away 4",
 },
 {
-q:"Look at the number line. If you start at 15 and jump back 3 steps, which number will you land on?",
-visual:"15 → 14 → 13 → 12",
-visualText:"Jumping back means subtraction.",
-options:["12","13","14","18"],
-answer:0,
-hint:"Count backwards 3 steps: 14, 13, and then...",
-explanation:"Moving 3 jumps backward from 15 lands directly on 12."
+q:"Riya starts at 15 on a number line and moves back 3 steps. Where does she land?",
+visual:"assets/number-line.png",
+options:["12","13","14","11"],
+answer:"12",
+hint:"Move backward step by step",
 },
 {
-q:"Arya has 7 pencils and she gives all 7 pencils to her friend. How many pencils does Arya have now?",
+q:"Arya had 7 pencils. She gave all away. How many left?",
 visual:"✏️ 7 − 7",
-options:["7","1","0","14"],
-answer:2,
-hint:"When a number is subtracted from itself, nothing is left.",
-explanation:"7 minus 7 leaves exactly 0 pencils remaining."
+options:["0","1","7","2"],
+answer:"0",
+hint:"All gone means zero",
 },
 {
-q:"Which shows the correct horizontal subtraction for twelve minus five?",
-visual:"Twelve minus five",
-options:["12 + 5 = 17","5 − 12 = 7","12 − 5 = 7","10 − 5 = 5"],
-answer:2,
-hint:"Look for correct subtraction form.",
-explanation:"12 − 5 = 7"
-},
-
-{
-q:"A student says 17 − 9 = 7. What should be the correct answer?",
-visual:"__",
-options:["6","9","7","8"],
-answer:3,
-hint:"Subtract carefully using number line.",
-explanation:"17 − 9 = 8"
-},
-
-{
-q:"A tree had 14 birds. None flew away. How many are left?",
-visual:"🐦 14 − 0",
-options:["0","1","13","14"],
-answer:3,
-hint:"Subtracting zero keeps number same.",
-explanation:"14 − 0 = 14"
-},
-{
-q:"A bus has 18 passengers. 6 get down. How many remain?",
+q:"A bus has 18 children. 6 get down. How many remain?",
 visual:"🚌 18 − 6",
-options:["10","11","12","24"],
-answer:2,
-hint:"Subtract 6 from 18.",
-explanation:"18 − 6 = 12"
-},
-{
-q:"In the number 17, if we subtract 10, what is left?",
-visual:"17 − 10",
-options:["16","10","7","0"],
-answer:2,
-hint:"Take away one ten.",
-explanation:"17 − 10 = 7"
+options:["12","11","13","10"],
+answer:"12",
+hint:"Subtract carefully",
 },
 {
 q:"A shopkeeper has 19 kites. He sells 15. How many remain?",
 visual:"🪁 19 − 15",
-options:["4","5","6","34"],
-answer:0,
-hint:"Find difference between 19 and 15.",
-explanation:"19 − 15 = 4"
+options:["4","5","6","3"],
+answer:"4",
+hint:"Take away 15 from 19",
 },
 {
-q:"Rahul has 13 stickers and gets 7 more. How many now?",
-visual:"13 + 7",
-options:["20","19","18","21"],
-answer:0,
-hint:"Add carefully.",
-explanation:"13 + 7 = 20"
-}
+q:"A student says 17 − 9 = 7. What should be the correct answer?",
+visual:"17 − 9",
+options:["6","7","8","9"],
+answer:"8",
+hint:"Use number line",
+},
 ];
 
-let current=0,score=0,firstAttemptCorrect=0,attempts=0,answered=false,timeLeft=60,timerInterval,muted=false;
+/* ---------------- ENGINE ---------------- */
 
-const logoScreen=document.getElementById("logoScreen");
-const quizScreen=document.getElementById("quizScreen");
-const resultScreen=document.getElementById("resultScreen");
+let current=0;
+let score=0;
+let timer=60;
+let interval;
 
-const qNo=document.getElementById("qNo");
-const scoreBox=document.getElementById("score");
-const timerBox=document.getElementById("timer");
-const visualBox=document.getElementById("visualBox");
-const questionText=document.getElementById("questionText");
-const optionsBox=document.getElementById("optionsBox");
-const feedback=document.getElementById("feedback");
-const nextBtn=document.getElementById("nextBtn");
+function shuffle(arr){
+return arr.sort(()=>Math.random()-0.5);
+}
 
-setTimeout(()=>{
-  logoScreen.classList.remove("active");
-  quizScreen.classList.add("active");
-  startQuiz();
-},5000);
+function start(){
+shuffle(questions);
+loadQuestion();
+}
 
-function startQuiz(){
-  current=0;
-  score=0;
-  loadQuestion();
+function startTimer(){
+clearInterval(interval);
+timer=60;
+document.getElementById("timer").innerText=timer;
+
+interval=setInterval(()=>{
+timer--;
+document.getElementById("timer").innerText=timer;
+
+if(timer<=0){
+clearInterval(interval);
+nextQuestion();
+}
+},1000);
 }
 
 function loadQuestion(){
-  const item=questions[current];
 
-  qNo.textContent=current+1;
-  scoreBox.textContent=score;
+startTimer();
 
-  questionText.textContent=item.q;
-  visualBox.innerHTML=`<div class="visual">${item.visual}</div><div class="visual-text">${item.visualText||""}</div>`;
+let q=questions[current];
 
-  let shuffled=item.options.map((o,i)=>({o,i})).sort(()=>Math.random()-0.5);
-  const correctIndex=shuffled.findIndex(x=>x.o===item.options[item.answer]);
+document.getElementById("qNo").innerText=current+1;
+document.getElementById("score").innerText=score;
 
-  optionsBox.innerHTML="";
-  feedback.textContent="";
-  nextBtn.style.display="none";
+document.getElementById("feedback").innerText="";
+document.getElementById("nextBtn").style.display="none";
 
-  shuffled.forEach((opt,idx)=>{
-    let btn=document.createElement("button");
-    btn.className="option";
-    btn.textContent=opt.o;
+document.getElementById("questionText").innerText=q.q;
 
-    btn.onclick=()=>{
-      if(answered)return;
+if(q.visual.includes("assets/")){
+document.getElementById("visualBox").innerHTML =
+`<img src="${q.visual}">`;
+}else{
+document.getElementById("visualBox").innerHTML =
+`<div class="visual">${q.visual}</div>`;
+}
 
-      if(opt.o===item.options[item.answer]){
-        btn.classList.add("correct");
-        score++;
-        feedback.textContent="Correct!";
-        answered=true;
-        nextBtn.style.display="block";
-      }else{
-        btn.classList.add("wrong");
-        feedback.textContent=item.hint;
-      }
-    };
+let options = shuffle([...q.options]);
 
-    optionsBox.appendChild(btn);
-  });
+let box=document.getElementById("optionsBox");
+box.innerHTML="";
 
-  answered=false;
+options.forEach(opt=>{
+let btn=document.createElement("button");
+btn.className="option";
+btn.innerText=opt;
+
+btn.onclick=()=>{
+
+if(opt===q.answer){
+btn.classList.add("correct");
+score++;
+document.getElementById("feedback").innerText="Correct!";
+document.getElementById("nextBtn").style.display="inline-block";
+clearInterval(interval);
+}else{
+btn.classList.add("wrong");
+document.getElementById("feedback").innerText=q.hint;
+}
+};
+
+box.appendChild(btn);
+});
 }
 
 function nextQuestion(){
-  current++;
-  if(current<questions.length){
-    loadQuestion();
-  }else{
-    quizScreen.classList.remove("active");
-    resultScreen.classList.add("active");
-    document.getElementById("resultMessage").textContent="Good Job!";
-    document.getElementById("finalScore").textContent="Score: "+score+"/"+questions.length;
-  }
+current++;
+
+if(current>=questions.length){
+document.getElementById("quizScreen").classList.remove("active");
+document.getElementById("resultScreen").classList.add("active");
+
+document.getElementById("resultMessage").innerText="Good Job!";
+document.getElementById("finalScore").innerText="Score: "+score+"/"+questions.length;
+}else{
+loadQuestion();
+}
 }
 
 function restartQuiz(){
-  location.reload();
+location.reload();
 }
 
-function toggleMute(){muted=!muted;}
+setTimeout(()=>{
+document.getElementById("logoScreen").classList.remove("active");
+document.getElementById("quizScreen").classList.add("active");
+start();
+},5000);
+
 </script>
 
 </body>
