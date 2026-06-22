@@ -157,7 +157,7 @@ body{margin:0;font-family:Arial,sans-serif;background:#f3f8ff;color:#1f2937}
 </div>
 
 <script>
-/* ---------------- COMPLIANT QUESTIONS COLLECTION ---------------- */
+/* ---------------- QUESTIONS COLLECTION ---------------- */
 const questions = [
   {
     type: "Flow",
@@ -265,7 +265,7 @@ let interval;
 let attemptsLeft = 2;
 
 function init() {
-  // Brand Logo visibility requirement: Exactly 5 seconds 
+  // Brand Logo display visibility limit: exactly 5 seconds
   setTimeout(() => {
     const logoScreen = document.getElementById("logoScreen");
     const introScreen = document.getElementById("introScreen");
@@ -282,7 +282,7 @@ function startQuiz() {
 
 function startTimer() {
   clearInterval(interval);
-  timer = 60; // Grades 1-3 rule: 60s minimum [cite: 84]
+  timer = 60;
   document.getElementById("timer").innerText = timer;
 
   interval = setInterval(() => {
@@ -314,7 +314,7 @@ function playAudio(isCorrect) {
 
 function loadQuestion() {
   startTimer();
-  attemptsLeft = 2; // Strict 1-retry system tracking [cite: 87]
+  attemptsLeft = 2;
   
   let q = questions[current];
 
@@ -345,7 +345,6 @@ function loadQuestion() {
 
 function checkAnswer(selectedBtn, selectedValue, qObj) {
   if (selectedValue === qObj.answer) {
-    // CORRECT MATCH
     clearInterval(interval);
     selectedBtn.classList.add("correct");
     playAudio(true);
@@ -356,18 +355,15 @@ function checkAnswer(selectedBtn, selectedValue, qObj) {
     disableOptions();
     document.getElementById("nextBtn").style.display = "inline-block";
   } else {
-    // WRONG MATCH
     attemptsLeft--;
     selectedBtn.classList.add("wrong");
-    selectedBtn.disabled = true; // Lock choice to prevent re-clicks [cite: 87]
+    selectedBtn.disabled = true;
     playAudio(false);
 
     if (attemptsLeft > 0) {
-      // First wrong attempt: Show constructive hint [cite: 88, 90]
       document.getElementById("feedback").innerText = "💡 Hint: " + qObj.hint;
       document.getElementById("feedback").style.color = "#1f4e79";
     } else {
-      // Second wrong attempt: End round, show explanation [cite: 89]
       clearInterval(interval);
       disableOptions();
       document.getElementById("feedback").innerText = "Unsuccessful. Correct answer: " + qObj.answer + ". " + qObj.explain;
@@ -405,13 +401,12 @@ function showResults() {
   let percentage = (score / questions.length) * 100;
   let msg = "";
 
-  // Compliance Grade Threshold Verification Tiers [cite: 122]
   if (percentage >= 75) {
-    msg = "Good job"; [cite: 123]
+    msg = "Good job";
   } else if (percentage >= 40) {
-    msg = "Review this chapter and try again"; [cite: 124]
+    msg = "Review this chapter and try again";
   } else {
-    msg = "Let’s practise more"; [cite: 125]
+    msg = "Let’s practise more";
   }
 
   document.getElementById("resultMessage").innerText = msg;
@@ -425,8 +420,8 @@ function restartQuiz() {
   document.getElementById("introScreen").classList.add("active");
 }
 
-// Guarantee DOM is loaded before mounting lifecycle listeners
-document.addEventListener("DOMContentLoaded", init);
+// Execute logic immediately to bypass DOM loading event races
+init();
 </script>
 
 </body>
