@@ -3,388 +3,575 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CBQ Master Engine v3</title>
+<title>Addition Upto 20</title>
 
 <style>
-body{
-  margin:0;
-  font-family: Arial;
-  background:#f5f7fb;
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:#f3f8ff;color:#1f2937;min-height:100vh}
+
+.screen {
+  display: none; 
+  width: 100%;
+  min-height: 100vh;
+  padding: 16px;
+  box-sizing: border-box;
 }
 
-.logo{
-  position:fixed;
-  inset:0;
-  background:white;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  z-index:999;
+.screen.active {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
-.logo img{width:220px}
-
-.game{
-  max-width:800px;
-  margin:auto;
-  padding:16px;
+#logoScreen {
+  background: #ffffff;
 }
 
-.card{
-  background:white;
-  border-radius:16px;
-  padding:18px;
-  box-shadow:0 2px 10px rgba(0,0,0,0.08);
+.logo {
+  max-width: 420px;
+  width: 80%;
+  height: auto;
+  display: block;
 }
 
-.hidden{display:none}
-
-.q{
-  font-size:22px;
-  font-weight:bold;
+.card {
+  width: 100%;
+  max-width: 880px;
+  background: #ffffff;
+  border-radius: 22px;
+  padding: 20px;
+  box-shadow: 0 8px 24px rgba(0,0,0,.15);
 }
 
-.options{
-  display:grid;
-  gap:12px;
-  margin-top:12px;
+.topbar {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin-bottom: 16px;
+  width: 100%;
 }
 
-.opt{
-  padding:14px;
-  border:2px solid #ccc;
-  border-radius:12px;
-  background:#f9fafb;
-  text-align:left;
-  cursor:pointer;
+.badge {
+  background: #e0f2fe;
+  color: #0f3f5f;
+  padding: 10px;
+  border-radius: 14px;
+  font-weight: bold;
+  font-size: 16px;
+  text-align: center;
 }
 
-.opt:active{transform:scale(0.98)}
-
-.correct{background:#dcfce7;border-color:#16a34a}
-.wrong{background:#fee2e2;border-color:#dc2626}
-
-.btn{
-  margin-top:14px;
-  width:100%;
-  padding:14px;
-  background:#2563eb;
-  color:white;
-  border:none;
-  border-radius:12px;
-  font-size:18px;
+.visual-box {
+  background: #fff7ed;
+  border: 2px solid #fdba74;
+  border-radius: 18px;
+  padding: 16px;
+  margin-bottom: 16px;
+  text-align: center;
+  min-height: 130px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.feedback{
-  margin-top:10px;
-  font-weight:bold;
+.visual {
+  font-size: 54px;
+  line-height: 1.2;
+}
+
+/* FIXED IMAGE SIZING CONSTRAINTS */
+.visual-box img {
+  max-width: 100%; 
+  max-height: 220px; 
+  object-fit: contain; 
+  border-radius: 12px;
+  display: block;
+  margin: 0 auto;
+}
+
+.question {
+  font-size: 24px;
+  font-weight: bold;
+  line-height: 1.35;
+  margin: 16px 0;
+  text-align: left;
+}
+
+.options {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(220px, 1fr));
+  gap: 14px;
+  width: 100%;
+}
+
+.option {
+  width: 100%;
+  min-height: 72px;
+  padding: 14px 16px;
+  font-size: 19px;
+  font-weight: bold;
+  border: 2px solid #1f4e79;
+  background: #ffffff;
+  border-radius: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.option.correct { background: #d1fae5; border-color: #047857; color: #047857; }
+.option.wrong { background: #fee2e2; border-color: #b91c1c; color: #b91c1c; }
+.option:disabled { cursor: not-allowed; opacity: 0.7; }
+
+.feedback {
+  min-height: 48px;
+  margin-top: 14px;
+  font-size: 19px;
+  font-weight: bold;
+  text-align: center;
+  width: 100%;
+}
+
+.primary {
+  background: #1f4e79;
+  color: white;
+  border: none;
+  border-radius: 14px;
+  padding: 14px 28px;
+  font-size: 19px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+#nextBtn { display: none; }
+
+@media(max-width:700px){
+  .options { grid-template-columns: 1fr; }
+  .topbar { grid-template-columns: repeat(2, 1fr); }
 }
 </style>
 </head>
 
 <body>
 
-<div class="logo" id="logo">
-  <img src="assets/logo.png">
+<audio id="audioCorrect" src="assets/claps.mp3" preload="auto"></audio>
+<audio id="audioWrong" src="assets/wrong.mp3" preload="auto"></audio>
+
+<div id="logoScreen" class="screen active">
+  <img src="assets/logo.png" class="logo" alt="Logo">
 </div>
 
-<div class="game hidden" id="game">
-
-  <div class="card" id="quiz">
-    <div class="q" id="qText"></div>
-    <img id="qImg" style="width:100%;margin-top:10px;border-radius:12px;display:none">
-
-    <div class="options" id="opts"></div>
-    <div class="feedback" id="fb"></div>
-
-    <button class="btn hidden" id="nextBtn" onclick="next()">Next</button>
+<div id="introScreen" class="screen">
+  <div class="card" style="text-align:center">
+    <h2>Addition Upto 20</h2>
+    <p>Test your understanding through real-life scenarios, challenges, and puzzles!</p>
+    <button class="primary" onclick="startQuiz()">Start Challenge</button>
   </div>
+</div>
 
-  <div class="card hidden" id="result"></div>
+<div id="quizScreen" class="screen">
+  <div class="card">
+    <div class="topbar">
+      <div class="badge"><span id="qTypeBadge">Flow</span>: <span id="qNo">1</span>/12</div>
+      <div class="badge">Score <span id="score">0</span></div>
+      <div class="badge">Time <span id="timer">60</span>s</div>
+      <div class="badge">Add up to 20</div>
+    </div>
 
+    <div class="visual-box" id="visualBox"></div>
+    <div class="question" id="questionText"></div>
+    <div class="options" id="optionsBox"></div>
+    <div class="feedback" id="feedback"></div>
+
+    <div style="text-align:center; margin-top: 15px;">
+      <button class="primary" id="nextBtn" onclick="nextQuestion()">Next</button>
+    </div>
+  </div>
+</div>
+
+<div id="resultScreen" class="screen">
+  <div class="card" style="text-align:center">
+    <h1 id="resultMessage"></h1>
+    <p id="finalScore"></p>
+    <button class="primary" onclick="restartQuiz()">Play Again</button>
+  </div>
 </div>
 
 <script>
-
-/* =========================
-CBQ MASTER ENGINE v3 CORE
-========================= */
-
-const bank = [
-{
-q:"[Picture: 6 apples in 2 rows]",
-img:"assets/apples.png",
-options:["6","8","5","7"],
-answer:0,
-skill:"visual_count",
-lo:"number sense",
-exp:"6 apples clearly shown."
-},
-
-{
-q:"What is 20 + 5?",
-img:"",
-options:["25","52","15","205"],
-answer:0,
-skill:"addition",
-lo:"place value",
-exp:"20 + 5 = 25"
-},
-
-{
-q:"[Picture: 4 bundles of tens]",
-img:"assets/sticks.png",
-options:["40","4","44","14"],
-answer:0,
-skill:"tens",
-lo:"place value",
-exp:"4 tens = 40"
-},
-
-{
-q:"Which is greater?",
-img:"",
-options:["12 > 21","21 > 12","12 = 21","None"],
-answer:1,
-skill:"comparison",
-lo:"number sense",
-exp:"21 is greater than 12"
-},
-
-{
-q:"[Picture: number line jump 10 → ?]",
-img:"assets/line.png",
-options:["11","12","13","14"],
-answer:1,
-skill:"sequence",
-lo:"number line",
-exp:"Next is 11,12"
-},
-
-{
-q:"Find odd one out",
-img:"",
-options:["10","20","30","25"],
-answer:3,
-skill:"classification",
-lo:"pattern",
-exp:"25 is not a multiple of 10"
-},
-
-{
-q:"[Picture: 3 groups of 4 stars]",
-img:"assets/stars.png",
-options:["12","7","10","9"],
-answer:0,
-skill:"grouping",
-lo:"multiplication intro",
-exp:"3×4 = 12"
-},
-
-{
-q:"Error check: 15 + 10 = 20",
-img:"",
-options:["Correct","Wrong, 25","Wrong, 30","Wrong, 15"],
-answer:1,
-skill:"error_detection",
-lo:"addition",
-exp:"15+10=25"
-},
-
-{
-q:"[Picture: abacus 3 tens 2 ones]",
-img:"assets/abacus.png",
-options:["32","23","30","22"],
-answer:0,
-skill:"place_value",
-lo:"representation",
-exp:"3 tens + 2 ones = 32"
-},
-
-{
-q:"Arrange: 9, 3, 7",
-img:"",
-options:["3,7,9","9,7,3","7,3,9","3,9,7"],
-answer:0,
-skill:"ordering",
-lo:"comparison",
-exp:"Ascending order"
-},
-
-{
-q:"[Picture: 5 balloons + 5 balloons]",
-img:"assets/balloons.png",
-options:["10","11","9","12"],
-answer:0,
-skill:"addition",
-lo:"visual math",
-exp:"5+5=10"
-},
-
-{
-q:"What comes after 19?",
-img:"",
-options:["18","20","21","22"],
-answer:1,
-skill:"sequence",
-lo:"number sense",
-exp:"After 19 is 20"
-},
-
-{
-q:"[Picture: missing object pattern]",
-img:"assets/pattern.png",
-options:["Correct","Wrong pattern","Skip","Ignore"],
-answer:1,
-skill:"pattern",
-lo:"logic",
-exp:"Pattern mismatch"
-}
+/* ---------------- COMPLETE QUESTIONS POOL ---------------- */
+const questionPool = [
+  {
+    type: "Flow",
+    q: "Rohan has 8 pencils and his sister has 4 pencils. His teacher gives him 1 more pencil for good work. Rohan says he now has 10 pencils. Is he correct?",
+    visual: "✏️ Pencil Count",
+    options: ["No, he has 9 pencils.", "No, he has 12 pencils", "No, he has 13 pencils", "Yes, he has 10 pencils."],
+    answer: "No, he has 9 pencils.",
+    hint: "Rohan had 8 pencils and got 1 more.",
+    explain: "Rohan had 8 pencils and got 1 more, so he has 9."
+  },
+  {
+    type: "Flow",
+    q: "A teacher needs to give 1 ice-cream stick to each student. There are 18 students. She has 10 sticks in one box and 8 sticks in another box. Does she have enough sticks for all students?",
+    visual: "🍦 Stick Check",
+    options: ["Yes, she has enough", "No, she has 1 stick less", "No, she has 2 sticks less", "Yes, she has more than needed"],
+    answer: "Yes, she has enough",
+    hint: "Add the sticks from both boxes together.",
+    explain: "10 + 8 = 18 sticks, so she has exactly enough sticks."
+  },
+  {
+    type: "Flow",
+    q: "Juhi collects 5 blue shells, 7 yellow shells and 5 white shells on the beach. She uses all the white shells and equal number of yellow shells to make a necklace. How many shells did she use to make the necklace?",
+    visual: "🐚 Shell Necklace",
+    options: ["7", "8", "9", "10"],
+    answer: "10",
+    hint: "She used 5 white shells and the same number of yellow shells.",
+    explain: "Juhi uses 5 white shells and 5 yellow shells (same number as white), so 5 + 5 = 10 shells."
+  },
+  {
+    type: "Flow",
+    q: "A frog is on number 7 on a number line. How many times should it jump forward to land on 10?",
+    visual: "🐸 Number Line Jump",
+    options: ["3", "4", "1", "2"],
+    answer: "3",
+    hint: "Count up from 7 until you reach 10.",
+    explain: "Starting at 7, moving forward 3 steps means 8, 9, 10."
+  },
+  {
+    type: "Flow",
+    q: "Andy bakes 4 butterscotch cookies and 2 chocochip cookies in the morning. He bakes 1 butterscotch cookie and 4 chocochip cookies in the evening. How many chocochip cookies did he bake in the day?",
+    visual: "🍪 Cookie Counter",
+    options: ["14", "15", "11", "6"],
+    answer: "6",
+    hint: "Make sure to only add the chocochip cookies.",
+    explain: "2 chocochip cookies in the morning + 4 chocochip cookies in the evening makes 6 chocochip cookies in total."
+  },
+  {
+    type: "Flow",
+    q: "There is a 1 digit number. It is more than 1 + 3 but less than 2 + 4. Sonam says the number is 6. Is she correct?",
+    visual: "🔍 Number Mystery",
+    options: ["Yes, 6 fits the rule", "No, the number is 5", "No, the number is 4", "Yes, the number can be 6 or 5"],
+    answer: "No, the number is 5",
+    hint: "Calculate the bounds: 1 + 3 and 2 + 4.",
+    explain: "1 + 3 = 4 and 2 + 4 = 6. The number must be between 4 and 6, so only 5 fits."
+  },
+  {
+    type: "Flow",
+    q: "Maya adds 12 + 3 and writes the answer as 1 tens and 4 ones. What mistake did she make?",
+    visual: "✏️ 12 + 3 = ?",
+    options: ["She added 3 tens instead of 3 ones.", "She added one less in the ones place.", "She added 5 more in the ones place.", "The answer is correct."],
+    answer: "She added one less in the ones place.",
+    hint: "Count 3 steps forward from 12.",
+    explain: "Counting 3 steps forward from 12 should lead to 15 (1 tens and 5 ones), not 14."
+  },
+  {
+    type: "Flow",
+    q: "Romi brings 10 green and 4 orange pebbles. Sid brings 8 red and 7 yellow pebbles. Noor brings 7 pink and 9 purple pebbles. Vinu brings 7 red and 8 green pebbles. Who brought the same number of pebbles?",
+    visual: "💎 Pebble Collection",
+    options: ["Noor and Vinu", "Vinu and Sid", "Sid and Romi", "Romi and Noor"],
+    answer: "Vinu and Sid",
+    hint: "Find the total sum for each child to see which totals match.",
+    explain: "Romi: 14, Sid: 15, Noor: 16, Vinu: 15. Sid and Vinu both brought 15 pebbles."
+  },
+  {
+    type: "Flow",
+    q: "In a match, Team A scored 5 points in Round 1 and 5 points in Round 2. Team B scored 4 points in Round 1 and 6 points in Round 2. Which statement is true?",
+    visual: "🏆 Scoreboard Check",
+    options: ["Team A scored more points in total.", "Team B scored more points in total", "Both teams scored equal points", "Team A scored 1 point more than Team B"],
+    answer: "Both teams scored equal points",
+    hint: "Calculate the total points for both Team A and Team B.",
+    explain: "Both sums equal 10, showing that different pairs of numbers can have the same total."
+  },
+  {
+    type: "Flow",
+    q: "Tina has 7 yellow beads, 8 red beads and 1 white bead. She makes a necklace using all the red and white beads. How many beads does she use in all?",
+    visual: "📿 Bead Design",
+    options: ["7", "2", "5", "9"],
+    answer: "9",
+    hint: "Only add the red and white beads together.",
+    explain: "8 red beads and 1 white bead together make 9 beads."
+  },
+  {
+    type: "Flow",
+    q: "Which of these sums does NOT equal 15?",
+    visual: "❌ Target Math",
+    options: ["10 + 5", "12 + 3", "14 + 1", "10 + 2"],
+    answer: "10 + 2",
+    hint: "Add each option together to see which doesn't hit 15.",
+    explain: "10 + 2 = 12, while all the other combinations equal 15."
+  },
+  {
+    type: "Challenge",
+    q: "Assertion: Adding 1 to 15 gives 16. Reason: Adding 1 always gives the next number (successor).",
+    visual: "🧠 Logic Rule",
+    options: ["Both are correct and reason explains assertion", "Both are correct but reason does not explain", "Assertion is correct, reason is wrong", "Both are wrong"],
+    answer: "Both are correct and reason explains assertion",
+    hint: "Does the reason perfectly explain why 15 becomes 16?",
+    explain: "The reason perfectly explains why the total becomes 16 when you add just one more."
+  },
+  {
+    type: "Challenge",
+    q: "A bus can carry 20 children. 12 children are already on the bus. 7 children are waiting in a line to get in the bus. The driver says, 'There are seats for all 7 children.' Is the driver correct?",
+    visual: "🚌 Bus Seats",
+    options: ["Yes, because 12 + 7= 19", "Yes, because the bus can carry 12 children.", "No, because 7 children are too many.", "No, because 12 + 7 = 21."],
+    answer: "Yes, because 12 + 7= 19",
+    hint: "Add the inside children and waiting children together.",
+    explain: "12 + 7 = 19. Since the bus can carry 20 children, all 7 children can get seats safely."
+  },
+  {
+    type: "Flow",
+    q: "Look at the list: Mangoes - 8, Banana - 6, Papaya - 1. How many fruits are there in total?",
+    visual: "🥭 Fruit Basket",
+    options: ["16", "10", "15", "18"],
+    answer: "15",
+    hint: "Add 8 + 6 + 1 sequentially.",
+    explain: "8 + 6 + 1 gives 15 fruits in all."
+  },
+  {
+    type: "Flow",
+    q: "If you start at number 10 on a number line and take 0 jumps, where are you?",
+    visual: "📍 Zero steps",
+    options: ["0", "10", "1", "9"],
+    answer: "10",
+    hint: "Adding zero means you aren't moving at all.",
+    explain: "0 added to 10 leaves it unchanged at 10."
+  },
+  {
+    type: "Flow",
+    q: "A box has 13 chocolates. Jamie adds 4 more chocolates in the box. How many chocolates are there now?",
+    visual: "🍫 Sweet Box",
+    options: ["17", "18", "19", "16"],
+    answer: "17",
+    hint: "Add 4 to the 3 ones inside 13.",
+    explain: "Adding 4 to the 3 ones in 13 gives you 7 ones, making the total 17."
+  },
+  {
+    type: "Flow",
+    q: "Does 7 + 2 give the same answer as 2 + 7?",
+    visual: "🔄 Swap Order",
+    options: ["Yes, both are 9", "No, the first is 9 and second is 8", "No, the first is 7 and second is 2", "Only if we add 1"],
+    answer: "Yes, both are 9",
+    hint: "Does changing the order of addition change the final sum?",
+    explain: "In addition, the order of the numbers does not change the final total."
+  },
+  {
+    type: "Flow",
+    q: "Three sequential groups of birds fly onto a branch: 9 birds, then 5 birds, and finally 1 bird. How many birds are on the branch now?",
+    visual: "🐦 sequential count",
+    options: ["14", "15", "16", "10"],
+    answer: "15",
+    hint: "Sequentially track the growing group: 9 + 5 + 1.",
+    explain: "Adding three numbers sequentially (9+5+1) helps track the growing group of birds to make 15."
+  },
+  {
+    type: "Flow",
+    q: "Ali needs 20 balloons to decorate the stage. He bought 11 balloons. His sister gave him 5 balloons. He found 3 more in a box. Does he have sufficient balloons?",
+    visual: "🎈 Balloon Setup",
+    options: ["Yes, exactly 20", "No, he has 19 balloons", "No, he has 16 balloons", "Yes, he has more than 20"],
+    answer: "No, he has 19 balloons",
+    hint: "Find the total sum of 11 + 5 + 3.",
+    explain: "The sum 11 + 5 + 3 equals 19, which is one less than their goal of 20."
+  },
+  {
+    type: "Challenge",
+    q: "Rahul and Adil count flowers. Rahul counts 19 and Adil counts 11. Adil says the total is 2 tens and 0 ones. What should be the correct answer statement?",
+    visual: "assets/image_667d1f.png",
+    options: ["He counted 1 ones more", "He counted 1 tens less", "He added 1 tens and 5 ones", "He counted 1 tens more"],
+    answer: "He counted 1 tens less",
+    hint: "19 + 11 = 30. How many tens are in 30 compared to Adil's 2 tens?",
+    explain: "The total is 19 + 11 = 30 (3 tens). Adil said 2 tens (20), missing exactly 1 ten."
+  },
+  {
+    type: "Flow",
+    q: "In a park, 5 children play on slides, 6 play in the sand pit, and 1 sits on a bench. How many ice creams should the teacher buy so everyone gets one?",
+    visual: "🍦 Park Treat",
+    options: ["16", "13", "12", "19"],
+    answer: "12",
+    hint: "Combine all three groups of children together.",
+    explain: "5 + 6 + 1 makes it 12 children. So, the teacher needs to buy 12 ice-creams."
+  },
+  {
+    type: "Challenge",
+    q: "Morning tray has 2 groups of 10 cookies. Evening tray has 4 groups of 10 cookies. If the baker puts them all in a jar, how many cookies will be inside?",
+    visual: "🏺 Cookie Jar",
+    options: ["20", "40", "60", "30"],
+    answer: "60",
+    hint: "Convert groups of 10 into numbers: 20 and 40.",
+    explain: "Morning tray has 20 cookies and evening has 40. Total cookies = 20 + 40 = 60."
+  }
 ];
 
-/* =========================
-ENGINE STATE
-========================= */
+/* ---------------- ACTIVE GAME QUESTIONS ARRAY ---------------- */
+let questions = [];
 
-let qSet=[];
-let i=0;
-let score=0;
-let firstTry=0;
-let attempt=0;
-let answered=false;
+let current = 0;
+let score = 0;
+let timer = 60;
+let interval;
+let attemptsLeft = 2;
 
-/* =========================
-SHUFFLE ENGINE
-========================= */
-
-function shuffle(a){
-  return a.sort(()=>Math.random()-0.5);
+function changeScreen(fromId, toId) {
+  const fromScreen = document.getElementById(fromId);
+  const toScreen = document.getElementById(toId);
+  if (fromScreen) fromScreen.classList.remove("active");
+  if (toScreen) toScreen.classList.add("active");
 }
 
-/* =========================
-START ENGINE
-========================= */
-
-setTimeout(()=>{
-  document.getElementById("logo").style.display="none";
-  document.getElementById("game").classList.remove("hidden");
-  start();
-},2000);
-
-function start(){
-  qSet = shuffle([...bank]).slice(0,12); // MASTER RULE
-  i=0;
-  score=0;
-  firstTry=0;
-  load();
+function init() {
+  setTimeout(() => {
+    changeScreen("logoScreen", "introScreen");
+  }, 5000);
 }
 
-/* =========================
-LOAD QUESTION
-========================= */
+function startQuiz() {
+  // RANDOMIZE AND CHOOSE EXACTLY 12 QUESTIONS EVERY TIME GAME STARTS
+  let shuffled = [...questionPool].sort(() => Math.random() - 0.5);
+  questions = shuffled.slice(0, 12);
+  
+  current = 0;
+  score = 0;
+  changeScreen("introScreen", "quizScreen");
+  loadQuestion();
+}
 
-function load(){
-  answered=false;
-  attempt=0;
+function startTimer() {
+  clearInterval(interval);
+  timer = 60;
+  document.getElementById("timer").innerText = timer;
 
-  let q=qSet[i];
+  interval = setInterval(() => {
+    timer--;
+    document.getElementById("timer").innerText = timer;
 
-  document.getElementById("qText").innerText=q.q;
+    if (timer <= 0) {
+      clearInterval(interval);
+      playAudio(false);
+      disableOptions();
+      document.getElementById("feedback").innerText = "Time's up! " + questions[current].explain;
+      document.getElementById("feedback").style.color = "#b91c1c";
+      document.getElementById("nextBtn").style.display = "inline-block";
+    }
+  }, 1000);
+}
 
-  let img=document.getElementById("qImg");
-  if(q.img){
-    img.src=q.img;
-    img.style.display="block";
-  }else{
-    img.style.display="none";
+function playAudio(isCorrect) {
+  const correctSound = document.getElementById("audioCorrect");
+  const wrongSound = document.getElementById("audioWrong");
+  if(isCorrect && correctSound) {
+    correctSound.currentTime = 0;
+    correctSound.play().catch(e => console.log("Audio blocked"));
+  } else if(!isCorrect && wrongSound) {
+    wrongSound.currentTime = 0;
+    wrongSound.play().catch(e => console.log("Audio blocked"));
+  }
+}
+
+function loadQuestion() {
+  startTimer();
+  attemptsLeft = 2;
+  
+  let q = questions[current];
+
+  document.getElementById("qNo").innerText = current + 1;
+  document.getElementById("qTypeBadge").innerText = q.type;
+  document.getElementById("score").innerText = score;
+  document.getElementById("feedback").innerText = "";
+  document.getElementById("nextBtn").style.display = "none";
+  document.getElementById("questionText").innerText = q.q;
+
+  if (q.visual.includes("assets/")) {
+    document.getElementById("visualBox").innerHTML = `<img src="${q.visual}" alt="Question Image">`;
+  } else {
+    document.getElementById("visualBox").innerHTML = `<div class="visual">${q.visual}</div>`;
   }
 
-  let box=document.getElementById("opts");
-  box.innerHTML="";
+  let box = document.getElementById("optionsBox");
+  box.innerHTML = "";
 
-  q.options.forEach((o,idx)=>{
-    let b=document.createElement("button");
-    b.className="opt";
-    b.innerText=o;
-    b.onclick=()=>check(idx,b);
-    box.appendChild(b);
+  q.options.forEach(opt => {
+    let btn = document.createElement("button");
+    btn.className = "option";
+    btn.innerText = opt;
+    btn.onclick = () => checkAnswer(btn, opt, q);
+    box.appendChild(btn);
   });
-
-  document.getElementById("fb").innerText="";
-  document.getElementById("nextBtn").classList.add("hidden");
 }
 
-/* =========================
-CHECK ANSWER
-========================= */
-
-function check(idx,b){
-  if(answered) return;
-
-  let q=qSet[i];
-
-  if(idx===q.answer){
-    answered=true;
+function checkAnswer(selectedBtn, selectedValue, qObj) {
+  if (selectedValue === qObj.answer) {
+    clearInterval(interval);
+    selectedBtn.classList.add("correct");
+    playAudio(true);
     score++;
+    document.getElementById("score").innerText = score;
+    document.getElementById("feedback").innerText = "🎉 Correct! " + qObj.explain;
+    document.getElementById("feedback").style.color = "#047857";
+    disableOptions();
+    document.getElementById("nextBtn").style.display = "inline-block";
+  } else {
+    attemptsLeft--;
+    selectedBtn.classList.add("wrong");
+    selectedBtn.disabled = true;
+    playAudio(false);
 
-    if(attempt===0) firstTry++;
-
-    b.classList.add("correct");
-    document.getElementById("fb").innerText="✔ "+q.exp;
-    document.getElementById("nextBtn").classList.remove("hidden");
-  }else{
-    attempt++;
-    b.classList.add("wrong");
-
-    if(attempt<2){
-      document.getElementById("fb").innerText="Hint: Think again!";
-    }else{
-      answered=true;
-      document.getElementById("fb").innerText="✔ "+q.exp;
-      document.getElementById("nextBtn").classList.remove("hidden");
+    if (attemptsLeft > 0) {
+      document.getElementById("feedback").innerText = "💡 Hint: " + qObj.hint;
+      document.getElementById("feedback").style.color = "#1f4e79";
+    } else {
+      clearInterval(interval);
+      disableOptions();
+      document.getElementById("feedback").innerText = "Unsuccessful. Correct answer: " + qObj.answer + ". " + qObj.explain;
+      document.getElementById("feedback").style.color = "#b91c1c";
+      
+      const buttons = document.querySelectorAll(".option");
+      buttons.forEach(b => {
+        if(b.innerText === qObj.answer) b.classList.add("correct");
+      });
+      
+      document.getElementById("nextBtn").style.display = "inline-block";
     }
   }
 }
 
-/* =========================
-NEXT
-========================= */
+function disableOptions() {
+  const buttons = document.querySelectorAll(".option");
+  buttons.forEach(b => b.disabled = true);
+}
 
-function next(){
-  i++;
-  if(i<qSet.length){
-    load();
-  }else{
-    show();
+function nextQuestion() {
+  current++;
+  if (current >= questions.length) {
+    clearInterval(interval);
+    showResults();
+  } else {
+    loadQuestion();
   }
 }
 
-/* =========================
-RESULT ENGINE (MASTER)
-========================= */
+function showResults() {
+  changeScreen("quizScreen", "resultScreen");
 
-function show(){
-  document.getElementById("quiz").classList.add("hidden");
+  let percentage = (score / questions.length) * 100;
+  let msg = "";
 
-  let r=document.getElementById("result");
-  r.classList.remove("hidden");
+  if (percentage >= 75) {
+    msg = "Good job";
+  } else if (percentage >= 40) {
+    msg = "Review this chapter and try again";
+  } else {
+    msg = "Let’s practise more";
+  }
 
-  let pct=Math.round((firstTry/qSet.length)*100);
-
-  let msg="";
-  if(pct>=80) msg="🌟 Master Thinker!";
-  else if(pct>=60) msg="👍 Strong Skills!";
-  else if(pct>=40) msg="📘 Improving!";
-  else msg="💪 Needs Practice!";
-
-  r.innerHTML=`
-    <h2>${msg}</h2>
-    <p>First Try: ${firstTry}/${qSet.length}</p>
-    <p>Total Score: ${score}/${qSet.length}</p>
-    <button class="btn" onclick="location.reload()">Restart</button>
-  `;
+  document.getElementById("resultMessage").innerText = msg;
+  document.getElementById("finalScore").innerText = `Final Score: ${score} / ${questions.length} (${percentage}%)`;
 }
 
+function restartQuiz() {
+  changeScreen("resultScreen", "introScreen");
+}
+
+init();
 </script>
 
 </body>
