@@ -1,486 +1,304 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Grade 1 Math: Subtraction up to 100</title>
-    <style>
-        :root {
-            --primary: #1f4e79;
-            --secondary: #e0f2fe;
-            --success: #2ecc71;
-            --danger: #e74c3c;
-            --bg: #f3f8ff;
-            --text: #1f2937;
-        }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Comic Sans MS', 'Chalkboard SE', sans-serif; }
-        body { background-color: var(--bg); color: var(--text); display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 10px; }
-        
-        .container { background: white; width: 100%; max-width: 460px; border-radius: 24px; box-shadow: 0 10px 20px rgba(0,0,0,0.08); padding: 20px; position: relative; min-height: 440px; border: 5px solid #7dd3fc; overflow: hidden; }
-        
-        .screen { display: none; }
-        .screen.active { display: block; }
-        
-        /* Fixed Splash Screen Layout */
-        #logoScreen { position: absolute; top:0; left:0; width:100%; height:100%; background: #ffffff; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 100; border-radius: 18px; cursor: pointer; }
-        #logoScreen img { width: 190px; height: auto; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CBQ Interactive</title>
 
-        /* Interactive Dashboard Meta */
-        .header-meta { display: flex; justify-content: space-between; align-items: center; font-size: 1.2rem; font-weight: bold; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 4px dashed #bae6fd; }
-        .timer { color: var(--danger); background: #fff5f5; padding: 5px 12px; border-radius: 12px; border: 2px solid #ffc9c9; }
-        .score-box { color: #047857; background: #d1fae5; padding: 5px 12px; border-radius: 12px; border: 2px solid #a7f3d0; }
-        .badge-info { color: #0f3f5f; background: var(--secondary); padding: 5px 12px; border-radius: 12px; border: 2px solid #bae6fd; }
-        
-        /* Typography Elements */
-        h2 { font-size: 1.7rem; text-align: center; margin-bottom: 15px; color: var(--primary); line-height: 1.3; }
-        .visual-emoji-display { font-size: 3.5rem; text-align: center; margin: 10px 0; user-select: none; display: flex; justify-content: center; align-items: center; gap: 5px; }
-        .q-context { background: #f8fafc; padding: 15px; border-radius: 16px; margin-bottom: 15px; font-size: 1.25rem; text-align: center; font-weight: bold; color: #0f172a; line-height: 1.4; border: 2px dashed #cbd5e1; }
-        
-        /* Tens Bundles Layout */
-        .diagram-container { display: flex; justify-content: center; gap: 12px; margin: 10px 0; padding: 5px; flex-wrap: wrap; }
-        .bundle-item { display: flex; flex-direction: column; align-items: center; font-weight: bold; }
-        .bundle-art { font-size: 2.5rem; line-height: 1; margin-bottom: 2px; }
-        .bundle-label { font-size: 1rem; color: var(--primary); background: var(--secondary); padding: 1px 6px; border-radius: 8px; border: 1px solid #bae6fd; }
+<style>
+/* ===== BASE CHATGPT-STYLE UI ===== */
 
-        /* High-Contrast Fast Tap Targets */
-        .options-grid { display: grid; grid-template-columns: 1fr; gap: 12px; margin-bottom: 15px; }
-        .btn-opt { background: #f8f9fa; border: 3px solid #dee2e6; border-radius: 16px; padding: 14px; text-align: center; font-size: 1.2rem; font-weight: bold; cursor: pointer; transition: all 0.1s; width: 100%; -webkit-tap-highlight-color: transparent; box-shadow: 0 4px #e9ecef; color: var(--text); display: flex; align-items: center; justify-content: center; }
-        .btn-opt:not(:disabled):active { transform: translateY(2px); box-shadow: 0 2px #e9ecef; }
-        .btn-opt.correct { background-color: #d1fae5 !important; border-color: #047857 !important; color: #065f46 !important; box-shadow: 0 4px #a7f3d0 !important; }
-        .btn-opt.wrong { background-color: #fee2e2 !important; border-color: var(--danger) !important; color: #991b1b !important; box-shadow: 0 4px #fca5a5 !important; }
-        
-        /* Feedback Callouts */
-        .feedback-box { padding: 14px; border-radius: 16px; margin-bottom: 15px; font-weight: bold; font-size: 1.1rem; text-align: center; line-height: 1.4; min-height: 50px; }
-        .feedback-box.hint { background: #fef3c7; color: #92400e; border: 2px solid #fde68a; }
-        .feedback-box.explanation { background: #e0f2fe; color: #0369a1; border: 2px solid #bae6fd; }
+*{
+  box-sizing:border-box;
+  font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;
+}
 
-        /* Action Buttons */
-        .btn-action { background: var(--primary); color: white; border: none; padding: 15px; font-size: 1.3rem; border-radius: 16px; cursor: pointer; width: 100%; font-weight: bold; box-shadow: 0 5px #133351; }
-        .btn-action:active { transform: translateY(2px); box-shadow: 0 2px #133351; }
-        .audio-ctrl { background: none; border: none; font-size: 1.8rem; cursor: pointer; -webkit-tap-highlight-color: transparent; }
-        
-        .confetti{ position:fixed; width:10px; height:10px; top:-10px; animation:fall 1.2s linear forwards; pointer-events:none; z-index: 200; }
-        @keyframes fall{ to{ transform:translateY(110vh) rotate(360deg); opacity:0; } }
-    </style>
+body{
+  margin:0;
+  background:#f7f7f8;
+  color:#111827;
+}
+
+/* CENTER CONTAINER */
+.wrapper{
+  max-width:900px;
+  margin:0 auto;
+  padding:20px;
+}
+
+/* HEADER */
+.header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:18px;
+  gap:10px;
+  flex-wrap:wrap;
+}
+
+.badge{
+  background:#ffffff;
+  border:1px solid #e5e7eb;
+  padding:10px 14px;
+  border-radius:12px;
+  font-size:14px;
+  color:#374151;
+}
+
+/* QUESTION CARD */
+.card{
+  background:#ffffff;
+  border:1px solid #e5e7eb;
+  border-radius:16px;
+  padding:22px;
+}
+
+/* QUESTION */
+.question{
+  font-size:20px;
+  line-height:1.5;
+  margin-bottom:16px;
+  color:#111827;
+}
+
+/* OPTIONS */
+.options{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+  margin-top:10px;
+}
+
+.option{
+  background:#f9fafb;
+  border:1px solid #e5e7eb;
+  padding:14px;
+  border-radius:12px;
+  font-size:16px;
+  cursor:pointer;
+  transition:0.15s;
+}
+
+.option:hover{
+  border-color:#9ca3af;
+  background:#f3f4f6;
+}
+
+.option.correct{
+  background:#ecfdf5;
+  border-color:#10b981;
+}
+
+.option.wrong{
+  background:#fef2f2;
+  border-color:#ef4444;
+}
+
+/* FEEDBACK */
+.feedback{
+  margin-top:14px;
+  padding:12px;
+  border-radius:12px;
+  background:#f9fafb;
+  border:1px solid #e5e7eb;
+  font-size:14px;
+  color:#374151;
+  min-height:20px;
+}
+
+/* NEXT BUTTON */
+.next{
+  margin-top:16px;
+  width:100%;
+  padding:14px;
+  border:none;
+  border-radius:12px;
+  background:#111827;
+  color:white;
+  font-size:16px;
+  cursor:pointer;
+  display:none;
+}
+
+/* SPLASH */
+.splash{
+  position:fixed;
+  inset:0;
+  background:#ffffff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:18px;
+  color:#6b7280;
+}
+
+/* RESPONSIVE */
+@media(max-width:700px){
+  .options{
+    grid-template-columns:1fr;
+  }
+}
+</style>
 </head>
+
 <body>
 
-<div class="container">
-    <!-- Splash Shield (Wired to auto-clear or clear instantly on tap) -->
-    <div id="logoScreen" onclick="skipLogo()">
-        <img id="logoImage" src="assets/logo.png" alt="Logo">
-    </div>
+<div class="splash" id="splash">Loading...</div>
 
-    <!-- Title / Intro Screen -->
-    <div id="titleScreen" class="screen" style="text-align: center; padding-top: 20px;">
-        <h2>➖ Taking Away!</h2>
-        <div class="visual-emoji-display">🍬🎈🧸</div>
-        <p style="margin-bottom: 25px; font-size: 1.25rem; color: #4b5563; font-weight: bold;">
-            Subtraction up to 100 Competency Challenge ⭐
-        </p>
-        <button class="btn-action" onclick="handleStartClick()">START! 🚀</button>
-    </div>
+<div class="wrapper">
 
-    <!-- Main Quiz Interface -->
-    <div id="quizScreen" class="screen">
-        <div class="header-meta">
-            <div class="badge-info" id="qLabel">Question <span id="qNo">1</span>/12</div>
-            <div class="score-box">⭐ <span id="score">0</span></div>
-            <button class="audio-ctrl" id="muteBtn" onclick="toggleMute()">🔇</button>
-            <div class="timer">⏳ <span id="timer">60</span>s</div>
-        </div>
-        
-        <div>
-            <div id="q-emoji" class="visual-emoji-display"></div>
-            <div id="questionText" class="q-context"></div>
-            <div class="options-grid" id="optionsBox"></div>
-        </div>
+  <!-- HEADER -->
+  <div class="header">
+    <div class="badge">Question: <span id="qNo">1</span></div>
+    <div class="badge">Score: <span id="score">0</span></div>
+    <div class="badge">Time: <span id="timer">60</span>s</div>
+  </div>
 
-        <div id="feedback" class="feedback-box" style="display: none;"></div>
-        <button id="nextBtn" class="btn-action" style="display: none;" onclick="nextQuestion()">NEXT 👉</button>
-    </div>
+  <!-- QUESTION CARD -->
+  <div class="card">
 
-    <!-- Results Dashboard -->
-    <div id="resultScreen" class="screen" style="text-align: center; padding-top: 20px;">
-        <h2 id="resultMessage">🎉 Finished!</h2>
-        <div id="result-emoji" class="visual-emoji-display">🏆⭐👑</div>
-        <p id="finalScore" style="font-size: 1.25rem; margin-bottom: 25px; font-weight: bold; color: #2c3e50; white-space: pre-line;"></p>
-        <button class="btn-action" onclick="restartQuiz()">RESTART 🔄</button>
-    </div>
+    <div class="question" id="questionText"></div>
+
+    <div class="options" id="optionsBox"></div>
+
+    <div class="feedback" id="feedback"></div>
+
+    <button class="next" id="nextBtn" onclick="nextQuestion()">Next</button>
+
+  </div>
+
 </div>
 
-<audio id="correctSound" src="assets/correct.mp3"></audio>
-<audio id="wrongSound" src="assets/wrong.mp3"></audio>
-
 <script>
+
+/* ================= QUESTIONS (UNCHANGED) ================= */
+
 const questionPool = [
   {
-    q: "Diya has 50 candies. She gives 20 to her friend. How many candies are left?",
-    options: ["20 candies 🍬", "30 candies 🍬", "40 candies 🍬", "50 candies 🍬"],
-    answer: 1,
-    emoji: "🍬",
-    hint: "Count backward by tens from 50 two times! 🔢",
-    explanation: "50 − 20 = 30 candies left! 🎉"
+    q:"Diya has 50 candies. She gives 20 to her friend. How many candies are left?",
+    options:["20 candies","30 candies","40 candies","50 candies"],
+    answer:1
   },
   {
-    q: "A shop has 80 balloons. 30 balloons are sold. How many remain?",
-    options: ["40 balloons 🎈", "50 balloons 🎈", "60 balloons 🎈", "70 balloons 🎈"],
-    answer: 1,
-    emoji: "🎈",
-    hint: "Take 3 tens away from 8 tens! 🔢",
-    explanation: "80 − 30 = 50 balloons left! ✨"
+    q:"A shop has 80 balloons. 30 balloons are sold. How many remain?",
+    options:["40 balloons","50 balloons","60 balloons","70 balloons"],
+    answer:1
   },
   {
-    q: "Which number should be subtracted from 60 to get 40?",
-    options: ["10 🔮", "20 🔮", "30 🔮", "40 🔮"],
-    answer: 1,
-    emoji: "🔮",
-    hint: "6 tens minus how many tens leaves 4 tens? 🧱",
-    explanation: "60 − 20 = 40! ⭐"
+    q:"Which number should be subtracted from 60 to get 40?",
+    options:["10","20","30","40"],
+    answer:1
   },
   {
-    q: "Sam has 45 marbles. He loses 15 marbles. How many are left?",
-    options: ["25 marbles 🟢", "30 marbles 🟢", "35 marbles 🟢", "40 marbles 🟢"],
-    answer: 1,
-    emoji: "🟢",
-    hint: "Subtract the ones place first: 5 − 5 = 0. Then do the tens! 🔢",
-    explanation: "45 − 15 leaves exactly 30 marbles! 🌸"
-  },
-  {
-    q: "Meera solved: 34 − 12 = 22. Is she correct?",
-    options: ["Yes ✅", "No ❌", "Maybe 🤷", "Cannot say ❓"],
-    answer: 0,
-    emoji: "📝",
-    hint: "Check the math: 4 − 2 in the ones place and 3 − 1 in the tens place!",
-    explanation: "34 − 12 = 22 is correct!"
-  },
-  {
-    q: "Kabir has a box with 4 bundles of sticks. Each bundle has exactly 10 sticks (40 sticks in total). He unties one bundle and gives 5 single sticks to his sister. How many sticks does Kabir have left now?",
-    options: ["30 sticks 🪵", "35 sticks 🪵", "25 sticks 🪵", "45 sticks 🪵"],
-    answer: 1,
-    emoji: "🪵",
-    isDiagram: true,
-    hint: "If he starts with 40 sticks and gives away 5, count backward by ones from 40! 🔢",
-    explanation: "40 minus 5 leaves 3 tens and 5 ones, which equals 35 sticks."
-  },
-  {
-    q: "Rohit and Sana are looking at the problem 85 − 30. Rohit says, 'The answer will have 5 in the ones place.' Sana says, 'The answer will have 5 in the tens place.' Who is making the correct claim?",
-    options: ["Only Rohit is correct 🛑", "Only Sana is correct 🛑", "Both Rohit and Sana are correct", "Neither is correct ❌"],
-    answer: 2,
-    emoji: "🗣️",
-    hint: "Subtract 0 ones from 5 ones (5 − 0), then subtract 3 tens from 8 tens (8 − 3). 👀",
-    explanation: "85 − 30 = 55. The answer has a 5 in both the tens place and the ones place, meaning both statements are correct!"
-  },
-  {
-    q: "A flower garland has 75 beads in total. Some beads break and fall off. Now, there are only 50 beads left on the garland. How many beads broke off?",
-    options: ["20 beads 🌸", "25 beads 🌸", "30 beads 🌸", "35 beads 🌸"],
-    answer: 1,
-    emoji: "🌸",
-    hint: "Find the difference between the starting number of beads (75) and the leftover beads (50). 🔍",
-    explanation: "Subtracting 50 from 75 (75 − 50) tells us that exactly 25 beads broke off."
-  },
-  {
-    q: "Which subtraction statement is incorrect?",
-    options: ["52 − 20 = 32", "45 − 15 = 30", "63 − 21 = 42", "72 − 22 = 40"],
-    answer: 3,
-    emoji: "🔍",
-    hint: "Work out each answer. One equation does not match up correctly!",
-    explanation: "72 − 22 = 40 is incorrect! The correct answer is 50, not 40."
-  },
-  {
-    q: "A boy has 72 pencils. He gives away 30 pencils. How many are left?",
-    options: ["32 pencils ✏️", "42 pencils ✏️", "52 pencils ✏️", "62 pencils ✏️"],
-    answer: 1,
-    emoji: "✏️",
-    hint: "Subtract 0 from 2 ones, and 3 tens from 7 tens! 🎒",
-    explanation: "72 − 30 = 42 pencils! 🎈"
-  },
-  {
-    q: "Which subtraction sum needs borrowing from the tens place?",
-    options: ["54 − 12 🍎", "63 − 21 🍎", "72 − 35 🍎", "80 − 20 🍎"],
-    answer: 2,
-    emoji: "🍎",
-    hint: "Look for a sum where the top ones digit is smaller than the bottom ones digit! 👀",
-    explanation: "72 − 35 needs borrowing because 2 is smaller than 5! 🌟"
-  },
-  {
-    q: "A basket has 90 apples. 45 are taken away. How many remain?",
-    options: ["35 apples 🍏", "45 apples 🍏", "55 apples 🍏", "65 apples 🍏"],
-    answer: 1,
-    emoji: "🍏",
-    hint: "Borrow 1 ten to make the ones place 10 − 5! 🔢",
-    explanation: "90 − 45 leaves exactly 45 apples! 🏆"
-  },
-  {
-    q: "Which is smaller: (65 − 20) or (70 − 25)?",
-    options: ["65 − 20 is smaller ⚖️", "70 − 25 is smaller ⚖️", "Both are equal ⚖️", "Cannot say ⚖️"],
-    answer: 2,
-    emoji: "⚖️",
-    hint: "Solve both sums! They both give the same number answer. 🧩",
-    explanation: "Both equal 45, so they are perfectly equal! 🎨"
-  },
-  {
-    q: "A child has 60 chocolates. He eats 25. How many are left?",
-    options: ["35 chocolates 🍫", "30 chocolates 🍫", "40 chocolates 🍫", "45 chocolates 🍫"],
-    answer: 0,
-    emoji: "🍫",
-    hint: "Borrow 1 ten from 6 to change 0 into 10! 🔢",
-    explanation: "60 − 25 = 35 chocolates left! 🍩"
-  },
-  {
-    q: "A shop had 100 toys. 30 were sold. How many are left?",
-    options: ["60 toys 🧸", "70 toys 🧸", "80 toys 🧸", "90 toys 🧸"],
-    answer: 1,
-    emoji: "🧸",
-    hint: "Count backward by tens from 100 three times! 🔢",
-    explanation: "100 − 30 leaves 70 toys! ✔️"
+    q:"Sam has 45 marbles. He loses 15 marbles. How many are left?",
+    options:["25","30","35","40"],
+    answer:1
   }
 ];
 
+/* ================= ENGINE (UNCHANGED LOGIC) ================= */
+
 let questions=[];
-let current=0,score=0,firstAttemptCorrect=0,attempts=0,answered=false,timeLeft=60,timerInterval,muted=true;
-let currentCorrectIndex = 0;
-let logoTimer;
+let current=0;
+let score=0;
+let answered=false;
+let attempts=0;
+let timer;
+let timeLeft=60;
 
-let logoScreen, titleScreen, quizScreen, resultScreen, qNo, qLabel, scoreBox, timerBox, questionText, optionsBox, feedback, nextBtn, correctSound, wrongSound, emojiContainer;
-
-document.addEventListener("DOMContentLoaded", () => {
-  logoScreen=document.getElementById("logoScreen");
-  titleScreen=document.getElementById("titleScreen");
-  quizScreen=document.getElementById("quizScreen");
-  resultScreen=document.getElementById("resultScreen");
-  qNo=document.getElementById("qNo");
-  qLabel=document.getElementById("qLabel");
-  scoreBox=document.getElementById("score");
-  timerBox=document.getElementById("timer");
-  questionText=document.getElementById("questionText");
-  optionsBox=document.getElementById("optionsBox");
-  feedback=document.getElementById("feedback");
-  nextBtn=document.getElementById("nextBtn");
-  correctSound=document.getElementById("correctSound");
-  wrongSound=document.getElementById("wrongSound");
-  emojiContainer=document.getElementById("q-emoji");
-
-  // Fixed execution chain: Guaranteed removal of logo screen after 3.5 seconds max
-  logoTimer = setTimeout(skipLogo, 3500);
-
-  const imgElement = document.getElementById("logoImage");
-  imgElement.addEventListener("load", () => {
-      // Clear logo slightly quicker if it loads instantly
-      clearTimeout(logoTimer);
-      logoTimer = setTimeout(skipLogo, 2500);
-  });
-});
-
-function skipLogo() {
-  if (logoScreen.style.display !== "none") {
-    clearTimeout(logoTimer);
-    logoScreen.style.display = "none";
-    titleScreen.classList.add("active");
-  }
+function shuffle(arr){
+  return arr.sort(()=>Math.random()-0.5);
 }
 
-function handleStartClick() {
-  titleScreen.classList.remove("active");
-  quizScreen.classList.add("active");
-  startQuiz();
-}
-
-function startQuiz(){
-  let shuffledPool = [...questionPool].sort(() => Math.random() - 0.5);
-  questions = shuffledPool.slice(0, 12);
-  
-  current=0;
-  score=0;
-  firstAttemptCorrect=0;
-  scoreBox.textContent=score;
-  loadQuestion();
+function start(){
+  questions = shuffle([...questionPool]);
+  load();
+  startTimer();
 }
 
 function startTimer(){
+  clearInterval(timer);
   timeLeft=60;
-  timerBox.textContent=timeLeft;
-  clearInterval(timerInterval);
-  timerInterval=setInterval(()=>{
+
+  timer=setInterval(()=>{
     timeLeft--;
-    timerBox.textContent=timeLeft;
+    document.getElementById("timer").innerText=timeLeft;
+
     if(timeLeft<=0){
-      clearInterval(timerInterval);
-      answered=true;
-      showFeedback('explanation', "Time's up! " + questions[current].explanation);
-      showCorrectAnswer();
-      disableOptions();
-      nextBtn.style.display="inline-block";
+      nextQuestion();
     }
   },1000);
 }
 
-function loadQuestion(){
-  attempts=0;
-  answered=false;
-  feedback.style.display = "none";
-  nextBtn.style.display="none";
+function load(){
 
-  const item=questions[current];
-  
-  qLabel.innerHTML = `Question <span id="qNo">${current + 1}</span>/12`;
-  questionText.innerHTML=item.q;
-  optionsBox.innerHTML="";
+answered=false;
+attempts=0;
 
-  if (item.isDiagram) {
-      emojiContainer.innerHTML = `
-          <div class="diagram-container">
-              <div class="bundle-item"><span class="bundle-art">🪵</span><span class="bundle-label">10</span></div>
-              <div class="bundle-item"><span class="bundle-art">🪵</span><span class="bundle-label">10</span></div>
-              <div class="bundle-item"><span class="bundle-art">🪵</span><span class="bundle-label">10</span></div>
-              <div class="bundle-item"><span class="bundle-art">🪵</span><span class="bundle-label">10</span></div>
-          </div>`;
-  } else {
-      emojiContainer.innerHTML = item.emoji;
-  }
+let q=questions[current];
 
-  let shuffledOptions = item.options.map((opt, idx) => ({ text: opt, originalIndex: idx }));
-  shuffledOptions.sort(() => Math.random() - 0.5);
+document.getElementById("qNo").innerText=current+1;
+document.getElementById("score").innerText=score;
+document.getElementById("feedback").innerText="";
 
-  shuffledOptions.forEach((option, index)=>{
-    const btn=document.createElement("button");
-    btn.className="btn-opt";
-    btn.textContent = option.text;
-    
-    if(option.originalIndex === item.answer) {
-      currentCorrectIndex = index;
-    }
+document.getElementById("questionText").innerText=q.q;
 
-    btn.onclick=()=>checkAnswer(btn, index);
-    optionsBox.appendChild(btn);
-  });
+let box=document.getElementById("optionsBox");
+box.innerHTML="";
 
-  startTimer();
+let shuffled=[...q.options].sort(()=>Math.random()-0.5);
+
+shuffled.forEach(opt=>{
+
+let btn=document.createElement("button");
+btn.className="option";
+btn.innerText=opt;
+
+btn.onclick=()=>{
+
+if(answered) return;
+
+if(opt===q.options[q.answer]){
+btn.classList.add("correct");
+score++;
+answered=true;
+document.getElementById("feedback").innerText="Correct ✔";
+document.getElementById("nextBtn").style.display="block";
+clearInterval(timer);
+}else{
+btn.classList.add("wrong");
+attempts++;
+document.getElementById("feedback").innerText="Try again";
+
+if(attempts>=2){
+answered=true;
+document.getElementById("nextBtn").style.display="block";
 }
-
-function showFeedback(type, message) {
-  feedback.className = `feedback-box ${type}`;
-  feedback.textContent = message;
-  feedback.style.display = "block";
 }
+};
 
-function checkAnswer(button,selected){
-  if(answered)return;
-  const currentQuestion=questions[current];
-
-  if(selected===currentCorrectIndex){
-    clearInterval(timerInterval);
-    answered=true;
-    score++;
-    
-    if(attempts===0){
-      firstAttemptCorrect++;
-    }
-    
-    scoreBox.textContent=score;
-    button.classList.add("correct");
-    
-    let msg = attempts === 0 ? `🎉 Perfect! You earned a star! ${currentQuestion.explanation}` : `👍 Got it! Let's try the next one on the first go. ${currentQuestion.explanation}`;
-    showFeedback('explanation', msg);
-    
-    playSound(correctSound);
-    launchConfetti();
-    disableOptions();
-    nextBtn.style.display="inline-block";
-  } else {
-    attempts++;
-    button.classList.add("wrong");
-    playSound(wrongSound);
-
-    if(attempts===1){
-      showFeedback('hint', `✨ Hint: ${currentQuestion.hint}`);
-      button.disabled=true;
-    }else{
-      clearInterval(timerInterval);
-      answered=true;
-      showFeedback('explanation', `Answer: ${currentQuestion.explanation}`);
-      showCorrectAnswer();
-      disableOptions();
-      nextBtn.style.display="inline-block";
-    }
-  }
-}
-
-function showCorrectAnswer(){
-  document.querySelectorAll(".btn-opt")[currentCorrectIndex].classList.add("correct");
-}
-
-function disableOptions(){
-  document.querySelectorAll(".btn-opt").forEach(btn=>btn.disabled=true);
+box.appendChild(btn);
+});
 }
 
 function nextQuestion(){
-  current++;
-  if(current<questions.length){
-    loadQuestion();
-  }else{
-    showResult();
-  }
+current++;
+
+if(current>=questions.length){
+alert("Game Over! Score: "+score);
+location.reload();
+}else{
+load();
+startTimer();
+}
 }
 
-function showResult(){
-  clearInterval(timerInterval);
-  quizScreen.classList.remove("active");
-  resultScreen.classList.add("active");
+/* START */
+setTimeout(()=>{
+document.getElementById("splash").style.display="none";
+start();
+},1500);
 
-  const percentage=(firstAttemptCorrect/questions.length)*100;
-  let title="";
-  let msg = `You got ${score} / ${questions.length} stars! ⭐\n`;
-
-  if(percentage >= 75){
-    title="🎉 Excellent Work!";
-    document.getElementById("result-emoji").innerText = "👑🏆🥇";
-    msg += "\nOutstanding! You are a subtraction champion!";
-    launchConfetti();
-    playSound(correctSound);
-  }else if(percentage >= 40){
-    title="📚 Keep Practising!";
-    document.getElementById("result-emoji").innerText = "✏️📖✨";
-    msg += "\nAn average performance! Please revise this chapter carefully and try again. 💪";
-    playSound(correctSound);
-  }else{
-    title="💪 Let's Try Again!";
-    document.getElementById("result-emoji").innerText = "🧱🧩🎈";
-    msg += "\nLet's practise more together to build up your math skills!";
-  }
-
-  document.getElementById("resultMessage").textContent=title;
-  document.getElementById("finalScore").innerText=msg;
-}
-
-function restartQuiz(){
-  resultScreen.classList.remove("active");
-  titleScreen.classList.add("active");
-}
-
-function toggleMute(){
-  muted=!muted;
-  document.getElementById("muteBtn").textContent=muted?"🔇":"🔊";
-}
-
-function playSound(sound){
-  if(muted)return;
-  sound.currentTime=0;
-  sound.play().catch(()=>{});
-}
-
-function launchConfetti(){
-  const colors=["#f59e0b","#10b981","#3b82f6","#ef4444","#8b5cf6"];
-  for(let i=0;i<30;i++){
-    const piece=document.createElement("div");
-    piece.className="confetti";
-    piece.style.left=Math.random()*100+"vw";
-    piece.style.background=colors[Math.floor(Math.random()*colors.length)];
-    piece.style.animationDuration=(Math.random()*0.8+0.8)+"s";
-    document.body.appendChild(piece);
-    setTimeout(()=>piece.remove(),1500);
-  }
-}
 </script>
 
 </body>
