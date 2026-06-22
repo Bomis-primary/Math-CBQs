@@ -45,6 +45,25 @@ body{
   box-shadow:0 8px 24px rgba(0,0,0,0.16);
 }
 
+/* Title Screen Styling */
+.title-content {
+  text-align: center;
+  padding: 40px 20px;
+}
+
+.title-header {
+  font-size: 42px;
+  font-weight: bold;
+  color: #1f4e79;
+  margin-bottom: 8px;
+}
+
+.title-subtitle {
+  font-size: 22px;
+  color: #4b5563;
+  margin-bottom: 32px;
+}
+
 .topbar{
   display:grid;
   grid-template-columns:repeat(4,1fr);
@@ -236,6 +255,13 @@ body{
   cursor:pointer;
 }
 
+.primary.large {
+  padding: 16px 42px;
+  font-size: 22px;
+  border-radius: 18px;
+  box-shadow: 0 4px 12px rgba(31, 78, 121, 0.3);
+}
+
 #nextBtn{
   display:none;
 }
@@ -283,6 +309,8 @@ body{
 
 @media(max-width:700px){
   .card{padding:15px}
+  .title-header{font-size: 30px;}
+  .title-subtitle{font-size: 18px;}
   .topbar{grid-template-columns:1fr 1fr}
   .question{font-size:21px}
   .options{grid-template-columns:1fr;gap:11px}
@@ -312,6 +340,14 @@ body{
 
 <div id="logoScreen" class="screen active">
   <img src="assets/logo.png" alt="Logo" class="logo" />
+</div>
+
+<div id="titleScreen" class="screen">
+  <div class="card title-content">
+    <div class="title-header">Shapes and Patterns</div>
+    <div class="title-subtitle">Chapter 4 Interactive Quiz</div>
+    <button class="primary large" onclick="handleStartClick()">Start Game</button>
+  </div>
 </div>
 
 <div id="quizScreen" class="screen">
@@ -521,10 +557,11 @@ let questions=[];
 let current=0,score=0,firstAttemptCorrect=0,attempts=0,answered=false,timeLeft=60,timerInterval,muted=true;
 let currentCorrectIndex = 0;
 
-let logoScreen, quizScreen, resultScreen, qNo, qLabel, scoreBox, timerBox, visualBox, questionText, optionsBox, feedback, nextBtn, correctSound, wrongSound;
+let logoScreen, titleScreen, quizScreen, resultScreen, qNo, qLabel, scoreBox, timerBox, visualBox, questionText, optionsBox, feedback, nextBtn, correctSound, wrongSound;
 
 document.addEventListener("DOMContentLoaded", () => {
   logoScreen=document.getElementById("logoScreen");
+  titleScreen=document.getElementById("titleScreen");
   quizScreen=document.getElementById("quizScreen");
   resultScreen=document.getElementById("resultScreen");
   qNo=document.getElementById("qNo");
@@ -541,10 +578,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
   setTimeout(()=>{
     logoScreen.classList.remove("active");
-    quizScreen.classList.add("active");
-    startQuiz();
+    titleScreen.classList.add("active");
   },5000);
 });
+
+function handleStartClick() {
+  titleScreen.classList.remove("active");
+  quizScreen.classList.add("active");
+  startQuiz();
+}
 
 function startQuiz(){
   let shuffledPool = [...questionPool].sort(() => Math.random() - 0.5);
@@ -734,8 +776,7 @@ function showResult(){
 
 function restartQuiz(){
   resultScreen.classList.remove("active");
-  quizScreen.classList.add("active");
-  startQuiz();
+  titleScreen.classList.add("active");
 }
 
 function toggleMute(){
