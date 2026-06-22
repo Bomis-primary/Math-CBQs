@@ -29,6 +29,7 @@ body{
 
 #logoScreen{
   background:#ffffff;
+  cursor: pointer;
 }
 
 .logo{
@@ -89,7 +90,7 @@ body{
   margin-bottom:16px;
   text-align:center;
   min-height:250px;
-  display:none; /* Managed dynamically via JavaScript */
+  display:none; 
   align-items:center;
   justify-content:center;
 }
@@ -231,8 +232,8 @@ body{
 
 <body>
 
-<div id="logoScreen" class="screen active">
-  <img src="assets/logo.png" alt="Logo" class="logo" />
+<div id="logoScreen" class="screen active" onclick="skipLogo()">
+  <img id="logoImage" src="assets/logo.png" alt="Logo" class="logo" />
 </div>
 
 <div id="titleScreen" class="screen">
@@ -373,6 +374,7 @@ const questionPool=[
 let questions=[];
 let current=0,score=0,firstAttemptCorrect=0,attempts=0,answered=false,timeLeft=60,timerInterval,muted=true;
 let currentCorrectIndex = 0;
+let logoTimer;
 
 let logoScreen, titleScreen, quizScreen, resultScreen, qNo, qLabel, scoreBox, timerBox, visualBox, questionText, optionsBox, feedback, nextBtn, correctSound, wrongSound;
 
@@ -393,11 +395,32 @@ document.addEventListener("DOMContentLoaded", () => {
   correctSound=document.getElementById("correctSound");
   wrongSound=document.getElementById("wrongSound");
 
-  setTimeout(()=>{
+  const startLogoCountdown = () => {
+    if (!logoTimer) {
+      logoTimer = setTimeout(() => {
+        skipLogo();
+      }, 5000); // Maintained at exactly 5 seconds
+    }
+  };
+
+  const imgElement = document.getElementById("logoImage");
+  if (imgElement.complete) {
+    startLogoCountdown();
+  } else {
+    imgElement.addEventListener("load", startLogoCountdown);
+    imgElement.addEventListener("error", startLogoCountdown);
+    // absolute fallback backup in case image loading is blocked by browser rules
+    setTimeout(startLogoCountdown, 200);
+  }
+});
+
+function skipLogo() {
+  if (logoScreen.classList.contains("active")) {
+    clearTimeout(logoTimer);
     logoScreen.classList.remove("active");
     titleScreen.classList.add("active");
-  },5000);
-});
+  }
+}
 
 function handleStartClick() {
   titleScreen.classList.remove("active");
@@ -449,7 +472,6 @@ function loadQuestion(){
   questionText.innerHTML=item.q;
   optionsBox.innerHTML="";
 
-  // Manage visibility of the graphic box dynamically based on content presence
   if (item.image) {
     visualBox.innerHTML = `<img src="${item.image}" alt="Question Graphic" class="visual-image-display" />`;
     visualBox.style.display = "flex";
@@ -468,3 +490,133 @@ function loadQuestion(){
     const textSpan = document.createElement("span");
     textSpan.textContent = option.text;
     btn.appendChild(textSpan);
+    
+    if(option.originalIndex === item.answer) {
+      currentCorrectIndex = index;
+    }
+
+    btn.onclick=()=>checkAnswer(btn, index);
+    optionsBox.appendChild(btn);
+  });
+
+  startTimer();
+}
+
+function checkAnswer(button,selected){
+  if(answered)return;
+  const currentQuestion=questions[current];
+
+  if(selected===currentCorrectIndex){
+    clearInterval(timerInterval);
+    answered=true;
+    score++;
+    
+    if(attempts===0){
+      firstAttemptCorrect++;
+    }
+    
+    scoreBox.textContent=score;
+    button.classList.add("correct");
+    feedback.textContent=attempts === 0 ? `🎉 First-Attempt Star! ${currentQuestion.explanation}` : `👍 Correct! ${currentQuestion.explanation}`;
+    feedback.style.color="#047857";
+    playSound(correctSound);
+    launchConfetti();
+    disableOptions();
+    nextBtn.style.display="inline-block";
+  }else{
+    attempts++;
+    button.classList.add("wrong");
+    playSound(wrongSound);
+
+    if(attempts===1){
+      feedback.textContent="Hint: " + currentQuestion.hint;
+      feedback.style.color="#b45309";
+      button.disabled=true;
+    }else{
+      clearInterval(timerInterval);
+      answered=true;
+      feedback.textContent="Review Rule: " + currentQuestion.explanation;
+      feedback.style.color="#b91c1c";
+      showCorrectAnswer();
+      disableOptions();
+      nextBtn.style.display="inline-block";
+    }
+  }
+}
+
+function showCorrectAnswer(){
+  document.querySelectorAll(".option")[currentCorrectIndex].classList.add("correct");
+}
+
+function disableOptions(){
+  document.querySelectorAll(".option").forEach(btn=>btn.disabled=true);
+}
+
+function nextQuestion(){
+  current++;
+  if(current<questions.length){
+    loadQuestion();
+  }else{
+    showResult();
+  }
+}
+
+function showResult(){
+  clearInterval(timerInterval);
+  quizScreen.classList.remove("active");
+  resultScreen.classList.add("active");
+
+  const percentage=(firstAttemptCorrect/questions.length)*100;
+  let title="";
+  let msg=`You earned ${firstAttemptCorrect} / ${questions.length} flawless first-attempt stars! ⭐\n\n`;
+
+  if(percentage >= 80){
+    title="👑 Math Structural Master!";
+    msg += "Incredible spatial and placeholder logic! You completely master sequence dynamics, ordinal limits, and base-10 systems.";
+    launchConfetti();
+    playSound(correctSound);
+  }else if(percentage >= 50){
+    title="🚀 Terrific Work!";
+    msg += "Great job! Visualizing empty placeholders and positional lines carefully will help you reach a flawless score.";
+    playSound(correctSound);
+  }else{
+    title="🧱 Keep Building!";
+    msg += "Using models and blocks makes these clear. Give it another try to secure your master stars!";
+  }
+
+  document.getElementById("resultMessage").textContent=title;
+  document.getElementById("finalScore").innerText=msg;
+}
+
+function restartQuiz(){
+  resultScreen.classList.remove("active");
+  titleScreen.classList.add("active");
+}
+
+function toggleMute(){
+  muted=!muted;
+  document.getElementById("muteBtn").textContent=muted?"🔇 Sound Off":"🔊 Sound On";
+}
+
+function playSound(sound){
+  if(muted)return;
+  sound.currentTime=0;
+  sound.play().catch(()=>{});
+}
+
+function launchConfetti(){
+  const colors=["#f59e0b","#10b981","#3b82f6","#ef4444","#8b5cf6"];
+  for(let i=0;i<30;i++){
+    const piece=document.createElement("div");
+    piece.className="confetti";
+    piece.style.left=Math.random()*100+"vw";
+    piece.style.background=colors[Math.floor(Math.random()*colors.length)];
+    piece.style.animationDuration=(Math.random()*0.8+0.8)+"s";
+    document.body.appendChild(piece);
+    setTimeout(()=>piece.remove(),1500);
+  }
+}
+</script>
+
+</body>
+</html>
