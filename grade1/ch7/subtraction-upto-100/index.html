@@ -21,7 +21,7 @@
         .screen { display: none; }
         .screen.active { display: block; }
         
-        /* Strict 5-Second Splash Guard Layout */
+        /* Fixed Splash Screen Layout */
         #logoScreen { position: absolute; top:0; left:0; width:100%; height:100%; background: #ffffff; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 100; border-radius: 18px; cursor: pointer; }
         #logoScreen img { width: 190px; height: auto; }
 
@@ -31,30 +31,30 @@
         .score-box { color: #047857; background: #d1fae5; padding: 5px 12px; border-radius: 12px; border: 2px solid #a7f3d0; }
         .badge-info { color: #0f3f5f; background: var(--secondary); padding: 5px 12px; border-radius: 12px; border: 2px solid #bae6fd; }
         
-        /* Simple Layout Typography */
+        /* Typography Elements */
         h2 { font-size: 1.7rem; text-align: center; margin-bottom: 15px; color: var(--primary); line-height: 1.3; }
         .visual-emoji-display { font-size: 3.5rem; text-align: center; margin: 10px 0; user-select: none; display: flex; justify-content: center; align-items: center; gap: 5px; }
         .q-context { background: #f8fafc; padding: 15px; border-radius: 16px; margin-bottom: 15px; font-size: 1.25rem; text-align: center; font-weight: bold; color: #0f172a; line-height: 1.4; border: 2px dashed #cbd5e1; }
         
-        /* Diagram Container for Bundles */
+        /* Tens Bundles Layout */
         .diagram-container { display: flex; justify-content: center; gap: 12px; margin: 10px 0; padding: 5px; flex-wrap: wrap; }
         .bundle-item { display: flex; flex-direction: column; align-items: center; font-weight: bold; }
         .bundle-art { font-size: 2.5rem; line-height: 1; margin-bottom: 2px; }
         .bundle-label { font-size: 1rem; color: var(--primary); background: var(--secondary); padding: 1px 6px; border-radius: 8px; border: 1px solid #bae6fd; }
 
-        /* Responsive High-Contrast Tap Targets */
+        /* High-Contrast Fast Tap Targets */
         .options-grid { display: grid; grid-template-columns: 1fr; gap: 12px; margin-bottom: 15px; }
         .btn-opt { background: #f8f9fa; border: 3px solid #dee2e6; border-radius: 16px; padding: 14px; text-align: center; font-size: 1.2rem; font-weight: bold; cursor: pointer; transition: all 0.1s; width: 100%; -webkit-tap-highlight-color: transparent; box-shadow: 0 4px #e9ecef; color: var(--text); display: flex; align-items: center; justify-content: center; }
         .btn-opt:not(:disabled):active { transform: translateY(2px); box-shadow: 0 2px #e9ecef; }
         .btn-opt.correct { background-color: #d1fae5 !important; border-color: #047857 !important; color: #065f46 !important; box-shadow: 0 4px #a7f3d0 !important; }
         .btn-opt.wrong { background-color: #fee2e2 !important; border-color: var(--danger) !important; color: #991b1b !important; box-shadow: 0 4px #fca5a5 !important; }
         
-        /* Feedback Callout Systems */
+        /* Feedback Callouts */
         .feedback-box { padding: 14px; border-radius: 16px; margin-bottom: 15px; font-weight: bold; font-size: 1.1rem; text-align: center; line-height: 1.4; min-height: 50px; }
         .feedback-box.hint { background: #fef3c7; color: #92400e; border: 2px solid #fde68a; }
         .feedback-box.explanation { background: #e0f2fe; color: #0369a1; border: 2px solid #bae6fd; }
 
-        /* General UI Actions */
+        /* Action Buttons */
         .btn-action { background: var(--primary); color: white; border: none; padding: 15px; font-size: 1.3rem; border-radius: 16px; cursor: pointer; width: 100%; font-weight: bold; box-shadow: 0 5px #133351; }
         .btn-action:active { transform: translateY(2px); box-shadow: 0 2px #133351; }
         .audio-ctrl { background: none; border: none; font-size: 1.8rem; cursor: pointer; -webkit-tap-highlight-color: transparent; }
@@ -66,10 +66,12 @@
 <body>
 
 <div class="container">
+    <!-- Splash Shield (Wired to auto-clear or clear instantly on tap) -->
     <div id="logoScreen" onclick="skipLogo()">
         <img id="logoImage" src="assets/logo.png" alt="Logo">
     </div>
 
+    <!-- Title / Intro Screen -->
     <div id="titleScreen" class="screen" style="text-align: center; padding-top: 20px;">
         <h2>➖ Taking Away!</h2>
         <div class="visual-emoji-display">🍬🎈🧸</div>
@@ -79,6 +81,7 @@
         <button class="btn-action" onclick="handleStartClick()">START! 🚀</button>
     </div>
 
+    <!-- Main Quiz Interface -->
     <div id="quizScreen" class="screen">
         <div class="header-meta">
             <div class="badge-info" id="qLabel">Question <span id="qNo">1</span>/12</div>
@@ -97,6 +100,7 @@
         <button id="nextBtn" class="btn-action" style="display: none;" onclick="nextQuestion()">NEXT 👉</button>
     </div>
 
+    <!-- Results Dashboard -->
     <div id="resultScreen" class="screen" style="text-align: center; padding-top: 20px;">
         <h2 id="resultMessage">🎉 Finished!</h2>
         <div id="result-emoji" class="visual-emoji-display">🏆⭐👑</div>
@@ -226,4 +230,258 @@ const questionPool = [
   {
     q: "A shop had 100 toys. 30 were sold. How many are left?",
     options: ["60 toys 🧸", "70 toys 🧸", "80 toys 🧸", "90 toys 🧸"],
-    answer:
+    answer: 1,
+    emoji: "🧸",
+    hint: "Count backward by tens from 100 three times! 🔢",
+    explanation: "100 − 30 leaves 70 toys! ✔️"
+  }
+];
+
+let questions=[];
+let current=0,score=0,firstAttemptCorrect=0,attempts=0,answered=false,timeLeft=60,timerInterval,muted=true;
+let currentCorrectIndex = 0;
+let logoTimer;
+
+let logoScreen, titleScreen, quizScreen, resultScreen, qNo, qLabel, scoreBox, timerBox, questionText, optionsBox, feedback, nextBtn, correctSound, wrongSound, emojiContainer;
+
+document.addEventListener("DOMContentLoaded", () => {
+  logoScreen=document.getElementById("logoScreen");
+  titleScreen=document.getElementById("titleScreen");
+  quizScreen=document.getElementById("quizScreen");
+  resultScreen=document.getElementById("resultScreen");
+  qNo=document.getElementById("qNo");
+  qLabel=document.getElementById("qLabel");
+  scoreBox=document.getElementById("score");
+  timerBox=document.getElementById("timer");
+  questionText=document.getElementById("questionText");
+  optionsBox=document.getElementById("optionsBox");
+  feedback=document.getElementById("feedback");
+  nextBtn=document.getElementById("nextBtn");
+  correctSound=document.getElementById("correctSound");
+  wrongSound=document.getElementById("wrongSound");
+  emojiContainer=document.getElementById("q-emoji");
+
+  // Fixed execution chain: Guaranteed removal of logo screen after 3.5 seconds max
+  logoTimer = setTimeout(skipLogo, 3500);
+
+  const imgElement = document.getElementById("logoImage");
+  imgElement.addEventListener("load", () => {
+      // Clear logo slightly quicker if it loads instantly
+      clearTimeout(logoTimer);
+      logoTimer = setTimeout(skipLogo, 2500);
+  });
+});
+
+function skipLogo() {
+  if (logoScreen.style.display !== "none") {
+    clearTimeout(logoTimer);
+    logoScreen.style.display = "none";
+    titleScreen.classList.add("active");
+  }
+}
+
+function handleStartClick() {
+  titleScreen.classList.remove("active");
+  quizScreen.classList.add("active");
+  startQuiz();
+}
+
+function startQuiz(){
+  let shuffledPool = [...questionPool].sort(() => Math.random() - 0.5);
+  questions = shuffledPool.slice(0, 12);
+  
+  current=0;
+  score=0;
+  firstAttemptCorrect=0;
+  scoreBox.textContent=score;
+  loadQuestion();
+}
+
+function startTimer(){
+  timeLeft=60;
+  timerBox.textContent=timeLeft;
+  clearInterval(timerInterval);
+  timerInterval=setInterval(()=>{
+    timeLeft--;
+    timerBox.textContent=timeLeft;
+    if(timeLeft<=0){
+      clearInterval(timerInterval);
+      answered=true;
+      showFeedback('explanation', "Time's up! " + questions[current].explanation);
+      showCorrectAnswer();
+      disableOptions();
+      nextBtn.style.display="inline-block";
+    }
+  },1000);
+}
+
+function loadQuestion(){
+  attempts=0;
+  answered=false;
+  feedback.style.display = "none";
+  nextBtn.style.display="none";
+
+  const item=questions[current];
+  
+  qLabel.innerHTML = `Question <span id="qNo">${current + 1}</span>/12`;
+  questionText.innerHTML=item.q;
+  optionsBox.innerHTML="";
+
+  if (item.isDiagram) {
+      emojiContainer.innerHTML = `
+          <div class="diagram-container">
+              <div class="bundle-item"><span class="bundle-art">🪵</span><span class="bundle-label">10</span></div>
+              <div class="bundle-item"><span class="bundle-art">🪵</span><span class="bundle-label">10</span></div>
+              <div class="bundle-item"><span class="bundle-art">🪵</span><span class="bundle-label">10</span></div>
+              <div class="bundle-item"><span class="bundle-art">🪵</span><span class="bundle-label">10</span></div>
+          </div>`;
+  } else {
+      emojiContainer.innerHTML = item.emoji;
+  }
+
+  let shuffledOptions = item.options.map((opt, idx) => ({ text: opt, originalIndex: idx }));
+  shuffledOptions.sort(() => Math.random() - 0.5);
+
+  shuffledOptions.forEach((option, index)=>{
+    const btn=document.createElement("button");
+    btn.className="btn-opt";
+    btn.textContent = option.text;
+    
+    if(option.originalIndex === item.answer) {
+      currentCorrectIndex = index;
+    }
+
+    btn.onclick=()=>checkAnswer(btn, index);
+    optionsBox.appendChild(btn);
+  });
+
+  startTimer();
+}
+
+function showFeedback(type, message) {
+  feedback.className = `feedback-box ${type}`;
+  feedback.textContent = message;
+  feedback.style.display = "block";
+}
+
+function checkAnswer(button,selected){
+  if(answered)return;
+  const currentQuestion=questions[current];
+
+  if(selected===currentCorrectIndex){
+    clearInterval(timerInterval);
+    answered=true;
+    score++;
+    
+    if(attempts===0){
+      firstAttemptCorrect++;
+    }
+    
+    scoreBox.textContent=score;
+    button.classList.add("correct");
+    
+    let msg = attempts === 0 ? `🎉 Perfect! You earned a star! ${currentQuestion.explanation}` : `👍 Got it! Let's try the next one on the first go. ${currentQuestion.explanation}`;
+    showFeedback('explanation', msg);
+    
+    playSound(correctSound);
+    launchConfetti();
+    disableOptions();
+    nextBtn.style.display="inline-block";
+  } else {
+    attempts++;
+    button.classList.add("wrong");
+    playSound(wrongSound);
+
+    if(attempts===1){
+      showFeedback('hint', `✨ Hint: ${currentQuestion.hint}`);
+      button.disabled=true;
+    }else{
+      clearInterval(timerInterval);
+      answered=true;
+      showFeedback('explanation', `Answer: ${currentQuestion.explanation}`);
+      showCorrectAnswer();
+      disableOptions();
+      nextBtn.style.display="inline-block";
+    }
+  }
+}
+
+function showCorrectAnswer(){
+  document.querySelectorAll(".btn-opt")[currentCorrectIndex].classList.add("correct");
+}
+
+function disableOptions(){
+  document.querySelectorAll(".btn-opt").forEach(btn=>btn.disabled=true);
+}
+
+function nextQuestion(){
+  current++;
+  if(current<questions.length){
+    loadQuestion();
+  }else{
+    showResult();
+  }
+}
+
+function showResult(){
+  clearInterval(timerInterval);
+  quizScreen.classList.remove("active");
+  resultScreen.classList.add("active");
+
+  const percentage=(firstAttemptCorrect/questions.length)*100;
+  let title="";
+  let msg = `You got ${score} / ${questions.length} stars! ⭐\n`;
+
+  if(percentage >= 75){
+    title="🎉 Excellent Work!";
+    document.getElementById("result-emoji").innerText = "👑🏆🥇";
+    msg += "\nOutstanding! You are a subtraction champion!";
+    launchConfetti();
+    playSound(correctSound);
+  }else if(percentage >= 40){
+    title="📚 Keep Practising!";
+    document.getElementById("result-emoji").innerText = "✏️📖✨";
+    msg += "\nAn average performance! Please revise this chapter carefully and try again. 💪";
+    playSound(correctSound);
+  }else{
+    title="💪 Let's Try Again!";
+    document.getElementById("result-emoji").innerText = "🧱🧩🎈";
+    msg += "\nLet's practise more together to build up your math skills!";
+  }
+
+  document.getElementById("resultMessage").textContent=title;
+  document.getElementById("finalScore").innerText=msg;
+}
+
+function restartQuiz(){
+  resultScreen.classList.remove("active");
+  titleScreen.classList.add("active");
+}
+
+function toggleMute(){
+  muted=!muted;
+  document.getElementById("muteBtn").textContent=muted?"🔇":"🔊";
+}
+
+function playSound(sound){
+  if(muted)return;
+  sound.currentTime=0;
+  sound.play().catch(()=>{});
+}
+
+function launchConfetti(){
+  const colors=["#f59e0b","#10b981","#3b82f6","#ef4444","#8b5cf6"];
+  for(let i=0;i<30;i++){
+    const piece=document.createElement("div");
+    piece.className="confetti";
+    piece.style.left=Math.random()*100+"vw";
+    piece.style.background=colors[Math.floor(Math.random()*colors.length)];
+    piece.style.animationDuration=(Math.random()*0.8+0.8)+"s";
+    document.body.appendChild(piece);
+    setTimeout(()=>piece.remove(),1500);
+  }
+}
+</script>
+
+</body>
+</html>
