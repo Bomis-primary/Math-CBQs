@@ -2,394 +2,254 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>CBQ Interactive - Subtraction up to 20</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>CBQ Master Engine v2 - Subtraction</title>
 
 <style>
-*{box-sizing:border-box}
-body{margin:0;font-family:Arial,sans-serif;background:#f3f8ff;color:#1f2937}
-.screen{display:none;min-height:100vh;padding:16px}
-.screen.active{display:flex;align-items:center;justify-content:center}
+body{margin:0;font-family:Arial;background:#f3f8ff}
+.screen{display:none;min-height:100vh;align-items:center;justify-content:center}
+.screen.active{display:flex}
 #logoScreen{background:#fff}
-.logo{max-width:420px;width:80%}
-.card{width:100%;max-width:880px;background:#fff;border-radius:22px;padding:20px;box-shadow:0 8px 24px rgba(0,0,0,.15)}
-.topbar{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px}
-.badge,.sound-btn{background:#e0f2fe;color:#0f3f5f;padding:10px;border-radius:14px;font-weight:bold;font-size:16px;text-align:center}
-.sound-btn{border:none;cursor:pointer}
-.visual-box{background:#fff7ed;border:2px solid #fdba74;border-radius:18px;padding:16px;margin-bottom:16px;text-align:center;min-height:130px}
-.visual{font-size:54px;margin-bottom:8px;line-height:1.2}
-.visual-text{font-size:19px;font-weight:bold;color:#7c2d12}
-.question{font-size:24px;font-weight:bold;line-height:1.35;margin:16px 0}
-.options{display:grid;grid-template-columns:repeat(2,minmax(220px,1fr));gap:14px}
-.option{width:100%;min-height:72px;padding:14px 16px;font-size:19px;font-weight:bold;line-height:1.3;border:2px solid #1f4e79;background:#fff;color:#111827;border-radius:16px;cursor:pointer;text-align:center;display:flex;align-items:center;justify-content:center;white-space:normal}
-.option:hover{background:#eef6ff}
-.option.correct{background:#d1fae5;border-color:#047857}
-.option.wrong{background:#fee2e2;border-color:#b91c1c}
-.feedback{min-height:48px;margin-top:14px;font-size:19px;font-weight:bold;text-align:center;padding:0 10px;line-height:1.4}
-.controls{margin-top:14px;text-align:center}
-.primary{background:#1f4e79;color:white;border:none;border-radius:14px;padding:14px 28px;font-size:19px;font-weight:bold;cursor:pointer}
+.logo{width:70%;max-width:420px}
+
+.card{background:#fff;padding:20px;border-radius:18px;max-width:900px;width:95%;box-shadow:0 8px 20px rgba(0,0,0,0.15)}
+
+.topbar{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:15px}
+.badge{background:#e0f2fe;padding:10px;border-radius:12px;font-weight:bold;text-align:center}
+
+.question{font-size:22px;font-weight:bold;margin:15px 0}
+.visual{text-align:center}
+.visual img{max-width:100%;border-radius:12px;margin-bottom:10px}
+
+.options{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.option{padding:14px;border-radius:14px;border:2px solid #1f4e79;background:#fff;font-size:18px;font-weight:bold;cursor:pointer}
+
+.option.correct{background:#d1fae5}
+.option.wrong{background:#fee2e2}
+
+.feedback{min-height:40px;margin-top:10px;font-weight:bold;text-align:center}
+
+.btn{margin-top:12px;padding:12px 20px;background:#1f4e79;color:#fff;border:none;border-radius:12px;font-size:18px}
+
 #nextBtn{display:none}
-.result-title{font-size:34px;font-weight:bold;text-align:center;margin-bottom:14px}
-.result-score{font-size:21px;text-align:center;margin-bottom:20px;line-height:1.5;color:#4b5563}
-.confetti{position:fixed;width:10px;height:10px;top:-10px;animation:fall 1.2s linear forwards;pointer-events:none}
-@keyframes fall{to{transform:translateY(110vh) rotate(360deg);opacity:0}}
+
+.result{text-align:center}
+
 @media(max-width:700px){
-.card{padding:15px}
-.topbar{grid-template-columns:1fr 1fr}
-.question{font-size:21px}
-.options{grid-template-columns:1fr;gap:11px}
-.option{min-height:58px;font-size:18px;padding:12px}
-.visual{font-size:46px}
-.visual-text{font-size:17px}
-.primary{width:100%}
-.badge,.sound-btn{font-size:14px}
+.options{grid-template-columns:1fr}
 }
 </style>
 </head>
 
 <body>
 
+<!-- LOGO -->
 <div id="logoScreen" class="screen active">
-  <img src="assets/logo.png" alt="Innovine Solutions Logo" class="logo" />
+  <img src="assets/logo.png" class="logo"/>
 </div>
 
-<div id="quizScreen" class="screen">
-  <div class="card">
-    <div class="topbar">
-      <div class="badge">Question <span id="qNo">1</span>/12</div>
-      <div class="badge">Score: <span id="score">0</span></div>
-      <div class="badge">Time: <span id="timer">60</span>s</div>
-      <button class="sound-btn" onclick="toggleMute()" id="muteBtn">🔊 Sound On</button>
-    </div>
+<!-- GAME -->
+<div id="game" class="screen">
+<div class="card">
 
-    <div class="visual-box" id="visualBox"></div>
-    <div class="question" id="questionText"></div>
-    <div class="options" id="optionsBox"></div>
-    <div class="feedback" id="feedback"></div>
-
-    <div class="controls">
-      <button class="primary" id="nextBtn" onclick="nextQuestion()">Next</button>
-    </div>
-  </div>
+<div class="topbar">
+<div class="badge">Q <span id="qno"></span></div>
+<div class="badge">Score <span id="score"></span></div>
+<div class="badge">Time <span id="time"></span>s</div>
+<div class="badge">CBQ v2</div>
 </div>
 
-<div id="resultScreen" class="screen">
-  <div class="card">
-    <div class="result-title" id="resultMessage"></div>
-    <div class="result-score" id="finalScore"></div>
-    <button class="primary" onclick="restartQuiz()">Play Again</button>
-  </div>
+<div class="visual">
+  <img id="visualImg" src="" />
 </div>
 
-<audio id="correctSound" src="assets/correct.mp3"></audio>
-<audio id="wrongSound" src="assets/wrong.mp3"></audio>
-<audio id="clapSound" src="assets/freesound_community-claps-44774.mp3"></audio>
+<div id="question" class="question"></div>
+
+<div id="options" class="options"></div>
+
+<div id="feedback" class="feedback"></div>
+
+<button id="nextBtn" class="btn" onclick="nextQ()">Next</button>
+
+</div>
+</div>
+
+<!-- RESULT -->
+<div id="result" class="screen">
+<div class="card result">
+<h1 id="msg"></h1>
+<p id="final"></p>
+<button class="btn" onclick="restart()">Play Again</button>
+</div>
+</div>
 
 <script>
-const questions=[
+
+setTimeout(()=>{
+document.getElementById("logoScreen").classList.remove("active");
+document.getElementById("game").classList.add("active");
+start();
+},5000);
+
+// 🔥 CBQ QUESTION BANK (FULL APPLICATION BASED)
+
+let bank = [
 {
-q:"A baker baked 19 cupcakes. He has 4 cupcakes left in the tray. How many cupcakes did he sell?",
-visual:"🧁 19 − 4",
-visualText:"Take away 4 from 19.",
-options:["14","15","16","23"],
-answer:1,
-hint:"Count backward 4 units down from 19.",
-explanation:"Starting at 19 and removing the remaining 4 leaves exactly 15 cupcakes sold."
+type:"numberline",
+q:"Riya stands at 15 on a number line. She takes 3 equal backward jumps. Where does she land?",
+img:"assets/number-line.png",
+answer:12,
+options:[14,13,12,11]
 },
 {
-q:"Look at the number line. If you start at 15 and jump back 3 steps, which number will you land on?",
-visual:"15 → 14 → 13 → 12",
-visualText:"Jumping back means subtraction.",
-options:["12","13","14","18"],
+type:"case",
+q:"A shopkeeper had 19 stickers. 4 were damaged and removed. How many usable stickers remain?",
+img:"",
+answer:15,
+options:[14,15,16,13]
+},
+{
+type:"reason",
+q:"Why does subtracting zero not change a number?",
+img:"",
+answer:1,
+options:[
+"It becomes zero",
+"It keeps value same",
+"It increases value",
+"It doubles"
+]
+},
+{
+type:"error",
+q:"A student says 17 − 9 = 7. What is correct?",
+img:"",
+answer:1,
+options:[7,8,9,6]
+},
+{
+type:"data",
+q:"Books read: A=5, B=8, C=6. Which student read most?",
+img:"",
+answer:1,
+options:["A","B","C","A & C"]
+},
+{
+type:"case",
+q:"A bus had 18 children. 6 got down. How many are left inside?",
+img:"",
+answer:12,
+options:[11,12,13,14]
+},
+{
+type:"reason",
+q:"What is the predecessor of a number?",
+img:"",
 answer:0,
-hint:"Count backwards 3 steps: 14, 13, and then...",
-explanation:"Moving 3 jumps backward from 15 lands directly on 12."
+options:[
+"The number before it",
+"The number after it",
+"Double of it",
+"Zero"
+]
 },
 {
-q:"Arya has 7 pencils and she gives all 7 pencils to her friend. How many pencils does Arya have now?",
-visual:"✏️ 7 − 7",
-visualText:"When all are given away, none are left.",
-options:["7","1","0","14"],
-answer:2,
-hint:"When a number is subtracted from itself, nothing is left.",
-explanation:"7 minus 7 leaves exactly 0 pencils remaining."
-},
-{
-q:"Which shows the correct horizontal subtraction for twelve minus five?",
-visual:"Twelve minus five",
-visualText:"Write subtraction from left to right.",
-options:["12 + 5 = 17","5 − 12 = 7","12 − 5 = 7","10 − 5 = 5"],
-answer:2,
-hint:"Look for a left-to-right math statement that starts with 12 and takes away 5.",
-explanation:"'Twelve minus five' translates mathematically to 12 − 5 = 7."
-},
-{
-q:"In a running race, Rohit's token number is 19. The boy running just ahead of him has the predecessor token number. What is that boy's number?",
-visual:"__ , 19",
-visualText:"The predecessor comes just before a number.",
-options:["20","18","17","19"],
-answer:1,
-hint:"Subtract exactly 1 from 19 to locate the value right before it.",
-explanation:"The predecessor is the number right before, which is 19 − 1 = 18."
-},
-{
-q:"A tree had 14 birds. None of the birds flew away. How many birds are still on the tree?",
-visual:"🐦 14 − 0",
-visualText:"Subtracting zero keeps the number the same.",
-options:["0","1","13","14"],
+type:"odd",
+q:"Which number does NOT belong?",
+img:"",
 answer:3,
-hint:"Since 0 birds left, the count stays exactly the same.",
-explanation:"Subtracting 0 leaves the original amount completely unaltered. So, 14 birds remain."
+options:[14,16,18,19]
 },
 {
-q:"A small bus is carrying 18 passengers. At the next stop, 6 passengers get down. How many passengers remain inside the bus?",
-visual:"🚌 18 − 6",
-visualText:"Subtract 6 from 18.",
-options:["10","11","12","24"],
+type:"case",
+q:"Ravi had 20 chocolates. He gave 7 to his friend. How many remain?",
+img:"",
+answer:13,
+options:[11,12,13,14]
+},
+{
+type:"data",
+q:"Which day had least sales? Mon=12, Tue=15, Wed=9",
+img:"",
 answer:2,
-hint:"Focus on the ones digit: what is 8 ones minus 6 ones?",
-explanation:"18 minus 6 leaves 12 passengers on the bus."
-},
-{
-q:"In the number 17, if we subtract 1 ten, what number is left?",
-visual:"17 − 10",
-visualText:"Removing 1 ten leaves 7 ones.",
-options:["16","10","7","0"],
-answer:2,
-hint:"17 is made of 1 ten and 7 ones. Take away that 1 ten completely.",
-explanation:"Subtracting 1 ten leaves only the ones digit behind, which is 7."
-},
-{
-q:"A shopkeeper has 19 kites. He sells 15 kites. How many kites are remaining?",
-visual:"🪁 19 − 15",
-visualText:"Subtract the kites sold.",
-options:["4","5","6","34"],
-answer:0,
-hint:"Find the difference between 19 and 15 by subtracting ones from ones and tens from tens.",
-explanation:"19 minus the 15 sold items equals 4 remaining kites."
-},
-{
-q:"Rahul needs 20 stickers to complete his album. He currently has 13 stickers. How many more stickers does he need?",
-visual:"20 − 13",
-visualText:"Find how many more are needed.",
-options:["5","6","7","8"],
-answer:2,
-hint:"Count forward from 13 up to 20 to find the difference.",
-explanation:"20 minus 13 leaves a remaining target gap of 7 stickers."
-},
-{
-q:"A fruit seller has 16 apples. He throws away 6 spoiled apples. How many good apples are left?",
-visual:"🍎 16 − 6",
-visualText:"Subtract the spoiled apples.",
-options:["10","6","22","12"],
-answer:0,
-hint:"Subtracting 6 ones from 16 ones removes the entire ones column.",
-explanation:"16 minus 6 leaves exactly 1 ten, which is 10 good apples."
-},
-{
-q:"Which subtraction sentence matches: Take away 8 from 18?",
-visual:"18 − 8",
-visualText:"Take away means subtract.",
-options:["8 − 18 = 10","18 − 8 = 10","18 − 10 = 8","18 + 8 = 26"],
-answer:1,
-hint:"You are starting out with a group of 18 and taking 8 out of it.",
-explanation:"Taking away 8 from 18 is structurally written down as 18 − 8 = 10."
+options:["Mon","Tue","Wed","All same"]
 }
 ];
 
-let current=0,score=0,firstAttemptCorrect=0,attempts=0,answered=false,timeLeft=60,timerInterval,muted=false;
-let currentCorrectIndex = 0; // Tracks shuffled correct index position dynamically
+let order=[],i=0,score=0,answered=false;
 
-const logoScreen=document.getElementById("logoScreen");
-const quizScreen=document.getElementById("quizScreen");
-const resultScreen=document.getElementById("resultScreen");
-const qNo=document.getElementById("qNo");
-const scoreBox=document.getElementById("score");
-const timerBox=document.getElementById("timer");
-const visualBox=document.getElementById("visualBox");
-const questionText=document.getElementById("questionText");
-const optionsBox=document.getElementById("optionsBox");
-const feedback=document.getElementById("feedback");
-const nextBtn=document.getElementById("nextBtn");
-const correctSound=document.getElementById("correctSound");
-const wrongSound=document.getElementById("wrongSound");
-const clapSound=document.getElementById("clapSound");
+function shuffle(a){return a.sort(()=>Math.random()-0.5);}
 
-setTimeout(()=>{
-  logoScreen.classList.remove("active");
-  quizScreen.classList.add("active");
-  startQuiz();
-},5000);
-
-function startQuiz(){
-  current=0;
-  score=0;
-  firstAttemptCorrect=0;
-  scoreBox.textContent=score;
-  loadQuestion();
+function start(){
+order = shuffle([...bank]); // 🔥 RANDOM QUESTIONS EVERY START
+i=0;score=0;
+load();
 }
 
-function startTimer(){
-  timeLeft=60;
-  timerBox.textContent=timeLeft;
-  clearInterval(timerInterval);
-  timerInterval=setInterval(()=>{
-    timeLeft--;
-    timerBox.textContent=timeLeft;
-    if(timeLeft<=0){
-      clearInterval(timerInterval);
-      showResult();
-    }
-  },1000);
+function load(){
+
+answered=false;
+document.getElementById("nextBtn").style.display="none";
+
+let q = order[i];
+
+// visual
+document.getElementById("visualImg").src = q.img || "";
+document.getElementById("question").innerText = q.q;
+
+// shuffle options
+let opt = q.options.map(v=>v);
+opt = shuffle(opt);
+
+let correctValue = q.options[q.answer];
+
+document.getElementById("qno").innerText=i+1;
+document.getElementById("score").innerText=score;
+document.getElementById("time").innerText=60;
+
+let box=document.getElementById("options");
+box.innerHTML="";
+
+opt.forEach((v)=>{
+let b=document.createElement("button");
+b.className="option";
+b.innerText=v;
+
+b.onclick=()=>{
+if(answered)return;
+
+if(v===correctValue){
+b.classList.add("correct");
+score++;
+answered=true;
+document.getElementById("feedback").innerText="Correct ✔";
+document.getElementById("nextBtn").style.display="block";
+}else{
+b.classList.add("wrong");
+document.getElementById("feedback").innerText="Try again";
+}
+};
+
+box.appendChild(b);
+});
 }
 
-function loadQuestion(){
-  attempts=0;
-  answered=false;
-  feedback.textContent="";
-  feedback.style.color="#1f2937";
-  nextBtn.style.display="none";
-
-  const item=questions[current];
-  qNo.textContent=current+1;
-  questionText.textContent=item.q;
-  visualBox.innerHTML=`<div class="visual">${item.visual}</div><div class="visual-text">${item.visualText}</div>`;
-  optionsBox.innerHTML="";
-
-  // Create an array of options maps to retain original indexing connection
-  let shuffledOptions = item.options.map((opt, idx) => ({ text: opt, originalIndex: idx }));
-  
-  // Shuffle option structures randomly on-the-fly
-  shuffledOptions.sort(() => Math.random() - 0.5);
-
-  shuffledOptions.forEach((option, index)=>{
-    const btn=document.createElement("button");
-    btn.className="option";
-    btn.textContent=option.text;
-    
-    // Check if this shuffled slot holds the original correct answer value
-    if(option.originalIndex === item.answer) {
-      currentCorrectIndex = index;
-    }
-
-    btn.onclick=()=>checkAnswer(btn, index);
-    optionsBox.appendChild(btn);
-  });
-  
-  startTimer();
+function nextQ(){
+i++;
+if(i>=order.length){
+document.getElementById("game").classList.remove("active");
+document.getElementById("result").classList.add("active");
+document.getElementById("msg").innerText="Great Work!";
+document.getElementById("final").innerText="Score: "+score+"/"+order.length;
+}else{
+load();
+}
 }
 
-function checkAnswer(button,selected){
-  if(answered)return;
-  const currentQuestion=questions[current];
-
-  if(selected===currentCorrectIndex){
-    clearInterval(timerInterval);
-    answered=true;
-    score++;
-    
-    if(attempts===0){
-      firstAttemptCorrect++;
-    }
-    
-    scoreBox.textContent=score;
-    button.classList.add("correct");
-    feedback.textContent="Correct!";
-    feedback.style.color="#047857";
-    playSound(correctSound);
-    playSound(clapSound);
-    launchConfetti();
-    disableOptions();
-    nextBtn.style.display="inline-block";
-  }else{
-    attempts++;
-    button.classList.add("wrong");
-    playSound(wrongSound);
-
-    if(attempts===1){
-      feedback.textContent="Hint: "+currentQuestion.hint;
-      feedback.style.color="#b45309";
-      button.disabled=true;
-    }else{
-      clearInterval(timerInterval);
-      answered=true;
-      feedback.textContent="Incorrect. "+currentQuestion.explanation;
-      feedback.style.color="#b91c1c";
-      showCorrectAnswer();
-      disableOptions();
-      nextBtn.style.display="inline-block";
-    }
-  }
+function restart(){
+location.reload();
 }
 
-function showCorrectAnswer(){
-  document.querySelectorAll(".option")[currentCorrectIndex].classList.add("correct");
-}
-
-function disableOptions(){
-  document.querySelectorAll(".option").forEach(btn=>btn.disabled=true);
-}
-
-function nextQuestion(){
-  current++;
-  if(current<questions.length){
-    loadQuestion();
-  }else{
-    showResult();
-  }
-}
-
-function showResult(){
-  clearInterval(timerInterval);
-  quizScreen.classList.remove("active");
-  resultScreen.classList.add("active");
-
-  const percentage=(firstAttemptCorrect/questions.length)*100;
-  let message="";
-
-  if(percentage>=75){
-    message="Good job";
-    launchConfetti();
-    playSound(clapSound);
-  }else if(percentage>=40){
-    message="Review this chapter and try again";
-  }else{
-    message="Let’s practise more";
-  }
-
-  document.getElementById("resultMessage").textContent=message;
-  document.getElementById("finalScore").innerHTML="Total Questions Solved: "+score+" / "+questions.length+"<br>First-Attempt Correct: "+firstAttemptCorrect+" / "+questions.length;
-}
-
-function restartQuiz(){
-  resultScreen.classList.remove("active");
-  quizScreen.classList.add("active");
-  startQuiz();
-}
-
-function toggleMute(){
-  muted=!muted;
-  document.getElementById("muteBtn").textContent=muted?"🔇 Sound Off":"🔊 Sound On";
-}
-
-function playSound(sound){
-  if(muted)return;
-  sound.currentTime=0;
-  sound.play().catch(()=>{});
-}
-
-function launchConfetti(){
-  const colors=["#f59e0b","#10b981","#3b82f6","#ef4444","#8b5cf6"];
-  for(let i=0;i<30;i++){
-    const piece=document.createElement("div");
-    piece.className="confetti";
-    piece.style.left=Math.random()*100+"vw";
-    piece.style.background=colors[colors.length*Math.random()|0];
-    piece.style.animationDuration=(Math.random()*0.8+0.8)+"s";
-    document.body.appendChild(piece);
-    setTimeout(()=>piece.remove(),1500);
-  }
-}
 </script>
 
 </body>
