@@ -271,6 +271,16 @@ body{
   }
 }
 
+/* Custom asset proportional rules to make button small and plate large */
+.visual-img[src*="button.png"] {
+  max-width: 60px !important;
+  max-height: 60px !important;
+}
+.visual-img[src*="plate.png"] {
+  max-width: 150px !important;
+  max-height: 150px !important;
+}
+
 @media(max-width:700px){
   .card{padding:15px}
   .topbar{grid-template-columns:1fr 1fr}
@@ -281,6 +291,14 @@ body{
   .visual-img{max-width:90px;max-height:90px}
   .visual-img.big{max-width:110px;max-height:100px}
   .visual-img.large-square{max-width:100px;max-height:100px}
+  .visual-img[src*="button.png"] {
+    max-width: 45px !important;
+    max-height: 45px !important;
+  }
+  .visual-img[src*="plate.png"] {
+    max-width: 105px !important;
+    max-height: 105px !important;
+  }
   .pattern-img,.pattern-number,.qmark{width:56px;height:56px}
   .pattern-number{font-size:28px}
   .word-display{font-size:24px;letter-spacing:4px;word-spacing:10px}
@@ -484,18 +502,18 @@ hint:"Look closely at a dice—each of its six walls is a perfect flat shape.",
 explanation:"A dice is a cube made out of six flat squares!"
 },
 {
-q:"You place a tiny plastic shirt button right next to a giant family frying pan. Both are perfectly round. Which statement describes them correctly?",
+q:"You place a tiny plastic shirt button right next to a white family dinner plate. Both are perfectly round. Which statement describes them correctly?",
 visualType:"largeImages",
 images:["button.png","plate.png"],
 options:[
   {text:"They are different shapes because their sizes are not the same."},
-  {text:"The pan is a square and the tiny button is a circle."},
+  {text:"The plate is a square and the tiny button is a circle."},
   {text:"They are the exact same shape but have different sizes."},
   {text:"They are exactly the same size in your hand."}
 ],
 answer:2,
 hint:"Does making a round circle bigger turn it into a triangle or square?",
-explanation:"Size doesn't change the shape. A tiny circle and a giant circle are still both circles!"
+explanation:"Size doesn't change the shape. A tiny circle and a big circle are still both circles!"
 }
 ];
 
