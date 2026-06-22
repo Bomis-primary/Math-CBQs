@@ -217,9 +217,9 @@ const questionPool = [
   },
   {
     type: "Flow",
-    q: "Tina had 65 cents. She spent 25 cents on a pencil. How much money does she have left?",
-    options: ["30 cents", "35 cents", "40 cents", "45 cents"],
-    answer: 2
+    q: "Tina had 65 craft sticks for her art project. She used 25 sticks to make a house model. How many craft sticks are left?",
+    options: ["45 craft sticks", "40 craft sticks", "35 craft sticks", "30 craft sticks"],
+    answer: 1
   },
   {
     type: "Flow",
@@ -266,7 +266,7 @@ function changeScreen(fromId, toId) {
 function init() {
   setTimeout(() => {
     changeScreen("logoScreen", "introScreen");
-  }, 3500);
+  }, 5000); // Exact 5-second branding logo rule applied
 }
 
 function startQuiz() {
@@ -322,6 +322,7 @@ function loadQuestion() {
   document.getElementById("feedback").innerText = "";
   document.getElementById("nextBtn").style.display = "none";
   document.getElementById("questionText").innerText = q.q;
+  document.getElementById("qTypeBadge").innerText = q.type || "Flow";
 
   let box = document.getElementById("optionsBox");
   box.innerHTML = "";
