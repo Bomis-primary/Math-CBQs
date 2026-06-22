@@ -80,36 +80,11 @@ body{
   cursor:pointer;
 }
 
-.visual-box{
-  background:#fff7ed;
-  border:2px solid #fdba74;
-  border-radius:20px;
-  padding:16px;
-  margin-bottom:16px;
-  text-align:center;
-  min-height:250px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-}
-
-.visual-emoji-display {
-  font-size: 5rem;
-  user-select: none;
-}
-
-.visual-image-display {
-  max-height: 220px;
-  width: auto;
-  max-width: 100%;
-  object-fit: contain;
-}
-
 .question{
   font-size:24px;
   font-weight:bold;
   line-height:1.45;
-  margin:16px 0;
+  margin:24px 0;
 }
 
 .options{
@@ -222,12 +197,9 @@ body{
   .card{padding:15px}
   .title-header{font-size: 30px; margin-bottom: 24px;}
   .topbar{grid-template-columns:1fr 1fr}
-  .visual-box{min-height: 180px;}
-  .question{font-size:21px}
+  .question{font-size:21px; margin: 18px 0;}
   .options{grid-template-columns:1fr;gap:11px}
   .option{min-height:75px;font-size:16px;padding:10px}
-  .visual-emoji-display{font-size:3.5rem}
-  .visual-image-display{max-height:160px}
   .primary{width:100%}
   .badge,.sound-btn{font-size:14px}
 }
@@ -256,7 +228,6 @@ body{
       <button class="sound-btn" onclick="toggleMute()" id="muteBtn">🔈 Sound Off</button>
     </div>
 
-    <div class="visual-box" id="visualBox"></div>
     <div class="question" id="questionText"></div>
     <div class="options" id="optionsBox"></div>
     <div class="feedback" id="feedback"></div>
@@ -281,7 +252,6 @@ body{
 <script>
 const questionPool=[
   {
-    emoji: "📦",
     q: "How many ‘tens’ do you need to group together to make 100?",
     options: ["1", "5", "10", "100"],
     answer: 2,
@@ -289,7 +259,6 @@ const questionPool=[
     explanation: "10 groups of ten (10 × 10) bundle together perfectly to make 100!"
   },
   {
-    image: "assets/line.png", 
     q: "Candy, Danny, Freddy, Polly, Edward, and Suzi are standing in a line for the bus, starting with Candy at the front. Who is third in the line?",
     options: ["Danny", "Freddy", "Polly", "Edward"],
     answer: 1,
@@ -297,7 +266,6 @@ const questionPool=[
     explanation: "Counting directly from Candy at the front, Freddy holds the third position."
   },
   {
-    emoji: "🏫",
     q: "In a school assembly row, Deepa is 5th in line and she is the last student. How many students are standing in that row?",
     options: ["7", "5", "3", "1"],
     answer: 1,
@@ -305,7 +273,6 @@ const questionPool=[
     explanation: "Since she is 5th and last, there are exactly 5 students total in that row."
   },
   {
-    emoji: "🚶‍♀️",
     q: "A girl is standing in a queue. There are 10 people in front of her. What is her ordinal position in the queue?",
     options: ["10th", "9th", "11th", "12th"],
     answer: 2,
@@ -313,7 +280,6 @@ const questionPool=[
     explanation: "With 10 people in front of her, she occupies the next spot, which is the 11th position."
   },
   {
-    emoji: "🍎",
     q: "In the word \"APPLE\", what is the position of 'L'?",
     options: ["second", "sixth", "fifth", "fourth"],
     answer: 3,
@@ -321,7 +287,6 @@ const questionPool=[
     explanation: "'L' is the fourth letter when counting out the word structure."
   },
   {
-    emoji: "🎟️",
     q: "What is the standard form of 100 + 0 + 7?",
     options: ["170", "107", "17", "1007"],
     answer: 1,
@@ -329,7 +294,6 @@ const questionPool=[
     explanation: "Putting together 1 hundred, 0 tens, and 7 ones constructs the number 107."
   },
   {
-    emoji: "💎",
     q: "What is the face value of the digit 1 in the number 142?",
     options: ["100", "10", "1", "142"],
     answer: 2,
@@ -337,7 +301,6 @@ const questionPool=[
     explanation: "The face value of any digit is always just the digit itself, so it is 1!"
   },
   {
-    emoji: "💯",
     q: "How many hundreds are there in the number 200?",
     options: ["1", "2", "0", "20"],
     answer: 1,
@@ -345,7 +308,6 @@ const questionPool=[
     explanation: "The number 200 consists of exactly 2 completed bundles of hundreds."
   },
   {
-    emoji: "📝",
     q: "In the number 106, which digit is in the tens place?",
     options: ["1", "6", "0", "10"],
     answer: 2,
@@ -353,7 +315,6 @@ const questionPool=[
     explanation: "106 is written as 1 Hundred, 0 Tens, and 6 Ones. The middle tracking digit is 0."
   },
   {
-    emoji: "⚖️",
     q: "Which number is greater than 179 but less than 181?",
     options: ["178", "180", "182", "170"],
     answer: 1,
@@ -361,7 +322,6 @@ const questionPool=[
     explanation: "180 is the exact consecutive number situated between 179 and 181."
   },
   {
-    emoji: "📊",
     q: "Which statement is correct?",
     options: ["165 > 156", "165 < 156", "165 = 156", "156 > 165"],
     answer: 0,
@@ -369,7 +329,6 @@ const questionPool=[
     explanation: "165 is greater than 156 because 6 tens (60) is greater than 5 tens (50)."
   },
   {
-    emoji: "📉",
     q: "Arrange these numbers in descending order: 144, 188, 166.",
     options: ["188, 166, 144", "144, 166, 188", "166, 188, 144", "188, 144, 166"],
     answer: 0,
@@ -377,7 +336,6 @@ const questionPool=[
     explanation: "Sorting from greatest to least gives us 188, then 166, and finally 144."
   },
   {
-    emoji: "🪵",
     q: "If you have 1 bundle of 100 sticks, 3 bundles of 10 sticks, and 5 loose sticks, what number do you have?",
     options: ["135", "153", "531", "130"],
     answer: 0,
@@ -390,7 +348,7 @@ let questions=[];
 let current=0,score=0,firstAttemptCorrect=0,attempts=0,answered=false,timeLeft=60,timerInterval,muted=true;
 let currentCorrectIndex = 0;
 
-let logoScreen, titleScreen, quizScreen, resultScreen, qNo, qLabel, scoreBox, timerBox, visualBox, questionText, optionsBox, feedback, nextBtn, correctSound, wrongSound;
+let logoScreen, titleScreen, quizScreen, resultScreen, qNo, qLabel, scoreBox, timerBox, questionText, optionsBox, feedback, nextBtn, correctSound, wrongSound;
 
 document.addEventListener("DOMContentLoaded", () => {
   logoScreen=document.getElementById("logoScreen");
@@ -401,7 +359,6 @@ document.addEventListener("DOMContentLoaded", () => {
   qLabel=document.getElementById("qLabel");
   scoreBox=document.getElementById("score");
   timerBox=document.getElementById("timer");
-  visualBox=document.getElementById("visualBox");
   questionText=document.getElementById("questionText");
   optionsBox=document.getElementById("optionsBox");
   feedback=document.getElementById("feedback");
@@ -464,12 +421,6 @@ function loadQuestion(){
   
   questionText.innerHTML=item.q;
   optionsBox.innerHTML="";
-  
-  if (item.image) {
-    visualBox.innerHTML = `<img src="${item.image}" alt="Question Graphic" class="visual-image-display" />`;
-  } else {
-    visualBox.innerHTML = `<div class="visual-emoji-display">${item.emoji}</div>`;
-  }
 
   let shuffledOptions = item.options.map((opt, idx) => ({ text: opt, originalIndex: idx }));
   shuffledOptions.sort(() => Math.random() - 0.5);
