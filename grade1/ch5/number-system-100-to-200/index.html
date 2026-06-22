@@ -87,7 +87,7 @@ body{
   padding:16px;
   margin-bottom:16px;
   text-align:center;
-  min-height:160px;
+  min-height:250px; /* Increased to accommodate the larger graphic comfortably */
   display:flex;
   align-items:center;
   justify-content:center;
@@ -99,7 +99,8 @@ body{
 }
 
 .visual-image-display {
-  max-height: 130px;
+  max-height: 220px; /* Made bigger for clear character visibility */
+  width: auto;
   max-width: 100%;
   object-fit: contain;
 }
@@ -221,11 +222,12 @@ body{
   .card{padding:15px}
   .title-header{font-size: 30px; margin-bottom: 24px;}
   .topbar{grid-template-columns:1fr 1fr}
+  .visual-box{min-height: 180px;}
   .question{font-size:21px}
   .options{grid-template-columns:1fr;gap:11px}
   .option{min-height:75px;font-size:16px;padding:10px}
   .visual-emoji-display{font-size:3.5rem}
-  .visual-image-display{max-height:100px}
+  .visual-image-display{max-height:160px} /* Increased scaling for crisp layout readability on mobile devices */
   .primary{width:100%}
   .badge,.sound-btn{font-size:14px}
 }
