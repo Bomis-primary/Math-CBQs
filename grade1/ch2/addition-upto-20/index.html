@@ -81,7 +81,6 @@ body{margin:0;font-family:Arial,sans-serif;background:#f3f8ff;color:#1f2937;min-
   line-height: 1.2;
 }
 
-/* FIXED IMAGE SIZING CONSTRAINTS */
 .visual-box img {
   max-width: 100%; 
   max-height: 220px; 
@@ -218,7 +217,7 @@ const questionPool = [
     options: ["Yes, she has enough", "No, she has 1 stick less", "No, she has 2 sticks less", "Yes, she has more than needed"],
     answer: "Yes, she has enough",
     hint: "Add the sticks from both boxes together.",
-    explain: "10 + 8 = 18 sticks, so she has exactly enough sticks."
+    explain: "10 + 8 = 18 sticks, so she has enough sticks."
   },
   {
     type: "Flow",
@@ -231,7 +230,7 @@ const questionPool = [
   },
   {
     type: "Flow",
-    q: "A frog is on number 7 on a number line. How many times should it jump forward to land on 10?",
+    q: "A frog is on number 7 on a number line. How many time should it jump forward to land on 10?",
     visual: "🐸 Number Line Jump",
     options: ["3", "4", "1", "2"],
     answer: "3",
@@ -259,11 +258,11 @@ const questionPool = [
   {
     type: "Flow",
     q: "Maya adds 12 + 3 and writes the answer as 1 tens and 4 ones. What mistake did she make?",
-    visual: "✏️ 12 + 3 = ?",
+    visual: "✏️ Place Value Error",
     options: ["She added 3 tens instead of 3 ones.", "She added one less in the ones place.", "She added 5 more in the ones place.", "The answer is correct."],
     answer: "She added one less in the ones place.",
     hint: "Count 3 steps forward from 12.",
-    explain: "Counting 3 steps forward from 12 should lead to 15 (1 tens and 5 ones), not 14."
+    explain: "Counting 3 steps forward from 12 should lead to 15, not 14."
   },
   {
     type: "Flow",
@@ -285,12 +284,12 @@ const questionPool = [
   },
   {
     type: "Flow",
-    q: "Tina has 7 yellow beads, 8 red beads and 1 white bead. She makes a necklace using all the red and white beads. How many beads does she use in all?",
+    q: "Tina has 7 yellow beads, 8 red beads and 1 white beads. She makes a necklace using all the red and white beads. How many beads does she use in all?",
     visual: "📿 Bead Design",
     options: ["7", "2", "5", "9"],
     answer: "9",
     hint: "Only add the red and white beads together.",
-    explain: "8 red beads and 1 white bead together make 9 beads."
+    explain: "8 red beads and 1 white beads together makes 9 beads."
   },
   {
     type: "Flow",
@@ -299,7 +298,7 @@ const questionPool = [
     options: ["10 + 5", "12 + 3", "14 + 1", "10 + 2"],
     answer: "10 + 2",
     hint: "Add each option together to see which doesn't hit 15.",
-    explain: "10 + 2 = 12, while all the other combinations equal 15."
+    explain: "10 + 2 = 12, while the others all equal 15."
   },
   {
     type: "Challenge",
@@ -314,8 +313,8 @@ const questionPool = [
     type: "Challenge",
     q: "A bus can carry 20 children. 12 children are already on the bus. 7 children are waiting in a line to get in the bus. The driver says, 'There are seats for all 7 children.' Is the driver correct?",
     visual: "🚌 Bus Seats",
-    options: ["Yes, because 12 + 7= 19", "Yes, because the bus can carry 12 children.", "No, because 7 children are too many.", "No, because 12 + 7 = 21."],
-    answer: "Yes, because 12 + 7= 19",
+    options: ["Yes, because 12 + 7 = 19", "Yes, because the bus can carry 12 children.", "No, because 7 children are too many.", "No, because 12 + 7 = 21."],
+    answer: "Yes, because 12 + 7 = 19",
     hint: "Add the inside children and waiting children together.",
     explain: "12 + 7 = 19. Since the bus can carry 20 children, all 7 children can get seats safely."
   },
@@ -331,11 +330,11 @@ const questionPool = [
   {
     type: "Flow",
     q: "If you start at number 10 on a number line and take 0 jumps, where are you?",
-    visual: "📍 Zero steps",
+    visual: "assets/number-line.png",
     options: ["0", "10", "1", "9"],
     answer: "10",
     hint: "Adding zero means you aren't moving at all.",
-    explain: "0 added to 10 leaves it unchanged at 10."
+    explain: "0 added to 10 is 10."
   },
   {
     type: "Flow",
@@ -358,7 +357,7 @@ const questionPool = [
   {
     type: "Flow",
     q: "Three sequential groups of birds fly onto a branch: 9 birds, then 5 birds, and finally 1 bird. How many birds are on the branch now?",
-    visual: "🐦 sequential count",
+    visual: "🐦 Sequential Count",
     options: ["14", "15", "16", "10"],
     answer: "15",
     hint: "Sequentially track the growing group: 9 + 5 + 1.",
@@ -366,7 +365,7 @@ const questionPool = [
   },
   {
     type: "Flow",
-    q: "Ali needs 20 balloons to decorate the stage. He bought 11 balloons. His sister gave him 5 balloons. He found 3 more in a box. Does he have sufficient balloons?",
+    q: "Ali needs 20 balloons to decorate the stage. He bought 11 balloons. His sister gave him 5 balloons. He found 3 more in a box. Does he have sufficient balloons to decorate the stage?",
     visual: "🎈 Balloon Setup",
     options: ["Yes, exactly 20", "No, he has 19 balloons", "No, he has 16 balloons", "Yes, he has more than 20"],
     answer: "No, he has 19 balloons",
@@ -375,30 +374,39 @@ const questionPool = [
   },
   {
     type: "Challenge",
-    q: "Rahul and Adil count flowers. Rahul counts 19 and Adil counts 11. Adil says the total is 2 tens and 0 ones. What should be the correct answer statement?",
-    visual: "assets/image_667d1f.png",
+    q: "Rahul and Adil are counting flowers in a garden. Rahul counts 19 flowers and Adil counts 11 flowers. Adil says that the total number of flowers is 2 tens and 0 ones. What should be the correct answer statement?",
+    visual: "🌸 Flower Garden",
     options: ["He counted 1 ones more", "He counted 1 tens less", "He added 1 tens and 5 ones", "He counted 1 tens more"],
     answer: "He counted 1 tens less",
     hint: "19 + 11 = 30. How many tens are in 30 compared to Adil's 2 tens?",
-    explain: "The total is 19 + 11 = 30 (3 tens). Adil said 2 tens (20), missing exactly 1 ten."
+    explain: "The total is: 19 + 11 = 30. 30 is 3 tens and 0 ones. Adil said 2 tens (20), which is less than the correct total. He missed 1 ten while counting."
   },
   {
     type: "Flow",
-    q: "In a park, 5 children play on slides, 6 play in the sand pit, and 1 sits on a bench. How many ice creams should the teacher buy so everyone gets one?",
+    q: "In a park, 5 children are playing on the slide, 6 children are playing in the sand pit and 1 child is sitting on the bench. How many ice creams should the teacher buy so everyone gets one?",
     visual: "🍦 Park Treat",
     options: ["16", "13", "12", "19"],
     answer: "12",
     hint: "Combine all three groups of children together.",
-    explain: "5 + 6 + 1 makes it 12 children. So, the teacher needs to buy 12 ice-creams."
+    explain: "5 + 6 + 1 makes it 12 children. So, teacher needs to buy 12 ice-creams."
+  },
+  {
+    type: "Flow",
+    q: "Ronak and Risha are together putting laddoos in baskets to make groups of 10. Which group is the odd one out?",
+    visual: "🧮 Laddoo Baskets",
+    options: ["7 laddoos + 3 laddoos", "6 laddoos + 4 laddoos", "8 laddoos + 2 laddoos", "5 laddoos + 3 laddoos"],
+    answer: "5 laddoos + 3 laddoos",
+    hint: "Check which pair doesn't add up to 10.",
+    explain: "The options first three all make 10. 5 + 3 = 8, so it does not make 10."
   },
   {
     type: "Challenge",
-    q: "Morning tray has 2 groups of 10 cookies. Evening tray has 4 groups of 10 cookies. If the baker puts them all in a jar, how many cookies will be inside?",
+    q: "Morning tray has 2 groups of 10 cookies. Evening tray has 4 groups of 10 cookies. The baker wants to put all chocochip cookies into the jar. How many cookies will be in the jar?",
     visual: "🏺 Cookie Jar",
     options: ["20", "40", "60", "30"],
     answer: "60",
     hint: "Convert groups of 10 into numbers: 20 and 40.",
-    explain: "Morning tray has 20 cookies and evening has 40. Total cookies = 20 + 40 = 60."
+    explain: "Morning tray has 20 cookies (2 groups of 10). Evening tray has 40 cookies (4 groups of 10). Total cookies in the jar = 20 + 40 = 60."
   }
 ];
 
@@ -425,7 +433,6 @@ function init() {
 }
 
 function startQuiz() {
-  // RANDOMIZE AND CHOOSE EXACTLY 12 QUESTIONS EVERY TIME GAME STARTS
   let shuffled = [...questionPool].sort(() => Math.random() - 0.5);
   questions = shuffled.slice(0, 12);
   
