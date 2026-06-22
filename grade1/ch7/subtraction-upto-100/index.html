@@ -3,176 +3,204 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CBQ Interactive</title>
+<title>Addition Upto 20</title>
 
 <style>
-/* ===== BASE CHATGPT-STYLE UI ===== */
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:#f3f8ff;color:#1f2937;min-height:100vh}
 
-*{
-  box-sizing:border-box;
-  font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;
+.screen {
+  display: none; 
+  width: 100%;
+  min-height: 100vh;
+  padding: 16px;
+  box-sizing: border-box;
 }
 
-body{
-  margin:0;
-  background:#f7f7f8;
-  color:#111827;
+.screen.active {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
-/* CENTER CONTAINER */
-.wrapper{
-  max-width:900px;
-  margin:0 auto;
-  padding:20px;
+#logoScreen {
+  background: #ffffff;
 }
 
-/* HEADER */
-.header{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin-bottom:18px;
-  gap:10px;
-  flex-wrap:wrap;
+.logo {
+  max-width: 420px;
+  width: 80%;
+  height: auto;
+  display: block;
 }
 
-.badge{
-  background:#ffffff;
-  border:1px solid #e5e7eb;
-  padding:10px 14px;
-  border-radius:12px;
-  font-size:14px;
-  color:#374151;
+.card {
+  width: 100%;
+  max-width: 880px;
+  background: #ffffff;
+  border-radius: 22px;
+  padding: 20px;
+  box-shadow: 0 8px 24px rgba(0,0,0,.15);
 }
 
-/* QUESTION CARD */
-.card{
-  background:#ffffff;
-  border:1px solid #e5e7eb;
-  border-radius:16px;
-  padding:22px;
+.topbar {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin-bottom: 16px;
+  width: 100%;
 }
 
-/* QUESTION */
-.question{
-  font-size:20px;
-  line-height:1.5;
-  margin-bottom:16px;
-  color:#111827;
+.badge {
+  background: #e0f2fe;
+  color: #0f3f5f;
+  padding: 10px;
+  border-radius: 14px;
+  font-weight: bold;
+  font-size: 16px;
+  text-align: center;
 }
 
-/* OPTIONS */
-.options{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:12px;
-  margin-top:10px;
+.visual-box {
+  background: #fff7ed;
+  border: 2px solid #fdba74;
+  border-radius: 18px;
+  padding: 16px;
+  margin-bottom: 16px;
+  text-align: center;
+  min-height: 130px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.option{
-  background:#f9fafb;
-  border:1px solid #e5e7eb;
-  padding:14px;
-  border-radius:12px;
-  font-size:16px;
-  cursor:pointer;
-  transition:0.15s;
+.visual {
+  font-size: 54px;
+  line-height: 1.2;
 }
 
-.option:hover{
-  border-color:#9ca3af;
-  background:#f3f4f6;
+.visual-box img {
+  max-width: 100%; 
+  max-height: 220px; 
+  object-fit: contain; 
+  border-radius: 12px;
+  display: block;
+  margin: 0 auto;
 }
 
-.option.correct{
-  background:#ecfdf5;
-  border-color:#10b981;
+.question {
+  font-size: 24px;
+  font-weight: bold;
+  line-height: 1.35;
+  margin: 16px 0;
+  text-align: left;
 }
 
-.option.wrong{
-  background:#fef2f2;
-  border-color:#ef4444;
+.options {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(220px, 1fr));
+  gap: 14px;
+  width: 100%;
 }
 
-/* FEEDBACK */
-.feedback{
-  margin-top:14px;
-  padding:12px;
-  border-radius:12px;
-  background:#f9fafb;
-  border:1px solid #e5e7eb;
-  font-size:14px;
-  color:#374151;
-  min-height:20px;
+.option {
+  width: 100%;
+  min-height: 72px;
+  padding: 14px 16px;
+  font-size: 19px;
+  font-weight: bold;
+  border: 2px solid #1f4e79;
+  background: #ffffff;
+  border-radius: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-/* NEXT BUTTON */
-.next{
-  margin-top:16px;
-  width:100%;
-  padding:14px;
-  border:none;
-  border-radius:12px;
-  background:#111827;
-  color:white;
-  font-size:16px;
-  cursor:pointer;
-  display:none;
+.option.correct { background: #d1fae5; border-color: #047857; color: #047857; }
+.option.wrong { background: #fee2e2; border-color: #b91c1c; color: #b91c1c; }
+.option:disabled { cursor: not-allowed; opacity: 0.7; }
+
+.feedback {
+  min-height: 48px;
+  margin-top: 14px;
+  font-size: 19px;
+  font-weight: bold;
+  text-align: center;
+  width: 100%;
 }
 
-/* SPLASH */
-.splash{
-  position:fixed;
-  inset:0;
-  background:#ffffff;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:18px;
-  color:#6b7280;
+.primary {
+  background: #1f4e79;
+  color: white;
+  border: none;
+  border-radius: 14px;
+  padding: 14px 28px;
+  font-size: 19px;
+  font-weight: bold;
+  cursor: pointer;
 }
 
-/* RESPONSIVE */
+#nextBtn { display: none; }
+
 @media(max-width:700px){
-  .options{
-    grid-template-columns:1fr;
-  }
+  .options { grid-template-columns: 1fr; }
+  .topbar { grid-template-columns: repeat(2, 1fr); }
 }
 </style>
 </head>
 
 <body>
 
-<div class="splash" id="splash">Loading...</div>
+<audio id="audioCorrect" src="assets/claps.mp3" preload="auto"></audio>
+<audio id="audioWrong" src="assets/wrong.mp3" preload="auto"></audio>
 
-<div class="wrapper">
+<div id="logoScreen" class="screen active">
+  <img src="assets/logo.png" class="logo" alt="Logo">
+</div>
 
-  <!-- HEADER -->
-  <div class="header">
-    <div class="badge">Question: <span id="qNo">1</span></div>
-    <div class="badge">Score: <span id="score">0</span></div>
-    <div class="badge">Time: <span id="timer">60</span>s</div>
+<div id="introScreen" class="screen">
+  <div class="card" style="text-align:center">
+    <h2>Subtraction up to 100</h2>
+    <p>Test your understanding through real-life scenarios, challenges, and puzzles!</p>
+    <button class="primary" onclick="startQuiz()">Start Challenge</button>
   </div>
+</div>
 
-  <!-- QUESTION CARD -->
+<div id="quizScreen" class="screen">
   <div class="card">
+    <div class="topbar">
+      <div class="badge"><span id="qTypeBadge">Flow</span>: <span id="qNo">1</span>/<span id="totalQuestions">4</span></div>
+      <div class="badge">Score <span id="score">0</span></div>
+      <div class="badge">Time <span id="timer">60</span>s</div>
+      <div class="badge">Subtraction</div>
+    </div>
 
+    <div class="visual-box" id="visualBox"></div>
     <div class="question" id="questionText"></div>
-
     <div class="options" id="optionsBox"></div>
-
     <div class="feedback" id="feedback"></div>
 
-    <button class="next" id="nextBtn" onclick="nextQuestion()">Next</button>
-
+    <div style="text-align:center; margin-top: 15px;">
+      <button class="primary" id="nextBtn" onclick="nextQuestion()">Next</button>
+    </div>
   </div>
+</div>
 
+<div id="resultScreen" class="screen">
+  <div class="card" style="text-align:center">
+    <h1 id="resultMessage"></h1>
+    <p id="finalScore"></p>
+    <button class="primary" onclick="restartQuiz()">Play Again</button>
+  </div>
 </div>
 
 <script>
 
-/* ================= QUESTIONS (UNCHANGED) ================= */
-
+/* ================= QUESTIONS (UNCHANGED CONTENT) ================= */
 const questionPool = [
   {
     q:"Diya has 50 candies. She gives 20 to her friend. How many candies are left?",
@@ -196,109 +224,177 @@ const questionPool = [
   }
 ];
 
-/* ================= ENGINE (UNCHANGED LOGIC) ================= */
+/* ================= ENGINE (ADAPTED TO VISUAL LAYOUT) ================= */
+let questions = [];
+let current = 0;
+let score = 0;
+let answered = false;
+let attempts = 0;
+let interval;
+let timeLeft = 60;
 
-let questions=[];
-let current=0;
-let score=0;
-let answered=false;
-let attempts=0;
-let timer;
-let timeLeft=60;
-
-function shuffle(arr){
-  return arr.sort(()=>Math.random()-0.5);
+function changeScreen(fromId, toId) {
+  const fromScreen = document.getElementById(fromId);
+  const toScreen = document.getElementById(toId);
+  if (fromScreen) fromScreen.classList.remove("active");
+  if (toScreen) toScreen.classList.add("active");
 }
 
-function start(){
-  questions = shuffle([...questionPool]);
-  load();
-  startTimer();
+function init() {
+  setTimeout(() => {
+    changeScreen("logoScreen", "introScreen");
+  }, 3500); // Unified auto-clear splash timer
 }
 
-function startTimer(){
-  clearInterval(timer);
-  timeLeft=60;
+function startQuiz() {
+  questions = [...questionPool].sort(() => Math.random() - 0.5);
+  current = 0;
+  score = 0;
+  document.getElementById("totalQuestions").innerText = questions.length;
+  changeScreen("introScreen", "quizScreen");
+  loadQuestion();
+}
 
-  timer=setInterval(()=>{
+function startTimer() {
+  clearInterval(interval);
+  timeLeft = 60;
+  document.getElementById("timer").innerText = timeLeft;
+
+  interval = setInterval(() => {
     timeLeft--;
-    document.getElementById("timer").innerText=timeLeft;
+    document.getElementById("timer").innerText = timeLeft;
 
-    if(timeLeft<=0){
-      nextQuestion();
+    if (timeLeft <= 0) {
+      clearInterval(interval);
+      playAudio(false);
+      disableOptions();
+      document.getElementById("feedback").innerText = "Time's up!";
+      document.getElementById("feedback").style.color = "#b91c1c";
+      document.getElementById("nextBtn").style.display = "inline-block";
     }
-  },1000);
+  }, 1000);
 }
 
-function load(){
-
-answered=false;
-attempts=0;
-
-let q=questions[current];
-
-document.getElementById("qNo").innerText=current+1;
-document.getElementById("score").innerText=score;
-document.getElementById("feedback").innerText="";
-
-document.getElementById("questionText").innerText=q.q;
-
-let box=document.getElementById("optionsBox");
-box.innerHTML="";
-
-let shuffled=[...q.options].sort(()=>Math.random()-0.5);
-
-shuffled.forEach(opt=>{
-
-let btn=document.createElement("button");
-btn.className="option";
-btn.innerText=opt;
-
-btn.onclick=()=>{
-
-if(answered) return;
-
-if(opt===q.options[q.answer]){
-btn.classList.add("correct");
-score++;
-answered=true;
-document.getElementById("feedback").innerText="Correct ✔";
-document.getElementById("nextBtn").style.display="block";
-clearInterval(timer);
-}else{
-btn.classList.add("wrong");
-attempts++;
-document.getElementById("feedback").innerText="Try again";
-
-if(attempts>=2){
-answered=true;
-document.getElementById("nextBtn").style.display="block";
-}
-}
-};
-
-box.appendChild(btn);
-});
+function playAudio(isCorrect) {
+  const correctSound = document.getElementById("audioCorrect");
+  const wrongSound = document.getElementById("audioWrong");
+  if(isCorrect && correctSound) {
+    correctSound.currentTime = 0;
+    correctSound.play().catch(e => console.log("Audio blocked"));
+  } else if(!isCorrect && wrongSound) {
+    wrongSound.currentTime = 0;
+    wrongSound.play().catch(e => console.log("Audio blocked"));
+  }
 }
 
-function nextQuestion(){
-current++;
+function loadQuestion() {
+  startTimer();
+  answered = false;
+  attempts = 0;
+  
+  let q = questions[current];
 
-if(current>=questions.length){
-alert("Game Over! Score: "+score);
-location.reload();
-}else{
-load();
-startTimer();
+  document.getElementById("qNo").innerText = current + 1;
+  document.getElementById("score").innerText = score;
+  document.getElementById("feedback").innerText = "";
+  document.getElementById("nextBtn").style.display = "none";
+  document.getElementById("questionText").innerText = q.q;
+
+  // Visual text panel display placeholder compatible with template structure
+  document.getElementById("visualBox").innerHTML = `<div class="visual">🔢</div>`;
+
+  let box = document.getElementById("optionsBox");
+  box.innerHTML = "";
+
+  let shuffled = [...q.options].sort(() => Math.random() - 0.5);
+
+  shuffled.forEach(opt => {
+    let btn = document.createElement("button");
+    btn.className = "option";
+    btn.innerText = opt;
+    btn.onclick = () => checkAnswer(btn, opt, q);
+    box.appendChild(btn);
+  });
 }
+
+function checkAnswer(selectedBtn, selectedValue, qObj) {
+  if (answered) return;
+
+  if (selectedValue === qObj.options[qObj.answer]) {
+    clearInterval(interval);
+    selectedBtn.classList.add("correct");
+    playAudio(true);
+    score++;
+    document.getElementById("score").innerText = score;
+    document.getElementById("feedback").innerText = "🎉 Correct ✔";
+    document.getElementById("feedback").style.color = "#047857";
+    disableOptions();
+    document.getElementById("nextBtn").style.display = "inline-block";
+    answered = true;
+  } else {
+    attempts++;
+    selectedBtn.classList.add("wrong");
+    selectedBtn.disabled = true;
+    playAudio(false);
+
+    if (attempts < 2) {
+      document.getElementById("feedback").innerText = "💡 Try again";
+      document.getElementById("feedback").style.color = "#1f4e79";
+    } else {
+      clearInterval(interval);
+      disableOptions();
+      document.getElementById("feedback").innerText = "Unsuccessful.";
+      document.getElementById("feedback").style.color = "#b91c1c";
+      
+      const buttons = document.querySelectorAll(".option");
+      buttons.forEach(b => {
+        if(b.innerText === qObj.options[qObj.answer]) b.classList.add("correct");
+      });
+      
+      document.getElementById("nextBtn").style.display = "inline-block";
+      answered = true;
+    }
+  }
 }
 
-/* START */
-setTimeout(()=>{
-document.getElementById("splash").style.display="none";
-start();
-},1500);
+function disableOptions() {
+  const buttons = document.querySelectorAll(".option");
+  buttons.forEach(b => b.disabled = true);
+}
 
+function nextQuestion() {
+  current++;
+  if (current >= questions.length) {
+    clearInterval(interval);
+    showResults();
+  } else {
+    loadQuestion();
+  }
+}
+
+function showResults() {
+  changeScreen("quizScreen", "resultScreen");
+
+  let percentage = (score / questions.length) * 100;
+  let msg = "";
+
+  if (percentage >= 75) {
+    msg = "Good job";
+  } else if (percentage >= 40) {
+    msg = "Review this chapter and try again";
+  } else {
+    msg = "Let’s practise more";
+  }
+
+  document.getElementById("resultMessage").innerText = msg;
+  document.getElementById("finalScore").innerText = `Final Score: ${score} / ${questions.length} (${percentage.toFixed(0)}%)`;
+}
+
+function restartQuiz() {
+  changeScreen("resultScreen", "introScreen");
+}
+
+init();
 </script>
 
 </body>
