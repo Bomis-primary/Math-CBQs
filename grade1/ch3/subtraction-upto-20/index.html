@@ -7,106 +7,149 @@
 
 <style>
 *{box-sizing:border-box}
-body{margin:0;font-family:Arial,sans-serif;background:#f3f8ff;color:#1f2937}
-.screen{display:none;min-height:100vh;padding:16px}
-.screen.active{display:flex;align-items:center;justify-content:center}
-#logoScreen{background:#fff}
-.logo{max-width:420px;width:80%}
+body{margin:0;font-family:Arial,sans-serif;background:#f3f8ff;color:#1f2937;min-height:100vh}
 
-.card{
-  width:100%;
-  max-width:880px;
-  background:#fff;
-  border-radius:22px;
-  padding:20px;
-  box-shadow:0 8px 24px rgba(0,0,0,.15);
+.screen {
+  display: none; 
+  width: 100%;
+  min-height: 100vh;
+  padding: 16px;
+  box-sizing: border-box;
 }
 
-.topbar{
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:10px;
-  margin-bottom:16px;
+.screen.active {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
-.badge{
-  background:#e0f2fe;
-  color:#0f3f5f;
-  padding:10px;
-  border-radius:14px;
-  font-weight:bold;
-  font-size:16px;
-  text-align:center;
+#logoScreen {
+  background: #ffffff;
 }
 
-.visual-box{
-  background:#fff7ed;
-  border:2px solid #fdba74;
-  border-radius:18px;
-  padding:16px;
-  margin-bottom:16px;
-  text-align:center;
-  min-height:130px;
+.logo {
+  max-width: 420px;
+  width: 80%;
+  height: auto;
+  display: block;
 }
 
-.visual{font-size:54px;margin-bottom:8px;line-height:1.2}
-.visual img{max-width:200px; max-height:120px; object-fit:contain; border-radius:12px}
-
-.question{
-  font-size:24px;
-  font-weight:bold;
-  line-height:1.35;
-  margin:16px 0;
+.card {
+  width: 100%;
+  max-width: 880px;
+  background: #ffffff;
+  border-radius: 22px;
+  padding: 20px;
+  box-shadow: 0 8px 24px rgba(0,0,0,.15);
 }
 
-.options{
-  display:grid;
-  grid-template-columns:repeat(2,minmax(220px,1fr));
-  gap:14px;
+.topbar {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin-bottom: 16px;
+  width: 100%;
 }
 
-.option{
-  width:100%;
-  min-height:72px;
-  padding:14px 16px;
-  font-size:19px;
-  font-weight:bold;
-  border:2px solid #1f4e79;
-  background:#fff;
-  border-radius:16px;
-  cursor:pointer;
-  display:flex;
-  align-items:center;
-  justify-content:center;
+.badge {
+  background: #e0f2fe;
+  color: #0f3f5f;
+  padding: 10px;
+  border-radius: 14px;
+  font-weight: bold;
+  font-size: 16px;
+  text-align: center;
 }
 
-.option.correct{background:#d1fae5;border-color:#047857;color:#047857}
-.option.wrong{background:#fee2e2;border-color:#b91c1c;color:#b91c1c}
-.option:disabled{cursor:not-allowed;opacity:0.7}
-
-.feedback{
-  min-height:48px;
-  margin-top:14px;
-  font-size:19px;
-  font-weight:bold;
-  text-align:center;
+.visual-box {
+  background: #fff7ed;
+  border: 2px solid #fdba74;
+  border-radius: 18px;
+  padding: 16px;
+  margin-bottom: 16px;
+  text-align: center;
+  min-height: 130px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.primary{
-  background:#1f4e79;
-  color:white;
-  border:none;
-  border-radius:14px;
-  padding:14px 28px;
-  font-size:19px;
-  font-weight:bold;
-  cursor:pointer;
+.visual {
+  font-size: 54px;
+  line-height: 1.2;
 }
 
-#nextBtn{display:none}
+/* FIXED IMAGE SIZING CONTRAINTS */
+.visual-box img {
+  max-width: 100%; 
+  max-height: 220px; 
+  object-fit: contain; 
+  border-radius: 12px;
+  display: block;
+  margin: 0 auto;
+}
+
+.question {
+  font-size: 24px;
+  font-weight: bold;
+  line-height: 1.35;
+  margin: 16px 0;
+  text-align: left;
+}
+
+.options {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(220px, 1fr));
+  gap: 14px;
+  width: 100%;
+}
+
+.option {
+  width: 100%;
+  min-height: 72px;
+  padding: 14px 16px;
+  font-size: 19px;
+  font-weight: bold;
+  border: 2px solid #1f4e79;
+  background: #ffffff;
+  border-radius: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.option.correct { background: #d1fae5; border-color: #047857; color: #047857; }
+.option.wrong { background: #fee2e2; border-color: #b91c1c; color: #b91c1c; }
+.option:disabled { cursor: not-allowed; opacity: 0.7; }
+
+.feedback {
+  min-height: 48px;
+  margin-top: 14px;
+  font-size: 19px;
+  font-weight: bold;
+  text-align: center;
+  width: 100%;
+}
+
+.primary {
+  background: #1f4e79;
+  color: white;
+  border: none;
+  border-radius: 14px;
+  padding: 14px 28px;
+  font-size: 19px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+#nextBtn { display: none; }
 
 @media(max-width:700px){
-  .options{grid-template-columns:1fr}
+  .options { grid-template-columns: 1fr; }
+  .topbar { grid-template-columns: repeat(2, 1fr); }
 }
 </style>
 </head>
@@ -117,7 +160,7 @@ body{margin:0;font-family:Arial,sans-serif;background:#f3f8ff;color:#1f2937}
 <audio id="audioWrong" src="assets/wrong.mp3" preload="auto"></audio>
 
 <div id="logoScreen" class="screen active">
-  <img src="assets/logo.png" class="logo">
+  <img src="assets/logo.png" class="logo" alt="Logo">
 </div>
 
 <div id="introScreen" class="screen">
@@ -264,19 +307,21 @@ let timer = 60;
 let interval;
 let attemptsLeft = 2;
 
+function changeScreen(fromId, toId) {
+  const fromScreen = document.getElementById(fromId);
+  const toScreen = document.getElementById(toId);
+  if (fromScreen) fromScreen.classList.remove("active");
+  if (toScreen) toScreen.classList.add("active");
+}
+
 function init() {
-  // Brand Logo display visibility limit: exactly 5 seconds
   setTimeout(() => {
-    const logoScreen = document.getElementById("logoScreen");
-    const introScreen = document.getElementById("introScreen");
-    if(logoScreen) logoScreen.classList.remove("active");
-    if(introScreen) introScreen.classList.add("active");
+    changeScreen("logoScreen", "introScreen");
   }, 5000);
 }
 
 function startQuiz() {
-  document.getElementById("introScreen").classList.remove("active");
-  document.getElementById("quizScreen").classList.add("active");
+  changeScreen("introScreen", "quizScreen");
   loadQuestion();
 }
 
@@ -305,10 +350,10 @@ function playAudio(isCorrect) {
   const wrongSound = document.getElementById("audioWrong");
   if(isCorrect && correctSound) {
     correctSound.currentTime = 0;
-    correctSound.play().catch(e => console.log("Audio play blocked"));
+    correctSound.play().catch(e => console.log("Audio blocked"));
   } else if(!isCorrect && wrongSound) {
     wrongSound.currentTime = 0;
-    wrongSound.play().catch(e => console.log("Audio play blocked"));
+    wrongSound.play().catch(e => console.log("Audio blocked"));
   }
 }
 
@@ -326,7 +371,7 @@ function loadQuestion() {
   document.getElementById("questionText").innerText = q.q;
 
   if (q.visual.includes("assets/")) {
-    document.getElementById("visualBox").innerHTML = `<img src="${q.visual}" alt="Question Visual">`;
+    document.getElementById("visualBox").innerHTML = `<img src="${q.visual}" alt="Question Image">`;
   } else {
     document.getElementById("visualBox").innerHTML = `<div class="visual">${q.visual}</div>`;
   }
@@ -395,8 +440,7 @@ function nextQuestion() {
 }
 
 function showResults() {
-  document.getElementById("quizScreen").classList.remove("active");
-  document.getElementById("resultScreen").classList.add("active");
+  changeScreen("quizScreen", "resultScreen");
 
   let percentage = (score / questions.length) * 100;
   let msg = "";
@@ -416,11 +460,9 @@ function showResults() {
 function restartQuiz() {
   current = 0;
   score = 0;
-  document.getElementById("resultScreen").classList.remove("active");
-  document.getElementById("introScreen").classList.add("active");
+  changeScreen("resultScreen", "introScreen");
 }
 
-// Execute logic immediately to bypass DOM loading event races
 init();
 </script>
 
