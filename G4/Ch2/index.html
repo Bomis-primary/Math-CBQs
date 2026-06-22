@@ -211,30 +211,24 @@
         }, 5000);
     });
 
+    // Audio Resource Pre-cache
+    const audioCache = {
+        'correct': 'assets/audio/correct.mp3',
+        'wrong': 'assets/audio/wrong.mp3',
+        'timeout': 'assets/audio/timeout.mp3',
+        'complete': 'assets/audio/complete.mp3'
+    };
+
     // Central Audio Router Function
     function playSound(type) {
         const audioNode = document.getElementById('quiz-audio-engine');
-        let filePath = "";
-
-        switch(type) {
-            case 'correct':
-                filePath = "assets/audio/correct.mp3";
-                break;
-            case 'wrong':
-                filePath = "assets/audio/wrong.mp3";
-                break;
-            case 'timeout':
-                filePath = "assets/audio/timeout.mp3";
-                break;
-            case 'complete':
-                filePath = "assets/audio/complete.mp3";
-                break;
-        }
+        const filePath = audioCache[type];
 
         if (filePath) {
             audioNode.src = filePath;
+            audioNode.currentTime = 0; // Rewind track if already playing
             audioNode.play().catch(err => {
-                console.log("Audio feedback execution bypassed: Interaction sequence pending.");
+                console.log("Audio feedback execution bypassed: Interaction sequence pending.", err);
             });
         }
     }
@@ -326,6 +320,11 @@
     let current = 0, score = 0, attempts = 0, timer, timeLeft = 60;
 
     document.getElementById('start-btn').onclick = () => {
+        // Unlock browser audio layer explicitly within user gesture loop
+        const engine = document.getElementById('quiz-audio-engine');
+        engine.src = audioCache['correct'];
+        engine.load();
+
         document.getElementById('intro-view').classList.add('hidden');
         document.getElementById('quiz-view').classList.remove('hidden');
         loadQuestion();
