@@ -143,6 +143,8 @@
 </head>
 <body>
 
+<audio id="quiz-audio-player" preload="auto"></audio>
+
 <div id="app-container">
 
     <div id="splash-screen">
@@ -214,7 +216,32 @@
         }, 5000);
     });
 
-    // Grade 4 friendly questions pool rewritten in UK English
+    // Unified Audio Management Function
+    function playAudio(type) {
+        const player = document.getElementById('quiz-audio-player');
+        let src = "";
+        
+        switch(type) {
+            case 'correct':
+                src = "assets/audio/correct.mp3"; 
+                break;
+            case 'wrong':
+                src = "assets/audio/wrong.mp3"; 
+                break;
+            case 'reminder':
+                src = "assets/audio/reminder.mp3"; 
+                break;
+            case 'victory':
+                src = "assets/audio/victory.mp3"; 
+                break;
+        }
+        
+        if (src) {
+            player.src = src;
+            player.play().catch(e => console.log("Audio playback managed/blocked until user interaction."));
+        }
+    }
+
     const pool = [
         { 
             q: "A school bank account holds £487,925.\n\nWhat do you get if you take the face value of the digit '7' away from its place value?", 
@@ -340,8 +367,8 @@
                 document.getElementById('timer-text').innerText = timeLeft + "s";
                 document.getElementById('timer-bar').style.width = (timeLeft / 60 * 100) + "%";
             } else {
-                // Keep game open but display a gentle reminder text when timer hits 0
                 clearInterval(timer);
+                playAudio('reminder'); // Trigger gentle reminder chime
                 document.getElementById('timer-text').innerText = "⏰ Extra Time";
                 document.getElementById('timer-bar').style.width = "100%";
                 document.getElementById('timer-bar').style.background = "#3498db";
@@ -357,12 +384,14 @@
     function check(i, b) {
         if(i === pool[current].ans) {
             clearInterval(timer);
+            playAudio('correct'); // Trigger success chime
             b.classList.add('correct');
             score++;
             document.getElementById('score-val').innerText = score;
             endTurn();
         } else {
             attempts++;
+            playAudio('wrong'); // Trigger error chime
             b.classList.add('wrong');
             b.disabled = true;
             if(attempts === 1) {
@@ -391,6 +420,8 @@
         current++;
         if(current < pool.length) loadQuestion();
         else {
+            clearInterval(timer);
+            playAudio('victory'); // Trigger end game celebration track
             document.getElementById('quiz-view').classList.add('hidden');
             document.getElementById('result-view').classList.remove('hidden');
             document.getElementById('final-pts').innerText = score;
