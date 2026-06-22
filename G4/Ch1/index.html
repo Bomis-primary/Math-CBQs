@@ -216,29 +216,23 @@
         }, 5000);
     });
 
+    // Static manifest mapping types to respective assets
+    const audioMap = {
+        'correct': 'assets/audio/correct.mp3',
+        'wrong': 'assets/audio/wrong.mp3',
+        'reminder': 'assets/audio/reminder.mp3',
+        'victory': 'assets/audio/victory.mp3'
+    };
+
     // Unified Audio Management Function
     function playAudio(type) {
         const player = document.getElementById('quiz-audio-player');
-        let src = "";
-        
-        switch(type) {
-            case 'correct':
-                src = "assets/audio/correct.mp3"; 
-                break;
-            case 'wrong':
-                src = "assets/audio/wrong.mp3"; 
-                break;
-            case 'reminder':
-                src = "assets/audio/reminder.mp3"; 
-                break;
-            case 'victory':
-                src = "assets/audio/victory.mp3"; 
-                break;
-        }
+        const src = audioMap[type];
         
         if (src) {
             player.src = src;
-            player.play().catch(e => console.log("Audio playback managed/blocked until user interaction."));
+            player.currentTime = 0; // Rewind file marker in case fast double tapping occurs
+            player.play().catch(e => console.log("Audio playback held or bypassed by engine bounds configuration."));
         }
     }
 
@@ -319,6 +313,11 @@
     let current = 0, score = 0, attempts = 0, timer, timeLeft = 60;
 
     document.getElementById('start-btn').onclick = () => {
+        // Instantiate/Unlock target audio node context cleanly in modern browsers via explicit hardware interaction loop
+        const shadowLoader = document.getElementById('quiz-audio-player');
+        shadowLoader.src = audioMap['correct'];
+        shadowLoader.load();
+
         document.getElementById('intro-view').classList.add('hidden');
         document.getElementById('quiz-view').classList.remove('hidden');
         loadQuestion();
