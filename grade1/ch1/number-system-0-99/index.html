@@ -416,7 +416,8 @@ const questions = [
 ];
 
 let current = 0;
-let score = 0;
+let score = 0; // Total accumulated score
+let firstAttemptCorrectCount = 0; // Honest performance metrics monitor
 let attempts = 0;
 let timeLeft = 60;
 let timerInterval;
@@ -443,10 +444,11 @@ const correctSound = document.getElementById("correctSound");
 const wrongSound = document.getElementById("wrongSound");
 const muteBtn = document.getElementById("muteBtn");
 
+// Reduced duration slightly so young children don't get bored waiting
 setTimeout(() => {
   logoScreen.style.display = "none";
   game.classList.remove("hidden");
-}, 5000);
+}, 2500);
 
 function startGame(){
   startCard.classList.add("hidden");
@@ -465,7 +467,7 @@ function loadQuestion(){
 
   const item = questions[current];
 
-  qCount.textContent = `Question ${current + 1}/12`;
+  qCount.textContent = `Question ${current + 1}/${questions.length}`;
   scoreBox.textContent = `Score: ${score}`;
   timerBox.textContent = `${timeLeft}s`;
   questionText.textContent = item.q;
@@ -510,6 +512,12 @@ function checkAnswer(selected, button){
 
   if(selected === correct){
     answered = true;
+    
+    // Check if the student solved it completely on their first try
+    if (attempts === 0) {
+      firstAttemptCorrectCount++;
+    }
+
     score++;
     scoreBox.textContent = `Score: ${score}`;
     button.classList.add("correct");
@@ -523,12 +531,12 @@ function checkAnswer(selected, button){
   } else {
     attempts++;
     button.classList.add("wrong");
+    button.disabled = true; // Lock the clicked wrong button out from accidental double clicks
     playSound(wrongSound);
 
     if(attempts < 2){
       feedback.style.color = "#ea580c";
       feedback.textContent = `Try again! Hint: ${currentQuestion.hint}`;
-      button.disabled = true;
     } else {
       answered = true;
       feedback.style.color = "#dc2626";
@@ -566,20 +574,31 @@ function showResult(){
   quizCard.classList.add("hidden");
   resultCard.classList.remove("hidden");
 
-  const percent = (score / questions.length) * 100;
+  // Honesty evaluation based exclusively on First-Try correct answers
+  const firstAttemptPercent = (firstAttemptCorrectCount / questions.length) * 100;
   let message = "";
+  let dynamicAnalysis = "";
 
-  if(percent >= 75){
-    message = "Good job";
-  } else if(percent >= 40){
-    message = "Review this chapter and try again";
+  if(firstAttemptPercent === 100){
+    message = "🌟 Perfect Score!";
+    dynamicAnalysis = "Incredible! You answered every question perfectly on your first try. Amazing job!";
+  } else if(firstAttemptPercent >= 75){
+    message = "👍 Great Job!";
+    dynamicAnalysis = "You have an awesome understanding of numbers on your first try. Keep up the high precision!";
+  } else if(firstAttemptPercent >= 50){
+    message = "📚 Good Effort!";
+    dynamicAnalysis = "You did well on the first try but needed a few hints along the way. Reviewing the topic will make you an absolute expert!";
   } else {
-    message = "Let’s practise more";
+    message = "💪 Let's Practice More!";
+    dynamicAnalysis = "Using hints is a great way to learn, but let's review this chapter together so you can get more right on the first attempt next time!";
   }
 
   resultCard.innerHTML = `
     <h2>${message}</h2>
-    <p>Your Score: <strong>${score}/${questions.length}</strong></p>
+    <p style="font-size: 16px; color: #4b5563; margin: 10px 20px; line-height:1.4;">${dynamicAnalysis}</p>
+    <hr style="border: 0; border-top: 1px solid #e5e7eb; margin: 18px 0;">
+    <p>First-Try Accuracy: <strong>${firstAttemptCorrectCount}/${questions.length}</strong></p>
+    <p style="font-size: 16px; color: #6b7280; margin-top: 4px;">Total Score (including retries): ${score}/${questions.length}</p>
     <button class="restart-btn" onclick="restartGame()">Restart</button>
   `;
 }
@@ -587,6 +606,7 @@ function showResult(){
 function restartGame(){
   current = 0;
   score = 0;
+  firstAttemptCorrectCount = 0;
   resultCard.classList.add("hidden");
   quizCard.classList.remove("hidden");
   loadQuestion();
