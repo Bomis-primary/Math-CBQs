@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Number Systems Mastery Challenge</title>
+    <title>Number Systems Challenge</title>
     <style>
         :root {
             --primary: #8e44ad;
@@ -39,7 +39,7 @@
             min-height: 520px;
         }
 
-        /* --- 5-SECOND WHITE SPLASH SCREEN (STATIC LOGO) --- */
+        /* --- 5-SECOND WHITE SPLASH SCREEN --- */
         #splash-screen {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -71,12 +71,12 @@
             border-radius: 8px;
             text-align: left;
             margin: 20px 0;
-            font-size: 0.95rem;
+            font-size: 1rem;
             color: #455a64;
             line-height: 1.5;
         }
         .instruction-box ul { margin: 5px 0 0 20px; padding: 0; }
-        .instruction-box li { margin-bottom: 6px; }
+        .instruction-box li { margin-bottom: 8px; }
 
         .hud-row {
             display: flex;
@@ -99,8 +99,7 @@
         .timer-track { width: 100%; height: 8px; background: #e5e8e8; border-radius: 10px; margin-bottom: 20px; overflow: hidden; }
         #timer-bar { height: 100%; width: 100%; background: var(--primary); transition: width 1s linear; }
 
-        .category-text { font-size: 0.85rem; color: #b7950b; font-weight: 700; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 1px; }
-        .question-text { font-size: 1.1rem; font-weight: 600; line-height: 1.5; margin-bottom: 15px; white-space: pre-line; }
+        .question-text { font-size: 1.15rem; font-weight: 600; line-height: 1.5; margin-bottom: 20px; white-space: pre-line; }
 
         .visual-display-box {
             background: #fcfcfc;
@@ -128,6 +127,13 @@
         .feedback { margin-top: 20px; padding: 15px; border-radius: 12px; display: none; line-height: 1.5; font-size: 0.95rem; }
         .hint-box { background: #fef9e7; border: 1px solid #f9e79f; color: #b7950b; }
         .expl-box { background: #e8daef; border: 1px solid #bb8fce; color: #4a235a; }
+        .reminder-box { background: #eaf2f8; border: 1px solid #a9cce3; color: #1f618d; text-align: center; animation: pulse 2s infinite; }
+
+        @keyframes pulse {
+            0% { opacity: 0.9; }
+            50% { opacity: 1; transform: scale(1.01); }
+            100% { opacity: 0.9; }
+        }
 
         #action-btn { width: 100%; margin-top: 20px; padding: 16px; background: var(--primary); color: white; border: none; border-radius: 14px; font-weight: 700; cursor: pointer; font-size: 1rem; }
         #action-btn:hover { background: var(--primary-dark); }
@@ -140,42 +146,37 @@
 <div id="app-container">
 
     <div id="splash-screen">
-        <img class="splash-logo-img" src="assets/logo.png" alt="Innovine Logo">
+        <img class="splash-logo-img" src="assets/logo.png" alt="Logo">
     </div>
 
     <div id="intro-view" class="hidden">
         <div class="quiz-padding">
-            <h1 style="text-align:center; color:var(--primary); margin: 10px 0 5px 0; font-size: 26px;">Number Systems</h1>
-            <p style="text-align:center; color:#7f8c8d; margin-top: 0; font-weight: 600; text-transform: uppercase; font-size: 12px; letter-spacing: 1px;">Chapter 01 Evaluation</p>
+            <h1 style="text-align:center; color:var(--primary); margin: 10px 0 5px 0; font-size: 28px;">Number Systems</h1>
+            <p style="text-align:center; color:#7f8c8d; margin-top: 0; font-weight: 600; text-transform: uppercase; font-size: 13px; letter-spacing: 1px;">Fun Maths Quiz</p>
             
             <div class="instruction-box">
-                <strong>📋 Learning Outcomes Checked:</strong>
+                <strong>How to Play:</strong>
                 <ul>
-                    <li>Read, write, and manipulate 5-digit & 6-digit numbers.</li>
-                    <li>Differentiate structural place value from face value indicators.</li>
-                    <li>Formulate extrema bounds (largest/smallest) using digits.</li>
-                    <li>Compare Indian and International numeration systems.</li>
-                    <li>Determine predecessors, successors, and inequalities.</li>
-                    <li>Evaluate numbers by rounding to hundreds/thousands.</li>
-                    <li>Analyze Roman numerals and convert system notation paths.</li>
-                    <li><b>Rules:</b> 60s per turn. Up to 2 attempts per task!</li>
+                    <li>Answer 10 fun number questions.</li>
+                    <li>Try your best to find the answer within 60 seconds!</li>
+                    <li>If you need extra time on tricky questions, you can keep working until you solve it.</li>
+                    <li>You have up to 2 tries for each question!</li>
                 </ul>
             </div>
 
-            <button id="start-btn" style="width:100%; padding:18px; background:var(--primary); color:white; border:none; border-radius:14px; font-weight:bold; font-size:1.1rem; cursor:pointer; margin-top: 10px;">Begin Challenge ⚡</button>
+            <button id="start-btn" style="width:100%; padding:18px; background:var(--primary); color:white; border:none; border-radius:14px; font-weight:bold; font-size:1.1rem; cursor:pointer; margin-top: 10px;">Let's Start! ⚡</button>
         </div>
     </div>
 
     <div id="quiz-view" class="hidden">
         <div class="quiz-padding">
             <div class="hud-row">
-                <div class="hud-pill">Task <span id="q-num">1</span>/10</div>
+                <div class="hud-pill">Question <span id="q-num">1</span>/10</div>
                 <div class="hud-pill">Score: <span id="score-val">0</span></div>
                 <div class="hud-pill gold"><span id="timer-text">60s</span></div>
             </div>
             <div class="timer-track"><div id="timer-bar"></div></div>
             
-            <div id="q-category" class="category-text"></div>
             <div id="q-text" class="question-text"></div>
             
             <div id="custom-table-area"></div>
@@ -190,10 +191,11 @@
     <div id="result-view" class="hidden" style="text-align:center;">
         <div class="quiz-padding">
             <div style="font-size: 4rem; margin-bottom: 5px;">🏆</div>
-            <h2 style="font-size:1.6rem; margin: 5px 0;">Evaluation Completed!</h2>
+            <h2 style="font-size:1.8rem; margin: 5px 0;">Quiz Finished!</h2>
+            <p style="color:#7f8c8d; font-size: 1.1rem; margin-top:0;">Fantastic effort!</p>
             <div style="font-size: 4rem; font-weight: 800; color: var(--primary); margin: 10px 0;"><span id="final-pts">0</span>/10</div>
-            <div id="result-msg" style="color:#5f6368; font-size: 0.95rem; line-height: 1.5; margin: 0 0 25px 0; text-align: left; background: #f8f9fa; border: 1px solid #e2e8f0; padding: 16px; border-radius: 16px;"></div>
-            <button onclick="location.reload()" style="width:100%; padding:16px; background:var(--primary); color:white; border:none; border-radius:14px; font-weight:700; cursor:pointer; font-size: 1rem;">Start New Session</button>
+            <div id="result-msg" style="color:#5f6368; font-size: 1.05rem; line-height: 1.5; margin: 0 0 25px 0; text-align: center; background: #f8f9fa; border: 1px solid #e2e8f0; padding: 16px; border-radius: 16px;"></div>
+            <button onclick="location.reload()" style="width:100%; padding:16px; background:var(--primary); color:white; border:none; border-radius:14px; font-weight:700; cursor:pointer; font-size: 1rem;">Play Again</button>
         </div>
     </div>
 </div>
@@ -212,87 +214,78 @@
         }, 5000);
     });
 
+    // Grade 4 friendly questions pool rewritten in UK English
     const pool = [
         { 
-            cat: "Place & Face Value", 
-            q: "An auditor inspects a banking transaction record showing a financial ledger value of 487,925.\n\nWhat is the absolute difference between the place value and the face value of the digit '7' in this 6-digit asset token?", 
+            q: "A school bank account holds £487,925.\n\nWhat do you get if you take the face value of the digit '7' away from its place value?", 
             opts: ["A) 0", "B) 6,993", "C) 7,000", "D) 7,007"], 
             ans: 1, 
-            hint: "Identify the column position of 7 to find its place value, then subtract its baseline face value (7).", 
-            expl: "The digit 7 is in the thousands place, giving it a place value of 7,000. Its face value is 7. The difference is 7,000 - 7 = 6,993." 
+            hint: "Find out what column the 7 is in to get its place value, then take away 7.", 
+            expl: "The digit 7 is in the thousands place, so its value is 7,000. Its face value is just 7. When we subtract, we get: 7,000 - 7 = 6,993." 
         },
         { 
-            cat: "Extrema Formulation", 
-            q: "A cryptographic token generation engine produces unique identifiers using a static set of raw inputs:\n\nDigits: 5, 0, 8, 2, 9, 4\n\nWhat is the smallest possible 6-digit number that can be formulated using each given digit exactly once?", 
+            q: "Imagine you are playing a number game with these cards:\n\n5, 0, 8, 2, 9, 4\n\nWhat is the smallest possible 6-digit number you can make using each card only once?", 
             opts: ["A) 024,589", "B) 204,589", "C) 240,589", "D) 204,598"], 
             ans: 1, 
-            hint: "A standard non-zero integer cannot begin with 0 as its primary leading digit place.", 
-            expl: "To form the smallest 6-digit value, put the smallest non-zero digit (2) first, followed immediately by 0, and arrange the remaining digits in ascending order: 204,589." 
+            hint: "A real 6-digit number cannot start with a 0!", 
+            expl: "To make the smallest number, put the smallest number that isn't zero (2) first. Then put the zero, and arrange the rest from smallest to largest: 204,589." 
         },
         { 
-            cat: "Numeration Comparisons", 
-            q: "A census database logs a regional population field. In the Indian system of numeration, the count is written as:\n\n4,25,600 (Four lakh, twenty-five thousand, six hundred)\n\nHow is this identical population figure formatted and read using the International place value system?", 
-            opts: ["A) 4.256,000 as Four Million two hundred fifty-six thousand", "B) 42,5600 as Forty-two thousand five hundred sixty", "C) 425,600 as Four hundred twenty-five thousand, six hundred", "D) 4,25,600 as Four hundred twenty-five thousand, sixty"], 
+            q: "In the Indian number system, a town's population is written with commas like this:\n\n4,25,600 (Four lakh, twenty-five thousand, six hundred)\n\nHow would you write and read this identical number using the International system?", 
+            opts: ["A) 4.256,000 as Four million, two hundred and fifty-six thousand", "B) 42,5600 as Forty-two thousand, five hundred and sixty", "C) 425,600 as Four hundred and twenty-five thousand, six hundred", "D) 4,25,600 as Four hundred and twenty-five thousand and sixty"], 
             ans: 2, 
-            hint: "The International system groups digits into periods of three from the right hand side.", 
-            expl: "In the International system, spaces or commas divide digits into sets of three: 425,600. It is read as 'Four hundred twenty-five thousand, six hundred'." 
+            hint: "The International system groups digits into families of three from right to left.", 
+            expl: "In the International system, we group digits by threes. So 425600 becomes 425,600. We read it as 'Four hundred and twenty-five thousand, six hundred'." 
         },
         { 
-            cat: "Successors & Predecessors", 
-            q: "A server tracking inventory calculates a value threshold configuration mapping boundary condition.\n\nFind the structural sum of the predecessor of 300,000 and the successor of 99,999.", 
+            q: "Let's test your number skills!\n\nAdd together the predecessor of 300,000 and the successor of 99,999.", 
             opts: ["A) 400,000", "B) 399,999", "C) 399,998", "D) 400,001"], 
             ans: 2, 
-            hint: "Predecessor is number - 1. Successor is number + 1.", 
-            expl: "Predecessor of 300,000 = 299,999. Successor of 99,999 = 100,000. Summing them together yields: 299,999 + 100,000 = 399,998." 
+            hint: "Predecessor means the number just before (-1). Successor means the number just after (+1).", 
+            expl: "The number before 300,000 is 299,999. The number after 99,999 is 100,000. If we add them up: 299,999 + 100,000 = 399,998." 
         },
         { 
-            cat: "Inequality Constraints", 
-            q: "Choose the statement that represents a mathematically sound comparison between the two provided place value sets:", 
+            q: "Look at the two boxes below. Which statement correctly compares them?", 
             hasVisual: true,
-            opts: ["A) Expression 1 is less than Expression 2", "B) Expression 1 is greater than Expression 2", "C) The two expressions evaluate symmetrically to equal values", "D) The expressions cannot be directly evaluated due to different notation formats"], 
+            opts: ["A) Box 1 is smaller than Box 2", "B) Box 1 is larger than Box 2", "C) Both boxes show the exact same amount", "D) They cannot be compared"], 
             ans: 1, 
-            hint: "Convert the expanded text format of Expression 2 into standard numerical form first.", 
-            expl: "Expression 1 = 650,420. Expression 2 = 605,420. 650,420 > 605,420, meaning Expression 1 is greater than Expression 2." 
+            hint: "Change the words in Box 2 into standard digits first.", 
+            expl: "Box 1 is 650,420. Box 2 says six hundred and five thousand, which is 605,420. Since 650,420 is bigger than 605,420, Box 1 is larger!" 
         },
         { 
-            cat: "Value Estimation", 
-            q: "An estimation sub-routine optimizes asset accounting items valued at $484,760. \n\nEvaluate this asset value by rounding it to the nearest thousand place.", 
-            opts: ["A) $484,000", "B) $485,000", "C) $480,000", "D) $484,800"], 
+            q: "A local charity raised £484,760 to build a new playground.\n\nRound this amount of money to the nearest thousand.", 
+            opts: ["A) £484,000", "B) £485,000", "C) £480,000", "D) £484,800"], 
             ans: 1, 
-            hint: "Examine the digit in the hundreds column. If it is 5 or higher, round up the thousands place.", 
-            expl: "The hundreds digit is 7 (7 >= 5). Therefore, the thousands digit rounds up from 4 to 5, resulting in $485,000." 
+            hint: "Look at the hundreds digit. If it is 5 or more, round the thousands digit up!", 
+            expl: "The digit in the hundreds column is 7. Because 7 is '5 or more', we round up the thousands digit from 4 to 5. This gives us £485,000." 
         },
         { 
-            cat: "Roman Conversions", 
-            q: "A structural asset marker displays the historical classification identifier written in Roman numerals:\n\nCLXXIV\n\nWhat is the equivalent representation of this value within the standard Hindu-Arabic numeral framework?", 
+            q: "An ancient stone gate has a year carved into it using Roman numerals:\n\nCLXXIV\n\nWhat ordinary number does this match?", 
             opts: ["A) 154", "B) 174", "C) 176", "D) 164"], 
             ans: 1, 
-            hint: "Break down the structural characters: C = 100, L = 50, X = 10, IV = 4.", 
-            expl: "Summing the Roman components: 100 + 50 + 10 + 10 + (5 - 1) = 174." 
+            hint: "Break it down: C = 100, L = 50, X = 10, and IV = 4.", 
+            expl: "Let's add the values: 100 (C) + 50 (L) + 10 (X) + 10 (X) + 4 (IV) = 174." 
         },
         { 
-            cat: "Hindu-Arabic to Roman", 
-            q: "A designer needs to convert a data token sequence matching the value 95 into a Roman numeral sequence for a localized display layout. \n\nWhich sequence is correct?", 
+            q: "A designer wants to write the number 95 using classic Roman numerals on a new watch face.\n\nWhich sequence is correct?", 
             opts: ["A) LXLV", "B) XCV", "C) VC", "D) LLLLXV"], 
             ans: 1, 
-            hint: "Represent 90 as 10 subtracted from 100 (XC), then append the value 5 (V).", 
-            expl: "95 is broken down as (100 - 10) + 5. In Roman notation, this translates to XC + V = XCV." 
+            hint: "Think of 95 as 10 less than 100 (XC), then add 5 (V) at the end.", 
+            expl: "To write 90, we put X before C (100 - 10 = 90). Then we add V (5) to make 95. So it is written as XCV." 
         },
         { 
-            cat: "Ordering Metrics", 
-            q: "Four raw warehouse packages contain items with the following distribution counts:\nP1: 85,420 | P2: 84,520 | P3: 85,402 | P4: 85,042\n\nWhich option displays these packages sorted in strict descending order?", 
-            opts: ["A) P1, P3, P4, P2", "B) P1, P2, P3, P4", "C) P2, P4, P3, P1", "D) P1, P3, P2, P4"], 
+            q: "Four delivery boxes have items inside categorised by count:\nBox 1: 85,420 | Box 2: 84,520 | Box 3: 85,402 | Box 4: 85,042\n\nWhich option shows the boxes ordered from largest to smallest value?", 
+            opts: ["A) Box 1, Box 3, Box 4, Box 2", "B) Box 1, Box 2, Box 3, Box 4", "C) Box 2, Box 4, Box 3, Box 1", "D) Box 1, Box 3, Box 2, Box 4"], 
             ans: 0, 
-            hint: "Descending order means organizing the values from largest to smallest.", 
-            expl: "Comparing values from left to right: 85,420 (P1) > 85,402 (P3) > 85,042 (P4) > 84,520 (P2)." 
+            hint: "Compare the thousands digits, then the hundreds digits to see which values are larger.", 
+            expl: "Comparing the amounts: 85,420 (Box 1) is the biggest, followed by 85,402 (Box 3), then 85,042 (Box 4), and finally 84,520 (Box 2)." 
         },
         { 
-            cat: "Contextual Modeling", 
-            q: "A regional data database analyst states that 'Evaluating the appropriateness of a notation format depends heavily on data scale classification (e.g., population vs. individual costs)'.\n\nWhich scenario benefits most from the International place value configuration over the Indian layout system?", 
-            opts: ["A) Auditing a small local grocery bill under $100.", "B) Comparing global telemetry datasets parsed in millions and billions across continents.", "C) Tallying standard local real estate deeds written in lakhs.", "D) Counting classroom attendance registers under 50 records."], 
+            q: "When is it most helpful to group numbers by three digits using the International system instead of the regional Indian layout?", 
+            opts: ["A) When checking a short shopping receipt under £100.", "B) When reading massive global science datasets measured in millions and billions.", "C) When measuring real estate plots written locally in lakhs.", "D) When counting fewer than 50 students on a classroom register."], 
             ans: 1, 
-            hint: "Look for broad international datasets where standard groupings of millions and billions align cross-border.", 
-            expl: "Large global datasets use millions and billions to align with cross-border systems, whereas regional contexts (like lakhs or crores) are specific to Indian standards." 
+            hint: "Which scenario talks about giant numbers shared globally across borders?", 
+            expl: "Large global projects use millions and billions so that scientists and computers around the whole world can understand the data instantly." 
         }
     ];
 
@@ -310,16 +303,17 @@
         document.getElementById('feedback-box').style.display = 'none';
         document.getElementById('action-btn').classList.add('hidden');
         document.getElementById('q-num').innerText = current + 1;
-        document.getElementById('q-category').innerText = q.cat;
         document.getElementById('q-text').innerText = q.q;
         document.getElementById('timer-text').innerText = timeLeft + "s";
+        document.getElementById('timer-bar').style.width = "100%";
+        document.getElementById('timer-bar').style.background = "var(--primary)";
         
         const tableArea = document.getElementById('custom-table-area');
         if (q.hasVisual) {
             tableArea.innerHTML = `
                 <div class="visual-display-box">
-                    Expression 1: [ 6,50,420 ] <br>
-                    Expression 2: [ Six hundred five thousand, four hundred twenty ]
+                    Box 1: [ 6,50,420 ] <br>
+                    Box 2: [ Six hundred and five thousand, four hundred and twenty ]
                 </div>
             `;
         } else {
@@ -342,9 +336,21 @@
         clearInterval(timer);
         timer = setInterval(() => {
             timeLeft--;
-            document.getElementById('timer-text').innerText = timeLeft + "s";
-            document.getElementById('timer-bar').style.width = (timeLeft / 60 * 100) + "%";
-            if(timeLeft <= 0) { clearInterval(timer); endTurn(); }
+            if (timeLeft >= 0) {
+                document.getElementById('timer-text').innerText = timeLeft + "s";
+                document.getElementById('timer-bar').style.width = (timeLeft / 60 * 100) + "%";
+            } else {
+                // Keep game open but display a gentle reminder text when timer hits 0
+                clearInterval(timer);
+                document.getElementById('timer-text').innerText = "⏰ Extra Time";
+                document.getElementById('timer-bar').style.width = "100%";
+                document.getElementById('timer-bar').style.background = "#3498db";
+                
+                const f = document.getElementById('feedback-box');
+                f.className = 'feedback reminder-box';
+                f.innerHTML = "✨ <b>Take your time!</b> Don't forget to choose an answer when you have finished working it out.";
+                f.style.display = 'block';
+            }
         }, 1000);
     }
 
@@ -389,15 +395,15 @@
             document.getElementById('result-view').classList.remove('hidden');
             document.getElementById('final-pts').innerText = score;
 
-            let statusMessage = "Review place value systems, notations, and rounding strategies to lock down your high score.";
+            let statusMessage = "Well done for finishing! Keep practicing your big numbers to become an absolute math wizard.";
             if(score === 10) {
-                statusMessage = "Spectacular! You have mastered every outcome in the chapter perfectly.";
+                statusMessage = "Amazing! You got a perfect score! You truly understand your numbers inside and out. 🌟";
             } else if(score >= 7) {
-                statusMessage = "Great job! Strong structural number sense and numerical alignment properties.";
+                statusMessage = "Super job! You have a really strong understanding of place value and counting.";
             }
 
             document.getElementById('result-msg').innerHTML = `
-                <span style="font-weight:700; color:#2c3e50; display:block; margin-bottom:6px;">Performance Summary:</span>
+                <span style="font-weight:700; color:#2c3e50; display:block; margin-bottom:6px;">Your Summary:</span>
                 ${statusMessage}
             `;
         }
