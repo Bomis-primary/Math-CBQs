@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Number System 100 to 200 </title>
+<title>Number System 100 to 200 - Master Suite</title>
 
 <style>
 *{box-sizing:border-box}
@@ -96,6 +96,12 @@ body{
 .visual-emoji-display {
   font-size: 5rem;
   user-select: none;
+}
+
+.visual-image-display {
+  max-height: 130px;
+  max-width: 100%;
+  object-fit: contain;
 }
 
 .question{
@@ -219,6 +225,7 @@ body{
   .options{grid-template-columns:1fr;gap:11px}
   .option{min-height:75px;font-size:16px;padding:10px}
   .visual-emoji-display{font-size:3.5rem}
+  .visual-image-display{max-height:100px}
   .primary{width:100%}
   .badge,.sound-btn{font-size:14px}
 }
@@ -280,7 +287,7 @@ const questionPool=[
     explanation: "10 groups of ten (10 × 10) bundle together perfectly to make 100!"
   },
   {
-    emoji: "🚌",
+    image: "assets/line.png", 
     q: "Candy, Danny, Freddy, Polly, Edward, and Suzi are standing in a line for the bus, starting with Candy at the front. Who is third in the line?",
     options: ["Danny", "Freddy", "Polly", "Edward"],
     answer: 1,
@@ -456,7 +463,11 @@ function loadQuestion(){
   questionText.innerHTML=item.q;
   optionsBox.innerHTML="";
   
-  visualBox.innerHTML = `<div class="visual-emoji-display">${item.emoji}</div>`;
+  if (item.image) {
+    visualBox.innerHTML = `<img src="${item.image}" alt="Question Graphic" class="visual-image-display" />`;
+  } else {
+    visualBox.innerHTML = `<div class="visual-emoji-display">${item.emoji}</div>`;
+  }
 
   let shuffledOptions = item.options.map((opt, idx) => ({ text: opt, originalIndex: idx }));
   shuffledOptions.sort(() => Math.random() - 0.5);
