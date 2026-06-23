@@ -136,6 +136,7 @@
             border-radius: 8px;
             overflow: hidden;
             background: #fff;
+            width: 100%;
         }
         .shape-segment {
             height: 60px;
@@ -187,9 +188,8 @@
             <div class="instruction-box">
                 <strong>⚡ Assessment Framework:</strong>
                 <ul>
-                    <li>You will solve 10 real-world story problems tracking fractional parts and equations.</li>
-                    <li>The questions appear in a completely randomized order each time you play.</li>
-                    <li>The multiple choice options are shuffled completely on every question.</li>
+                    <li>You will solve 10 critical competency-based fraction problems covering multiple curriculum goals.</li>
+                    <li>The evaluation features interactive visual shapes and item grids to help identify distinct fractional balances.</li>
                     <li>A precise 60-second animated progress bar counts down for every question.</li>
                     <li>If a problem is missed on your first attempt, a helpful hint panel instantly unlocks.</li>
                 </ul>
@@ -246,7 +246,7 @@
             audioNode.src = filePath;
             audioNode.currentTime = 0;
             audioNode.play().catch(err => {
-                console.log("Audio exception handled: ", err);
+                console.log("Audio exception handled safely: ", err);
             });
         }
     }
@@ -263,106 +263,108 @@
         }, 5000);
     });
 
+    // Content mapping containing mixed structured goals (Identify vs Compute/Manipulate/Operators)
     const rawPool = [
+        /* --- TYPE A: IDENTIFY QUESTIONS --- */
         { 
-            q: "A teacher brings a batch of 16 blue pens to a classroom. The layout container displays the blue active selections given out to the art group.\n\nWhat is the fraction of pens given to the art group?", 
-            visualType: "grid",
-            totalItems: 16,
-            activeItems: 6,
-            gridCols: 4,
-            opts: ["3/8", "1/4", "5/8", "3/4"], 
-            correctText: "3/8", 
-            hint: "Count the total number of blue items (6 out of 16) and simplify down by dividing both parts by 2.", 
-            expl: "6 out of 16 items are selected, forming 6/16. Dividing the top and bottom numbers by 2 gives 3/8." 
+            q: "A structural panel at a construction site is divided into equal zones. Look closely at the active shaded regions shown on the display.\n\nIdentify the exact fraction of the panel that is shaded.", 
+            visualType: "shape",
+            totalItems: 8,
+            activeItems: 5,
+            opts: ["5/8", "3/8", "1/2", "5/3"], 
+            correctText: "5/8", 
+            hint: "Count the number of shaded boxes first to find your numerator, then check the total number of parts for your denominator.", 
+            expl: "There are 5 shaded regions out of a grand total of 8 matching parts, meaning the layout represents 5/8." 
         },
         { 
-            q: "An allotment space is divided into 12 equal plots as shown by the structural framework. The shaded boxes are currently hosting vegetable rows.\n\nWhich simplified option represents an equivalent fraction for this exact share?", 
+            q: "A shipping crate carries an array of electronic parts. The blue indicator dots mark the modules that have successfully passed the testing phase.\n\nIdentify the fraction of modules that passed testing.", 
+            visualType: "grid",
+            totalItems: 12,
+            activeItems: 7,
+            gridCols: 4,
+            opts: ["7/12", "5/12", "7/5", "3/4"], 
+            correctText: "7/12", 
+            hint: "Find the quantity of blue dots compared to the total number of dots inside the entire item group grid.", 
+            expl: "Exactly 7 modules out of the total collection of 12 are highlighted, which reads directly as 7/12." 
+        },
+        { 
+            q: "A long community allotment bed is split evenly to help plant herbs. The active shaded sections represent the space reserved exclusively for growing mint.\n\nIdentify the fraction of the allotment reserved for mint.", 
+            visualType: "shape",
+            totalItems: 6,
+            activeItems: 2,
+            opts: ["2/6", "4/6", "1/2", "2/4"], 
+            correctText: "2/6", 
+            hint: "Locate how many slots are colored out of the total individual plots available.", 
+            expl: "The visual highlights 2 sections out of 6 available plots, representing a fraction of 2/6." 
+        },
+        { 
+            q: "An assembly layout shows an option grid containing 20 separate toggle switches. The highlighted indicator lights represent switches that are flipped on.\n\nIdentify the fraction of switches that are currently flipped on.", 
+            visualType: "grid",
+            totalItems: 20,
+            activeItems: 9,
+            gridCols: 5,
+            opts: ["9/20", "11/20", "9/11", "1/2"], 
+            correctText: "9/20", 
+            hint: "Count the active dots to establish the top parameter, and write it over the total dots in the layout.", 
+            expl: "There are 9 active indicators out of 20 total components on the board, establishing the fraction 9/20." 
+        },
+
+        /* --- TYPE B: LEARNING OUTCOME MANIPULATION QUESTIONS (From Blueprint Engine) --- */
+        { 
+            q: "A teacher brings a box of 32 coloured pencils to a classroom. She distributes exactly 3/8 of the pencils to the art group.\n\nHow many individual pencils did the art group receive?", 
+            visualType: "text-only",
+            opts: ["12 pencils", "8 pencils", "4 pencils", "24 pencils"], 
+            correctText: "12 pencils", 
+            hint: "Find 1/8 of 32 by dividing 32 by 8. Then multiply that answer by 3 to locate the final amount.", 
+            expl: "First, find the unit fraction value: 32 ÷ 8 = 4. Next, scale up by the numerator: 4 × 3 = 12 pencils." 
+        },
+        { 
+            q: "An allotment space is split up among different growers. One grower is given 4/12 of the entire area. Look at the grid containing the shaded plots.\n\nWhich of the following values shows an equivalent fraction for this exact share?", 
             visualType: "shape",
             totalItems: 12,
             activeItems: 4,
             opts: ["2/3", "1/4", "1/3", "3/12"], 
             correctText: "1/3", 
-            hint: "Look at the 4 shaded slots out of 12 total spaces. Divide both values by their highest common factor.", 
-            expl: "The visual displays 4/12. Dividing the numerator and denominator by 4 simplifies the section down to 1/3." 
+            hint: "Divide both the top number and the bottom number of 4/12 by their largest common factor to simplify it.", 
+            expl: "The layout represents 4/12. Dividing both the numerator and denominator by 4 reduces the value down to 1/3." 
         },
         { 
-            q: "A bakery log displays an unsold traybake order broken down into 24 distinct pieces. Look at the filled status boxes representing the remaining slices.\n\nWhat is this remaining fraction written in its simplest terms?", 
+            q: "A baker tracks the remaining stock of lemon traybakes left over at the end of a school fête. The logbook records the remaining amount visually below.\n\nWhat is this fraction written in its simplest terms?", 
             visualType: "grid",
             totalItems: 24,
             activeItems: 18,
             gridCols: 6,
             opts: ["9/12", "3/4", "6/8", "2/3"], 
             correctText: "3/4", 
-            hint: "There are 18 highlighted units out of 24. Divide both values by 6 to reduce it completely.", 
-            expl: "The visual maps out 18/24. Dividing by the Highest Common Factor (HCF) of 6 simplifies the fraction to 3/4." 
+            hint: "The Highest Common Factor (HCF) for 18 and 24 is 6. Divide both numbers by 6.", 
+            expl: "The grid contains 18 active dots out of 24, yielding 18/24. Dividing both values by 6 simplifies the fraction to 3/4." 
         },
         { 
-            q: "A mechanical design layout shows a balancing scale where an equivalent value must be completed:\n\n2/5 = ? / 20\n\nLook at the visual display showing a total of 20 elements. How many elements must be filled to match 2/5?", 
-            visualType: "grid",
-            totalItems: 20,
-            activeItems: 8,
-            gridCols: 5,
-            opts: ["8", "10", "4", "6"], 
-            correctText: "8", 
-            hint: "To change 5 into 20 parts, you multiply by 4. Multiply the top indicator by 4 as well to find the filled requirement.", 
-            expl: "Each block of 5 needs 2 dots. For 20 dots, that is 4 times as many: 2 × 4 = 8 blue dots." 
-        },
-        { 
-            q: "A kitchen workstation displays a series of partial ingredient blocks measuring 13/4 in total.\n\nHow would this improper value appear if written out as a mixed number?", 
+            q: "During a cooking class, George logs that he has 13/4 blocks of butter stored in the fridge.\n\nHow would this improper fraction look if written down as a mixed number?", 
             visualType: "text-only",
-            extraText: "🧩 [Configuration details: 3 complete blocks and 1 remaining quarter block]",
+            extraText: "🧩 [Configuration details: 13 quarter-blocks total]",
             opts: ["2 whole and 3/4", "3 whole and 1/4", "4 whole and 1/3", "3 whole and 3/4"], 
             correctText: "3 whole and 1/4", 
-            hint: "Count how many complete groups of 4 quarters fit into 13, then notice the remaining value left over.", 
-            expl: "13 divided by 4 results in 3 completely whole groups with 1 left over, which means it translates to 3 whole and 1/4." 
+            hint: "Divide 13 by 4. The whole number answer gives the full units, and the remainder forms the top of the fraction.", 
+            expl: "4 goes into 13 a total of 3 times, with a remainder of 1 left over. This converts to 3 whole and 1/4." 
         },
         { 
-            q: "A courier vehicle unloads crates of glass bottles. The interface logs 4 whole sets and an additional 2/3 set.\n\nWhat is this configuration written entirely as an improper fraction?", 
+            q: "Sarah buys a large ball of knitting wool. She uses 1/3 of the wool to make a winter hat and 1/6 of it to make a small matching drink coaster.\n\nWhat total fraction of the wool ball has she used up altogether?", 
             visualType: "text-only",
-            extraText: "📦 [Configuration details: 4 full segments and 2/3 of a final segment]",
-            opts: ["14/3", "10/3", "8/3", "12/3"], 
-            correctText: "14/3", 
-            hint: "Multiply your 4 whole sets by the denominator value 3, then combine it with the 2 extra parts.", 
-            expl: "4 wholes × 3 parts per whole = 12 parts. Adding the 2 additional parts gives a final value of 14/3." 
-        },
-        { 
-            q: "A schematic board tracks how to represent a whole number integer cleanly as a standalone fractional format.\n\nWhich option accurately displays the value 6 in fractional form?", 
-            visualType: "grid",
-            totalItems: 6,
-            activeItems: 6,
-            gridCols: 6,
-            opts: ["6/6", "1/6", "6/1", "3/6"], 
-            correctText: "6/1", 
-            hint: "Any integer number can be converted into fractional form by placing it over a denominator value of 1.", 
-            expl: "Writing an integer over a denominator of 1 states that each unit contains 1 single section. 6/1 represents 6 wholes." 
-        },
-        { 
-            q: "A project map divides a sports turf into 10 tracks. Track Group Alpha takes up 3/10 and Track Group Beta takes up 4/10.\n\nWhat is the combined fraction of the turf utilized?", 
-            visualType: "shape",
-            totalItems: 10,
-            activeItems: 7,
-            opts: ["7/20", "12/10", "7/10", "1/10"], 
-            correctText: "7/10", 
-            hint: "Since both groups share the same base size, look at the visual and add the top segment quantities together.", 
-            expl: "With matching denominators, you add the numerators directly: 3 + 4 = 7. This creates a combined value of 7/10." 
-        },
-        { 
-            q: "Sarah breaks a creative material spool into segments. She runs 1/3 of the supply on a project and 1/6 on an accessory loop.\n\nWhat combined portion of the whole unit has she consumed?", 
-            visualType: "shape",
-            totalItems: 6,
-            activeItems: 3,
             opts: ["2/9", "1/2", "2/6", "3/6"], 
             correctText: "1/2", 
-            hint: "Convert the 1/3 portion into 2/6 so both parts match. Look at the total filled blocks out of 6 items.", 
-            expl: "1/3 expands up to 2/6. Combining 2/6 and 1/6 yields 3/6. Reducing this fraction down gives exactly 1/2." 
+            hint: "Convert 1/3 into an equivalent fraction with a 6 on the bottom by multiplying its parts by 2. Then add.", 
+            expl: "1/3 expands into 2/6. Adding the fractions together gives 2/6 + 1/6 = 3/6. Simplifying 3/6 results in exactly 1/2." 
         },
         { 
-            q: "A workspace component layout measures 7/8 of a metre. A craftsman removes a section measuring 3/4 of a metre long.\n\nWhat fraction of a metre remains active on the component?", 
-            visualType: "text-only",
+            q: "A carpenter has a wooden plank measuring 7/8 of a metre long. He saws off a piece that is 3/4 of a metre long to complete a repair.\n\nWhat fraction of a metre of wood is left over on the plank?", 
+            visualType: "shape",
+            totalItems: 8,
+            activeItems: 1,
             opts: ["4/4", "1/8", "4/8", "2/8"], 
             correctText: "1/8", 
-            hint: "Convert the 3/4 modification size into eighths (6/8), then find the difference from the original 7/8 allocation.", 
-            expl: "The value 3/4 is equivalent to 6/8. Subtracting this from the original allocation: 7/8 - 6/8 leaves 1/8." 
+            hint: "Convert 3/4 into eighths first by multiplying by 2 (6/8). Then subtract that from 7/8.", 
+            expl: "3/4 is equivalent to 6/8. Subtracting this from the original size: 7/8 - 6/8 leaves exactly 1/8 of a metre." 
         }
     ];
 
@@ -370,7 +372,6 @@
     let current = 0, score = 0, attempts = 0, timer, timeLeft = 60;
     let computedCorrectIdx = -1;
 
-    // Fisher-Yates Randomization Engine (Shuffles both questions and options)
     function shuffleArray(arr) {
         for (let i = arr.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
@@ -381,9 +382,9 @@
 
     function initQuizData() {
         pool = JSON.parse(JSON.stringify(rawPool));
-        shuffleArray(pool); // Randomizes question progression sequence
+        shuffleArray(pool); 
         pool.forEach(qItem => {
-            shuffleArray(qItem.opts); // Randomizes multiple choice button layout orders
+            shuffleArray(qItem.opts); 
         });
     }
 
@@ -524,11 +525,11 @@
             document.getElementById('result-view').classList.remove('hidden');
             document.getElementById('final-pts').innerText = score;
 
-            let statusMessage = "Review equivalent fractions, mixed number conversions, and subtraction rules to practice your accuracy.";
+            let statusMessage = "Review equivalent fractions, visual identification systems, and mixed number formulas to improve your accuracy.";
             if(score === 10) {
-                statusMessage = "Fantastic! You solved every single fractional competency problem, partition challenge, and operation question flawlessly.";
+                statusMessage = "Excellent work! You successfully identified layout matrices, completed conversions, and calculated operational fractions perfectly.";
             } else if(score >= 7) {
-                statusMessage = "Good work! You show dependable skills in fraction reduction, finding equivalent values, and matching formats.";
+                statusMessage = "Good job! You demonstrate robust competency in both identifying fractional profiles and resolving basic operations.";
             }
 
             document.getElementById('result-msg').innerHTML = `
