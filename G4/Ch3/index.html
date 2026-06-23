@@ -102,18 +102,53 @@
         .category-text { font-size: 0.85rem; color: #b7950b; font-weight: 700; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 1px; }
         .question-text { font-size: 1.1rem; font-weight: 600; line-height: 1.5; margin-bottom: 15px; white-space: pre-line; }
 
-        .borrow-visual-box {
-            background: #fcfcfc;
-            border: 2px dashed #bdc3c7;
-            padding: 15px;
-            border-radius: 12px;
-            text-align: center;
-            font-family: monospace;
-            font-size: 1.2rem;
+        /* --- MATHEMATICAL COLUMNAR PLACE VALUE TABLE --- */
+        .math-table-container {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
+
+        .math-table {
+            border-collapse: collapse;
+            font-family: 'Courier New', monospace, sans-serif;
+            font-size: 1.3rem;
             font-weight: bold;
-            margin: 15px 0;
-            line-height: 1.4;
+            text-align: center;
+        }
+
+        .math-table th {
+            font-family: 'Segoe UI', sans-serif;
+            font-size: 0.85rem;
+            color: #7f8c8d;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #bdc3c7;
+            width: 50px;
+        }
+
+        .math-table td {
+            padding: 6px 4px;
             letter-spacing: 2px;
+        }
+
+        .math-table tr.operand-row td {
+            color: #2c3e50;
+        }
+
+        .math-table tr.operator-row td {
+            border-bottom: 3px solid #34495e;
+            position: relative;
+        }
+
+        .math-table tr.operator-row td.operator-cell {
+            text-align: left;
+            padding-left: 0;
+            letter-spacing: 0;
+        }
+
+        .math-table tr.result-row td {
+            color: var(--primary);
+            padding-top: 10px;
         }
 
         .options-grid { display: grid; gap: 12px; }
@@ -156,7 +191,7 @@
                 <ul>
                     <li>You will be presented with 10 multi-digit subtraction challenges.</li>
                     <li>Each task features a strict 60-second limit countdown.</li>
-                    <li>You have up to 2 evaluation attempts per question before locking.</li>
+                    <li>The presentation order of questions and dynamic alternatives is fully randomized.</li>
                     <li>Helpful processing hints appear immediately on your first error.</li>
                 </ul>
             </div>
@@ -212,7 +247,7 @@
 
         if (filePath) {
             audioNode.src = filePath;
-            audioNode.currentTime = 0; // Reset track to avoid lag over rapid taps
+            audioNode.currentTime = 0;
             audioNode.play().catch(err => console.log("User interaction required to initialize sound engine: ", err));
         }
     }
@@ -230,98 +265,130 @@
         }, 5000);
     });
 
-    const pool = [
+    const rawPool = [
         { 
             cat: "Conceptual Framework", 
             q: "In a formal arithmetic proof, a student is given the subtraction sentence:\n85,400 - 12,150 = 73,250\n\nWhich of the following terms correctly identifies the number '85,400'?", 
-            opts: ["A) Subtrahend", "B) Minuend", "C) Difference", "D) Addend"], 
-            ans: 1, 
+            opts: ["Subtrahend", "Minuend", "Difference", "Addend"], 
+            correctText: "Minuend", 
             hint: "The minuend is the initial quantity from which another value is being subtracted.", 
             expl: "In subtraction terminology, Minuend - Subtrahend = Difference. Therefore, 85,400 is the Minuend." 
         },
         { 
             cat: "Inverse Relationships", 
             q: "If an operations team knows that a missing resource satisfies the following checking equation:\n\n[ ? ] + 14,350 = 40,000\n\nWhich direct calculation evaluates the missing bracket?", 
-            opts: ["A) 40,000 + 14,350", "B) 14,350 - 40,000", "C) 40,000 - 14,350", "D) 40,000 × 14,350"], 
-            ans: 2, 
+            opts: ["40,000 + 14,350", "14,350 - 40,000", "40,000 - 14,350", "40,000 × 14,350"], 
+            correctText: "40,000 - 14,350", 
             hint: "Use the inverse operation of addition to isolate the unknown quantity.", 
             expl: "Subtraction is the inverse of addition. To find the missing addend, subtract the known addend from the total sum: 40,000 - 14,350." 
         },
         { 
             cat: "5-Digit Vertical Regrouping", 
-            q: "Evaluate the exact arithmetic difference between these two ledger balances:\n\n  62,413\n- 18,257\n--------", 
-            opts: ["A) 44,156", "B) 44,244", "C) 43,156", "D) 44,166"], 
-            ans: 0, 
+            q: "Evaluate the exact arithmetic difference between these two ledger balances shown in the place-value column configuration below:", 
+            hasTable: true,
+            tableData: {
+                headers: ["T-Th", "Th", "H", "T", "O"],
+                val1: ["6", "2", "4", "1", "3"],
+                val2: ["1", "8", "2", "5", "7"],
+                showResultPlaceholder: true
+            },
+            opts: ["44,156", "44,244", "43,156", "44,166"], 
+            correctText: "44,156", 
             hint: "Be sure to borrow correctly across the ones, tens, and thousands places.", 
             expl: "Regrouping columns carefully: 13 - 7 = 6 (ones); 10 - 5 = 5 (tens); 3 - 2 = 1 (hundreds); 12 - 8 = 4 (thousands); 5 - 1 = 4 (ten-thousands), yielding 44,156." 
         },
         { 
             cat: "Borrowing Over Zeros", 
             q: "Look closely at the column layout alignment below involving consecutive placeholders:\n\nWhat is the exact final structural difference?", 
-            hasBorrowingVisual: true,
-            opts: ["A) 41,345", "B) 31,345", "C) 31,455", "D) 32,345"], 
-            ans: 1, 
+            hasTable: true,
+            tableData: {
+                headers: ["T-Th", "Th", "H", "T", "O"],
+                val1: ["5", "0", "0", "0", "0"],
+                val2: ["1", "8", "6", "5", "5"],
+                showResultPlaceholder: true
+            },
+            opts: ["41,345", "31,345", "31,455", "32,345"], 
+            correctText: "31,345", 
             hint: "When borrowing from 50,000, the intermediate zeros turn into 9s as values pass down to the ones place.", 
             expl: "50,000 regrouped step-by-step turns into 4 ten-thousands, 9 thousands, 9 hundreds, 9 tens, and 10 ones. 10-5=5, 9-5=4, 9-6=3, 9-8=1, 4-1=3. Result = 31,345." 
         },
         { 
             cat: "Large Scale Subtraction", 
             q: "A regional digital data vault records an annual input bandwidth limit of 850,320 Terabytes. \n\nBy mid-year, the downstream consumers have extracted 267,145 Terabytes. How much allocated storage volume remains?", 
-            opts: ["A) 583,175 Terabytes", "B) 583,225 Terabytes", "C) 617,175 Terabytes", "D) 583,185 Terabytes"], 
-            ans: 0, 
+            opts: ["583,175 Terabytes", "583,225 Terabytes", "617,175 Terabytes", "583,185 Terabytes"], 
+            correctText: "583,175 Terabytes", 
             hint: "Align 850,320 and 267,145 vertically and compute the difference from right to left.", 
             expl: "850,320 - 267,145 = 583,175 Terabytes after tracking standard multi-column borrowing constraints." 
         },
         { 
             cat: "Difference Estimation", 
             q: "A concrete distribution hub holds 7,824 tons of premium aggregates. A contractor orders a shipment containing 3,190 tons. \n\nEstimate the remaining stock by rounding both figures to the nearest thousand before calculation.", 
-            opts: ["A) 4,000 tons", "B) 5,000 tons", "C) 4,600 tons", "D) 6,000 tons"], 
-            ans: 1, 
+            opts: ["4,000 tons", "5,000 tons", "4,600 tons", "6,000 tons"], 
+            correctText: "5,000 tons", 
             hint: "7,824 rounds up to 8,000. 3,190 rounds down to 3,000.", 
             expl: "7,824 rounds to 8,000 at the thousands place. 3,190 rounds to 3,000. Estimated difference = 8,000 - 3,000 = 5,000 tons." 
         },
         { 
             cat: "Strategic Error Identification", 
             q: "A student calculates 403 - 189 and mistakenly sets up the calculation as (400 - 100) + (0 - 80) + (3 - 9), arriving at an incorrect value. \n\nWhat core property of subtraction did they disregard?", 
-            opts: ["A) Subtraction does not require column place alignment.", "B) Subtraction is commutative, so order does not matter.", "C) Subtraction does not distribute symmetrically like addition; place values must borrow sequentially.", "D) You cannot subtract a larger number from a smaller number anywhere."], 
-            ans: 2, 
+            opts: ["Subtraction does not require column place alignment.", "Subtraction is commutative, so order does not matter.", "Subtraction does not distribute symmetrically like addition; place values must borrow sequentially.", "You cannot subtract a larger number from a smaller number anywhere."], 
+            correctText: "Subtraction does not distribute symmetrically like addition; place values must borrow sequentially.", 
             hint: "Think about why expanding individual columns blindly can result in invalid negative partial properties.", 
             expl: "Unlike addition, partial products or differences cannot be combined independently without sequential regrouping (borrowing) from left column hierarchies." 
         },
         { 
             cat: "Multi-Step Cash Flow Story", 
             q: "An environmental development fund is allocated a seed budget of $95,000. \n\nThey immediately award $34,200 to a clean solar venture, and later distribute $18,550 for water management upgrades. What is the final remaining balance of the fund?", 
-            opts: ["A) $42,250", "B) $60,800", "C) $43,250", "D) $51,350"], 
-            ans: 0, 
+            opts: ["$42,250", "$60,800", "$43,250", "$51,350"], 
+            correctText: "$42,250", 
             hint: "Sum the total disbursements first ($34,200 + $18,550) and subtract that entire volume from the starting reserve.", 
             expl: "Total expenses = $34,200 + $18,550 = $52,750. Remaining balance = $95,000 - $52,750 = $42,250." 
         },
         { 
             cat: "Place Value Check", 
             q: "If you decrease the ten-thousands digit of the number 784,921 by 4, how much has the total overall value changed?", 
-            opts: ["A) It decreases by 4", "B) It decreases by 400", "C) It decreases by 4,000", "D) It decreases by 40,000"], 
-            ans: 3, 
+            opts: ["It decreases by 4", "It decreases by 400", "It decreases by 4,000", "It decreases by 40,000"], 
+            correctText: "It decreases by 40,000", 
             hint: "Look at the absolute numerical weight of the target digit placement column.", 
-            expl: "The digit 8 sits in the ten-thousands column ($8 \\times 10,000$). Reducing it by 4 drops the total number value by exactly 40,000." 
+            expl: "The digit 8 sits in the ten-thousands column (8 × 10,000). Reducing it by 4 drops the total number value by exactly 40,000." 
         },
         { 
             cat: "Real World Modeling", 
             q: "Which real-world scenario accurately reflects the primary math model:\nNet Capacity = 12,500 - 4,250", 
-            opts: ["A) A depot packs 12,500 inventory cases and receives an extra 4,250 boxes.", "B) An exhibition stadium holds 12,500 seats. If 4,250 tickets are left unpurchased, find the total number of occupied seats.", "C) An aircraft cruises at 12,500 meters and rises another 4,250 meters into the atmosphere.", "D) A production plant manufactures 12,500 devices divided equally among 4,250 buyers."], 
-            ans: 1, 
+            opts: ["A depot packs 12,500 inventory cases and receives an extra 4,250 boxes.", "An exhibition stadium holds 12,500 seats. If 4,250 tickets are left unpurchased, find the total number of occupied seats.", "A aircraft cruises at 12,500 meters and rises another 4,250 meters into the atmosphere.", "A production plant manufactures 12,500 devices divided equally among 4,250 buyers."], 
+            correctText: "An exhibition stadium holds 12,500 seats. If 4,250 tickets are left unpurchased, find the total number of occupied seats.", 
             hint: "Look for an action involving a reduction, departure, or dynamic separation from an established baseline.", 
             expl: "Starting with a fixed capacity of 12,500 structures and removing a subset group of 4,250 maps directly to the subtraction equation." 
         }
     ];
 
+    let pool = [];
     let current = 0, score = 0, attempts = 0, timer, timeLeft = 60;
+    let computedCorrectIdx = -1;
+
+    // --- FISHER-YATES ARRAY SHUFFLE ALGORITHM ---
+    function shuffleArray(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+        return array;
+    }
+
+    function initializeQuizSession() {
+        pool = JSON.parse(JSON.stringify(rawPool));
+        shuffleArray(pool);
+        pool.forEach(item => {
+            shuffleArray(item.opts);
+        });
+    }
 
     document.getElementById('start-btn').onclick = () => {
-        // Unlock web audio element layers properly inside human click thread
         const engine = document.getElementById('quiz-audio-engine');
         engine.src = audioCache['correct'];
         engine.load();
 
+        initializeQuizSession();
         document.getElementById('intro-view').classList.add('hidden');
         document.getElementById('quiz-view').classList.remove('hidden');
         loadQuestion();
@@ -338,13 +405,28 @@
         document.getElementById('timer-text').innerText = timeLeft + "s";
         
         const tableArea = document.getElementById('custom-table-area');
-        if (q.hasBorrowingVisual) {
+        if (q.hasTable && q.tableData) {
+            let headerCells = q.tableData.headers.map(h => `<th>${h}</th>`).join('');
+            let row1Cells = q.tableData.val1.map(v => `<td>${v}</td>`).join('');
+            
+            // First cell contains minus sign indicator, followed by digits
+            let row2Cells = q.tableData.val2.map((v, idx) => {
+                if (idx === 0) return `<td class="operator-cell">&minus;&nbsp;&nbsp;${v}</td>`;
+                return `<td>${v}</td>`;
+            }).join('');
+            
+            let resultCells = q.tableData.val1.map(() => `<td>?</td>`).join('');
+
             tableArea.innerHTML = `
-                <div class="borrow-visual-box">
-                    &nbsp;&nbsp;5 0 0 0 0<br>
-                    - 1 8 6 5 5<br>
-                    -----------<br>
-                    [ ? ? ? ? ? ]
+                <div class="math-table-container">
+                    <table class="math-table">
+                        <thead><tr>${headerCells}</tr></thead>
+                        <tbody>
+                            <tr class="operand-row">${row1Cells}</tr>
+                            <tr class="operator-row">${row2Cells}</tr>
+                            <tr class="result-row">${resultCells}</tr>
+                        </tbody>
+                    </table>
                 </div>
             `;
         } else {
@@ -353,10 +435,15 @@
 
         const area = document.getElementById('options-area');
         area.innerHTML = "";
+        
+        const prefixes = ["A) ", "B) ", "C) ", "D) "];
         q.opts.forEach((o, i) => {
+            if (o === q.correctText) {
+                computedCorrectIdx = i;
+            }
             const b = document.createElement('button');
             b.className = 'opt-btn';
-            b.innerText = o;
+            b.innerText = prefixes[i] + o;
             b.onclick = () => check(i, b);
             area.appendChild(b);
         });
@@ -378,7 +465,7 @@
     }
 
     function check(i, b) {
-        if(i === pool[current].ans) {
+        if(i === computedCorrectIdx) {
             clearInterval(timer);
             playSound('correct'); 
             b.classList.add('correct');
@@ -408,7 +495,7 @@
         f.className = 'feedback expl-box';
         f.innerHTML = "<b>🔍 Explanation:</b> " + pool[current].expl;
         f.style.display = 'block';
-        document.querySelectorAll('.opt-btn')[pool[current].ans].classList.add('correct');
+        document.querySelectorAll('.opt-btn')[computedCorrectIdx].classList.add('correct');
         document.getElementById('action-btn').classList.remove('hidden');
     }
 
