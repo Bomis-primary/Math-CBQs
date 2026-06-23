@@ -99,7 +99,6 @@
         .timer-track { width: 100%; height: 8px; background: #cbd5e1; border-radius: 10px; margin-bottom: 20px; overflow: hidden; }
         #timer-bar { height: 100%; width: 100%; background: var(--primary); transition: width 1s linear; }
 
-        .category-text { font-size: 0.85rem; color: #d97706; font-weight: 700; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 1px; }
         .question-text { font-size: 1.1rem; font-weight: 600; line-height: 1.5; margin-bottom: 15px; white-space: pre-line; }
 
         /* --- SCHEDULE TIMETABLE CARD BOX --- */
@@ -170,8 +169,7 @@
                 <strong>⚡ Assessment Framework:</strong>
                 <ul>
                     <li>You will solve 10 real-world story problems tracking durations, calendar dates, and clock structures.</li>
-                    <li>A precise 60-second animated progress bar counts down for every scenario.</li>
-                    <li>Questions and layout options shuffle using an automated layout engine.</li>
+                    <li>A precise 60-second animated progress bar counts down for every question.</li>
                     <li>If a problem is missed on your first attempt, a custom hint panel instantly unlocks.</li>
                 </ul>
             </div>
@@ -183,13 +181,12 @@
     <div id="quiz-view" class="hidden">
         <div class="quiz-padding">
             <div class="hud-row">
-                <div class="hud-pill">Scenario <span id="q-num">1</span>/10</div>
+                <div class="hud-pill">Question <span id="q-num">1</span>/10</div>
                 <div class="hud-pill">Points: <span id="score-val">0</span></div>
                 <div class="hud-pill gold"><span id="timer-text">60s</span></div>
             </div>
             <div class="timer-track"><div id="timer-bar"></div></div>
             
-            <div id="q-category" class="category-text"></div>
             <div id="q-text" class="question-text"></div>
             
             <div id="custom-display-area"></div>
@@ -197,7 +194,7 @@
             <div id="options-area" class="options-grid"></div>
             
             <div id="feedback-box" class="feedback"></div>
-            <button id="action-btn" class="hidden">Next Scenario →</button>
+            <button id="action-btn" class="hidden">Next Question →</button>
         </div>
     </div>
 
@@ -250,7 +247,6 @@
     // Content Pool directly mapping concepts from image_d6cce1.png into simple British English
     const rawPool = [
         { 
-            cat: "24-Hour Format Conversion", 
             q: "A train departures board at London Paddington station displays a high-speed service leaving for Bristol at exactly 16:15.\n\nHow would this departure time look on a standard 12-hour digital clock format?", 
             opts: ["4:15 am", "6:15 pm", "4:15 pm", "16:15 pm"], 
             correctText: "4:15 pm", 
@@ -258,7 +254,6 @@
             expl: "Subtracting 12 from the hour part gives: 16 - 12 = 4. Since it is past noon, the time is 4:15 pm." 
         },
         { 
-            cat: "Hours to Minutes Conversion", 
             q: "An educational children's film showing at a local cinema runs for exactly 2 hours and 25 minutes.\n\nWhat is the absolute total running length of the film expressed entirely in minutes?", 
             opts: ["145 minutes", "125 minutes", "165 minutes", "105 minutes"], 
             correctText: "145 minutes", 
@@ -266,7 +261,6 @@
             expl: "Convert the full hours: 2 hours × 60 minutes = 120 minutes. Next, add the remaining minutes: 120 + 25 = 145 minutes." 
         },
         { 
-            cat: "Minutes to Seconds Conversion", 
             q: "During a physical fitness track assessment at school, a student completes a sprint run cycle in exactly 3 minutes and 12 seconds.\n\nCalculate the student's complete sprint time score using only seconds.", 
             opts: ["192 seconds", "212 seconds", "180 seconds", "312 seconds"], 
             correctText: "192 seconds", 
@@ -274,7 +268,6 @@
             expl: "Convert the minutes first: 3 minutes × 60 seconds = 180 seconds. Adding the extra bits: 180 + 12 = 192 seconds." 
         },
         { 
-            cat: "Elapsed Time Calculation", 
             q: "A cross-country passenger coach leaves its station bay at 09:40 in the morning. It travels continuously along its route and pulls into the terminal destination at 13:15 in the afternoon.\n\nExactly how long did the coach journey take?", 
             opts: ["3 hours 55 minutes", "3 hours 35 minutes", "4 hours 15 minutes", "2 hours 35 minutes"], 
             correctText: "3 hours 35 minutes", 
@@ -282,7 +275,6 @@
             expl: "From 09:40 to 12:40 is 3 hours. From 12:40 to 13:00 is 20 minutes, and from 13:00 to 13:15 is another 15 minutes. Total elapsed time: 3 hours and 35 minutes." 
         },
         { 
-            cat: "12 vs 24-Hour Timetables", 
             q: "Review the daily swimming pool maintenance timetable logged below:", 
             hasTable: true,
             tableData: [
@@ -297,7 +289,6 @@
             expl: "14:15 in 24-hour format converts directly to 2:15 pm (14 - 12 = 2), which is properly spoken as a quarter past two in the afternoon." 
         },
         { 
-            cat: "Multi-Step Date Logic", 
             q: "A family books a summer holiday countryside cottage stay for exactly 3 weeks and 4 days.\n\nWhat is the absolute total number of days that this holiday trip lasts?", 
             opts: ["25 days", "24 days", "21 days", "28 days"], 
             correctText: "25 days", 
@@ -305,7 +296,6 @@
             expl: "Calculate week totals: 3 weeks × 7 days per week = 21 days. Adding the remaining separate days: 21 + 4 = 25 days." 
         },
         { 
-            cat: "Calendar Milestone Tracking", 
             q: "A village community craft fair is scheduled to take place on the 28th of November.\n\nIf a coordinator prints out advertising leaflets exactly 2 weeks and 3 days before the event date, on what calendar day are the leaflets printed?", 
             opts: ["11th of November", "14th of November", "17th of November", "12th of November"], 
             correctText: "11th of November", 
@@ -313,7 +303,6 @@
             expl: "Total days prior = (2 × 7) + 3 = 14 + 3 = 17 days. Counting backward from the event date: 28 - 17 = 11. The print date is the 11th of November." 
         },
         { 
-            cat: "Complex Duration Balancing", 
             q: "An artisan baker sets up a bread machine timer loop that requires 4 full hours to complete a bake cycle. The machine has already been running for 165 minutes.\n\nHow many minutes of baking time are left before the cycle finishes?", 
             opts: ["75 minutes", "65 minutes", "85 minutes", "95 minutes"], 
             correctText: "75 minutes", 
@@ -321,7 +310,6 @@
             expl: "Total required minutes: 4 hours × 60 minutes = 240 minutes. Subtracting the time elapsed: 240 - 165 = 75 minutes left." 
         },
         { 
-            cat: "Midnight Boundary Crossing", 
             q: "A security watch officer schedules a facility monitoring sweep that turns on at 21:50 in the evening and runs continuously for 4 hours and 25 minutes.\n\nAt what 24-hour clock time does the monitoring sweep turn off?", 
             opts: ["02:15", "01:15", "02:25", "23:15"], 
             correctText: "02:15", 
@@ -329,7 +317,6 @@
             expl: "From 21:50, it takes 2 hours and 10 minutes to reach 00:00 (midnight). The remaining time to add is 4h 25m - 2h 10m = 2 hours and 15 minutes. 00:00 + 2h 15m = 02:15." 
         },
         { 
-            cat: "Forward Calendar Projections", 
             q: "An agricultural science student logs a crop growth cycle that begins on the 23rd of June.\n\nThe entire observation phase runs for exactly 45 days.\n\nKnowing that June has exactly 30 days and July has 31 days, on what date in August does the observation cycle end?", 
             opts: ["7th of August", "8th of August", "6th of August", "9th of August"], 
             correctText: "7th of August", 
@@ -376,7 +363,6 @@
         document.getElementById('feedback-box').style.display = 'none';
         document.getElementById('action-btn').classList.add('hidden');
         document.getElementById('q-num').innerText = current + 1;
-        document.getElementById('q-category').innerText = q.cat;
         document.getElementById('q-text').innerText = q.q;
         document.getElementById('timer-text').innerText = timeLeft + "s";
         
