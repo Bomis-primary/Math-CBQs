@@ -137,6 +137,8 @@
 </head>
 <body>
 
+<audio id="quiz-audio-engine" preload="auto"></audio>
+
 <div id="app-container">
 
     <div id="splash-screen">
@@ -196,16 +198,22 @@
 
 <script>
     // --- AUDIO SYSTEM CONFIGURATION ---
-    const audioSFX = {
-        correct: new Audio('assets/correct.mp3'),
-        wrong: new Audio('assets/wrong.mp3')
+    const audioCache = {
+        'correct': 'assets/correct.mp3',
+        'wrong': 'assets/wrong.mp3',
+        'timeout': 'assets/wrong.mp3',
+        'complete': 'assets/freesound_community-claps-44774.mp3'
     };
 
-    // Helper function to handle audio triggers cleanly
-    function playSound(audioObject) {
-        if (audioObject) {
-            audioObject.currentTime = 0; // Rewind track to start
-            audioObject.play().catch(err => {
+    // Central Audio Router Function
+    function playSound(type) {
+        const audioNode = document.getElementById('quiz-audio-engine');
+        const filePath = audioCache[type];
+
+        if (filePath) {
+            audioNode.src = filePath;
+            audioNode.currentTime = 0; // Rewind track if already playing
+            audioNode.play().catch(err => {
                 console.log("Audio playback caught by browser autoplay rules:", err);
             });
         }
@@ -311,9 +319,10 @@
     let current = 0, score = 0, attempts = 0, timer, timeLeft = 60;
 
     document.getElementById('start-btn').onclick = () => {
-        // Pre-load and prime audio elements via user interaction block to pass browser constraints
-        audioSFX.correct.load();
-        audioSFX.wrong.load();
+        // Unlock browser audio layer explicitly within user gesture loop
+        const engine = document.getElementById('quiz-audio-engine');
+        engine.src = audioCache['correct'];
+        engine.load();
 
         document.getElementById('intro-view').classList.add('hidden');
         document.getElementById('quiz-view').classList.remove('hidden');
@@ -363,7 +372,7 @@
             document.getElementById('timer-bar').style.width = (timeLeft / 60 * 100) + "%";
             if(timeLeft <= 0) { 
                 clearInterval(timer); 
-                playSound(audioSFX.wrong); // Play wrong sound when timer runs out
+                playSound('timeout'); 
                 endTurn(); 
             }
         }, 1000);
@@ -372,14 +381,14 @@
     function check(i, b) {
         if(i === pool[current].ans) {
             clearInterval(timer);
-            playSound(audioSFX.correct); // Play correct sound asset
+            playSound('correct'); 
             b.classList.add('correct');
             score++;
             document.getElementById('score-val').innerText = score;
             endTurn();
         } else {
             attempts++;
-            playSound(audioSFX.wrong); // Play wrong sound asset
+            playSound('wrong'); 
             b.classList.add('wrong');
             b.disabled = true;
             if(attempts === 1) {
@@ -408,6 +417,7 @@
         current++;
         if(current < pool.length) loadQuestion();
         else {
+            playSound('complete');
             document.getElementById('quiz-view').classList.add('hidden');
             document.getElementById('result-view').classList.remove('hidden');
             document.getElementById('final-pts').innerText = score;
