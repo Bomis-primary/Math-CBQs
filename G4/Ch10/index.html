@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Metric Measures & Estimation </title>
+    <title>Measurement Challenge</title>
     <style>
         :root {
             --primary: #0284c7;
@@ -159,9 +159,10 @@
             <p style="text-align:center; color:#64748b; margin-top: 0; font-weight: 600; text-transform: uppercase; font-size: 12px; letter-spacing: 1px;">Session Evaluation</p>
             
             <div class="instruction-box">
-                <strong>⚡Measurement: Length, Weight, Capacity :</strong>
+                <strong>⚡ Assessment Framework:</strong>
                 <ul>
                     <li>You will solve 10 targeted problems structured directly from the metric measurement curriculum goals.</li>
+                    <li>The evaluation combines explicit identification tasks with unit conversions, multi-unit arithmetic, and real-life story sums.</li>
                     <li>A precise 60-second animated progress bar counts down for every question.</li>
                     <li>If a problem is missed on your first attempt, a custom hint panel instantly unlocks.</li>
                 </ul>
@@ -194,10 +195,14 @@
     <div id="result-view" class="hidden" style="text-align:center;">
         <div class="quiz-padding">
             <div style="font-size: 4rem; margin-bottom: 5px;">🏆</div>
-            <h2 style="font-size:1.6rem; margin: 5px 0;">Evaluation Finalised</h2>
-            <div style="font-size: 4rem; font-weight: 800; color: var(--primary); margin: 10px 0;"><span id="final-pts">0</span>/10</div>
-            <div id="result-msg" style="color:#475569; font-size: 0.95rem; line-height: 1.5; margin: 0 0 25px 0; text-align: left; background: #f8fafc; border: 1px solid #e2e8f0; padding: 16px; border-radius: 16px;"></div>
-            <button onclick="location.reload()" style="width:100%; padding:16px; background:var(--primary); color:white; border:none; border-radius:14px; font-weight:700; cursor:pointer; font-size: 1rem;">Restart </button>
+            <h2 style="font-size:1.6rem; margin: 5px 0;">Well Done!</h2>
+            <p style="color:#64748b; margin: 0 0 15px 0; font-size: 1.1rem;">You finished the quiz.</p>
+            
+            <div style="font-size: 1.2rem; font-weight: bold; margin-bottom: 25px; color: var(--text);">
+                Your Score: <span id="final-pts" style="color: var(--primary); font-size: 2rem; font-weight: 800;">0</span> / 10
+            </div>
+            
+            <button onclick="location.reload()" style="width:100%; padding:16px; background:var(--primary); color:white; border:none; border-radius:14px; font-weight:700; cursor:pointer; font-size: 1rem;">Try Again</button>
         </div>
     </div>
 </div>
@@ -235,7 +240,6 @@
         }, 5000);
     });
 
-    // Content pool focusing strictly on measurement learning outcomes from image_0c6881.png
     const rawPool = [
         /* --- IDENTIFICATION & CONCEPT QUESTIONS --- */
         { 
@@ -338,7 +342,6 @@
     let current = 0, score = 0, attempts = 0, timer, timeLeft = 60;
     let computedCorrectIdx = -1;
 
-    // Internal Shuffling Mechanisms (Fisher-Yates framework applied automatically behind the scenes)
     function shuffleArray(arr) {
         for (let i = arr.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
@@ -461,18 +464,6 @@
             document.getElementById('quiz-view').classList.add('hidden');
             document.getElementById('result-view').classList.remove('hidden');
             document.getElementById('final-pts').innerText = score;
-
-            let statusMessage = "Review metric unit conversion matrices, decimal place values, and multi-unit arithmetic steps to increase your accuracy score.";
-            if(score === 10) {
-                statusMessage = "Excellent performance! You successfully processed all place value queries, unit conversions, and operational story problems perfectly.";
-            } else if(score >= 7) {
-                statusMessage = "Good job! You show solid core competency in translating metric dimensions and resolving compound measurements.";
-            }
-
-            document.getElementById('result-msg').innerHTML = `
-                <span style="font-weight:700; color:var(--primary-dark); display:block; margin-bottom:6px;">Performance Summary:</span>
-                ${statusMessage}
-            `;
         }
     };
 </script>
