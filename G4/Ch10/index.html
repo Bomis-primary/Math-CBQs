@@ -1,1 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Competency-Based Master Assessment</title>
+    <style>
+        :root {
+            --primary: #0284c7;
+            --primary-dark: #0369a1;
+            --success: #16a34a;
+            --error: #dc2626;
+            --bg: #f0f9ff;
+            --text: #1e293b;
+        }
 
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background-color: #e2e8f0;
+            color: var(--text);
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 10px;
+        }
+
+        #app-container {
+            width: 100%;
+            max-width: 620px;
+            background: #ffffff;
+            border-radius: 24px;
+            box-shadow: 0 15px 35px rgba(2, 132, 199, 0.12);
+            position: relative;
+            overflow: hidden;
+            min-height: 560px;
+        }
+
+        /* --- 5-SECOND MANDATORY WHITE SPLASH SCREEN --- */
+        #splash-screen {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .splash-logo-img {
+            max-width: 240px;
+            width: 80%;
+            height: auto;
+            object-fit: contain;
+        }
+
+        /* --- INTERFACE CORE PADDING --- */
+        .quiz-padding {
+            padding: 25px;
+        }
+
+        .instruction-box {
+            background: var(--bg);
+            border-left: 4px solid var(--primary);
+            padding: 15px;
+            border-radius: 8px;
+            text-align: left;
+            margin: 20px 0;
+            font-size: 0.95rem;
+            color: #475569;
+            line-height: 1.5;
+        }
+        .instruction-box ul { margin: 5px 0 0 20px; padding: 0; }
+        .instruction-box li { margin-bottom: 6px; }
+
+        .hud-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        .hud-pill {
+            flex: 1;
+            text-align: center;
+            padding: 12px 6px;
+            border-radius: 14px;
+            font-size: 0.95rem;
+            font-weight: 800;
+            background-color: #e0f2fe;
+            color: var(--primary-dark);
+        }
+        .hud-pill.gold { background-color: #fef08a; color: #a16207; }
+
+        .timer-track { width: 100%; height: 8px; background: #cbd5e1; border-radius: 10px; margin-bottom: 20px; overflow: hidden; }
+        #timer-bar { height: 100%; width: 100%; background: var(--primary); transition: width 1s linear; }
+
+        .question-text { font-size: 1.05rem; font-weight: 600; line-height: 1.5; margin-bottom: 15px; white-space: pre-line; }
+
+        /* --- VISUAL RENDERING ENGINES --- */
+        .visual-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 20px 0;
+            padding: 15px;
+            background: #f8fafc;
+            border: 2px dashed #bae6fd;
+            border-radius: 16px;
+        }
+
+        /* Irregular Area Grid Visualiser */
+        .grid-canvas {
+            display: grid;
+            background: #ffffff;
+            border: 2px solid #334155;
+        }
+        .grid-cell {
+            width: 30px;
+            height: 30px;
+            border: 1px solid #cbd5e1;
+        }
+        .grid-cell.filled { background-color: #93c5fd; }
+        .grid-cell.half { 
+            background: linear-gradient(135deg, #93c5fd 50%, #ffffff 50%); 
+        }
+
+        /* 3D Net Shape Visualiser */
+        .net-container {
+            display: grid;
+            grid-template-columns: repeat(4, 40px);
+            grid-template-rows: repeat(3, 40px);
+            gap: 2px;
+        }
+        .net-square { width: 40px; height: 40px; background-color: #bae6fd; border: 2px solid #0284c7; }
+
+        /* Fractions Bar Segment Layout */
+        .visual-shape {
+            display: flex;
+            border: 3px solid #334155;
+            border-radius: 8px;
+            overflow: hidden;
+            background: #fff;
+            width: 100%;
+        }
+        .shape-segment {
+            height: 50px;
+            border-right: 2px solid #334155;
+            background-color: #fff;
+        }
+        .shape-segment:last-child { border-right: none; }
+        .shape-segment.filled { background-color: #bae6fd; }
+
+        .options-grid { display: grid; gap: 12px; }
+        .opt-btn {
+            background: #fff; border: 2px solid #e2e8f0; padding: 15px;
+            border-radius: 14px; text-align: left; font-size: 0.95rem; cursor: pointer; transition: 0.2s;
+            color: #334155; font-weight: 500; line-height: 1.4;
+        }
+        .opt-btn:hover:not(:disabled) { border-color: var(--primary); background: #f8fafc; }
+        .opt-btn.correct { background: #dcfce7 !important; color: var(--success) !important; border-color: #bbf7d0 !important; font-weight: 700; }
+        .opt-btn.wrong { background: #fee2e2 !important; color: var(--error) !important; border-color: #fca5a5 !important; }
+
+        .feedback { margin-top: 20px; padding: 15px; border-radius: 12px; display: none; line-height: 1.5; font-size: 0.95rem; }
+        .hint-box { background: #fef9c3; border: 1px solid #fef08a; color: #a16207; }
+        .expl-box { background: #e0f2fe; border: 1px solid #bae6fd; color: var(--primary-dark); }
+
+        #action-btn { width: 100%; margin-top: 20px; padding: 16px; background: var(--primary); color: white; border: none; border-radius: 14px; font-weight: 700; cursor: pointer; font-size: 1rem; }
+        #action-btn:hover { background: var(--primary-dark); }
+        
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+
+<audio id="quiz-audio-engine" preload="auto"></audio>
+
+<div id="app-container">
+
+    <div id="splash-screen">
+        <img class="splash-logo-img" src="assets/logo.png" alt="Company Logo">
+    </div>
+
+    <div id="intro-view" class="hidden">
+        <div class="quiz-padding">
+            <h1 style="text-align:center; color:var(--primary); margin: 10px 0 5px 0; font-size: 24px;">Competency-Based Evaluation</h1>
+            <p style="text-align:center; color:#64748b; margin-top: 0; font-weight: 600; text-transform: uppercase; font-size: 11px; letter-spacing: 1px;">Integrated Syllabus Modules</p>
+            
+            <div class="instruction-box">
+                <strong>⚡ Assessment Framework:</strong>
+                <ul>
+                    <li>You will resolve 10 multi-step, real-world case scenarios spanning Geometry, Time, Fractions, and Metric Measures.</li>
+                    <li>Questions require analyzing structured properties, formulas, and visual representations.</li>
+                    <li>A precise 60-second animated progress bar counts down for every question.</li>
+                    <li>If a problem is missed on your first attempt, a targeted clue panel instantly unlocks.</li>
+                </ul>
+            </div>
+
+            <button id="start-btn" style="width:100%; padding:18px; background:var(--primary); color:white; border:none; border-radius:14px; font-weight:bold; font-size:1.1rem; cursor:pointer; margin-top: 10px;">Begin Master Quiz ⚡</button>
+        </div>
+    </div>
+
+    <div id="quiz-view" class="hidden">
+        <div class="quiz-padding">
+            <div class="hud-row">
+                <div class="hud-pill">Question <span id="q-num">1</span>/10</div>
+                <div class="hud-pill">Points: <span id="score-val">0</span></div>
+                <div class="hud-pill gold"><span id="timer-text">60s</span></div>
+            </div>
+            <div class="timer-track"><div id="timer-bar"></div></div>
+            
+            <div id="q-text" class="question-text"></div>
+            
+            <div id="custom-display-area"></div>
+            
+            <div id="options-area" class="options-grid"></div>
+            
+            <div id="feedback-box" class="feedback"></div>
+            <button id="action-btn" class="hidden">Next Question →</button>
+        </div>
+    </div>
+
+    <div id="result-view" class="hidden" style="text-align:center;">
+        <div class="quiz-padding">
+            <div style="font-size: 4rem; margin-bottom: 5px;">🏆</div>
+            <h2 style="font-size:1.5rem; margin: 5px 0;">Evaluation Finalised</h2>
+            <div style="font-size: 4rem; font-weight: 800; color: var(--primary); margin: 10px 0;"><span id="final-pts">0</span>/10</div>
+            <div id="result-msg" style="color:#475569; font-size: 0.95rem; line-height: 1.5; margin: 0 0 25px 0; text-align: left; background: #f8fafc; border: 1px solid #e2e8f0; padding: 16px; border-radius: 16px;"></div>
+            <button onclick="location.reload()" style="width:100%; padding:16px; background:var(--primary); color:white; border:none; border-radius:14px; font-weight:700; cursor:pointer; font-size: 1rem;">Restart Assessment Loop</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const audioCache = {
+        'correct': 'assets/correct.mp3',
+        'wrong': 'assets/wrong.mp3',
+        'timeout': 'assets/wrong.mp3',
+        'complete': 'assets/freesound_community-claps-44774.mp3'
+    };
+
+    function playSound(type) {
+        const audioNode = document.getElementById('quiz-audio-engine');
+        const filePath = audioCache[type];
+        if (filePath) {
+            audioNode.src = filePath;
+            audioNode.currentTime = 0;
+            audioNode.play().catch(err => console.log("Audio pipeline adjustment: ", err));
+        }
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+        setTimeout(() => {
+            const splash = document.getElementById('splash-screen');
+            splash.style.opacity = '0';
+            setTimeout(() => {
+                splash.style.display = 'none';
+                document.getElementById('intro-view').classList.remove('hidden');
+            }, 800); 
+        }, 5000);
+    });
+
+    // Master pool mapping all listed learning outcomes across the 4 source files
+    const rawPool = [
+        /* === MODULE 1: GEOMETRY & SPATIAL MEASURES (image_d57ae7.png) === */
+        {
+            q: "An architect designs an exhibition park featuring a set of circular paths. The inner path shares the exact same center point as the outer path, but they have different radii so they never cross.\n\nWhich geometric term best classifies this specific arrangement of circles?",
+            visualType: "text-only",
+            opts: ["Concentric circles", "Intersecting circles", "Semicircles", "Adjacent circles"],
+            correctText: "Concentric circles",
+            hint: "Think about circles that are nested inside one another and share a single common midpoint.",
+            expl: "Circles that lie within the same plane and share the exact same center but have different radii are defined as concentric circles."
+        },
+        {
+            q: "A logistics designer lays out a blueprint sheet for cardboard packing boxes. The drawing displays a configuration of 6 flat connected squares arranged in rows.\n\nWhat is the technical term for this flat representation of a 3D shape before it is folded?",
+            visualType: "net",
+            opts: ["A flat net", "A perimeter path", "An irregular grid", "A spatial vertex"],
+            correctText: "A flat net",
+            hint: "This term describes an unfolded, 2D layout pattern of a solid 3D figure.",
+            expl: "A net is a flat, two-dimensional shape pattern that can be folded along its structural edges to form a three-dimensional solid shape."
+        },
+        {
+            q: "An environmental specialist uses a grid overlay map to measure the surface boundary of an irregular nature pond. Each full grid block represents exactly 1 square meter.\n\nHow should the specialist calculate the total estimated area of this irregular layout?",
+            visualType: "irregular-grid",
+            opts: ["Count full squares plus squares that are half or more filled", "Multiply the maximum height grid line by the maximum width grid line", "Add up only the squares that touch the outer border path", "Divide the total outer perimeter length by 4"],
+            correctText: "Count full squares plus squares that are half or more filled",
+            hint: "The grid method uses standard rounding guidelines: full blocks count as 1, blocks filled half or more count as 1, and blocks filled less than half are ignored.",
+            expl: "By applying the irregular shape grid method, you add up the total number of fully covered squares along with the squares that are at least half-shaded, while ignoring squares that are less than half-filled."
+        },
+
+        /* === MODULE 2: TIME & CALENDAR CONVERSIONS (image_d6cce1.png) === */
+        {
+            q: "A manufacturing plant operates a continuous batch processing system. A automated alert log indicates that a chemical blending cycle takes exactly 3 hours and 45 minutes to complete.\n\nWhat is this complete operations time interval expressed entirely in minutes?",
+            visualType: "text-only",
+            opts: ["225 minutes", "180 minutes", "245 minutes", "205 minutes"],
+            correctText: "225 minutes",
+            hint: "Convert the hours to minutes first by multiplying by 60, and then add the remaining minutes.",
+            expl: "Since 1 hour contains 60 minutes: 3 hours × 60 = 180 minutes. Adding the remaining 45 minutes gives: 180 + 45 = 225 minutes."
+        },
+        {
+            q: "An international train schedule coordinates arrivals across time zones. The departures monitor uses a 24-hour digital clock and displays a train departure time at exactly 19:20.\n\nHow would this departure time be displayed on a standard 12-hour clock format?",
+            visualType: "text-only",
+            opts: ["7:20 pm", "7:20 am", "9:20 pm", "5:20 pm Maud"],
+            correctText: "7:20 pm",
+            hint: "For any 24-hour hour value greater than 12, subtract 12 to find the afternoon/evening PM time.",
+            expl: "Subtracting 12 hours from the 24-hour hour indicator: 19 - 12 = 7. Because it is after midday, the time corresponds to 7:20 pm."
+        },
+
+        /* === MODULE 3: FRACTIONAL COMPETENCIES (image_d7399c.png / image_0bf442.png) === */
+        {
+            q: "An engineering check panel is split up into 16 equal testing cells. The test run logs that 12 of these cells have successfully completed initialization.\n\nUsing the Highest Common Factor (HCF) of the numerator and denominator, simplify this fraction to its lowest terms.",
+            visualType: "shape-fraction",
+            totalItems: 16,
+            activeItems: 12,
+            opts: ["3/4", "6/8", "2/3", "4/5"],
+            correctText: "3/4",
+            hint: "The starting fraction is 12/16. Find the largest whole number that divides into both 12 and 16 with no remainder, then divide them.",
+            expl: "The fraction of completed cells is 12/16. The Highest Common Factor (HCF) of 12 and 16 is 4. Dividing both parts by 4 gives: (12÷4) / (16÷4) = 3/4."
+        },
+        {
+            q: "A research laboratory inventories its compound stocks. A technician records a liquid solution volume as 19/5 liters.\n\nConvert this improper fraction into its equivalent mixed number format.",
+            visualType: "text-only",
+            opts: ["3 whole and 4/5", "4 whole and 1/5", "3 whole and 1/5", "2 whole and 9/5"],
+            correctText: "3 whole and 4/5",
+            hint: "Divide 19 by 5. The whole number quotient represents the whole units, and the remainder forms the numerator over the denominator 5.",
+            expl: "5 divides into 19 a total of 3 times (since 3 × 5 = 15), leaving a remainder of 4. This converts directly to 3 whole and 4/5."
+        },
+        {
+            q: "A maintenance crew works to patch up a pipeline segment. In the morning, they replace 1/4 of a kilometer of piping. In the afternoon, they replace another 3/8 of a kilometer.\n\nWhat total fraction of a kilometer have they replaced in total?",
+            visualType: "text-only",
+            opts: ["5/8", "4/12", "1/2", "7/8"],
+            correctText: "5/8",
+            hint: "Convert 1/4 into an equivalent fraction with a common denominator of 8 by multiplying the top and bottom by 2, then add.",
+            expl: "To add unlike fractions, find a common denominator: 1/4 is equivalent to 2/8. Adding them together: 2/8 + 3/8 = 5/8 of a kilometer."
+        },
+
+        /* === MODULE 4: METRIC MEASURES & PLACE VALUE (image_0c6881.png) === */
+        {
+            q: "A water management utility system measures bulk supply reserves across storage locations. One backup storage tank holds exactly 4.25 liters of testing reactant fluid.\n\nConvert this liquid measurement completely into milliliters (mL).",
+            visualType: "text-only",
+            opts: ["4,250 mL", "425 mL", "42,500 mL", "4.250 mL"],
+            correctText: "4,250 mL",
+            hint: "Think about the relationship between metric units: 1 liter is equal to 1,000 milliliters. Multiply the value by 1,000.",
+            expl: "Since 1 L = 1,000 mL, multiplying the decimal measurement value by 1,000 shifts the place value three places to the right: 4.25 × 1,000 = 4,250 mL."
+        },
+        {
+            q: "A courier service processes three distinct cargo parcels in a delivery run. The weights of the parcels are recorded as 2 kilograms, 450 grams, and 1.2 kilograms.\n\nWhat is the combined total weight of all three parcels expressed completely in grams?",
+            visualType: "text-only",
+            opts: ["3,650 grams", "2,100 grams", "1,850 grams", "4,150 grams"],
+            correctText: "3,650 grams",
+            hint: "Convert all kilogram values to grams first (1 kg = 1,000 grams) so that all terms match before adding them together.",
+            expl: "Convert the metric weights to grams: 2 kg = 2,000 g, and 1.2 kg = 1,200 g. Adding the values together: 2,000 g + 450 g + 1,200 g = 3,650 grams."
+        }
+    ];
+
+    let pool = [];
+    let current = 0, score = 0, attempts = 0, timer, timeLeft = 60;
+    let computedCorrectIdx = -1;
+
+    function shuffleArray(arr) {
+        for (let i = arr.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [arr[i], arr[j]] = [arr[j], arr[i]];
+        }
+        return arr;
+    }
+
+    function initQuizData() {
+        pool = JSON.parse(JSON.stringify(rawPool));
+        shuffleArray(pool); 
+        pool.forEach(qItem => {
+            shuffleArray(qItem.opts); 
+        });
+    }
+
+    document.getElementById('start-btn').onclick = () => {
+        const engine = document.getElementById('quiz-audio-engine');
+        engine.src = audioCache['correct'];
+        engine.load();
+
+        initQuizData();
+        document.getElementById('intro-view').classList.add('hidden');
+        document.getElementById('quiz-view').classList.remove('hidden');
+        loadQuestion();
+    };
+
+    function loadQuestion() {
+        attempts = 0; timeLeft = 60;
+        const q = pool[current];
+        document.getElementById('feedback-box').style.display = 'none';
+        document.getElementById('action-btn').classList.add('hidden');
+        document.getElementById('q-num').innerText = current + 1;
+        document.getElementById('q-text').innerText = q.q;
+        document.getElementById('timer-text').innerText = timeLeft + "s";
+
+        const displayArea = document.getElementById('custom-display-area');
+        displayArea.className = "hidden";
+        displayArea.innerHTML = "";
+        
+        // Contextual Display Logic for Competency Questions
+        if (q.visualType === "net") {
+            displayArea.className = "visual-container";
+            const netBox = document.createElement('div');
+            netBox.className = 'net-container';
+            // Simple visual matrix of an open T-shaped box net layout
+            const activeCoords = [[0,1], [1,0], [1,1], [1,2], [1,3], [2,1]];
+            for(let r=0; r<3; r++) {
+                for(let c=0; c<4; c++) {
+                    const block = document.createElement('div');
+                    const isActive = activeCoords.some(coord => coord[0]===r && coord[1]===c);
+                    if(isActive) block.className = 'net-square';
+                    netBox.appendChild(block);
+                }
+            }
+            displayArea.appendChild(netBox);
+        } else if (q.visualType === "irregular-grid") {
+            displayArea.className = "visual-container";
+            const canvas = document.createElement('div');
+            canvas.className = 'grid-canvas';
+            canvas.style.gridTemplateColumns = 'repeat(5, 30px)';
+            for(let i=0; i<25; i++) {
+                const cell = document.createElement('div');
+                cell.className = 'grid-cell';
+                if([6,7,8,11,12,13,17].includes(i)) cell.classList.add('filled');
+                if([2,3,14,16,18,22].includes(i)) cell.classList.add('half');
+                canvas.appendChild(cell);
+            }
+            displayArea.appendChild(canvas);
+        } else if (q.visualType === "shape-fraction") {
+            displayArea.className = "visual-container";
+            const bar = document.createElement('div');
+            bar.className = 'visual-shape';
+            const segWidth = 100 / q.totalItems;
+            for (let i = 0; i < q.totalItems; i++) {
+                const seg = document.createElement('div');
+                seg.className = `shape-segment ${i < q.activeItems ? 'filled' : ''}`;
+                seg.style.width = `${segWidth}%`;
+                bar.appendChild(seg);
+            }
+            displayArea.appendChild(bar);
+        }
+
+        const area = document.getElementById('options-area');
+        area.innerHTML = "";
+        
+        const prefixes = ["A) ", "B) ", "C) ", "D) "];
+        q.opts.forEach((o, i) => {
+            if (o === q.correctText) {
+                computedCorrectIdx = i;
+            }
+            const b = document.createElement('button');
+            b.className = 'opt-btn';
+            b.innerText = prefixes[i] + o;
+            b.onclick = () => check(i, b);
+            area.appendChild(b);
+        });
+        startTimer();
+    }
+
+    function startTimer() {
+        clearInterval(timer);
+        timer = setInterval(() => {
+            timeLeft--;
+            document.getElementById('timer-text').innerText = timeLeft + "s";
+            document.getElementById('timer-bar').style.width = (timeLeft / 60 * 100) + "%";
+            if(timeLeft <= 0) { 
+                clearInterval(timer); 
+                playSound('timeout'); 
+                endTurn(); 
+            }
+        }, 1000);
+    }
+
+    function check(i, b) {
+        if(i === computedCorrectIdx) {
+            clearInterval(timer);
+            playSound('correct'); 
+            b.classList.add('correct');
+            score++;
+            document.getElementById('score-val').innerText = score;
+            endTurn();
+        } else {
+            attempts++;
+            playSound('wrong'); 
+            b.classList.add('wrong');
+            b.disabled = true;
+            if(attempts === 1) {
+                const f = document.getElementById('feedback-box');
+                f.className = 'feedback hint-box';
+                f.innerHTML = "<b>💡 Clue:</b> " + pool[current].hint;
+                f.style.display = 'block';
+            } else {
+                clearInterval(timer);
+                endTurn();
+            }
+        }
+    }
+
+    function endTurn() {
+        document.querySelectorAll('.opt-btn').forEach(btn => btn.disabled = true);
+        const f = document.getElementById('feedback-box');
+        f.className = 'feedback expl-box';
+        f.innerHTML = "<b>🔍 Solution Step:</b> " + pool[current].expl;
+        f.style.display = 'block';
+        document.querySelectorAll('.opt-btn')[computedCorrectIdx].classList.add('correct');
+        document.getElementById('action-btn').classList.remove('hidden');
+    }
+
+    document.getElementById('action-btn').onclick = () => {
+        current++;
+        if(current < pool.length) loadQuestion();
+        else {
+            playSound('complete');
+            document.getElementById('quiz-view').classList.add('hidden');
+            document.getElementById('result-view').classList.remove('hidden');
+            document.getElementById('final-pts').innerText = score;
+
+            let statusMessage = "Review structural formulas, units conversion scales, and spatial mapping rules to maintain optimal performance consistency.";
+            if(score === 10) {
+                statusMessage = "Spectacular work! You successfully resolved every geometry, timeline scheduling, fractional reduction, and multi-unit conversion query correctly.";
+            } else if(score >= 7) {
+                statusMessage = "Solid job! You demonstrate clear analytical skills in handling mixed contextual mathematics and geometric properties.";
+            }
+
+            document.getElementById('result-msg').innerHTML = `
+                <span style="font-weight:700; color:var(--primary-dark); display:block; margin-bottom:6px;">Performance Summary:</span>
+                ${statusMessage}
+            `;
+        }
+    };
+</script>
+</body>
+</html>
