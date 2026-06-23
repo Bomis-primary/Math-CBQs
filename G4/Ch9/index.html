@@ -101,6 +101,54 @@
 
         .question-text { font-size: 1.1rem; font-weight: 600; line-height: 1.5; margin-bottom: 15px; white-space: pre-line; }
 
+        /* --- VISUAL FRACTION DISPLAYS --- */
+        .visual-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 20px 0;
+            padding: 10px;
+            background: #f8fafc;
+            border: 2px dashed #bae6fd;
+            border-radius: 16px;
+        }
+
+        /* Grid Item Visualiser */
+        .visual-grid {
+            display: grid;
+            gap: 8px;
+        }
+        .grid-dot {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background-color: #cbd5e1;
+            transition: background-color 0.3s;
+        }
+        .grid-dot.active {
+            background-color: #0284c7;
+        }
+
+        /* Shape Segment Visualiser */
+        .visual-shape {
+            display: flex;
+            border: 3px solid #334155;
+            border-radius: 8px;
+            overflow: hidden;
+            background: #fff;
+        }
+        .shape-segment {
+            height: 60px;
+            border-right: 2px solid #334155;
+            background-color: #fff;
+        }
+        .shape-segment:last-child {
+            border-right: none;
+        }
+        .shape-segment.filled {
+            background-color: #bae6fd;
+        }
+
         .options-grid { display: grid; gap: 12px; }
         .opt-btn {
             background: #fff; border: 2px solid #e2e8f0; padding: 16px;
@@ -139,7 +187,7 @@
             <div class="instruction-box">
                 <strong>⚡ Assessment Framework:</strong>
                 <ul>
-                    <li>You will solve 10 real-world story problems based on partitioning, equivalent values, and fraction operations.</li>
+                    <li>You will solve 10 real-world story problems featuring interactive visual layouts to help locate fraction values.</li>
                     <li>A precise 60-second animated progress bar counts down for every question.</li>
                     <li>If a problem is missed on your first attempt, a helpful hint panel instantly unlocks.</li>
                 </ul>
@@ -159,6 +207,8 @@
             <div class="timer-track"><div id="timer-bar"></div></div>
             
             <div id="q-text" class="question-text"></div>
+            
+            <div id="custom-display-area" class="visual-container"></div>
             
             <div id="options-area" class="options-grid"></div>
             
@@ -213,74 +263,110 @@
 
     const rawPool = [
         { 
-            q: "A teacher brings a box of 32 coloured pencils to a classroom. She distributes exactly 3/8 of the pencils to the art group.\n\nHow many individual pencils did the art group receive?", 
-            opts: ["12 pencils", "8 pencils", "4 pencils", "24 pencils"], 
-            correctText: "12 pencils", 
-            hint: "Find 1/8 of 32 by dividing 32 by 8. Then multiply that answer by 3 to find 3/8.", 
-            expl: "First, divide the total by the denominator: 32 ÷ 8 = 4. Next, multiply by the numerator: 4 × 3 = 12 pencils." 
+            q: "A teacher brings a batch of 16 blue pens to a classroom. The layout container displays the blue active selections given out to the art group.\n\nWhat is the fraction of pens given to the art group?", 
+            visualType: "grid",
+            totalItems: 16,
+            activeItems: 6,
+            gridCols: 4,
+            opts: ["3/8", "1/4", "5/8", "3/4"], 
+            correctText: "3/8", 
+            hint: "Count the total number of blue items (6 out of 16) and simplify down by dividing both parts by 2.", 
+            expl: "6 out of 16 items are selected, forming 6/12. Dividing the top and bottom numbers by 2 gives 3/8." 
         },
         { 
-            q: "A rectangle plot of land inside a village allotment is split up among different growers. One grower is given 4/12 of the entire area.\n\nWhich of the following values shows an equivalent fraction for this exact share?", 
+            q: "An allotment space is divided into 12 equal plots as shown by the structural framework. The shaded boxes are currently hosting vegetable rows.\n\nWhich simplified option represents an equivalent fraction for this exact share?", 
+            visualType: "shape",
+            totalItems: 12,
+            activeItems: 4,
             opts: ["2/3", "1/4", "1/3", "3/12"], 
             correctText: "1/3", 
-            hint: "Divide both the top number and the bottom number of 4/12 by their largest common factor.", 
-            expl: "By dividing the numerator (4) and the denominator (12) by 4, the fraction simplifies down to 1/3." 
+            hint: "Look at the 4 shaded slots out of 12 total spaces. Divide both values by their highest common factor.", 
+            expl: "The visual displays 4/12. Dividing the numerator and denominator by 4 simplifies the section down to 1/3." 
         },
         { 
-            q: "A baker tracks the remaining stock of lemon traybakes left over at the end of a school fête. The logbook records the remaining amount as 18/24.\n\nWhat is this fraction written in its simplest terms?", 
+            q: "A bakery log displays an unsold traybake order broken down into 24 distinct pieces. Look at the filled status boxes representing the remaining slices.\n\nWhat is this remaining fraction written in its simplest terms?", 
+            visualType: "grid",
+            totalItems: 24,
+            activeItems: 18,
+            gridCols: 6,
             opts: ["9/12", "3/4", "6/8", "2/3"], 
             correctText: "3/4", 
-            hint: "The Highest Common Factor (HCF) for 18 and 24 is 6. Divide both numbers by 6.", 
-            expl: "Dividing both 18 and 24 by their Highest Common Factor of 6 gives 3/4. This cannot be simplified any further." 
+            hint: "There are 18 highlighted units out of 24. Divide both values by 6 to reduce it completely.", 
+            expl: "The visual maps out 18/24. Dividing by the Highest Common Factor (HCF) of 6 simplifies the fraction to 3/4." 
         },
         { 
-            q: "A group of builders use an equation where a missing equivalent fraction value must be calculated:\n\n2/5 = ? / 20\n\nWhat is the value of the missing numerator?", 
+            q: "A mechanical design layout shows a balancing scale where an equivalent value must be completed:\n\n2/5 = ? / 20\n\nLook at the visual display showing a total of 20 elements. How many elements must be filled to match 2/5?", 
+            visualType: "grid",
+            totalItems: 20,
+            activeItems: 8,
+            gridCols: 5,
             opts: ["8", "10", "4", "6"], 
             correctText: "8", 
-            hint: "Look at the denominators. To turn 5 into 20, you must multiply by 4. Do the exact same to the top number.", 
-            expl: "Since 5 × 4 = 20, you must also multiply the top number by 4 to keep it equal: 2 × 4 = 8." 
+            hint: "To change 5 into 20 parts, you multiply by 4. Multiply the top indicator by 4 as well to find the filled requirement.", 
+            expl: "Each block of 5 needs 2 dots. For 20 dots, that is 4 times as many: 2 × 4 = 8 blue dots." 
         },
         { 
-            q: "During a cooking class, George logs that he has 13/4 blocks of butter stored in the fridge.\n\nHow would this improper fraction look if written down as a mixed number?", 
+            q: "A kitchen workstation displays a series of partial ingredient blocks measuring 13/4 in total.\n\nHow would this improper value appear if written out as a mixed number?", 
+            visualType: "shape",
+            totalItems: 4,
+            activeItems: 4, 
+            extraText: "🧩 [Visualized as 3 fully complete blocks and 1 remaining quarter block]",
             opts: ["2 whole and 3/4", "3 whole and 1/4", "4 whole and 1/3", "3 whole and 3/4"], 
             correctText: "3 whole and 1/4", 
-            hint: "Divide 13 by 4. The whole number answer is your whole units, and the remainder is the top of the fraction left over.", 
-            expl: "4 goes into 13 a total of 3 times, with a remainder of 1. This gives us 3 whole and 1/4." 
+            hint: "Count how many complete groups of 4 quarters fit into 13, then notice the remaining value left over.", 
+            expl: "13 divided by 4 results in 3 completely whole groups with 1 left over, which means it translates to 3 whole and 1/4." 
         },
         { 
-            q: "A delivery driver unloads crates of milk bottles at a doorstep. The manifest shows he has delivered 4 whole and 2/3 crates.\n\nWhat is this amount written entirely as an improper fraction?", 
+            q: "A courier vehicle unloads crates of glass bottles. The interface displays 4 whole sets and an additional 2/3 set.\n\nWhat is this configuration written entirely as an improper fraction?", 
+            visualType: "shape",
+            totalItems: 3,
+            activeItems: 2,
+            extraText: "📦 [Visualized as 4 full segments and 2/3 of a final segment]",
             opts: ["14/3", "10/3", "8/3", "12/3"], 
             correctText: "14/3", 
-            hint: "Multiply the whole number (4) by the bottom number (3), then add the top number (2). Keep the bottom number the same.", 
-            expl: "Multiply 4 × 3 = 12. Then add the original top number: 12 + 2 = 14. This gives us 14/3." 
+            hint: "Multiply your 4 whole sets by the denominator value 3, then combine it with the 2 extra parts.", 
+            expl: "4 wholes × 3 parts per whole = 12 parts. Adding the 2 additional parts gives a final value of 14/3." 
         },
         { 
-            q: "A student needs to show a whole integer value as a fraction to complete a math puzzle on a worksheets sheet.\n\nWhich option correctly represents the whole number 6 as a fraction?", 
+            q: "A schematic board tracks how to represent a whole number integer cleanly as a standalone fractional format.\n\nWhich layout option accurately displays the value 6 in fractional form?", 
+            visualType: "grid",
+            totalItems: 6,
+            activeItems: 6,
+            gridCols: 6,
             opts: ["6/6", "1/6", "6/1", "3/6"], 
             correctText: "6/1", 
-            hint: "Any whole number can be turned into a fraction by placing it over a denominator of 1.", 
-            expl: "Writing a whole number over 1 means it is divided into 1 part per unit, so 6/1 is exactly equal to 6 wholes." 
+            hint: "Any integer number can be converted into fractional form by placing it over a denominator value of 1.", 
+            expl: "Writing an integer over a denominator of 1 states that each unit contains 1 single section. 6/1 represents 6 wholes." 
         },
         { 
-            q: "A landscape project uses distinct grass mixtures on a pitch. \n\nArea Alpha takes up 3/10 of the pitch and Area Beta takes up 4/10 of the pitch.\n\nWhat is the combined total fraction of the pitch covered by these two areas?", 
+            q: "A project map divides a sports turf into 10 tracks. Track Group Alpha takes up 3/10 and Track Group Beta takes up 4/10.\n\nWhat is the combined fraction of the turf utilized?", 
+            visualType: "shape",
+            totalItems: 10,
+            activeItems: 7,
             opts: ["7/20", "12/10", "7/10", "1/10"], 
             correctText: "7/10", 
-            hint: "When the bottom numbers are identical, simply add the top numbers together and keep the bottom number exactly the same.", 
-            expl: "Since the denominators are the same, add the numerators directly: 3 + 4 = 7. The total is 7/10." 
+            hint: "Since both groups share the same base size, look at the visual and add the top segment quantities together.", 
+            expl: "With matching denominators, you add the numerators directly: 3 + 4 = 7. This creates a combined value of 7/10." 
         },
         { 
-            q: "Sarah buys a large ball of knitting wool. She uses 1/3 of the wool to make a winter hat and 1/6 of it to make a small matching drink coaster.\n\nWhat total fraction of the wool ball has she used up altogether?", 
+            q: "Sarah breaks a creative material spool into segments. She runs 1/3 of the supply on a project and 1/6 on an accessory loop.\n\nWhat combined portion of the whole unit has she consumed?", 
+            visualType: "shape",
+            totalItems: 6,
+            activeItems: 3,
             opts: ["2/9", "1/2", "2/6", "3/6"], 
             correctText: "1/2", 
-            hint: "These fractions have different bottom numbers. First convert 1/3 into an equivalent fraction with a 6 on the bottom.", 
-            expl: "Convert 1/3 to 2/6 so it matches the other fraction. Then add: 2/6 + 1/6 = 3/6. Simplifying 3/6 gives exactly 1/2." 
+            hint: "Convert the 1/3 portion into 2/6 so both parts match. Look at the total filled blocks out of 6 items.", 
+            expl: "1/3 expands up to 2/6. Combining 2/6 and 1/6 yields 3/6. Reducing this fraction down gives exactly 1/2." 
         },
         { 
-            q: "A carpenter has a wooden plank measuring 7/8 of a metre long. He saws off a piece that is 3/4 of a metre long to complete a repair.\n\nWhat fraction of a metre of wood is left over on the plank?", 
+            q: "A workspace component layout measures 7/8 of a metre. A craftsman removes a section measuring 3/4 of a metre long.\n\nWhat fraction of a metre remains active on the component?", 
+            visualType: "shape",
+            totalItems: 8,
+            activeItems: 1,
             opts: ["4/4", "1/8", "4/8", "2/8"], 
             correctText: "1/8", 
-            hint: "Convert 3/4 into eighths first by multiplying its top and bottom numbers by 2. Then subtract it from 7/8.", 
-            expl: "3/4 is equivalent to 6/8. Subtracting this from the original piece: 7/8 - 6/8 = 1/8 of a metre left." 
+            hint: "Convert the 3/4 modification size into eighths (6/8), then find the difference from the original 7/8 allocation.", 
+            expl: "The value 3/4 is equivalent to 6/8. Subtracting this from the original allocation: 7/8 - 6/8 leaves 1/8." 
         }
     ];
 
@@ -323,6 +409,47 @@
         document.getElementById('q-num').innerText = current + 1;
         document.getElementById('q-text').innerText = q.q;
         document.getElementById('timer-text').innerText = timeLeft + "s";
+
+        // Generate Visual Content Content Area dynamically
+        const displayArea = document.getElementById('custom-display-area');
+        displayArea.innerHTML = "";
+        
+        if (q.visualType === "grid") {
+            const gridEl = document.createElement('div');
+            gridEl.className = 'visual-grid';
+            gridEl.style.gridTemplateColumns = `repeat(${q.gridCols}, 1fr)`;
+            for (let i = 0; i < q.totalItems; i++) {
+                const dot = document.createElement('div');
+                dot.className = `grid-dot ${i < q.activeItems ? 'active' : ''}`;
+                gridEl.appendChild(dot);
+            }
+            displayArea.appendChild(gridEl);
+        } else if (q.visualType === "shape") {
+            const shapeOuter = document.createElement('div');
+            shapeOuter.style.width = "100%";
+            
+            const shapeEl = document.createElement('div');
+            shapeEl.className = 'visual-shape';
+            const segWidth = 100 / q.totalItems;
+            for (let i = 0; i < q.totalItems; i++) {
+                const seg = document.createElement('div');
+                seg.className = `shape-segment ${i < q.activeItems ? 'filled' : ''}`;
+                seg.style.width = `${segWidth}%`;
+                shapeEl.appendChild(seg);
+            }
+            shapeOuter.appendChild(shapeEl);
+            
+            if (q.extraText) {
+                const lbl = document.createElement('div');
+                lbl.style.fontSize = "0.85rem";
+                lbl.style.color = "#475569";
+                lbl.style.marginTop = "8px";
+                lbl.style.textAlign = "center";
+                lbl.innerText = q.extraText;
+                shapeOuter.appendChild(lbl);
+            }
+            displayArea.appendChild(shapeOuter);
+        }
 
         const area = document.getElementById('options-area');
         area.innerHTML = "";
