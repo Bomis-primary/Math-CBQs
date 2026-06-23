@@ -39,7 +39,7 @@
             min-height: 520px;
         }
 
-        /* --- 2-SECOND SPLASH SCREEN --- */
+        /* --- 5-SECOND WHITE SPLASH SCREEN (STATIC LOGO) --- */
         #splash-screen {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -49,14 +49,14 @@
             justify-content: center;
             align-items: center;
             z-index: 100;
-            transition: opacity 0.5s ease-out;
+            transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1);
         }
         
-        .splash-title {
-            font-size: 32px;
-            font-weight: 800;
-            color: var(--primary);
-            margin: 0;
+        .splash-logo-img {
+            max-width: 240px;
+            width: 80%;
+            height: auto;
+            object-fit: contain;
         }
 
         /* --- MAIN VIEW CONTENT ELEMENTS --- */
@@ -105,25 +105,25 @@
         /* --- GRADE 4 PLACE VALUE GRID SYSTEM --- */
         .place-value-table {
             width: 100%;
-            max-width: 320px;
+            max-width: 340px;
             margin: 15px auto;
             border-collapse: collapse;
             font-family: 'Courier New', Courier, monospace;
-            font-size: 1.3rem;
+            font-size: 1.4rem;
             font-weight: bold;
             text-align: center;
         }
         .place-value-table th {
             background-color: #f2f4f4;
             color: #7f8c8d;
-            font-size: 0.9rem;
-            padding: 6px;
+            font-size: 0.85rem;
+            padding: 5px;
             border: 1px solid #bdc3c7;
         }
         .place-value-table td {
-            padding: 8px;
+            padding: 8px 4px;
             letter-spacing: 2px;
-            width: 16.66%;
+            width: 14.28%;
         }
         .place-value-table tr.separator td {
             border-bottom: 3px solid #34495e;
@@ -163,33 +163,32 @@
 <div id="app-container">
 
     <div id="splash-screen">
-        <h1 class="splash-title">➕ MathQuest</h1>
-        <p style="color: #7f8c8d; font-weight: 600; margin-top: 5px;">Addition Mastery</p>
+        <img class="splash-logo-img" src="assets/logo.png" alt="Inovine Logo">
     </div>
 
     <div id="intro-view" class="hidden">
         <div class="quiz-padding">
             <h1 style="text-align:center; color:var(--primary); margin: 10px 0 5px 0; font-size: 26px;">Addition Mastery</h1>
-            <p style="text-align:center; color:#7f8c8d; margin-top: 0; font-weight: 600; text-transform: uppercase; font-size: 12px; letter-spacing: 1px;">Grade 4 Math Challenge</p>
+            <p style="text-align:center; color:#7f8c8d; margin-top: 0; font-weight: 600; text-transform: uppercase; font-size: 12px; letter-spacing: 1px;">Chapter 03 Evaluation</p>
             
             <div class="instruction-box">
-                <strong>⚡ How to Play:</strong>
+                <strong>⚡ Quiz Instructions:</strong>
                 <ul>
-                    <li>Answer 10 fun multi-digit addition questions.</li>
-                    <li>You have a 60-second timer for each question.</li>
-                    <li>If you make a mistake, look closely at the helpful hint!</li>
-                    <li>You get 2 tries per question before the answers lock.</li>
+                    <li>You will be presented with 10 multi-digit addition challenges.</li>
+                    <li>Each task features a strict 60-second limit countdown.</li>
+                    <li>You have up to 2 evaluation attempts per question before locking.</li>
+                    <li>Helpful processing hints appear immediately on your first error.</li>
                 </ul>
             </div>
 
-            <button id="start-btn" style="width:100%; padding:18px; background:var(--primary); color:white; border:none; border-radius:14px; font-weight:bold; font-size:1.1rem; cursor:pointer; margin-top: 10px;">Let's Start! ⚡</button>
+            <button id="start-btn" style="width:100%; padding:18px; background:var(--primary); color:white; border:none; border-radius:14px; font-weight:bold; font-size:1.1rem; cursor:pointer; margin-top: 10px;">Begin Challenge ⚡</button>
         </div>
     </div>
 
     <div id="quiz-view" class="hidden">
         <div class="quiz-padding">
             <div class="hud-row">
-                <div class="hud-pill">Question <span id="q-num">1</span>/10</div>
+                <div class="hud-pill">Task <span id="q-num">1</span>/10</div>
                 <div class="hud-pill">Score: <span id="score-val">0</span></div>
                 <div class="hud-pill gold"><span id="timer-text">60s</span></div>
             </div>
@@ -210,137 +209,143 @@
     <div id="result-view" class="hidden" style="text-align:center;">
         <div class="quiz-padding">
             <div style="font-size: 4rem; margin-bottom: 5px;">🏆</div>
-            <h2 style="font-size:1.6rem; margin: 5px 0;">Challenge Completed!</h2>
+            <h2 style="font-size:1.6rem; margin: 5px 0;">Evaluation Completed!</h2>
             <div style="font-size: 4rem; font-weight: 800; color: var(--primary); margin: 10px 0;"><span id="final-pts">0</span>/10</div>
             <div id="result-msg" style="color:#5f6368; font-size: 0.95rem; line-height: 1.5; margin: 0 0 25px 0; text-align: left; background: #f8f9fa; border: 1px solid #e2e8f0; padding: 16px; border-radius: 16px;"></div>
-            <button onclick="location.reload()" style="width:100%; padding:16px; background:var(--primary); color:white; border:none; border-radius:14px; font-weight:700; cursor:pointer; font-size: 1rem;">Play Again</button>
+            <button onclick="location.reload()" style="width:100%; padding:16px; background:var(--primary); color:white; border:none; border-radius:14px; font-weight:700; cursor:pointer; font-size: 1rem;">Start New Session</button>
         </div>
     </div>
 </div>
 
 <script>
-    // Reduced splash sequence delay to 2 seconds for snappier loading
+    // Automate Splash Screen Exit Sequence at exactly 5 seconds
     window.addEventListener('DOMContentLoaded', () => {
         setTimeout(() => {
             const splash = document.getElementById('splash-screen');
             splash.style.opacity = '0';
+            
             setTimeout(() => {
                 splash.style.display = 'none';
                 document.getElementById('intro-view').classList.remove('hidden');
-            }, 500); 
-        }, 2000);
+            }, 800); 
+        }, 5000);
     });
 
-    // Public domain web-audio fallbacks
+    // Explicit user-specified local asset mappings
     const audioCache = {
-        'correct': 'https://actions.google.com/sounds/v1/alarms/digital_watch_alarm_long.ogg',
-        'wrong': 'https://actions.google.com/sounds/v1/cartoon/slide_whistle_down.ogg',
-        'timeout': 'https://actions.google.com/sounds/v1/alarms/mechanical_clock_ring_twitch.ogg',
-        'complete': 'https://actions.google.com/sounds/v1/ambiences/morning_birds.ogg'
+        'correct': 'assets/correct.mp3',
+        'wrong': 'assets/wrong.mp3',
+        'timeout': 'assets/wrong.mp3', // Map timeout fallback to standard wrong tone
+        'complete': 'assets/freesound_community-claps-44774.mp3'
     };
 
+    // Central Audio Router Function
     function playSound(type) {
         const audioNode = document.getElementById('quiz-audio-engine');
         const filePath = audioCache[type];
+
         if (filePath) {
             audioNode.src = filePath;
-            audioNode.currentTime = 0;
-            audioNode.play().catch(err => console.log("Audio skipped until user action maps.", err));
+            audioNode.currentTime = 0; // Rewind track if already playing
+            audioNode.play().catch(err => {
+                console.log("Audio feedback execution bypassed: Interaction sequence pending.", err);
+            });
         }
     }
 
     const pool = [
         { 
-            cat: "Math Words", 
-            q: "Rahul writes down an addition problem in his notebook:\n42,100 + 15,350 + 8,200 = 65,650\n\nWhat is the correct math name given to the three numbers we are adding together?", 
+            cat: "Arithmetic Terminology", 
+            q: "A student writes down an addition problem in their notebook:\n42,100 + 15,350 + 8,200 = 65,650\n\nWhat is the correct math name given to the three separate numbers we are adding together?", 
             opts: ["A) Minuends", "B) Addends", "C) Quotients", "D) Factors"], 
             ans: 1, 
-            hint: "These are numbers that get packed and added together to make a final sum.", 
-            expl: "The numbers you combine together are called 'addends', and your total answer is called the 'sum'!" 
+            hint: "These are numbers that get packed and added together to find a final sum.", 
+            expl: "In addition equations, the numbers being combined are called 'addends', and the combined total outcome is called the 'sum'." 
         },
         { 
-            cat: "Addition Rules", 
-            q: "Which property of addition says that changing the grouping of numbers doesn't change the final sum?\n\nExample: (₹1,200 + ₹3,500) + ₹400 = ₹1,200 + (₹3,500 + ₹400)", 
+            cat: "Operational Properties", 
+            q: "Which property of addition states that changing the grouping of the addends does not change the final sum?\n\nExample: (A + B) + C = A + (B + C)\nContext: (₹1,200 + ₹3,500) + ₹400 = ₹1,200 + (₹3,500 + ₹400)", 
             opts: ["A) Commutative Property", "B) Distributive Property", "C) Associative Property", "D) Identity Property"], 
             ans: 2, 
-            hint: "Think about brackets or parentheses changing which friends 'associate' or group up first.", 
-            expl: "The Associative Property deals with grouping. No matter how you group the numbers, the answer stays the same." 
+            hint: "Think about grouping symbols (parentheses) shifting associations between multiple components.", 
+            expl: "The Associative Property addresses grouping: (A + B) + C = A + (B + C). The Commutative Property refers strictly to order (A + B = B + A)." 
         },
         { 
-            cat: "5-Digit Vertical Sums", 
-            q: "Solve this vertical addition problem to find the total cost of a school trip:", 
+            cat: "5-Digit Standard Column Addition", 
+            q: "Calculate the exact vertical sum to find the total cost of a school festival:", 
             hasAdditionVisual: "5-digit",
             val1: "54829",
             val2: "27493",
             opts: ["A) ₹82,322", "B) ₹81,312", "C) ₹82,222", "D) ₹82,312"], 
             ans: 0, 
-            hint: "Start matching columns from right to left! Don't forget to carry your groups of 10 over to the next place.", 
-            expl: "9+3=12 (carry 1); 2+9+1=12 (carry 1); 8+4+1=13 (carry 1); 4+7+1=12 (carry 1); 5+2+1=8. The answer is ₹82,322." 
+            hint: "Process the values from right to left, carrying the units cleanly into successive columns.", 
+            expl: "9+3=12 (carry 1); 2+9+1=12 (carry 1); 8+4+1=13 (carry 1); 4+7+1=12 (carry 1); 5+2+1=8. Result = ₹82,322." 
         },
         { 
             cat: "Regrouping and Carrying", 
-            q: "Look at the place value grid below. What is the missing total number marked by the [ ? ]?", 
+            q: "Analyze the place value grid problem below. What is the value of the missing sum sequence marked by [ ? ]?", 
             hasAdditionVisual: "5-digit",
             val1: "68645",
             val2: "47756",
             opts: ["A) 1,16,401", "B) 1,06,401", "C) 1,15,301", "D) 1,16,391"], 
             ans: 0, 
-            hint: "Watch out! You will need to carry over numbers multiple times across the Thousands columns.", 
-            expl: "Adding straight down columns: 5+6=11 (carry 1); 4+5+1=10 (carry 1); 6+7+1=14 (carry 1); 8+7+1=16 (carry 1); 6+4+1=11. Total is 1,16,401." 
+            hint: "Make sure you track multiple consecutive column carries across the thousands boundaries.", 
+            expl: "Adding column values: 5+6=11 (carry 1); 4+5+1=10 (carry 1); 6+7+1=14 (carry 1); 8+7+1=16 (carry 1); 6+4+1=11. Result = 1,16,401." 
         },
         { 
-            cat: "6-Digit Big Numbers", 
-            q: "A grand book fair has 4,25,600 books. On Saturday, they receive another delivery of 3,84,750 books. \n\nHow many books do they have in total now?", 
+            cat: "6-Digit Scale Verification", 
+            q: "A grand school book fair has 4,25,600 books. On Saturday morning, they receive another delivery of 3,84,750 books. \n\nHow many books do they have in total now within the fair?", 
             opts: ["A) 8,10,350 books", "B) 8,09,350 books", "C) 8,10,450 books", "D) 7,10,350 books"], 
             ans: 0, 
-            hint: "Align 4,25,600 and 3,84,750 perfectly inside your columns and add them up.", 
-            expl: "4,25,600 + 3,84,750 matches up to exactly 8,10,350 total books." 
+            hint: "Align 4,25,600 and 3,84,750 vertically inside your place value columns and compute.", 
+            expl: "4,25,600 + 3,84,750 matches up to exactly 8,10,350 total books when performing column operations." 
         },
         { 
-            cat: "Smart Estimating", 
-            q: "An environmental group plants trees. Zone A gets 12,840 saplings and Zone B gets 26,190 saplings. \n\nEstimate the total number by rounding both numbers to the nearest thousand before adding.", 
+            cat: "Sum Estimation", 
+            q: "An environmental group plants trees across two distinct city zones. Zone A receives 12,840 saplings and Zone B receives 26,190 saplings. \n\nEstimate the total volume planted by rounding both amounts to the nearest thousand before combining.", 
             opts: ["A) 38,000 saplings", "B) 39,000 saplings", "C) 40,000 saplings", "D) 39,500 saplings"], 
             ans: 1, 
-            hint: "12,840 is close to 13,000. 26,190 rounds down nicely to 26,000.", 
-            expl: "12,840 rounds up to 13,000. 26,190 rounds down to 26,000. 13,000 + 26,000 = 39,000 saplings." 
+            hint: "12,840 rounds up to 13,000. 26,190 rounds down to 26,000.", 
+            expl: "12,840 rounds to 13,000 at the thousands place. 26,190 rounds to 26,000. 13,000 + 26,000 = 39,000 saplings." 
         },
         { 
-            cat: "Perimeter Bounds", 
-            q: "A playground is shaped like a rectangle. The two long sides are 15,250 metres each, and the two short sides are 8,400 metres each. \n\nWhat is the total fence perimeter length all the way around?", 
+            cat: "Perimeter Metrics", 
+            q: "A school sports ground is shaped like a rectangle. The two opposite long sides measure 15,250 metres each, and the short sides measure 8,400 metres each. \n\nWhat is the overall perimeter sum of the ground bounds?", 
             opts: ["A) 23,650 metres", "B) 47,300 metres", "C) 46,300 metres", "D) 47,200 metres"], 
             ans: 1, 
-            hint: "Add all four outer sides together: 15,250 + 15,250 + 8,400 + 8,400.", 
-            expl: "Total Perimeter = 15,250 + 15,250 + 8,400 + 8,400 = 30,500 + 16,800 = 47,300 metres." 
+            hint: "Add all four outer bounding edges sequentially: 15,250 + 15,250 + 8,400 + 8,400.", 
+            expl: "Perimeter = 15,250 + 15,250 + 8,400 + 8,400 = 30,500 + 16,800 = 47,300 metres total." 
         },
         { 
-            cat: "Adding Three Items", 
-            q: "A school sports team buys new equipment:\nCricket Kits: ₹45,000 | Footballs: ₹28,500 | Jersey Sets: ₹14,250. \n\nWhat is the total bills sum spent using Indian Rupees?", 
+            cat: "Multi-Addend Accounting", 
+            q: "A school science club tallies its annual project expenses across three separate streams: \nLab Kits: ₹45,000 | Models: ₹28,500 | Charts & Posters: ₹14,250. \n\nWhat is the unified operational output sum spent in Indian Rupees?", 
             opts: ["A) ₹87,750", "B) ₹88,250", "C) ₹86,750", "D) ₹77,750"], 
             ans: 0, 
-            hint: "Stack all three price figures cleanly or add the first two items, then combine the last one.", 
-            expl: "₹45,000 + ₹28,500 = ₹73,500. Then, ₹73,500 + ₹14,250 = ₹87,750 total expenses." 
+            hint: "Combine the values sequentially or stack all three addends simultaneously to parse the total budget.", 
+            expl: "Encoding figures: ₹45,000 + ₹28,500 = ₹73,500. Then, ₹73,500 + ₹14,250 = ₹87,750 total." 
         },
         { 
-            cat: "Place Value Jump", 
-            q: "If you increase both the hundreds digit and the thousands digit of the baseline starting number 24,150 by 3 units each, what is your new number?", 
+            cat: "Place Value Extension", 
+            q: "If you increase both the hundreds digit and the thousands digit of the baseline number 24,150 by 3 units each, what is the new resultant number?", 
             opts: ["A) 24,450", "B) 27,450", "C) 27,150", "D) 34,450"], 
             ans: 1, 
-            hint: "Increasing thousands by 3 means adding 3,000. Increasing hundreds by 3 means adding 300.", 
-            expl: "Adding 3 to the thousands column gives +3,000. Adding 3 to hundreds gives +300. 24,150 + 3,300 = 27,450." 
+            hint: "Add 3,000 (thousands place change) and 300 (hundreds place change) straight into the baseline value.", 
+            expl: "Increasing the thousands digit by 3 adds 3,000. Increasing the hundreds digit by 3 adds 300. Total expansion = +3,300. 24,150 + 3,300 = 27,450." 
         },
         { 
-            cat: "Real Life Math Models", 
-            q: "Which story below matches this exact math operation equation?\nTotal = 3,20,500 + 45,200", 
-            opts: ["A) A village tank holds 3,20,500 litres of water and lets out 45,200 litres into the farming fields.", "B) A city has 3,20,500 fixed residents and welcomes an extra 45,200 festive visitors. Find the total crowd footprint.", "C) A toy shop packs 3,20,500 building blocks equally across 45,200 storage boxes.", "D) A factory has an order of 3,20,500 chips and cuts down 45,200 units due to a breakage."], 
+            cat: "Real World Modeling", 
+            q: "Identify which scenario maps cleanly to this exact math operation model:\nTotal = 3,20,500 + 45,200", 
+            opts: ["A) A local water tank holds 3,20,500 litres and discharges 45,200 litres into neighboring fields.", "B) A city municipality has 3,20,500 permanent residents and welcomes an influx of 45,200 seasonal festive workers. Find the current total population footprint.", "C) A toy store processes 3,20,500 building components evenly packed among 45,200 distinct storage crates.", "D) A manufacturing floor reduces an order of 3,20,500 parts by 45,200 units due to a cancellation."], 
             ans: 1, 
-            hint: "Look for a scenario where two groups come together to make a larger group.", 
-            expl: "Bringing seasonal visitors together with local citizens maps exactly to an additive structure!" 
+            hint: "Look for explicit cumulative union actions where separate independent quantities merge together into a combined whole.", 
+            expl: "Combining an established population base with an additional worker group represents the additive structure of merging two independent sets." 
         }
     ];
 
     let current = 0, score = 0, attempts = 0, timer, timeLeft = 60;
 
     document.getElementById('start-btn').onclick = () => {
+        // Unlock browser audio layer explicitly within user gesture loop
         const engine = document.getElementById('quiz-audio-engine');
         engine.src = audioCache['correct'];
         engine.load();
@@ -351,7 +356,7 @@
     };
 
     function generatePlaceValueTable(val1, val2) {
-        // Pad numbers to 6 places to include up to Lakhs dynamically
+        // Pad numbers to 6 places to align with the Lakhs / Ten Thousands Indian format
         let v1 = val1.padStart(6, ' ');
         let v2 = val2.padStart(6, ' ');
         
@@ -448,7 +453,7 @@
             if(attempts === 1) {
                 const f = document.getElementById('feedback-box');
                 f.className = 'feedback hint-box';
-                f.innerHTML = "<b>💡 Quick Hint:</b> " + pool[current].hint;
+                f.innerHTML = "<b>💡 Hint:</b> " + pool[current].hint;
                 f.style.display = 'block';
             } else {
                 clearInterval(timer);
@@ -461,7 +466,7 @@
         document.querySelectorAll('.opt-btn').forEach(btn => btn.disabled = true);
         const f = document.getElementById('feedback-box');
         f.className = 'feedback expl-box';
-        f.innerHTML = "<b>🔍 Math Breakdown:</b> " + pool[current].expl;
+        f.innerHTML = "<b>🔍 Explanation:</b> " + pool[current].expl;
         f.style.display = 'block';
         document.querySelectorAll('.opt-btn')[pool[current].ans].classList.add('correct');
         document.getElementById('action-btn').classList.remove('hidden');
@@ -476,11 +481,11 @@
             document.getElementById('result-view').classList.remove('hidden');
             document.getElementById('final-pts').innerText = score;
 
-            let statusMessage = "Keep practice operations moving! Take another shot to win a perfect 10/10 master badge.";
+            let statusMessage = "Review standard column carrying parameters to lock down your high score.";
             if(score === 10) {
-                statusMessage = "Amazing work! You are officially an Addition Superstar!";
+                statusMessage = "Spectacular! You have mastered every addition outcome perfectly.";
             } else if(score >= 7) {
-                statusMessage = "Wonderful job! Excellent multi-digit math alignments and properties skill.";
+                statusMessage = "Great job! Strong multi-digit computation and properties alignment.";
             }
 
             document.getElementById('result-msg').innerHTML = `
