@@ -1,1 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Time & Calendar Evaluation Challenge</title>
+    <style>
+        :root {
+            --primary: #0284c7;
+            --primary-dark: #0369a1;
+            --success: #16a34a;
+            --error: #dc2626;
+            --bg: #f0f9ff;
+            --text: #1e293b;
+        }
 
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background-color: #e2e8f0;
+            color: var(--text);
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 10px;
+        }
+
+        #app-container {
+            width: 100%;
+            max-width: 580px;
+            background: #ffffff;
+            border-radius: 24px;
+            box-shadow: 0 15px 35px rgba(2, 132, 199, 0.12);
+            position: relative;
+            overflow: hidden;
+            min-height: 540px;
+        }
+
+        /* --- 5-SECOND MANDATORY WHITE SPLASH SCREEN --- */
+        #splash-screen {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .splash-logo-img {
+            max-width: 240px;
+            width: 80%;
+            height: auto;
+            object-fit: contain;
+        }
+
+        /* --- INTERFACE CORE PADDING --- */
+        .quiz-padding {
+            padding: 25px;
+        }
+
+        .instruction-box {
+            background: var(--bg);
+            border-left: 4px solid var(--primary);
+            padding: 15px;
+            border-radius: 8px;
+            text-align: left;
+            margin: 20px 0;
+            font-size: 0.95rem;
+            color: #475569;
+            line-height: 1.5;
+        }
+        .instruction-box ul { margin: 5px 0 0 20px; padding: 0; }
+        .instruction-box li { margin-bottom: 6px; }
+
+        .hud-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        .hud-pill {
+            flex: 1;
+            text-align: center;
+            padding: 12px 6px;
+            border-radius: 14px;
+            font-size: 0.95rem;
+            font-weight: 800;
+            background-color: #e0f2fe;
+            color: var(--primary-dark);
+        }
+        .hud-pill.gold { background-color: #fef08a; color: #a16207; }
+
+        .timer-track { width: 100%; height: 8px; background: #cbd5e1; border-radius: 10px; margin-bottom: 20px; overflow: hidden; }
+        #timer-bar { height: 100%; width: 100%; background: var(--primary); transition: width 1s linear; }
+
+        .category-text { font-size: 0.85rem; color: #d97706; font-weight: 700; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 1px; }
+        .question-text { font-size: 1.1rem; font-weight: 600; line-height: 1.5; margin-bottom: 15px; white-space: pre-line; }
+
+        /* --- SCHEDULE TIMETABLE CARD BOX --- */
+        .timetable-display-box {
+            background: #f8fafc;
+            border: 2px dashed #bae6fd;
+            padding: 15px;
+            border-radius: 12px;
+            margin: 15px 0;
+            font-size: 1rem;
+            line-height: 1.6;
+            color: #0f172a;
+        }
+        .timetable-display-box table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 5px;
+        }
+        .timetable-display-box th, .timetable-display-box td {
+            border: 1px solid #cbd5e1;
+            padding: 8px;
+            text-align: center;
+            font-family: monospace;
+            font-weight: bold;
+        }
+        .timetable-display-box th {
+            background-color: #e0f2fe;
+            font-family: sans-serif;
+            font-size: 0.85rem;
+        }
+
+        .options-grid { display: grid; gap: 12px; }
+        .opt-btn {
+            background: #fff; border: 2px solid #e2e8f0; padding: 16px;
+            border-radius: 14px; text-align: left; font-size: 1rem; cursor: pointer; transition: 0.2s;
+            color: #334155; font-weight: 500;
+        }
+        .opt-btn:hover:not(:disabled) { border-color: var(--primary); background: #f8fafc; }
+        .opt-btn.correct { background: #dcfce7 !important; color: var(--success) !important; border-color: #bbf7d0 !important; font-weight: 700; }
+        .opt-btn.wrong { background: #fee2e2 !important; color: var(--error) !important; border-color: #fca5a5 !important; }
+
+        .feedback { margin-top: 20px; padding: 15px; border-radius: 12px; display: none; line-height: 1.5; font-size: 0.95rem; }
+        .hint-box { background: #fef9c3; border: 1px solid #fef08a; color: #a16207; }
+        .expl-box { background: #e0f2fe; border: 1px solid #bae6fd; color: var(--primary-dark); }
+
+        #action-btn { width: 100%; margin-top: 20px; padding: 16px; background: var(--primary); color: white; border: none; border-radius: 14px; font-weight: 700; cursor: pointer; font-size: 1rem; }
+        #action-btn:hover { background: var(--primary-dark); }
+        
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+
+<audio id="quiz-audio-engine" preload="auto"></audio>
+
+<div id="app-container">
+
+    <div id="splash-screen">
+        <img class="splash-logo-img" src="assets/logo.png" alt="Company Logo">
+    </div>
+
+    <div id="intro-view" class="hidden">
+        <div class="quiz-padding">
+            <h1 style="text-align:center; color:var(--primary); margin: 10px 0 5px 0; font-size: 26px;">Time & Calendar Quiz</h1>
+            <p style="text-align:center; color:#64748b; margin-top: 0; font-weight: 600; text-transform: uppercase; font-size: 12px; letter-spacing: 1px;">Session Evaluation</p>
+            
+            <div class="instruction-box">
+                <strong>⚡ Assessment Framework:</strong>
+                <ul>
+                    <li>You will solve 10 real-world story problems tracking durations, calendar dates, and clock structures.</li>
+                    <li>A precise 60-second animated progress bar counts down for every scenario.</li>
+                    <li>Questions and layout options shuffle using an automated layout engine.</li>
+                    <li>If a problem is missed on your first attempt, a custom hint panel instantly unlocks.</li>
+                </ul>
+            </div>
+
+            <button id="start-btn" style="width:100%; padding:18px; background:var(--primary); color:white; border:none; border-radius:14px; font-weight:bold; font-size:1.1rem; cursor:pointer; margin-top: 10px;">Begin Evaluation ⚡</button>
+        </div>
+    </div>
+
+    <div id="quiz-view" class="hidden">
+        <div class="quiz-padding">
+            <div class="hud-row">
+                <div class="hud-pill">Scenario <span id="q-num">1</span>/10</div>
+                <div class="hud-pill">Points: <span id="score-val">0</span></div>
+                <div class="hud-pill gold"><span id="timer-text">60s</span></div>
+            </div>
+            <div class="timer-track"><div id="timer-bar"></div></div>
+            
+            <div id="q-category" class="category-text"></div>
+            <div id="q-text" class="question-text"></div>
+            
+            <div id="custom-display-area"></div>
+            
+            <div id="options-area" class="options-grid"></div>
+            
+            <div id="feedback-box" class="feedback"></div>
+            <button id="action-btn" class="hidden">Next Scenario →</button>
+        </div>
+    </div>
+
+    <div id="result-view" class="hidden" style="text-align:center;">
+        <div class="quiz-padding">
+            <div style="font-size: 4rem; margin-bottom: 5px;">🏆</div>
+            <h2 style="font-size:1.6rem; margin: 5px 0;">Evaluation Finalised</h2>
+            <div style="font-size: 4rem; font-weight: 800; color: var(--primary); margin: 10px 0;"><span id="final-pts">0</span>/10</div>
+            <div id="result-msg" style="color:#475569; font-size: 0.95rem; line-height: 1.5; margin: 0 0 25px 0; text-align: left; background: #f8fafc; border: 1px solid #e2e8f0; padding: 16px; border-radius: 16px;"></div>
+            <button onclick="location.reload()" style="width:100%; padding:16px; background:var(--primary); color:white; border:none; border-radius:14px; font-weight:700; cursor:pointer; font-size: 1rem;">Restart Assessment Loop</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // --- AUDIO ROUTING SYSTEM ---
+    const audioCache = {
+        'correct': 'assets/correct.mp3',
+        'wrong': 'assets/wrong.mp3',
+        'timeout': 'assets/wrong.mp3',
+        'complete': 'assets/freesound_community-claps-44774.mp3'
+    };
+
+    function playSound(type) {
+        const audioNode = document.getElementById('quiz-audio-engine');
+        const filePath = audioCache[type];
+
+        if (filePath) {
+            audioNode.src = filePath;
+            audioNode.currentTime = 0;
+            audioNode.play().catch(err => {
+                console.log("Audio routing adjusted: ", err);
+            });
+        }
+    }
+
+    // Dynamic 5000ms Splash Exit Sequence
+    window.addEventListener('DOMContentLoaded', () => {
+        setTimeout(() => {
+            const splash = document.getElementById('splash-screen');
+            splash.style.opacity = '0';
+            
+            setTimeout(() => {
+                splash.style.display = 'none';
+                document.getElementById('intro-view').classList.remove('hidden');
+            }, 800); 
+        }, 5000);
+    });
+
+    // Content Pool directly mapping concepts from image_d6cce1.png into simple British English
+    const rawPool = [
+        { 
+            cat: "24-Hour Format Conversion", 
+            q: "A train departures board at London Paddington station displays a high-speed service leaving for Bristol at exactly 16:15.\n\nHow would this departure time look on a standard 12-hour digital clock format?", 
+            opts: ["4:15 am", "6:15 pm", "4:15 pm", "16:15 pm"], 
+            correctText: "4:15 pm", 
+            hint: "For any 24-hour time that is 13:00 or later, take away 12 from the hours value and add 'pm'.", 
+            expl: "Subtracting 12 from the hour part gives: 16 - 12 = 4. Since it is past noon, the time is 4:15 pm." 
+        },
+        { 
+            cat: "Hours to Minutes Conversion", 
+            q: "An educational children's film showing at a local cinema runs for exactly 2 hours and 25 minutes.\n\nWhat is the absolute total running length of the film expressed entirely in minutes?", 
+            opts: ["145 minutes", "125 minutes", "165 minutes", "105 minutes"], 
+            correctText: "145 minutes", 
+            hint: "There are exactly 60 minutes in one hour. Multiply the hours by 60, then add the leftover minutes.", 
+            expl: "Convert the full hours: 2 hours × 60 minutes = 120 minutes. Next, add the remaining minutes: 120 + 25 = 145 minutes." 
+        },
+        { 
+            cat: "Minutes to Seconds Conversion", 
+            q: "During a physical fitness track assessment at school, a student completes a sprint run cycle in exactly 3 minutes and 12 seconds.\n\nCalculate the student's complete sprint time score using only seconds.", 
+            opts: ["192 seconds", "212 seconds", "180 seconds", "312 seconds"], 
+            correctText: "192 seconds", 
+            hint: "Each single minute contains exactly 60 seconds. Multiply 3 by 60 and tack on the extra 12 seconds.", 
+            expl: "Convert the minutes first: 3 minutes × 60 seconds = 180 seconds. Adding the extra bits: 180 + 12 = 192 seconds." 
+        },
+        { 
+            cat: "Elapsed Time Calculation", 
+            q: "A cross-country passenger coach leaves its station bay at 09:40 in the morning. It travels continuously along its route and pulls into the terminal destination at 13:15 in the afternoon.\n\nExactly how long did the coach journey take?", 
+            opts: ["3 hours 55 minutes", "3 hours 35 minutes", "4 hours 15 minutes", "2 hours 35 minutes"], 
+            correctText: "3 hours 35 minutes", 
+            hint: "Count forward from 09:40 to the next full hours: 09:40 to 12:40 is exactly 3 hours. Then count the remaining minutes up to 13:15.", 
+            expl: "From 09:40 to 12:40 is 3 hours. From 12:40 to 13:00 is 20 minutes, and from 13:00 to 13:15 is another 15 minutes. Total elapsed time: 3 hours and 35 minutes." 
+        },
+        { 
+            cat: "12 vs 24-Hour Timetables", 
+            q: "Review the daily swimming pool maintenance timetable logged below:", 
+            hasTable: true,
+            tableData: [
+                ["Session A", "08:30 - 10:15"],
+                ["Session B", "11:00 - 12:45"],
+                ["Session C", "14:15 - 16:00"],
+                ["Session D", "17:30 - 19:15"]
+            ],
+            opts: ["Session B ends past 1:00 pm", "Session C starts at a quarter past two in the afternoon", "Session D begins at half past seven in the morning", "Session A runs for exactly three hours"], 
+            correctText: "Session C starts at a quarter past two in the afternoon", 
+            hint: "Look at Session C's start label: 14:15. Convert this 24-hour hour indicator into its afternoon equivalent.", 
+            expl: "14:15 in 24-hour format converts directly to 2:15 pm (14 - 12 = 2), which is properly spoken as a quarter past two in the afternoon." 
+        },
+        { 
+            cat: "Multi-Step Date Logic", 
+            q: "A family books a summer holiday countryside cottage stay for exactly 3 weeks and 4 days.\n\nWhat is the absolute total number of days that this holiday trip lasts?", 
+            opts: ["25 days", "24 days", "21 days", "28 days"], 
+            correctText: "25 days", 
+            hint: "One single week contains exactly 7 days. Multiply the number of weeks by 7, then add the individual days.", 
+            expl: "Calculate week totals: 3 weeks × 7 days per week = 21 days. Adding the remaining separate days: 21 + 4 = 25 days." 
+        },
+        { 
+            cat: "Calendar Milestone Tracking", 
+            q: "A village community craft fair is scheduled to take place on the 28th of November.\n\nIf a coordinator prints out advertising leaflets exactly 2 weeks and 3 days before the event date, on what calendar day are the leaflets printed?", 
+            opts: ["11th of November", "14th of November", "17th of November", "12th of November"], 
+            correctText: "11th of November", 
+            hint: "First change the weeks into total days (2 weeks = 14 days). Add the extra 3 days to get 17 days, then count backward from the 28th.", 
+            expl: "Total days prior = (2 × 7) + 3 = 14 + 3 = 17 days. Counting backward from the event date: 28 - 17 = 11. The print date is the 11th of November." 
+        },
+        { 
+            cat: "Complex Duration Balancing", 
+            q: "An artisan baker sets up a bread machine timer loop that requires 4 full hours to complete a bake cycle. The machine has already been running for 165 minutes.\n\nHow many minutes of baking time are left before the cycle finishes?", 
+            opts: ["75 minutes", "65 minutes", "85 minutes", "95 minutes"], 
+            correctText: "75 minutes", 
+            hint: "Convert the target duration of 4 hours entirely into minutes first, then subtract the minutes that have already passed.", 
+            expl: "Total required minutes: 4 hours × 60 minutes = 240 minutes. Subtracting the time elapsed: 240 - 165 = 75 minutes left." 
+        },
+        { 
+            cat: "Midnight Boundary Crossing", 
+            q: "A security watch officer schedules a facility monitoring sweep that turns on at 21:50 in the evening and runs continuously for 4 hours and 25 minutes.\n\nAt what 24-hour clock time does the monitoring sweep turn off?", 
+            opts: ["02:15", "01:15", "02:25", "23:15"], 
+            correctText: "02:15", 
+            hint: "Break the duration down: from 21:50, adding 2 hours and 10 minutes takes you exactly to midnight (00:00). Figure out what time is left over.", 
+            expl: "From 21:50, it takes 2 hours and 10 minutes to reach 00:00 (midnight). The remaining time to add is 4h 25m - 2h 10m = 2 hours and 15 minutes. 00:00 + 2h 15m = 02:15." 
+        },
+        { 
+            cat: "Forward Calendar Projections", 
+            q: "An agricultural science student logs a crop growth cycle that begins on the 23rd of June.\n\nThe entire observation phase runs for exactly 45 days.\n\nKnowing that June has exactly 30 days and July has 31 days, on what date in August does the observation cycle end?", 
+            opts: ["7th of August", "8th of August", "6th of August", "9th of August"], 
+            correctText: "7th of August", 
+            hint: "Count how many days are left in June first (30 - 23 = 7 days). Then subtract that and July's full 31 days from the 45-day total.", 
+            expl: "Days left in June: 30 - 23 = 7 days. Remaining cycle days: 45 - 7 = 38 days. Subtract all of July: 38 - 31 = 7 days left. The remaining 7 days fall directly into August, ending on the 7th of August." 
+        }
+    ];
+
+    let pool = [];
+    let current = 0, score = 0, attempts = 0, timer, timeLeft = 60;
+    let computedCorrectIdx = -1;
+
+    // Fisher-Yates Randomization Engine
+    function shuffleArray(arr) {
+        for (let i = arr.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [arr[i], arr[j]] = [arr[j], arr[i]];
+        }
+        return arr;
+    }
+
+    function initQuizData() {
+        pool = JSON.parse(JSON.stringify(rawPool));
+        shuffleArray(pool); 
+        pool.forEach(qItem => {
+            shuffleArray(qItem.opts); 
+        });
+    }
+
+    document.getElementById('start-btn').onclick = () => {
+        const engine = document.getElementById('quiz-audio-engine');
+        engine.src = audioCache['correct'];
+        engine.load();
+
+        initQuizData();
+        document.getElementById('intro-view').classList.add('hidden');
+        document.getElementById('quiz-view').classList.remove('hidden');
+        loadQuestion();
+    };
+
+    function loadQuestion() {
+        attempts = 0; timeLeft = 60;
+        const q = pool[current];
+        document.getElementById('feedback-box').style.display = 'none';
+        document.getElementById('action-btn').classList.add('hidden');
+        document.getElementById('q-num').innerText = current + 1;
+        document.getElementById('q-category').innerText = q.cat;
+        document.getElementById('q-text').innerText = q.q;
+        document.getElementById('timer-text').innerText = timeLeft + "s";
+        
+        const displayArea = document.getElementById('custom-display-area');
+        if (q.hasTable && q.tableData) {
+            let tableHTML = `<div class="timetable-display-box">
+                                <b>Pool Schedule Matrix:</b>
+                                <table>
+                                    <thead><tr><th>Reference</th><th>Operating Slot</th></tr></thead>
+                                    <tbody>`;
+            q.tableData.forEach(row => {
+                tableHTML += `<tr><td>${row[0]}</td><td>${row[1]}</td></tr>`;
+            });
+            tableHTML += `</tbody></table></div>`;
+            displayArea.innerHTML = tableHTML;
+        } else {
+            displayArea.innerHTML = "";
+        }
+
+        const area = document.getElementById('options-area');
+        area.innerHTML = "";
+        
+        const prefixes = ["A) ", "B) ", "C) ", "D) "];
+        q.opts.forEach((o, i) => {
+            if (o === q.correctText) {
+                computedCorrectIdx = i;
+            }
+            const b = document.createElement('button');
+            b.className = 'opt-btn';
+            b.innerText = prefixes[i] + o;
+            b.onclick = () => check(i, b);
+            area.appendChild(b);
+        });
+        startTimer();
+    }
+
+    function startTimer() {
+        clearInterval(timer);
+        timer = setInterval(() => {
+            timeLeft--;
+            document.getElementById('timer-text').innerText = timeLeft + "s";
+            document.getElementById('timer-bar').style.width = (timeLeft / 60 * 100) + "%";
+            if(timeLeft <= 0) { 
+                clearInterval(timer); 
+                playSound('timeout'); 
+                endTurn(); 
+            }
+        }, 1000);
+    }
+
+    function check(i, b) {
+        if(i === computedCorrectIdx) {
+            clearInterval(timer);
+            playSound('correct'); 
+            b.classList.add('correct');
+            score++;
+            document.getElementById('score-val').innerText = score;
+            endTurn();
+        } else {
+            attempts++;
+            playSound('wrong'); 
+            b.classList.add('wrong');
+            b.disabled = true;
+            if(attempts === 1) {
+                const f = document.getElementById('feedback-box');
+                f.className = 'feedback hint-box';
+                f.innerHTML = "<b>💡 Clue:</b> " + pool[current].hint;
+                f.style.display = 'block';
+            } else {
+                clearInterval(timer);
+                endTurn();
+            }
+        }
+    }
+
+    function endTurn() {
+        document.querySelectorAll('.opt-btn').forEach(btn => btn.disabled = true);
+        const f = document.getElementById('feedback-box');
+        f.className = 'feedback expl-box';
+        f.innerHTML = "<b>🔍 Solution Step:</b> " + pool[current].expl;
+        f.style.display = 'block';
+        document.querySelectorAll('.opt-btn')[computedCorrectIdx].classList.add('correct');
+        document.getElementById('action-btn').classList.remove('hidden');
+    }
+
+    document.getElementById('action-btn').onclick = () => {
+        current++;
+        if(current < pool.length) loadQuestion();
+        else {
+            playSound('complete');
+            document.getElementById('quiz-view').classList.add('hidden');
+            document.getElementById('result-view').classList.remove('hidden');
+            document.getElementById('final-pts').innerText = score;
+
+            let statusMessage = "Review 24-hour clocks, track calendar jumps across months, and re-check hour-to-minute conversions to boost your score.";
+            if(score === 10) {
+                statusMessage = "Excellent performance! You solved every chronological problem, duration balance, and timetable look-up flawlessly.";
+            } else if(score >= 7) {
+                statusMessage = "Good work! You display reliable skills in tracking elapsed time, date gaps, and clock format swaps.";
+            }
+
+            document.getElementById('result-msg').innerHTML = `
+                <span style="font-weight:700; color:var(--primary-dark); display:block; margin-bottom:6px;">Performance Summary:</span>
+                ${statusMessage}
+            `;
+        }
+    };
+</script>
+</body>
+</html>
