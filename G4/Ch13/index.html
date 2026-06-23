@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Data Handling Challenge Game</title>
+    <style>
+        :root {
+            --primary: #c2410c;
+            --primary-dark: #9a3412;
+            --success: #16a34a;
+            --error: #dc2626;
+            --bg: #fff7ed;
+            --text: #1e293b;
+        }
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background-color: #fce7d2;
+            color: var(--text);
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 10px;
+        }
+
+        #app-container {
+            width: 100%;
+            max-width: 580px;
+            background: #ffffff;
+            border-radius: 24px;
+            box-shadow: 0 15px 35px rgba(194, 65, 12, 0.12);
+            position: relative;
+            overflow: hidden;
+            min-height: 540px;
+        }
+
+        /* --- 5-SECOND MANDATORY WHITE SPLASH SCREEN --- */
+        #splash-screen {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .splash-logo-img {
+            max-width: 240px;
+            width: 80%;
+            height: auto;
+            object-fit: contain;
+        }
+
+        /* --- INTERFACE CORE PADDING --- */
+        .quiz-padding {
+            padding: 25px;
+        }
+
+        .instruction-box {
+            background: var(--bg);
+            border-left: 4px solid var(--primary);
+            padding: 15px;
+            border-radius: 8px;
+            text-align: left;
+            margin: 20px 0;
+            font-size: 0.95rem;
+            color: #475569;
+            line-height: 1.5;
+        }
+        .instruction-box ul { margin: 5px 0 0 20px; padding: 0; }
+        .instruction-box li { margin-bottom: 6px; }
+
+        .hud-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        .hud-pill {
+            flex: 1;
+            text-align: center;
+            padding: 12px 6px;
+            border-radius: 14px;
+            font-size: 0.95rem;
+            font-weight: 800;
+            background-color: #ffedd5;
+            color: var(--primary-dark);
+        }
+        .hud-pill.gold { background-color: #fef08a; color: #a16207; }
+
+        .timer-track { width: 100%; height: 8px; background: #cbd5e1; border-radius: 10px; margin-bottom: 20px; overflow: hidden; }
+        #timer-bar { height: 100%; width: 100%; background: var(--primary); transition: width 1s linear; }
+
+        .question-text { font-size: 1.1rem; font-weight: 600; line-height: 1.5; margin-bottom: 15px; white-space: pre-line; }
+
+        /* --- GRAPHIC HOLDER FOR CHARTS --- */
+        .question-graphic-container {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        .chart-svg {
+            background-color: #f8fafc;
+            border: 2px dashed #cbd5e1;
+            border-radius: 16px;
+            max-width: 100%;
+            height: auto;
+        }
+
+        .options-grid { display: grid; gap: 12px; }
+        .opt-btn {
+            background: #fff; border: 2px solid #ffccab; padding: 16px;
+            border-radius: 14px; text-align: left; font-size: 1rem; cursor: pointer; transition: 0.2s;
+            color: #334155; font-weight: 500;
+        }
+        .opt-btn:hover:not(:disabled) { border-color: var(--primary); background: #fdf2e9; }
+        .opt-btn.correct { background: #dcfce7 !important; color: var(--success) !important; border-color: #bbf7d0 !important; font-weight: 700; }
+        .opt-btn.wrong { background: #fee2e2 !important; color: var(--error) !important; border-color: #fca5a5 !important; }
+
+        .feedback { margin-top: 20px; padding: 15px; border-radius: 12px; display: none; line-height: 1.5; font-size: 0.95rem; }
+        .hint-box { background: #fef9c3; border: 1px solid #fef08a; color: #a16207; }
+        .expl-box { background: #ffedd5; border: 1px solid #ffccab; color: var(--primary-dark); }
+
+        #action-btn { width: 100%; margin-top: 20px; padding: 16px; background: var(--primary); color: white; border: none; border-radius: 14px; font-weight: 700; cursor: pointer; font-size: 1rem; }
+        #action-btn:hover { background: var(--primary-dark); }
+        
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+
+<audio id="quiz-audio-engine" preload="auto"></audio>
+
+<div id="app-container">
+
+    <div id="splash-screen">
+        <img class="splash-logo-img" src="assets/logo.png" alt="Company Logo">
+    </div>
+
+    <div id="intro-view" class="hidden">
+        <div class="quiz-padding">
+            <h1 style="text-align:center; color:var(--primary); margin: 10px 0 5px 0; font-size: 26px;">Data Handling</h1>
+            <p style="text-align:center; color:#64748b; margin-top: 0; font-weight: 600; text-transform: uppercase; font-size: 12px; letter-spacing: 1px;">Practice Session</p>
+            
+            <div class="instruction-box">
+                <strong>⚡ Game Framework:</strong>
+                <ul>
+                    <li>1) You will have exactly 60 seconds to solve each situational problem before the timer runs out.</li>
+                    <li>2) The complete loop features exactly 10 questions focused on graph and chart interpretation.</li>
+                    <li>3) You will get exactly 2 chances to choose the correct answer before the complete solution breaks down.</li>
+                </ul>
+            </div>
+
+            <button id="start-btn" style="width:100%; padding:18px; background:var(--primary); color:white; border:none; border-radius:14px; font-weight:bold; font-size:1.1rem; cursor:pointer; margin-top: 10px;">Begin Game ⚡</button>
+        </div>
+    </div>
+
+    <div id="quiz-view" class="hidden">
+        <div class="quiz-padding">
+            <div class="hud-row">
+                <div class="hud-pill">Question <span id="q-num">1</span>/10</div>
+                <div class="hud-pill">Points: <span id="score-val">0</span></div>
+                <div class="hud-pill gold"><span id="timer-text">60s</span></div>
+            </div>
+            <div class="timer-track"><div id="timer-bar"></div></div>
+            
+            <div id="q-text" class="question-text"></div>
+
+            <div id="graphic-container" class="question-graphic-container hidden"></div>
+            
+            <div id="options-area" class="options-grid"></div>
+            
+            <div id="feedback-box" class="feedback"></div>
+            <button id="action-btn" class="hidden">Next Question →</button>
+        </div>
+    </div>
+
+    <div id="result-view" class="hidden" style="text-align:center;">
+        <div class="quiz-padding">
+            <div id="result-emoji" style="font-size: 4rem; margin-bottom: 5px;">🏆</div>
+            <h2 id="result-heading" style="font-size:1.8rem; margin: 5px 0; color: var(--text);">Well Done!</h2>
+            <p id="result-subtext" style="color:#64748b; margin: 0 0 15px 0; font-size: 1.1rem;">You finished the challenge loop.</p>
+            
+            <div style="font-size: 1.2rem; font-weight: bold; margin-bottom: 25px; color: var(--text);">
+                Your Score: <span id="final-pts" style="color: var(--primary); font-size: 2.2rem; font-weight: 800;">0</span> / 10
+            </div>
+            
+            <button onclick="location.reload()" style="width:100%; padding:16px; background:var(--primary); color:white; border:none; border-radius:14px; font-weight:700; cursor:pointer; font-size: 1rem;">Try Again</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const audioCache = {
+        'correct': 'assets/correct.mp3',
+        'wrong': 'assets/wrong.mp3',
+        'timeout': 'assets/wrong.mp3',
+        'complete': 'assets/freesound_community-claps-44774.mp3'
+    };
+
+    function playSound(type) {
+        const audioNode = document.getElementById('quiz-audio-engine');
+        const filePath = audioCache[type];
+
+        if (filePath) {
+            audioNode.src = filePath;
+            audioNode.currentTime = 0;
+            audioNode.play().catch(err => {
+                console.log("Audio feedback exception bypassed: ", err);
+            });
+        }
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+        setTimeout(() => {
+            const splash = document.getElementById('splash-screen');
+            splash.style.opacity = '0';
+            
+            setTimeout(() => {
+                splash.style.display = 'none';
+                document.getElementById('intro-view').classList.remove('hidden');
+            }, 800); 
+        }, 5000);
+    });
+
+    const rawPool = [
+        { 
+            q: "A school garden records the count of seasonal vegetables using a pictograph.\n\nBased on the key rules shown in the image, what is the total count of Carrots growing in the garden?", 
+            hasGraphic: true,
+            graphicType: "picto1",
+            opts: ["15 Carrots", "6 Carrots", "30 Carrots", "25 Carrots"], 
+            correctText: "30 Carrots", 
+            hint: "Count the total number of carrot icons, then multiply that count by the scaling factor value given in the key.", 
+            expl: "There are 6 carrot icons. Since each icon represents 5 real vegetables, multiplying 6 by 5 gives a total of 30 Carrots." 
+        },
+        { 
+            q: "Examine the pictograph showing the items collected for a recycling drive.\n\nHow many more Plastic Bottles were collected compared to Aluminum Cans?", 
+            hasGraphic: true,
+            graphicType: "picto2",
+            opts: ["20 bottles", "10 bottles", "15 bottles", "5 bottles"], 
+            correctText: "10 bottles", 
+            hint: "Find the difference in the number of icons between Bottles and Cans, then multiply by the key value.", 
+            expl: Bottles has 5 icons and Cans has 3 icons. The difference is 2 icons. Multiplying 2 icons by 5 gives 10 more bottles." 
+        },
+        { 
+            q: "The bar chart shows the total points earned by different houses during a sports match week.\n\nWhich house scored the highest number of points according to the bar heights?", 
+            hasGraphic: true,
+            graphicType: "bar1",
+            opts: ["Agni House", "Prithvi House", "Trishul House", "Vayu House"], 
+            correctText: "Prithvi House", 
+            hint: "Look for the column that stretches the highest vertically along the Y-axis value track.", 
+            expl: "Prithvi House reaches the highest mark on the graph at 45 points, making it the top-scoring house." 
+        },
+        { 
+            q: "Refer to the sports points bar chart again.\n\nWhat is the combined total points achieved by Agni House and Vayu House together?", 
+            hasGraphic: true,
+            graphicType: "bar1",
+            opts: ["60 points", "70 points", "50 points", "65 points"], 
+            correctText: "70 points", 
+            hint: "Find the separate values for Agni House and Vayu House, then add them together.", 
+            expl: "Agni House reaches 30 and Vayu House reaches 40. Adding 30 and 40 results in a combined total of 70 points." 
+        },
+        { 
+            q: "Review this classroom attendance track table containing data for a specific five-day week.\n\nOn which day was the student attendance count the lowest?", 
+            hasGraphic: true,
+            graphicType: "table1",
+            opts: ["Monday", "Wednesday", "Thursday", "Friday"], 
+            correctText: "Wednesday", 
+            hint: "Scan down the Present Students column to isolate the absolute smallest number value listed.", 
+            expl: "The numbers are Mon: 38, Tue: 40, Wed: 35, Thu: 39, Fri: 37. The minimum value is 35, which corresponds to Wednesday." 
+        },
+        { 
+            q: "Using the same classroom attendance table, calculate the total number of student absences recorded across Monday, Tuesday, and Wednesday combined.", 
+            hasGraphic: true,
+            graphicType: "table1",
+            opts: ["7 absences", "5 absences", "12 absences", "9 absences"], 
+            correctText: "7 absences", 
+            hint: "Add together the values from the Absent Students column for Monday, Tuesday, and Wednesday only.", 
+            expl: "Absences for those days are 2 (Monday) + 0 (Tuesday) + 5 (Wednesday), which equals a sum of 7 absences." 
+        },
+        { 
+            q: "An environmental organization creates a tally chart to track daily wildlife observations near a lake.\n\nWhat is the total frequency count of Ducks observed based on the tally marks?", 
+            hasGraphic: true,
+            graphicType: "tally1",
+            opts: ["12 Ducks", "14 Ducks", "10 Ducks", "13 Ducks"], 
+            correctText: "13 Ducks", 
+            hint: "Each crossed diagonal group represents a block of 5. Count the full blocks and add the remaining single bars.", 
+            expl: "Ducks has two full diagonal groups (5 + 5 = 10) followed by 3 single vertical lines, making 10 + 3 = 13 Ducks." 
+        },
+        { 
+            q: "Refer to the lakeside wildlife tally chart.\n\nWhich animal group recorded a total observed frequency count of exactly 8?", 
+            hasGraphic: true,
+            graphicType: "tally1",
+            opts: ["Ducks", "Herons", "Turtles", "Frogs"], 
+            correctText: "Herons", 
+            hint: "Look for the category that displays one full group of 5 combined with exactly 3 individual lines.", 
+            expl: "Herons has one block of 5 and 3 extra strokes, representing a frequency count of exactly 8." 
+        },
+        { 
+            q: "A baker tracks the inventory of leftover items using a simple circle data map showing portions.\n\nIf the entire circle represents a total of 60 individual baked goods, how many pastries do the pie slices show?", 
+            hasGraphic: true,
+            graphicType: "pie1",
+            opts: ["30 items", "15 items", "20 items", "45 items"], 
+            correctText: "30 items", 
+            hint: "Determine what fraction of the whole circle is allocated to the Pastries section.", 
+            expl: "The Pastries slice covers exactly half (1/2) of the circle area. Half of the grand total 60 is equal to 30 items." 
+        },
+        { 
+            q: "Why is a scale or key always included when designing graphs, charts, and data maps?", 
+            hasGraphic: false,
+            opts: ["To explain what the symbols or units represent", "To make the chart look colorful", "To increase the final values", "To fill up empty space"], 
+            correctText: "To explain what the symbols or units represent", 
+            hint: "Think about how a reader translates an abstract visual icon back into a real number quantity value.", 
+            expl: "A scale or key is critical because it tells the reader the precise relationship or value value behind each symbol or unit line." 
+        }
+    ];
+
+    let pool = [];
+    let current = 0, score = 0, attempts = 0, timer, timeLeft = 60;
+    let computedCorrectIdx = -1;
+
+    function shuffleArray(arr) {
+        for (let i = arr.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [arr[i], arr[j]] = [arr[j], arr[i]];
+        }
+        return arr;
+    }
+
+    function initQuizData() {
+        pool = JSON.parse(JSON.stringify(rawPool));
+        shuffleArray(pool); 
+        pool.forEach(qItem => {
+            shuffleArray(qItem.opts); 
+        });
+    }
+
+    /* ENGINE FOR CUSTOM GRAPHIC VECTOR DISPLAYS */
+    function generateGraphic(type) {
+        if (type === "picto1") {
+            return `
+                <svg class="chart-svg" width="280" height="140" viewBox="0 0 280 140">
+                    <text x="15" y="35" font-family="sans-serif" font-size="12" font-weight="bold" fill="#334155">Tomatoes:</text>
+                    <circle cx="100" cy="30" r="8" fill="#dc2626"/><circle cx="125" cy="30" r="8" fill="#dc2626"/>
+                    <circle cx="150" cy="30" r="8" fill="#dc2626"/><circle cx="175" cy="30" r="8" fill="#dc2626"/>
+                    
+                    <text x="15" y="75" font-family="sans-serif" font-size="12" font-weight="bold" fill="#334155">Carrots:</text>
+                    <orange-box>
+                        <polygon points="100,63 94,80 106,80" fill="#ea580c"/>
+                        <polygon points="120,63 114,80 126,80" fill="#ea580c"/>
+                        <polygon points="140,63 134,80 146,80" fill="#ea580c"/>
+                        <polygon points="160,63 154,80 166,80" fill="#ea580c"/>
+                        <polygon points="180,63 174,80 186,80" fill="#ea580c"/>
+                        <polygon points="200,63 194,80 206,80" fill="#ea580c"/>
+                    </orange-box>
+                    
+                    <line x1="15" y1="105" x2="265" y2="105" stroke="#cbd5e1" stroke-width="1"/>
+                    <text x="140" y="125" font-family="sans-serif" font-size="11" font-weight="bold" fill="#c2410c" text-anchor="middle">Key: Each icon symbol = 5 items</text>
+                </svg>
+            `;
+        }
+        if (type === "picto2") {
+            return `
+                <svg class="chart-svg" width="280" height="140" viewBox="0 0 280 140">
+                    <text x="15" y="35" font-family="sans-serif" font-size="12" font-weight="bold" fill="#334155">Bottles:</text>
+                    <rect x="90" y="22" width="10" height="18" fill="#2563eb" rx="1"/>
+                    <rect x="110" y="22" width="10" height="18" fill="#2563eb" rx="1"/>
+                    <rect x="130" y="22" width="10" height="18" fill="#2563eb" rx="1"/>
+                    <rect x="150" y="22" width="10" height="18" fill="#2563eb" rx="1"/>
+                    <rect x="170" y="22" width="10" height="18" fill="#2563eb" rx="1"/>
+                    
+                    <text x="15" y="75" font-family="sans-serif" font-size="12" font-weight="bold" fill="#334155">Cans:</text>
+                    <rect x="90" y="62" width="12" height="16" fill="#64748b" rx="2"/>
+                    <rect x="110" y="62" width="12" height="16" fill="#64748b" rx="2"/>
+                    <rect x="130" y="62" width="12" height="16" fill="#64748b" rx="2"/>
+                    
+                    <line x1="15" y1="105" x2="265" y2="105" stroke="#cbd5e1" stroke-width="1"/>
+                    <text x="140" y="125" font-family="sans-serif" font-size="11" font-weight="bold" fill="#c2410c" text-anchor="middle">Key: Each icon symbol = 5 items</text>
+                </svg>
+            `;
+        }
+        if (type === "bar1") {
+            return `
+                <svg class="chart-svg" width="280" height="150" viewBox="0 0 280 150">
+                    <line x1="50" y1="20" x2="260" y2="20" stroke="#f1f5f9" stroke-width="1"/>
+                    <line x1="50" y1="50" x2="260" y2="50" stroke="#f1f5f9" stroke-width="1"/>
+                    <line x1="50" y1="80" x2="260" y2="80" stroke="#f1f5f9" stroke-width="1"/>
+                    <line x1="50" y1="110" x2="260" y2="110" stroke="#cbd5e1" stroke-width="1"/>
+                    
+                    <text x="40" y="24" font-family="sans-serif" font-size="10" fill="#64748b" text-anchor="end">60</text>
+                    <text x="40" y="54" font-family="sans-serif" font-size="10" fill="#64748b" text-anchor="end">40</text>
+                    <text x="40" y="84" font-family="sans-serif" font-size="10" fill="#64748b" text-anchor="end">20</text>
+                    <text x="40" y="114" font-family="sans-serif" font-size="10" fill="#64748b" text-anchor="end">0</text>
+                    
+                    <rect x="65" y="65" width="25" height="45" fill="#dc2626" rx="2"/>
+                    <rect x="115" y="42" width="25" height="68" fill="#16a34a" rx="2"/>
+                    <rect x="165" y="87" width="25" height="23" fill="#eab308" rx="2"/>
+                    <rect x="215" y="50" width="25" height="60" fill="#2563eb" rx="2"/>
+                    
+                    <line x1="50" y1="20" x2="50" y2="110" stroke="#cbd5e1" stroke-width="1"/>
+                    
+                    <text x="77" y="128" font-family="sans-serif" font-size="9" font-weight="bold" fill="#475569" text-anchor="middle">Agni</text>
+                    <text x="127" y="128" font-family="sans-serif" font-size="9" font-weight="bold" fill="#475569" text-anchor="middle">Prithvi</text>
+                    <text x="177" y="128" font-family="sans-serif" font-size="9" font-weight="bold" fill="#475569" text-anchor="middle">Trishul</text>
+                    <text x="227" y="128" font-family="sans-serif" font-size="9" font-weight="bold" fill="#475569" text-anchor="middle">Vayu</text>
+                </svg>
+            `;
+        }
+        if (type === "table1") {
+            return `
+                <div style="width:100%; overflow-x:auto;">
+                    <table style="width:100%; border-collapse:collapse; font-family:sans-serif; font-size:12px; text-align:center; background:#fff; border:1px solid #ffccab;">
+                        <tr style="background:#ffedd5; color:var(--primary-dark); font-weight:bold;">
+                            <th style="padding:6px; border:1px solid #ffccab;">Day</th>
+                            <th style="padding:6px; border:1px solid #ffccab;">Present</th>
+                            <th style="padding:6px; border:1px solid #ffccab;">Absent</th>
+                        </tr>
+                        <tr>
+                            <td style="padding:5px; border:1px solid #ffccab; font-weight:bold;">Monday</td>
+                            <td style="padding:5px; border:1px solid #ffccab;">38</td>
+                            <td style="padding:5px; border:1px solid #ffccab; color:var(--error);">2</td>
+                        </tr>
+                        <tr style="background:#f8fafc;">
+                            <td style="padding:5px; border:1px solid #ffccab; font-weight:bold;">Tuesday</td>
+                            <td style="padding:5px; border:1px solid #ffccab;">40</td>
+                            <td style="padding:5px; border:1px solid #ffccab; color:var(--error);">0</td>
+                        </tr>
+                        <tr>
+                            <td style="padding:5px; border:1px solid #ffccab; font-weight:bold;">Wednesday</td>
+                            <td style="padding:5px; border:1px solid #ffccab; color:var(--primary-dark); font-weight:bold;">35</td>
+                            <td style="padding:5px; border:1px solid #ffccab; color:var(--error);">5</td>
+                        </tr>
+                        <tr style="background:#f8fafc;">
+                            <td style="padding:5px; border:1px solid #ffccab; font-weight:bold;">Thursday</td>
+                            <td style="padding:5px; border:1px solid #ffccab;">39</td>
+                            <td style="padding:5px; border:1px solid #ffccab; color:var(--error);">1</td>
+                        </tr>
+                        <tr>
+                            <td style="padding:5px; border:1px solid #ffccab; font-weight:bold;">Friday</td>
+                            <td style="padding:5px; border:1px solid #ffccab;">37</td>
+                            <td style="padding:5px; border:1px solid #ffccab; color:var(--error);">3</td>
+                        </tr>
+                    </table>
+                </div>
+            `;
+        }
+        if (type === "tally1") {
+            return `
+                <svg class="chart-svg" width="280" height="130" viewBox="0 0 280 130">
+                    <text x="15" y="40" font-family="sans-serif" font-size="13" font-weight="bold" fill="#334155">Ducks:</text>
+                    <line x1="90" y1="25" x2="90" y2="45" stroke="#1e293b" stroke-width="2"/>
+                    <line x1="96" y1="25" x2="96" y2="45" stroke="#1e293b" stroke-width="2"/>
+                    <line x1="102" y1="25" x2="102" y2="45" stroke="#1e293b" stroke-width="2"/>
+                    <line x1="108" y1="25" x2="108" y2="45" stroke="#1e293b" stroke-width="2"/>
+                    <line x1="86" y1="42" x2="112" y2="28" stroke="#dc2626" stroke-width="2"/>
+                    
+                    <line x1="125" y1="25" x2="125" y2="45" stroke="#1e293b" stroke-width="2"/>
+                    <line x1="131" y1="25" x2="131" y2="45" stroke="#1e293b" stroke-width="2"/>
+                    <line x1="137" y1="25" x2="137" y2="45" stroke="#1e293b" stroke-width="2"/>
+                    <line x1="143" y1="25" x2="143" y2="45" stroke="#1e293b" stroke-width="2"/>
+                    <line x1="121" y1="42" x2="147" y2="28" stroke="#dc2626" stroke-width="2"/>
+                    
+                    <line x1="160" y1="25" x2="160" y2="45" stroke="#1e293b" stroke-width="2"/>
+                    <line x1="166" y1="25" x2="166" y2="45" stroke="#1e293b" stroke-width="2"/>
+                    <line x1="172" y1="25" x2="172" y2="45" stroke="#1e293b" stroke-width="2"/>
+
+                    <text x="15" y="85" font-family="sans-serif" font-size="13" font-weight="bold" fill="#334155">Herons:</text>
+                    <line x1="90" y1="70" x2="90" y2="90" stroke="#1e293b" stroke-width="2"/>
+                    <line x1="96" y1="70" x2="96" y2="90" stroke="#1e293b" stroke-width="2"/>
+                    <line x1="102" y1="70" x2="102" y2="90" stroke="#1e293b" stroke-width="2"/>
+                    <line x1="108" y1="70" x2="108" y2="90" stroke="#1e293b" stroke-width="2"/>
+                    <line x1="86" y1="87" x2="112" y2="73" stroke="#dc2626" stroke-width="2"/>
+                    
+                    <line x1="125" y1="70" x2="125" y2="90" stroke="#1e293b" stroke-width="2"/>
+                    <line x1="131" y1="70" x2="131" y2="90" stroke="#1e293b" stroke-width="2"/>
+                    <line x1="137" y1="70" x2="137" y2="90" stroke="#1e293b" stroke-width="2"/>
+                </svg>
+            `;
+        }
+        if (type === "pie1") {
+            return `
+                <svg class="chart-svg" width="240" height="140" viewBox="0 0 240 140">
+                    <path d="M120,70 L120,15 A55,55 0 0,1 120,125 Z" fill="#ffedd5" stroke="#c2410c" stroke-width="2"/>
+                    <path d="M120,70 L120,125 A55,55 0 0,1 120,15 Z" fill="#fef08a" stroke="#a16207" stroke-width="2"/>
+                    
+                    <text x="160" y="74" font-family="sans-serif" font-size="11" font-weight="bold" fill="#9a3412">Pastries (1/2)</text>
+                    <text x="35" y="65" font-family="sans-serif" font-size="10" font-weight="bold" fill="#a16207">Cakes (1/4)</text>
+                    <text x="30" y="90" font-family="sans-serif" font-size="10" font-weight="bold" fill="#a16207">Cookies (1/4)</text>
+                </svg>
+            `;
+        }
+        return "";
+    }
+
+    document.getElementById('start-btn').onclick = () => {
+        const engine = document.getElementById('quiz-audio-engine');
+        engine.src = audioCache['correct'];
+        engine.load();
+
+        initQuizData();
+        document.getElementById('intro-view').classList.add('hidden');
+        document.getElementById('quiz-view').classList.remove('hidden');
+        loadQuestion();
+    };
+
+    function loadQuestion() {
+        attempts = 0; timeLeft = 60;
+        const q = pool[current];
+        document.getElementById('feedback-box').style.display = 'none';
+        document.getElementById('action-btn').classList.add('hidden');
+        document.getElementById('q-num').innerText = current + 1;
+        document.getElementById('q-text').innerText = q.q;
+        document.getElementById('timer-text').innerText = timeLeft + "s";
+
+        // Handle vector/table display injection
+        const gContainer = document.getElementById('graphic-container');
+        if (q.hasGraphic) {
+            gContainer.innerHTML = generateGraphic(q.graphicType);
+            gContainer.classList.remove('hidden');
+        } else {
+            gContainer.innerHTML = "";
+            gContainer.classList.add('hidden');
+        }
+
+        const area = document.getElementById('options-area');
+        area.innerHTML = "";
+        
+        const prefixes = ["A) ", "B) ", "C) ", "D) "];
+        q.opts.forEach((o, i) => {
+            if (o === q.correctText) {
+                computedCorrectIdx = i;
+            }
+            const b = document.createElement('button');
+            b.className = 'opt-btn';
+            b.innerText = prefixes[i] + o;
+            b.onclick = () => check(i, b);
+            area.appendChild(b);
+        });
+        startTimer();
+    }
+
+    function startTimer() {
+        clearInterval(timer);
+        timer = setInterval(() => {
+            timeLeft--;
+            document.getElementById('timer-text').innerText = timeLeft + "s";
+            document.getElementById('timer-bar').style.width = (timeLeft / 60 * 100) + "%";
+            if(timeLeft <= 0) { 
+                clearInterval(timer); 
+                playSound('timeout'); 
+                endTurn(); 
+            }
+        }, 1000);
+    }
+
+    function check(i, b) {
+        if(i === computedCorrectIdx) {
+            clearInterval(timer);
+            playSound('correct'); 
+            b.classList.add('correct');
+            score++;
+            document.getElementById('score-val').innerText = score;
+            endTurn();
+        } else {
+            attempts++;
+            playSound('wrong'); 
+            b.classList.add('wrong');
+            b.disabled = true;
+            if(attempts === 1) {
+                const f = document.getElementById('feedback-box');
+                f.className = 'feedback hint-box';
+                f.innerHTML = "<b>💡 Clue:</b> " + pool[current].hint;
+                f.style.display = 'block';
+            } else {
+                clearInterval(timer);
+                endTurn();
+            }
+        }
+    }
+
+    function endTurn() {
+        document.querySelectorAll('.opt-btn').forEach(btn => btn.disabled = true);
+        const f = document.getElementById('feedback-box');
+        f.className = 'feedback expl-box';
+        f.innerHTML = "<b>🔍 Solution Step:</b> " + pool[current].expl;
+        f.style.display = 'block';
+        document.querySelectorAll('.opt-btn')[computedCorrectIdx].classList.add('correct');
+        document.getElementById('action-btn').classList.remove('hidden');
+    }
+
+    document.getElementById('action-btn').onclick = () => {
+        current++;
+        if(current < pool.length) loadQuestion();
+        else {
+            playSound('complete');
+            document.getElementById('quiz-view').classList.add('hidden');
+            document.getElementById('result-view').classList.remove('hidden');
+            document.getElementById('final-pts').innerText = score;
+
+            const heading = document.getElementById('result-heading');
+            const subtext = document.getElementById('result-subtext');
+            const emoji = document.getElementById('result-emoji');
+
+            if (score === 10) {
+                emoji.innerText = "👑";
+                heading.innerText = "Perfect Interpretation!";
+                subtext.innerText = "Sensational data tracking! You processed every chart accurately.";
+            } else if (score >= 8) {
+                emoji.innerText = "🌟";
+                heading.innerText = "Fantastic Job!";
+                subtext.innerText = "Brilliant effort! You have a great eye for scaling factors and tally blocks.";
+            } else if (score >= 5) {
+                emoji.innerText = "👍";
+                heading.innerText = "Good Effort!";
+                subtext.innerText = "Well done! You read tables and grid columns successfully.";
+            } else {
+                emoji.innerText = "📚";
+                heading.innerText = "Keep Practising!";
+                subtext.innerText = "A good try! Keep working on matching symbol values against chart keys.";
+            }
+        }
+    };
+</script>
+</body>
+</html>
