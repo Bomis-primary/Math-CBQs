@@ -1,1 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Geometry & Spatial Sense CBQ Challenge</title>
+    <style>
+        :root {
+            --primary: #6f42c1;
+            --primary-dark: #4a2880;
+            --success: #198754;
+            --error: #ea580c;
+            --bg: #f3e5f5;
+            --text: #212529;
+        }
 
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background-color: #e9ecef;
+            color: var(--text);
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 10px;
+        }
+
+        #app-container {
+            width: 100%;
+            max-width: 580px;
+            background: #ffffff;
+            border-radius: 24px;
+            box-shadow: 0 15px 35px rgba(111, 66, 193, 0.12);
+            position: relative;
+            overflow: hidden;
+            min-height: 540px;
+        }
+
+        /* --- 5-SECOND MANDATORY WHITE SPLASH SCREEN --- */
+        #splash-screen {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .splash-logo-img {
+            max-width: 240px;
+            width: 80%;
+            height: auto;
+            object-fit: contain;
+        }
+
+        /* --- INTERFACE CORE PADDING --- */
+        .quiz-padding {
+            padding: 25px;
+        }
+
+        .instruction-box {
+            background: #f3e5f5;
+            border-left: 4px solid var(--primary);
+            padding: 15px;
+            border-radius: 8px;
+            text-align: left;
+            margin: 20px 0;
+            font-size: 0.95rem;
+            color: #495057;
+            line-height: 1.5;
+        }
+        .instruction-box ul { margin: 5px 0 0 20px; padding: 0; }
+        .instruction-box li { margin-bottom: 6px; }
+
+        .hud-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        .hud-pill {
+            flex: 1;
+            text-align: center;
+            padding: 12px 6px;
+            border-radius: 14px;
+            font-size: 0.95rem;
+            font-weight: 800;
+            background-color: #e8daef;
+            color: var(--primary-dark);
+        }
+        .hud-pill.gold { background-color: #fff9c4; color: #f57f17; }
+
+        .timer-track { width: 100%; height: 8px; background: #dee2e6; border-radius: 10px; margin-bottom: 20px; overflow: hidden; }
+        #timer-bar { height: 100%; width: 100%; background: var(--primary); transition: width 1s linear; }
+
+        .category-text { font-size: 0.85rem; color: #f57f17; font-weight: 700; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 1px; }
+        .question-text { font-size: 1.1rem; font-weight: 600; line-height: 1.5; margin-bottom: 15px; white-space: pre-line; }
+
+        /* --- GEOMETRIC SHAPE VISUAL CONTAINERS --- */
+        .geometry-display-box {
+            background: #fafafa;
+            border: 2px dashed #d6bbf7;
+            padding: 15px;
+            border-radius: 12px;
+            text-align: center;
+            font-family: monospace;
+            font-size: 1.1rem;
+            font-weight: bold;
+            margin: 15px 0;
+            line-height: 1.5;
+            color: var(--primary-dark);
+        }
+
+        .spatial-grid-table {
+            border-collapse: collapse;
+            margin: 15px auto;
+            background: white;
+        }
+        .spatial-grid-table td {
+            width: 25px;
+            height: 25px;
+            border: 1px solid #ced4da;
+            text-align: center;
+            font-size: 0.8rem;
+        }
+        .spatial-grid-table .shaded {
+            background-color: #c5a3ff;
+        }
+
+        .options-grid { display: grid; gap: 12px; }
+        .opt-btn {
+            background: #fff; border: 2px solid #e9ecef; padding: 16px;
+            border-radius: 14px; text-align: left; font-size: 1rem; cursor: pointer; transition: 0.2s;
+            color: #495057; font-weight: 500;
+        }
+        .opt-btn:hover:not(:disabled) { border-color: var(--primary); background: #fdfbfe; }
+        .opt-btn.correct { background: #d1e7dd !important; color: var(--success) !important; border-color: #a3cfbb !important; font-weight: 700; }
+        .opt-btn.wrong { background: #f8d7da !important; color: var(--error) !important; border-color: #f5c2c7 !important; }
+
+        .feedback { margin-top: 20px; padding: 15px; border-radius: 12px; display: none; line-height: 1.5; font-size: 0.95rem; }
+        .hint-box { background: #fffde7; border: 1px solid #fff59d; color: #f57f17; }
+        .expl-box { background: #f3e5f5; border: 1px solid #d6bbf7; color: var(--primary-dark); }
+
+        #action-btn { width: 100%; margin-top: 20px; padding: 16px; background: var(--primary); color: white; border: none; border-radius: 14px; font-weight: 700; cursor: pointer; font-size: 1rem; }
+        #action-btn:hover { background: var(--primary-dark); }
+        
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+
+<audio id="quiz-audio-engine" preload="auto"></audio>
+
+<div id="app-container">
+
+    <div id="splash-screen">
+        <img class="splash-logo-img" src="assets/logo.png" alt="Innovine Logo">
+    </div>
+
+    <div id="intro-view" class="hidden">
+        <div class="quiz-padding">
+            <h1 style="text-align:center; color:var(--primary); margin: 10px 0 5px 0; font-size: 26px;">Spatial Sense Challenge</h1>
+            <p style="text-align:center; color:#6c757d; margin-top: 0; font-weight: 600; text-transform: uppercase; font-size: 12px; letter-spacing: 1px;">Competency Evaluation</p>
+            
+            <div class="instruction-box">
+                <strong>⚡ Assessment Framework:</strong>
+                <ul>
+                    <li>You will be evaluated across 10 competency-based contextual geometry scenarios.</li>
+                    <li>A live tracking progress bar limits each question to a strict 60-second window.</li>
+                    <li>Questions and layout choices automatically re-scramble via a fresh randomized engine on startup.</li>
+                    <li>Missing a task on your first attempt instantly generates a helpful structural hint panel.</li>
+                </ul>
+            </div>
+
+            <button id="start-btn" style="width:100%; padding:18px; background:var(--primary); color:white; border:none; border-radius:14px; font-weight:bold; font-size:1.1rem; cursor:pointer; margin-top: 10px;">Begin Evaluation ⚡</button>
+        </div>
+    </div>
+
+    <div id="quiz-view" class="hidden">
+        <div class="quiz-padding">
+            <div class="hud-row">
+                <div class="hud-pill">Scenario <span id="q-num">1</span>/10</div>
+                <div class="hud-pill">Points: <span id="score-val">0</span></div>
+                <div class="hud-pill gold"><span id="timer-text">60s</span></div>
+            </div>
+            <div class="timer-track"><div id="timer-bar"></div></div>
+            
+            <div id="q-category" class="category-text"></div>
+            <div id="q-text" class="question-text"></div>
+            
+            <div id="custom-display-area"></div>
+            
+            <div id="options-area" class="options-grid"></div>
+            
+            <div id="feedback-box" class="feedback"></div>
+            <button id="action-btn" class="hidden">Next Scenario →</button>
+        </div>
+    </div>
+
+    <div id="result-view" class="hidden" style="text-align:center;">
+        <div class="quiz-padding">
+            <div style="font-size: 4rem; margin-bottom: 5px;">🏆</div>
+            <h2 style="font-size:1.6rem; margin: 5px 0;">Evaluation Concluded</h2>
+            <div style="font-size: 4rem; font-weight: 800; color: var(--primary); margin: 10px 0;"><span id="final-pts">0</span>/10</div>
+            <div id="result-msg" style="color:#495057; font-size: 0.95rem; line-height: 1.5; margin: 0 0 25px 0; text-align: left; background: #f8f9fa; border: 1px solid #dee2e6; padding: 16px; border-radius: 16px;"></div>
+            <button onclick="location.reload()" style="width:100%; padding:16px; background:var(--primary); color:white; border:none; border-radius:14px; font-weight:700; cursor:pointer; font-size: 1rem;">Restart Assessment Loop</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // --- AUDIO SYSTEM ROUTING ENGINE ---
+    const audioCache = {
+        'correct': 'assets/correct.mp3',
+        'wrong': 'assets/wrong.mp3',
+        'timeout': 'assets/wrong.mp3',
+        'complete': 'assets/freesound_community-claps-44774.mp3'
+    };
+
+    function playSound(type) {
+        const audioNode = document.getElementById('quiz-audio-engine');
+        const filePath = audioCache[type];
+
+        if (filePath) {
+            audioNode.src = filePath;
+            audioNode.currentTime = 0;
+            audioNode.play().catch(err => {
+                console.log("Audio routing intercepted by security context: ", err);
+            });
+        }
+    }
+
+    // Dynamic 5000ms Splash Exit Sequence
+    window.addEventListener('DOMContentLoaded', () => {
+        setTimeout(() => {
+            const splash = document.getElementById('splash-screen');
+            splash.style.opacity = '0';
+            
+            setTimeout(() => {
+                splash.style.display = 'none';
+                document.getElementById('intro-view').classList.remove('hidden');
+            }, 800); 
+        }, 5000);
+    });
+
+    // Content Pool directly mapping concepts from image_d57ae7.png
+    const rawPool = [
+        { 
+            cat: "Circle Dimensions", 
+            q: "Meera uses a metallic compass tool to sketch a round perimeter line inside a local sports field project. \n\nIf the center point to the outer boundary measurement reads exactly 14 cm, what is the total direct width (diameter) across the full circle design?", 
+            opts: ["7 cm", "28 cm", "42 cm", "14 cm"], 
+            correctText: "28 cm", 
+            hint: "The direct width across a circle passing through the center is the diameter, which measures exactly twice the length of the radius.", 
+            expl: "As outlined in geometric principles, Diameter = 2 × Radius. Therefore, 14 cm × 2 = 28 cm." 
+        },
+        { 
+            cat: "Geometric Lines", 
+            q: "An architectural blueprint illustrates tracking layouts across three distinct formats:\n\nFormat X: A layout with a clear start point and an infinite terminal path.\nFormat Y: A layout with two fixed endpoints marking a set tracking distance.\nFormat Z: A direct continuous path extending infinitely in both directions.\n\nIdentify the correct geometrical definition for Format Y.", 
+            opts: ["Straight Line", "Ray", "Line Segment", "Curved Line"], 
+            correctText: "Line Segment", 
+            hint: "Look for the definition that represents a straight, measurable path bound securely by two fixed endpoints.", 
+            expl: "A line segment has a fixed length and is bounded by two distinct endpoints, distinguishing it from an infinite line or a single-endpoint ray." 
+        },
+        { 
+            cat: "Concentric Formations", 
+            q: "A designer crafts a decorative ceiling panel display consisting of three separate circular loops. Every single loop shares the exact same center tracking point but carries a unique radius.\n\nWhat structural term defines this specific arrangement?", 
+            opts: ["Intersecting Circles", "Concentric Circles", "Semicircles", "Open Curves"], 
+            correctText: "Concentric Circles", 
+            hint: "Think of target rings or ripples in water where multiple shapes nest inside each other around one shared center dot.", 
+            expl: "Circles that share the exact same central point but possess different radius dimensions are called concentric circles." 
+        },
+        { 
+            cat: "Solid Shapes Analysis", 
+            q: "An engineering facility manufactures solid concrete blocks for a foundation layout project. Each block possesses the following structural properties:\n\n- Total flat faces = 6\n- Total linear edges = 12\n- Total corner vertices = 8\n- All opposing rectangular surfaces are identical.\n\nWhat exact 3D solid category does this concrete block fall under?", 
+            opts: ["Square Pyramid", "Cuboid", "Triangular Prism", "Cylinder"], 
+            correctText: "Cuboid", 
+            hint: "Think of a standard textbook or brick. It has 6 rectangular faces, 12 straight edges, and 8 sharp corners.", 
+            expl: "A cuboid is a 3D solid shape bounded by six rectangular faces, meeting at 12 edges and 8 distinct corner vertices." 
+        },
+        { 
+            cat: "Nets & 3D Projections", 
+            q: "Karan cuts out a flat cardboard template. The flat pattern features a central square base bordered evenly by four identical triangular flaps.\n\nIf he folds all four triangular flaps upward until their tips meet at a single point, what 3D solid shape will be constructed?", 
+            opts: ["Cube", "Triangular Prism", "Square Pyramid", "Cone"], 
+            correctText: "Square Pyramid", 
+            hint: "Picture the flat base staying square while the four surrounding triangles lean inward to form a single peak point at the top.", 
+            expl: "The flat net describes a square pyramid. Folding the four peripheral triangles over the square base joins them at a single apex." 
+        },
+        { 
+            cat: "Perimeter Calculations", 
+            q: "A municipal contractor constructs a boundary path around a rectangular garden layout area. The field length tracks out to 35 metres, while the width measures exactly 15 metres.\n\nWhat is the total linear distance around the complete garden site?", 
+            opts: ["50 metres", "100 metres", "525 metres", "70 metres"], 
+            correctText: "100 metres", 
+            hint: "To compute the total perimeter distance of a rectangle, add the length and width together, then multiply that sum by 2.", 
+            expl: "Perimeter formula = 2 × (Length + Width). Here, 2 × (35 + 15) = 2 × 50 = 100 metres." 
+        },
+        { 
+            cat: "Area Operations", 
+            q: "An installer lays square vinyl tiles across a square storage cabin floor. The primary base wall edge tracking boundary measures exactly 9 metres long.\n\nCalculate the absolute total flat area coverage across the surface.", 
+            opts: ["36 square metres", "81 square metres", "18 square metres", "45 square metres"], 
+            correctText: "81 square metres", 
+            hint: "The area of a square is calculated by multiplying its side length directly by itself.", 
+            expl: "Area of a Square = Side × Side. For this cabin floor layout: 9 m × 9 m = 81 square metres." 
+        },
+        { 
+            cat: "Grid Method Analysis", 
+            q: "An artisan maps out an irregular decorative tile fragment shape over a standardized grid template layer. Compute the total flat surface area units based on the grid box layout detailed below:", 
+            hasTable: true,
+            tableData: [
+                [1, 1, 1, 0, 0],
+                [1, 1, 1, 1, 0],
+                [0, 1, 1, 1, 1],
+                [0, 0, 1, 1, 0]
+            ],
+            opts: ["11 square units", "13 square units", "15 square units", "12 square units"], 
+            correctText: "13 square units", 
+            hint: "Count the total number of fully shaded grid boxes contained within the layout borders to find the total area units.", 
+            expl: "Counting the shaded grid spaces line by line: Row 1 has 3, Row 2 has 4, Row 3 has 4, and Row 4 has 2. Total = 3 + 4 + 4 + 2 = 13 square units." 
+        },
+        { 
+            cat: "Curve Classification", 
+            q: "A track technician configures boundary pathways inside an exploration zone.\n\nPath Alpha: Starts at point A, curves around fluidly, and stops at point B.\nPath Beta: Starts at point A, loops around without intersecting itself, and connects seamlessly back at point A.\n\nHow should the technician classify Path Beta?", 
+            opts: ["Open Simple Curve", "Closed Simple Curve", "Complex Open Line", "Straight Segment Line"], 
+            correctText: "Closed Simple Curve", 
+            hint: "A path that starts and finishes at the exact same location without crossing over its own lines is a closed simple curve.", 
+            expl: "Because Path Beta loops back to join its point of origin without self-intersecting, it meets the precise criteria for a closed simple curve." 
+        },
+        { 
+            cat: "Practical Application", 
+            q: "A primary school supervisor prepares a square assembly stage and wraps yellow warning tape along its outer perimeter. The total tape consumed measures exactly 48 metres.\n\nWhat is the length of one single side wall along this assembly stage?", 
+            opts: ["12 metres", "24 metres", "8 metres", "16 metres"], 
+            correctText: "12 metres", 
+            hint: "A square has 4 equal sides. Divide the total outer perimeter distance evenly by 4 to determine one side's length.", 
+            expl: "Perimeter of a square = 4 × Side. Given the total perimeter is 48 m, dividing by 4 yields: 48 ÷ 4 = 12 metres per side." 
+        }
+    ];
+
+    let pool = [];
+    let current = 0, score = 0, attempts = 0, timer, timeLeft = 60;
+    let computedCorrectIdx = -1;
+
+    // Fisher-Yates Randomization
+    function shuffleArray(arr) {
+        for (let i = arr.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [arr[i], arr[j]] = [arr[j], arr[i]];
+        }
+        return arr;
+    }
+
+    function initQuizData() {
+        pool = JSON.parse(JSON.stringify(rawPool));
+        shuffleArray(pool); 
+        pool.forEach(qItem => {
+            shuffleArray(qItem.opts); 
+        });
+    }
+
+    document.getElementById('start-btn').onclick = () => {
+        const engine = document.getElementById('quiz-audio-engine');
+        engine.src = audioCache['correct'];
+        engine.load();
+
+        initQuizData();
+        document.getElementById('intro-view').classList.add('hidden');
+        document.getElementById('quiz-view').classList.remove('hidden');
+        loadQuestion();
+    };
+
+    function loadQuestion() {
+        attempts = 0; timeLeft = 60;
+        const q = pool[current];
+        document.getElementById('feedback-box').style.display = 'none';
+        document.getElementById('action-btn').classList.add('hidden');
+        document.getElementById('q-num').innerText = current + 1;
+        document.getElementById('q-category').innerText = q.cat;
+        document.getElementById('q-text').innerText = q.q;
+        document.getElementById('timer-text').innerText = timeLeft + "s";
+        
+        const displayArea = document.getElementById('custom-display-area');
+        if (q.hasTable && q.tableData) {
+            let tableHTML = '<table class="spatial-grid-table">';
+            q.tableData.forEach(row => {
+                tableHTML += '<tr>';
+                row.forEach(cell => {
+                    let cellClass = cell === 1 ? 'class="shaded"' : '';
+                    tableHTML += `<td ${cellClass}></td>`;
+                });
+                tableHTML += '</tr>';
+            });
+            tableHTML += '</table>';
+            displayArea.innerHTML = tableHTML;
+        } else {
+            displayArea.innerHTML = "";
+        }
+
+        const area = document.getElementById('options-area');
+        area.innerHTML = "";
+        
+        const prefixes = ["A) ", "B) ", "C) ", "D) "];
+        q.opts.forEach((o, i) => {
+            if (o === q.correctText) {
+                computedCorrectIdx = i;
+            }
+            const b = document.createElement('button');
+            b.className = 'opt-btn';
+            b.innerText = prefixes[i] + o;
+            b.onclick = () => check(i, b);
+            area.appendChild(b);
+        });
+        startTimer();
+    }
+
+    function startTimer() {
+        clearInterval(timer);
+        timer = setInterval(() => {
+            timeLeft--;
+            document.getElementById('timer-text').innerText = timeLeft + "s";
+            document.getElementById('timer-bar').style.width = (timeLeft / 60 * 100) + "%";
+            if(timeLeft <= 0) { 
+                clearInterval(timer); 
+                playSound('timeout'); 
+                endTurn(); 
+            }
+        }, 1000);
+    }
+
+    function check(i, b) {
+        if(i === computedCorrectIdx) {
+            clearInterval(timer);
+            playSound('correct'); 
+            b.classList.add('correct');
+            score++;
+            document.getElementById('score-val').innerText = score;
+            endTurn();
+        } else {
+            attempts++;
+            playSound('wrong'); 
+            b.classList.add('wrong');
+            b.disabled = true;
+            if(attempts === 1) {
+                const f = document.getElementById('feedback-box');
+                f.className = 'feedback hint-box';
+                f.innerHTML = "<b>💡 Clue:</b> " + pool[current].hint;
+                f.style.display = 'block';
+            } else {
+                clearInterval(timer);
+                endTurn();
+            }
+        }
+    }
+
+    function endTurn() {
+        document.querySelectorAll('.opt-btn').forEach(btn => btn.disabled = true);
+        const f = document.getElementById('feedback-box');
+        f.className = 'feedback expl-box';
+        f.innerHTML = "<b>🔍 Breakdown:</b> " + pool[current].expl;
+        f.style.display = 'block';
+        document.querySelectorAll('.opt-btn')[computedCorrectIdx].classList.add('correct');
+        document.getElementById('action-btn').classList.remove('hidden');
+    }
+
+    document.getElementById('action-btn').onclick = () => {
+        current++;
+        if(current < pool.length) loadQuestion();
+        else {
+            playSound('complete');
+            document.getElementById('quiz-view').classList.add('hidden');
+            document.getElementById('result-view').classList.remove('hidden');
+            document.getElementById('final-pts').innerText = score;
+
+            let statusMessage = "Review flat net foldings, irregular grid area analysis, and 3D solid edge properties to sharpen your spatial accuracy.";
+            if(score === 10) {
+                statusMessage = "Flawless! You have successfully resolved every dimensional, spatial, and layout conversion task.";
+            } else if(score >= 7) {
+                statusMessage = "Solid work! You display dependable structural mapping, perimeter evaluation, and curve classification skills.";
+            }
+
+            document.getElementById('result-msg').innerHTML = `
+                <span style="font-weight:700; color:var(--primary-dark); display:block; margin-bottom:6px;">Performance Summary:</span>
+                ${statusMessage}
+            `;
+        }
+    };
+</script>
+</body>
+</html>
