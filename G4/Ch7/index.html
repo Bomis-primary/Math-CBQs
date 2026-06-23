@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Geometry & Spatial Sense CBQ Challenge</title>
+    <title>Geometry & Spatial Sense Quiz</title>
     <style>
         :root {
             --primary: #6f42c1;
@@ -166,15 +166,15 @@
     <div id="intro-view" class="hidden">
         <div class="quiz-padding">
             <h1 style="text-align:center; color:var(--primary); margin: 10px 0 5px 0; font-size: 26px;">Spatial Sense Challenge</h1>
-            <p style="text-align:center; color:#6c757d; margin-top: 0; font-weight: 600; text-transform: uppercase; font-size: 12px; letter-spacing: 1px;">Competency Evaluation</p>
+            <p style="text-align:center; color:#6c757d; margin-top: 0; font-weight: 600; text-transform: uppercase; font-size: 12px; letter-spacing: 1px;">Evaluation Session</p>
             
             <div class="instruction-box">
                 <strong>⚡ Assessment Framework:</strong>
                 <ul>
-                    <li>You will be evaluated across 10 competency-based contextual geometry scenarios.</li>
-                    <li>A live tracking progress bar limits each question to a strict 60-second window.</li>
-                    <li>Questions and layout choices automatically re-scramble via a fresh randomized engine on startup.</li>
-                    <li>Missing a task on your first attempt instantly generates a helpful structural hint panel.</li>
+                    <li>You will complete 10 geometry questions based on real-world situations.</li>
+                    <li>A running timer bar limits each question to a strict 60-second window.</li>
+                    <li>Questions and options shuffle automatically using a random layout engine.</li>
+                    <li>If you get a question wrong on your first go, a helpful hint box will appear.</li>
                 </ul>
             </div>
 
@@ -185,7 +185,7 @@
     <div id="quiz-view" class="hidden">
         <div class="quiz-padding">
             <div class="hud-row">
-                <div class="hud-pill">Scenario <span id="q-num">1</span>/10</div>
+                <div class="hud-pill">Question <span id="q-num">1</span>/10</div>
                 <div class="hud-pill">Points: <span id="score-val">0</span></div>
                 <div class="hud-pill gold"><span id="timer-text">60s</span></div>
             </div>
@@ -199,17 +199,17 @@
             <div id="options-area" class="options-grid"></div>
             
             <div id="feedback-box" class="feedback"></div>
-            <button id="action-btn" class="hidden">Next Scenario →</button>
+            <button id="action-btn" class="hidden">Next Question →</button>
         </div>
     </div>
 
     <div id="result-view" class="hidden" style="text-align:center;">
         <div class="quiz-padding">
             <div style="font-size: 4rem; margin-bottom: 5px;">🏆</div>
-            <h2 style="font-size:1.6rem; margin: 5px 0;">Evaluation Concluded</h2>
+            <h2 style="font-size:1.6rem; margin: 5px 0;">Evaluation Finished</h2>
             <div style="font-size: 4rem; font-weight: 800; color: var(--primary); margin: 10px 0;"><span id="final-pts">0</span>/10</div>
             <div id="result-msg" style="color:#495057; font-size: 0.95rem; line-height: 1.5; margin: 0 0 25px 0; text-align: left; background: #f8f9fa; border: 1px solid #dee2e6; padding: 16px; border-radius: 16px;"></div>
-            <button onclick="location.reload()" style="width:100%; padding:16px; background:var(--primary); color:white; border:none; border-radius:14px; font-weight:700; cursor:pointer; font-size: 1rem;">Restart Assessment Loop</button>
+            <button onclick="location.reload()" style="width:100%; padding:16px; background:var(--primary); color:white; border:none; border-radius:14px; font-weight:700; cursor:pointer; font-size: 1rem;">Restart Quiz Loop</button>
         </div>
     </div>
 </div>
@@ -231,7 +231,7 @@
             audioNode.src = filePath;
             audioNode.currentTime = 0;
             audioNode.play().catch(err => {
-                console.log("Audio routing intercepted by security context: ", err);
+                console.log("Audio routing issue: ", err);
             });
         }
     }
@@ -249,67 +249,67 @@
         }, 5000);
     });
 
-    // Content Pool directly mapping concepts from image_d57ae7.png
+    // Content Pool directly mapping concepts from image_d57ae7.png into simple British English
     const rawPool = [
         { 
             cat: "Circle Dimensions", 
-            q: "Meera uses a metallic compass tool to sketch a round perimeter line inside a local sports field project. \n\nIf the center point to the outer boundary measurement reads exactly 14 cm, what is the total direct width (diameter) across the full circle design?", 
+            q: "Oliver uses a school pair of compasses to draw a perfect circle on a large sheet of card for a project.\n\nThe distance from the centre point to the outer line measures exactly 14 cm.\n\nWhat is the total width (diameter) across the middle of his circle?", 
             opts: ["7 cm", "28 cm", "42 cm", "14 cm"], 
             correctText: "28 cm", 
-            hint: "The direct width across a circle passing through the center is the diameter, which measures exactly twice the length of the radius.", 
-            expl: "As outlined in geometric principles, Diameter = 2 × Radius. Therefore, 14 cm × 2 = 28 cm." 
+            hint: "The full width across a circle passing straight through the centre is the diameter. This is exactly double the length of the radius.", 
+            expl: "The diameter is always twice the radius. So, 14 cm × 2 = 28 cm." 
         },
         { 
             cat: "Geometric Lines", 
-            q: "An architectural blueprint illustrates tracking layouts across three distinct formats:\n\nFormat X: A layout with a clear start point and an infinite terminal path.\nFormat Y: A layout with two fixed endpoints marking a set tracking distance.\nFormat Z: A direct continuous path extending infinitely in both directions.\n\nIdentify the correct geometrical definition for Format Y.", 
+            q: "A map diagram shows three different types of path layouts:\n\nLayout X: Starts at a single point and carries on forever in one direction.\nLayout Y: A straight line with two clear endpoints that lets you measure its exact length.\nLayout Z: A straight line that carries on forever in both directions.\n\nWhat is the correct geometric name for Layout Y?", 
             opts: ["Straight Line", "Ray", "Line Segment", "Curved Line"], 
             correctText: "Line Segment", 
-            hint: "Look for the definition that represents a straight, measurable path bound securely by two fixed endpoints.", 
-            expl: "A line segment has a fixed length and is bounded by two distinct endpoints, distinguishing it from an infinite line or a single-endpoint ray." 
+            hint: "Think about a short, straight piece of line that has a definite start and a definite finish.", 
+            expl: "A line segment is a straight line that connects two distinct endpoints, meaning it has a fixed, measurable length." 
         },
         { 
             cat: "Concentric Formations", 
-            q: "A designer crafts a decorative ceiling panel display consisting of three separate circular loops. Every single loop shares the exact same center tracking point but carries a unique radius.\n\nWhat structural term defines this specific arrangement?", 
+            q: "An artist paints three circular targets on a school playground wall. All three circles share the exact same centre point, but each one has a different radius size.\n\nWhat specific geometric name describes this pattern of circles?", 
             opts: ["Intersecting Circles", "Concentric Circles", "Semicircles", "Open Curves"], 
             correctText: "Concentric Circles", 
-            hint: "Think of target rings or ripples in water where multiple shapes nest inside each other around one shared center dot.", 
-            expl: "Circles that share the exact same central point but possess different radius dimensions are called concentric circles." 
+            hint: "Think about the nested rings on a dartboard or the ripples created when you drop a stone into a pond.", 
+            expl: "Circles that fit inside one another because they share the exact same centre point are called concentric circles." 
         },
         { 
             cat: "Solid Shapes Analysis", 
-            q: "An engineering facility manufactures solid concrete blocks for a foundation layout project. Each block possesses the following structural properties:\n\n- Total flat faces = 6\n- Total linear edges = 12\n- Total corner vertices = 8\n- All opposing rectangular surfaces are identical.\n\nWhat exact 3D solid category does this concrete block fall under?", 
+            q: "A bakery makes rectangular shortbread biscuit tins. Each tin has the following features:\n\n- 6 flat faces in total\n- 12 straight edges\n- 8 corner vertices\n- Opposite rectangular sides are exactly the same size.\n\nWhat is the correct 3D shape name for this biscuit tin?", 
             opts: ["Square Pyramid", "Cuboid", "Triangular Prism", "Cylinder"], 
             correctText: "Cuboid", 
-            hint: "Think of a standard textbook or brick. It has 6 rectangular faces, 12 straight edges, and 8 sharp corners.", 
-            expl: "A cuboid is a 3D solid shape bounded by six rectangular faces, meeting at 12 edges and 8 distinct corner vertices." 
+            hint: "Think of everyday objects like a standard house brick, a cereal box, or a textbook.", 
+            expl: "A cuboid is a solid 3D shape made up of six rectangular faces, meeting at 12 edges and 8 corners." 
         },
         { 
-            cat: "Nets & 3D Projections", 
-            q: "Karan cuts out a flat cardboard template. The flat pattern features a central square base bordered evenly by four identical triangular flaps.\n\nIf he folds all four triangular flaps upward until their tips meet at a single point, what 3D solid shape will be constructed?", 
+            cat: "Nets & 3D Shapes", 
+            q: "Chloe cuts out a flat cardboard net to build a small gift box. The flat pattern has a square in the middle, surrounded by four identical triangles along its edges.\n\nIf she folds the four triangles upwards so their top points meet at a single peak, what 3D shape does she make?", 
             opts: ["Cube", "Triangular Prism", "Square Pyramid", "Cone"], 
             correctText: "Square Pyramid", 
-            hint: "Picture the flat base staying square while the four surrounding triangles lean inward to form a single peak point at the top.", 
-            expl: "The flat net describes a square pyramid. Folding the four peripheral triangles over the square base joins them at a single apex." 
+            hint: "The base stays perfectly flat and square, while the sides slant up to form a sharp point like an Egyptian monument.", 
+            expl: "This flat net folds up to create a square pyramid, because it has a single square base and four triangular faces that meet at the top." 
         },
         { 
             cat: "Perimeter Calculations", 
-            q: "A municipal contractor constructs a boundary path around a rectangular garden layout area. The field length tracks out to 35 metres, while the width measures exactly 15 metres.\n\nWhat is the total linear distance around the complete garden site?", 
+            q: "A gardener sets up a wooden border fence around a rectangular vegetable allotment. The allotment is 35 metres long and 15 metres wide.\n\nWhat is the total length of fencing needed to go all the way around the edge?", 
             opts: ["50 metres", "100 metres", "525 metres", "70 metres"], 
             correctText: "100 metres", 
-            hint: "To compute the total perimeter distance of a rectangle, add the length and width together, then multiply that sum by 2.", 
-            expl: "Perimeter formula = 2 × (Length + Width). Here, 2 × (35 + 15) = 2 × 50 = 100 metres." 
+            hint: "To find the total distance around a rectangle, add the length and the width together, then double the result.", 
+            expl: "Perimeter = 2 × (Length + Width). For this allotment: 2 × (35 + 15) = 2 × 50 = 100 metres." 
         },
         { 
             cat: "Area Operations", 
-            q: "An installer lays square vinyl tiles across a square storage cabin floor. The primary base wall edge tracking boundary measures exactly 9 metres long.\n\nCalculate the absolute total flat area coverage across the surface.", 
+            q: "A builder lays carpet tiles on a square floor inside a garden shed. One side of the square wall measures exactly 9 metres long.\n\nWhat is the total area of the shed floor?", 
             opts: ["36 square metres", "81 square metres", "18 square metres", "45 square metres"], 
             correctText: "81 square metres", 
-            hint: "The area of a square is calculated by multiplying its side length directly by itself.", 
-            expl: "Area of a Square = Side × Side. For this cabin floor layout: 9 m × 9 m = 81 square metres." 
+            hint: "You can find the area of a square space by multiplying the length of one side by itself.", 
+            expl: "Area of a Square = Side × Side. For this square shed floor: 9 m × 9 m = 81 square metres." 
         },
         { 
             cat: "Grid Method Analysis", 
-            q: "An artisan maps out an irregular decorative tile fragment shape over a standardized grid template layer. Compute the total flat surface area units based on the grid box layout detailed below:", 
+            q: "An artist draws an unusual flat stone shape on top of a grid of square tiles. Calculate the total area of the shape by looking at the grid pattern shown below:", 
             hasTable: true,
             tableData: [
                 [1, 1, 1, 0, 0],
@@ -319,24 +319,24 @@
             ],
             opts: ["11 square units", "13 square units", "15 square units", "12 square units"], 
             correctText: "13 square units", 
-            hint: "Count the total number of fully shaded grid boxes contained within the layout borders to find the total area units.", 
-            expl: "Counting the shaded grid spaces line by line: Row 1 has 3, Row 2 has 4, Row 3 has 4, and Row 4 has 2. Total = 3 + 4 + 4 + 2 = 13 square units." 
+            hint: "Simply count up the total number of purple shaded grid boxes inside the grid borders.", 
+            expl: "Counting row by row: Top row has 3, second row has 4, third row has 4, and bottom row has 2. 3 + 4 + 4 + 2 = 13 square units." 
         },
         { 
             cat: "Curve Classification", 
-            q: "A track technician configures boundary pathways inside an exploration zone.\n\nPath Alpha: Starts at point A, curves around fluidly, and stops at point B.\nPath Beta: Starts at point A, loops around without intersecting itself, and connects seamlessly back at point A.\n\nHow should the technician classify Path Beta?", 
+            q: "A park map displays two walking trails:\n\nTrail A: Starts at the entrance gate, twists around the trees, and finishes at the lakeside bench.\nTrail B: Starts at the picnic area, loops completely around the pond without crossing over itself, and links straight back back to where it started.\n\nHow should this second trail be classified?", 
             opts: ["Open Simple Curve", "Closed Simple Curve", "Complex Open Line", "Straight Segment Line"], 
             correctText: "Closed Simple Curve", 
-            hint: "A path that starts and finishes at the exact same location without crossing over its own lines is a closed simple curve.", 
-            expl: "Because Path Beta loops back to join its point of origin without self-intersecting, it meets the precise criteria for a closed simple curve." 
+            hint: "If a line forms a complete loop that ends exactly where it began without crossing over itself, it is closed and simple.", 
+            expl: "Because Trail B creates a full loop returning to its start point without any overlapping lines, it is a closed simple curve." 
         },
         { 
             cat: "Practical Application", 
-            q: "A primary school supervisor prepares a square assembly stage and wraps yellow warning tape along its outer perimeter. The total tape consumed measures exactly 48 metres.\n\nWhat is the length of one single side wall along this assembly stage?", 
+            q: "A school teacher runs a line of bright yellow safety tape around the outer edge of a square stage. She uses exactly 48 metres of tape in total.\n\nHow long is just one side of the square stage?", 
             opts: ["12 metres", "24 metres", "8 metres", "16 metres"], 
             correctText: "12 metres", 
-            hint: "A square has 4 equal sides. Divide the total outer perimeter distance evenly by 4 to determine one side's length.", 
-            expl: "Perimeter of a square = 4 × Side. Given the total perimeter is 48 m, dividing by 4 yields: 48 ÷ 4 = 12 metres per side." 
+            hint: "A square stage has 4 sides that are all completely equal. Divide the total perimeter length by 4.", 
+            expl: "Perimeter of a square = 4 × Side. Since the total perimeter is 48 m, divide by 4: 48 ÷ 4 = 12 metres per side." 
         }
     ];
 
@@ -474,11 +474,11 @@
             document.getElementById('result-view').classList.remove('hidden');
             document.getElementById('final-pts').innerText = score;
 
-            let statusMessage = "Review flat net foldings, irregular grid area analysis, and 3D solid edge properties to sharpen your spatial accuracy.";
+            let statusMessage = "Review shape layouts, grid square areas, and 3D solid edges to make your work more accurate next time.";
             if(score === 10) {
-                statusMessage = "Flawless! You have successfully resolved every dimensional, spatial, and layout conversion task.";
+                statusMessage = "Brilliant! You answered every single spatial layout and shape calculation question perfectly.";
             } else if(score >= 7) {
-                statusMessage = "Solid work! You display dependable structural mapping, perimeter evaluation, and curve classification skills.";
+                statusMessage = "Good job! You show reliable skills with map routes, perimeter checks, and sorting curves.";
             }
 
             document.getElementById('result-msg').innerHTML = `
