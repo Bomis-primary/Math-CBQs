@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Patterns and Symmetry</title>
+    <style>
+        :root {
+            --primary: #c2410c;
+            --primary-dark: #9a3412;
+            --success: #16a34a;
+            --error: #dc2626;
+            --bg: #fff7ed;
+            --text: #1e293b;
+        }
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background-color: #fce7d2;
+            color: var(--text);
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 10px;
+        }
+
+        #app-container {
+            width: 100%;
+            max-width: 580px;
+            background: #ffffff;
+            border-radius: 24px;
+            box-shadow: 0 15px 35px rgba(194, 65, 12, 0.12);
+            position: relative;
+            overflow: hidden;
+            min-height: 540px;
+        }
+
+        /* --- 5-SECOND MANDATORY WHITE SPLASH SCREEN --- */
+        #splash-screen {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .splash-logo-img {
+            max-width: 240px;
+            width: 80%;
+            height: auto;
+            object-fit: contain;
+        }
+
+        /* --- INTERFACE CORE PADDING --- */
+        .quiz-padding {
+            padding: 25px;
+        }
+
+        .instruction-box {
+            background: var(--bg);
+            border-left: 4px solid var(--primary);
+            padding: 15px;
+            border-radius: 8px;
+            text-align: left;
+            margin: 20px 0;
+            font-size: 0.95rem;
+            color: #475569;
+            line-height: 1.5;
+        }
+        .instruction-box ul { margin: 5px 0 0 20px; padding: 0; }
+        .instruction-box li { margin-bottom: 6px; }
+
+        .hud-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        .hud-pill {
+            flex: 1;
+            text-align: center;
+            padding: 12px 6px;
+            border-radius: 14px;
+            font-size: 0.95rem;
+            font-weight: 800;
+            background-color: #ffedd5;
+            color: var(--primary-dark);
+        }
+        .hud-pill.gold { background-color: #fef08a; color: #a16207; }
+
+        .timer-track { width: 100%; height: 8px; background: #cbd5e1; border-radius: 10px; margin-bottom: 20px; overflow: hidden; }
+        #timer-bar { height: 100%; width: 100%; background: var(--primary); transition: width 1s linear; }
+
+        .question-text { font-size: 1.1rem; font-weight: 600; line-height: 1.5; margin-bottom: 15px; white-space: pre-line; }
+
+        .options-grid { display: grid; gap: 12px; }
+        .opt-btn {
+            background: #fff; border: 2px solid #ffccab; padding: 16px;
+            border-radius: 14px; text-align: left; font-size: 1rem; cursor: pointer; transition: 0.2s;
+            color: #334155; font-weight: 500;
+        }
+        .opt-btn:hover:not(:disabled) { border-color: var(--primary); background: #fdf2e9; }
+        .opt-btn.correct { background: #dcfce7 !important; color: var(--success) !important; border-color: #bbf7d0 !important; font-weight: 700; }
+        .opt-btn.wrong { background: #fee2e2 !important; color: var(--error) !important; border-color: #fca5a5 !important; }
+
+        .feedback { margin-top: 20px; padding: 15px; border-radius: 12px; display: none; line-height: 1.5; font-size: 0.95rem; }
+        .hint-box { background: #fef9c3; border: 1px solid #fef08a; color: #a16207; }
+        .expl-box { background: #ffedd5; border: 1px solid #ffccab; color: var(--primary-dark); }
+
+        #action-btn { width: 100%; margin-top: 20px; padding: 16px; background: var(--primary); color: white; border: none; border-radius: 14px; font-weight: 700; cursor: pointer; font-size: 1rem; }
+        #action-btn:hover { background: var(--primary-dark); }
+        
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+
+<audio id="quiz-audio-engine" preload="auto"></audio>
+
+<div id="app-container">
+
+    <div id="splash-screen">
+        <img class="splash-logo-img" src="assets/logo.png" alt="Company Logo">
+    </div>
+
+    <div id="intro-view" class="hidden">
+        <div class="quiz-padding">
+            <h1 style="text-align:center; color:var(--primary); margin: 10px 0 5px 0; font-size: 26px;">Patterns & Codes</h1>
+            <p style="text-align:center; color:#64748b; margin-top: 0; font-weight: 600; text-transform: uppercase; font-size: 12px; letter-spacing: 1px;">Practice Session</p>
+            
+            <div class="instruction-box">
+                <strong>⚡ Game Framework:</strong>
+                <ul>
+                    <li>1) You will have exactly 60 seconds to answer each question before the timer runs out.</li>
+                    <li>2) The complete challenge consists of exactly 10 questions focused on pattern operations.</li>
+                    <li>3) You will receive exactly 2 chances to choose the correct answer before the solution reveals.</li>
+                </ul>
+            </div>
+
+            <button id="start-btn" style="width:100%; padding:18px; background:var(--primary); color:white; border:none; border-radius:14px; font-weight:bold; font-size:1.1rem; cursor:pointer; margin-top: 10px;">Begin Game ⚡</button>
+        </div>
+    </div>
+
+    <div id="quiz-view" class="hidden">
+        <div class="quiz-padding">
+            <div class="hud-row">
+                <div class="hud-pill">Question <span id="q-num">1</span>/10</div>
+                <div class="hud-pill">Points: <span id="score-val">0</span></div>
+                <div class="hud-pill gold"><span id="timer-text">60s</span></div>
+            </div>
+            <div class="timer-track"><div id="timer-bar"></div></div>
+            
+            <div id="q-text" class="question-text"></div>
+            
+            <div id="options-area" class="options-grid"></div>
+            
+            <div id="feedback-box" class="feedback"></div>
+            <button id="action-btn" class="hidden">Next Question →</button>
+        </div>
+    </div>
+
+    <div id="result-view" class="hidden" style="text-align:center;">
+        <div class="quiz-padding">
+            <div id="result-emoji" style="font-size: 4rem; margin-bottom: 5px;">🏆</div>
+            <h2 id="result-heading" style="font-size:1.8rem; margin: 5px 0; color: var(--text);">Well Done!</h2>
+            <p id="result-subtext" style="color:#64748b; margin: 0 0 15px 0; font-size: 1.1rem;">You finished the challenge.</p>
+            
+            <div style="font-size: 1.2rem; font-weight: bold; margin-bottom: 25px; color: var(--text);">
+                Your Score: <span id="final-pts" style="color: var(--primary); font-size: 2.2rem; font-weight: 800;">0</span> / 10
+            </div>
+            
+            <button onclick="location.reload()" style="width:100%; padding:16px; background:var(--primary); color:white; border:none; border-radius:14px; font-weight:700; cursor:pointer; font-size: 1rem;">Try Again</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const audioCache = {
+        'correct': 'assets/correct.mp3',
+        'wrong': 'assets/wrong.mp3',
+        'timeout': 'assets/wrong.mp3',
+        'complete': 'assets/freesound_community-claps-44774.mp3'
+    };
+
+    function playSound(type) {
+        const audioNode = document.getElementById('quiz-audio-engine');
+        const filePath = audioCache[type];
+
+        if (filePath) {
+            audioNode.src = filePath;
+            audioNode.currentTime = 0;
+            audioNode.play().catch(err => {
+                console.log("Audio feedback exception bypassed: ", err);
+            });
+        }
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+        setTimeout(() => {
+            const splash = document.getElementById('splash-screen');
+            splash.style.opacity = '0';
+            
+            setTimeout(() => {
+                splash.style.display = 'none';
+                document.getElementById('intro-view').classList.remove('hidden');
+            }, 800); 
+        }, 5000);
+    });
+
+    const rawPool = [
+        { q: "Look at this addition pattern:\n1 + 2 = 3\n2 + 3 = 5\n3 + 4 = 7\n\nWhat is the next entry in this sequence?", opts: ["4 + 5 = 9", "4 + 5 = 10", "5 + 6 = 11", "4 + 4 = 8"], correctText: "4 + 5 = 9", hint: "Increase each starting number by 1.", expl: "Following the number pattern in addition, the next sequential integers to add are 4 and 5, which equals 9." },
+        { q: "A tiling layout repeats shapes perfectly to fill a floor without leaving any empty gaps or overlaps.\n\nWhat is the specific term for this type of pattern style?", opts: ["Tessellation", "Reflection", "Rotational Symmetry", "Code Progression"], correctText: "Tessellation", hint: "Think of regular geometric tiles covering a surface completely.", expl: "A pattern that covers a flat surface without gaps or overlaps is called a tessellation." },
+        { q: "Look at this multiplication sequence:\n2 x 2 = 4\n2 x 4 = 8\n2 x 8 = 16\n\nWhat is the next entry in this sequence?", opts: ["2 x 16 = 32", "2 x 10 = 20", "2 x 12 = 24", "2 x 16 = 48"], correctText: "2 x 16 = 32", hint: "The second multiplier doubles in every step.", expl: "Following the number patterns in multiplication, doubling 8 gives 12, so the next line is 2 x 16 = 32." },
+        { q: "A design can be divided down the middle into two parts that match each other exactly.\n\nWhat concept is displayed by this matching balance?", opts: ["Symmetry", "Multiplication", "Addition", "Coding Systems"], correctText: "Symmetry", hint: "Think about mirror reflections.", expl: "Symmetry is identified when a line divides a pattern into two identical mirror-image halves." },
+        { q: "You create a secret message code system where letter A is 1, letter B is 2, and letter C is 3.\n\nHow will you write the word 'CAB' using this system?", opts: ["312", "123", "213", "321"], correctText: "312", hint: "Substitute each letter with its corresponding number position code.", expl: "Using this simple code, C becomes 3, A becomes 1, and B becomes 2, giving the combination 312." },
+        { q: "Look at this growing shape sequence:\nStep 1: One triangle\nStep 2: Three triangles\nStep 3: Five triangles\n\nHow many triangles will you need to draw for Step 4?", opts: ["7 triangles", "6 triangles", "8 triangles", "9 triangles"], correctText: "7 triangles", hint: "Count how many new shapes are added at each stage.", expl: "The sequence adds two triangles at each step, so adding two to five gives seven triangles." },
+        { q: "You want to design an original repeating pattern for a textile print using a single geometric shape.\n\nWhich of these options works best to ensure no overlaps or gaps occur?", opts: ["A regular hexagon", "A star shape", "A perfect circle", "An irregular oval"], correctText: "A regular hexagon", hint: "Choose a shape that can form a continuous tessellation.", expl: "Regular hexagons fit together perfectly on a flat grid to form a clean, gap-free tessellation pattern." },
+        { q: "A code pattern shifts letters forward by two spots in the alphabet. Under this system, letter A becomes C, and letter B becomes D.\n\nWhat does the code word 'FOR' look like when shifted forward?", opts: ["HQT", "GNS", "HQU", "FPS"], correctText: "HQT", hint: "Move F, O, and R forward by exactly two steps in the alphabet.", expl: "Shifting two steps forward makes F become H, O become Q, and R become T, which spells HQT." },
+        { q: "Look at this decreasing sequence:\n100, 90, 81, 73, ...\n\nWhat rule is being used to build this number progression?", opts: ["Subtract 10, then subtract 9, then subtract 8", "Subtract 10 at each step", "Divide by 2 at each step", "Subtract 9 at each step"], correctText: "Subtract 10, then subtract 9, then subtract 8", hint: "Look at the changing difference between consecutive numbers.", expl: "The pattern subtracts one less than before at each step: 100 - 10 = 90, 90 - 9 = 81, and 81 - 8 = 73." },
+        { q: "Why do programmers and developers analyze symmetry and repeating sequences when writing codes?", opts: ["To find rules that help solve problems efficiently", "To draw pretty pictures on screen", "To practice basic adding up", "To count the number of shapes"], correctText: "To find rules that help solve problems efficiently", hint: "Think about how patterns help us understand underlying systems.", expl: "Analyzing patterns allows us to explain the underlying rules and build efficient systems to solve complex problems." }
+    ];
+
+    let pool = [];
+    let current = 0, score = 0, attempts = 0, timer, timeLeft = 60;
+    let computedCorrectIdx = -1;
+
+    function shuffleArray(arr) {
+        for (let i = arr.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [arr[i], arr[j]] = [arr[j], arr[i]];
+        }
+        return arr;
+    }
+
+    function initQuizData() {
+        pool = JSON.parse(JSON.stringify(rawPool));
+        shuffleArray(pool); 
+        pool.forEach(qItem => {
+            shuffleArray(qItem.opts); 
+        });
+    }
+
+    document.getElementById('start-btn').onclick = () => {
+        const engine = document.getElementById('quiz-audio-engine');
+        engine.src = audioCache['correct'];
+        engine.load();
+
+        initQuizData();
+        document.getElementById('intro-view').classList.add('hidden');
+        document.getElementById('quiz-view').classList.remove('hidden');
+        loadQuestion();
+    };
+
+    function loadQuestion() {
+        attempts = 0; timeLeft = 60;
+        const q = pool[current];
+        document.getElementById('feedback-box').style.display = 'none';
+        document.getElementById('action-btn').classList.add('hidden');
+        document.getElementById('q-num').innerText = current + 1;
+        document.getElementById('q-text').innerText = q.q;
+        document.getElementById('timer-text').innerText = timeLeft + "s";
+
+        const area = document.getElementById('options-area');
+        area.innerHTML = "";
+        
+        const prefixes = ["A) ", "B) ", "C) ", "D) "];
+        q.opts.forEach((o, i) => {
+            if (o === q.correctText) {
+                computedCorrectIdx = i;
+            }
+            const b = document.createElement('button');
+            b.className = 'opt-btn';
+            b.innerText = prefixes[i] + o;
+            b.onclick = () => check(i, b);
+            area.appendChild(b);
+        });
+        startTimer();
+    }
+
+    function startTimer() {
+        clearInterval(timer);
+        timer = setInterval(() => {
+            timeLeft--;
+            document.getElementById('timer-text').innerText = timeLeft + "s";
+            document.getElementById('timer-bar').style.width = (timeLeft / 60 * 100) + "%";
+            if(timeLeft <= 0) { 
+                clearInterval(timer); 
+                playSound('timeout'); 
+                endTurn(); 
+            }
+        }, 1000);
+    }
+
+    function check(i, b) {
+        if(i === computedCorrectIdx) {
+            clearInterval(timer);
+            playSound('correct'); 
+            b.classList.add('correct');
+            score++;
+            document.getElementById('score-val').innerText = score;
+            endTurn();
+        } else {
+            attempts++;
+            playSound('wrong'); 
+            b.classList.add('wrong');
+            b.disabled = true;
+            if(attempts === 1) {
+                const f = document.getElementById('feedback-box');
+                f.className = 'feedback hint-box';
+                f.innerHTML = "<b>💡 Clue:</b> " + pool[current].hint;
+                f.style.display = 'block';
+            } else {
+                clearInterval(timer);
+                endTurn();
+            }
+        }
+    }
+
+    function endTurn() {
+        document.querySelectorAll('.opt-btn').forEach(btn => btn.disabled = true);
+        const f = document.getElementById('feedback-box');
+        f.className = 'feedback expl-box';
+        f.innerHTML = "<b>🔍 Solution Step:</b> " + pool[current].expl;
+        f.style.display = 'block';
+        document.querySelectorAll('.opt-btn')[computedCorrectIdx].classList.add('correct');
+        document.getElementById('action-btn').classList.remove('hidden');
+    }
+
+    document.getElementById('action-btn').onclick = () => {
+        current++;
+        if(current < pool.length) loadQuestion();
+        else {
+            playSound('complete');
+            document.getElementById('quiz-view').classList.add('hidden');
+            document.getElementById('result-view').classList.remove('hidden');
+            document.getElementById('final-pts').innerText = score;
+
+            const heading = document.getElementById('result-heading');
+            const subtext = document.getElementById('result-subtext');
+            const emoji = document.getElementById('result-emoji');
+
+            if (score === 10) {
+                emoji.innerText = "👑";
+                heading.innerText = "Perfect run!";
+                subtext.innerText = "Excellent tracking! You followed every single progression correctly.";
+            } else if (score >= 8) {
+                emoji.innerText = "🌟";
+                heading.innerText = "Great job!";
+                subtext.innerText = "Fantastic matching! You have a great eye for symmetries and codes.";
+            } else if (score >= 5) {
+                emoji.innerText = "👍";
+                heading.innerText = "Nice effort!";
+                subtext.innerText = "Good following! You found most of the hidden rules successfully.";
+            } else {
+                emoji.innerText = "📚";
+                heading.innerText = "Keep playing!";
+                subtext.innerText = "Keep looking for mirror balances and number rules to improve.";
+            }
+        }
+    };
+</script>
+</body>
+</html>
