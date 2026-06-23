@@ -107,7 +107,7 @@
             justify-content: center;
             align-items: center;
             margin: 20px 0;
-            padding: 10px;
+            padding: 15px;
             background: #f8fafc;
             border: 2px dashed #bae6fd;
             border-radius: 16px;
@@ -187,7 +187,9 @@
             <div class="instruction-box">
                 <strong>⚡ Assessment Framework:</strong>
                 <ul>
-                    <li>You will solve 10 real-world story problems featuring interactive visual layouts to help locate fraction values.</li>
+                    <li>You will solve 10 real-world story problems tracking fractional parts and equations.</li>
+                    <li>The questions appear in a completely randomized order each time you play.</li>
+                    <li>The multiple choice options are shuffled completely on every question.</li>
                     <li>A precise 60-second animated progress bar counts down for every question.</li>
                     <li>If a problem is missed on your first attempt, a helpful hint panel instantly unlocks.</li>
                 </ul>
@@ -208,7 +210,7 @@
             
             <div id="q-text" class="question-text"></div>
             
-            <div id="custom-display-area" class="visual-container"></div>
+            <div id="custom-display-area"></div>
             
             <div id="options-area" class="options-grid"></div>
             
@@ -271,7 +273,7 @@
             opts: ["3/8", "1/4", "5/8", "3/4"], 
             correctText: "3/8", 
             hint: "Count the total number of blue items (6 out of 16) and simplify down by dividing both parts by 2.", 
-            expl: "6 out of 16 items are selected, forming 6/12. Dividing the top and bottom numbers by 2 gives 3/8." 
+            expl: "6 out of 16 items are selected, forming 6/16. Dividing the top and bottom numbers by 2 gives 3/8." 
         },
         { 
             q: "An allotment space is divided into 12 equal plots as shown by the structural framework. The shaded boxes are currently hosting vegetable rows.\n\nWhich simplified option represents an equivalent fraction for this exact share?", 
@@ -307,28 +309,24 @@
         },
         { 
             q: "A kitchen workstation displays a series of partial ingredient blocks measuring 13/4 in total.\n\nHow would this improper value appear if written out as a mixed number?", 
-            visualType: "shape",
-            totalItems: 4,
-            activeItems: 4, 
-            extraText: "🧩 [Visualized as 3 fully complete blocks and 1 remaining quarter block]",
+            visualType: "text-only",
+            extraText: "🧩 [Configuration details: 3 complete blocks and 1 remaining quarter block]",
             opts: ["2 whole and 3/4", "3 whole and 1/4", "4 whole and 1/3", "3 whole and 3/4"], 
             correctText: "3 whole and 1/4", 
             hint: "Count how many complete groups of 4 quarters fit into 13, then notice the remaining value left over.", 
             expl: "13 divided by 4 results in 3 completely whole groups with 1 left over, which means it translates to 3 whole and 1/4." 
         },
         { 
-            q: "A courier vehicle unloads crates of glass bottles. The interface displays 4 whole sets and an additional 2/3 set.\n\nWhat is this configuration written entirely as an improper fraction?", 
-            visualType: "shape",
-            totalItems: 3,
-            activeItems: 2,
-            extraText: "📦 [Visualized as 4 full segments and 2/3 of a final segment]",
+            q: "A courier vehicle unloads crates of glass bottles. The interface logs 4 whole sets and an additional 2/3 set.\n\nWhat is this configuration written entirely as an improper fraction?", 
+            visualType: "text-only",
+            extraText: "📦 [Configuration details: 4 full segments and 2/3 of a final segment]",
             opts: ["14/3", "10/3", "8/3", "12/3"], 
             correctText: "14/3", 
             hint: "Multiply your 4 whole sets by the denominator value 3, then combine it with the 2 extra parts.", 
             expl: "4 wholes × 3 parts per whole = 12 parts. Adding the 2 additional parts gives a final value of 14/3." 
         },
         { 
-            q: "A schematic board tracks how to represent a whole number integer cleanly as a standalone fractional format.\n\nWhich layout option accurately displays the value 6 in fractional form?", 
+            q: "A schematic board tracks how to represent a whole number integer cleanly as a standalone fractional format.\n\nWhich option accurately displays the value 6 in fractional form?", 
             visualType: "grid",
             totalItems: 6,
             activeItems: 6,
@@ -360,9 +358,7 @@
         },
         { 
             q: "A workspace component layout measures 7/8 of a metre. A craftsman removes a section measuring 3/4 of a metre long.\n\nWhat fraction of a metre remains active on the component?", 
-            visualType: "shape",
-            totalItems: 8,
-            activeItems: 1,
+            visualType: "text-only",
             opts: ["4/4", "1/8", "4/8", "2/8"], 
             correctText: "1/8", 
             hint: "Convert the 3/4 modification size into eighths (6/8), then find the difference from the original 7/8 allocation.", 
@@ -374,6 +370,7 @@
     let current = 0, score = 0, attempts = 0, timer, timeLeft = 60;
     let computedCorrectIdx = -1;
 
+    // Fisher-Yates Randomization Engine (Shuffles both questions and options)
     function shuffleArray(arr) {
         for (let i = arr.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
@@ -384,9 +381,9 @@
 
     function initQuizData() {
         pool = JSON.parse(JSON.stringify(rawPool));
-        shuffleArray(pool); 
+        shuffleArray(pool); // Randomizes question progression sequence
         pool.forEach(qItem => {
-            shuffleArray(qItem.opts); 
+            shuffleArray(qItem.opts); // Randomizes multiple choice button layout orders
         });
     }
 
@@ -410,11 +407,12 @@
         document.getElementById('q-text').innerText = q.q;
         document.getElementById('timer-text').innerText = timeLeft + "s";
 
-        // Generate Visual Content Content Area dynamically
         const displayArea = document.getElementById('custom-display-area');
+        displayArea.className = "hidden";
         displayArea.innerHTML = "";
         
         if (q.visualType === "grid") {
+            displayArea.className = "visual-container";
             const gridEl = document.createElement('div');
             gridEl.className = 'visual-grid';
             gridEl.style.gridTemplateColumns = `repeat(${q.gridCols}, 1fr)`;
@@ -425,6 +423,7 @@
             }
             displayArea.appendChild(gridEl);
         } else if (q.visualType === "shape") {
+            displayArea.className = "visual-container";
             const shapeOuter = document.createElement('div');
             shapeOuter.style.width = "100%";
             
@@ -438,17 +437,16 @@
                 shapeEl.appendChild(seg);
             }
             shapeOuter.appendChild(shapeEl);
-            
-            if (q.extraText) {
-                const lbl = document.createElement('div');
-                lbl.style.fontSize = "0.85rem";
-                lbl.style.color = "#475569";
-                lbl.style.marginTop = "8px";
-                lbl.style.textAlign = "center";
-                lbl.innerText = q.extraText;
-                shapeOuter.appendChild(lbl);
-            }
             displayArea.appendChild(shapeOuter);
+        } else if (q.visualType === "text-only" && q.extraText) {
+            displayArea.className = "visual-container";
+            const lbl = document.createElement('div');
+            lbl.style.fontSize = "0.95rem";
+            lbl.style.color = "#475569";
+            lbl.style.textAlign = "center";
+            lbl.style.fontWeight = "600";
+            lbl.innerText = q.extraText;
+            displayArea.appendChild(lbl);
         }
 
         const area = document.getElementById('options-area');
