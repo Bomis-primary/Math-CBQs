@@ -138,6 +138,8 @@
 </head>
 <body>
 
+<audio id="quiz-audio-engine" preload="auto"></audio>
+
 <div id="app-container">
 
     <div id="splash-screen">
@@ -197,15 +199,21 @@
 
 <script>
     // --- AUDIO CONTROLLER ENGINE ---
-    const sfx = {
-        correct: new Audio('assets/correct.mp3'),
-        wrong: new Audio('assets/wrong.mp3')
+    const audioCache = {
+        'correct': 'assets/correct.mp3',
+        'wrong': 'assets/wrong.mp3',
+        'timeout': 'assets/wrong.mp3',
+        'complete': 'assets/freesound_community-claps-44774.mp3'
     };
 
-    function playSound(track) {
-        if (track) {
-            track.currentTime = 0; // Reset track to avoid lag over rapid taps
-            track.play().catch(err => console.log("User interaction required to initialize sound engine: ", err));
+    function playSound(type) {
+        const audioNode = document.getElementById('quiz-audio-engine');
+        const filePath = audioCache[type];
+
+        if (filePath) {
+            audioNode.src = filePath;
+            audioNode.currentTime = 0; // Reset track to avoid lag over rapid taps
+            audioNode.play().catch(err => console.log("User interaction required to initialize sound engine: ", err));
         }
     }
 
@@ -294,7 +302,7 @@
             opts: ["A) It decreases by 4", "B) It decreases by 400", "C) It decreases by 4,000", "D) It decreases by 40,000"], 
             ans: 3, 
             hint: "Look at the absolute numerical weight of the target digit placement column.", 
-            expl: "The digit 8 sits in the ten-thousands column ($8 \times 10,000$). Reducing it by 4 drops the total number value by exactly 40,000." 
+            expl: "The digit 8 sits in the ten-thousands column ($8 \\times 10,000$). Reducing it by 4 drops the total number value by exactly 40,000." 
         },
         { 
             cat: "Real World Modeling", 
@@ -309,9 +317,10 @@
     let current = 0, score = 0, attempts = 0, timer, timeLeft = 60;
 
     document.getElementById('start-btn').onclick = () => {
-        // Prime and load resources inside user interaction thread to confirm standard permissions
-        sfx.correct.load();
-        sfx.wrong.load();
+        // Unlock web audio element layers properly inside human click thread
+        const engine = document.getElementById('quiz-audio-engine');
+        engine.src = audioCache['correct'];
+        engine.load();
 
         document.getElementById('intro-view').classList.add('hidden');
         document.getElementById('quiz-view').classList.remove('hidden');
@@ -362,7 +371,7 @@
             document.getElementById('timer-bar').style.width = (timeLeft / 60 * 100) + "%";
             if(timeLeft <= 0) { 
                 clearInterval(timer); 
-                playSound(sfx.wrong); // Run out of time audio cue
+                playSound('timeout'); 
                 endTurn(); 
             }
         }, 1000);
@@ -371,14 +380,14 @@
     function check(i, b) {
         if(i === pool[current].ans) {
             clearInterval(timer);
-            playSound(sfx.correct); // Success validation trigger
+            playSound('correct'); 
             b.classList.add('correct');
             score++;
             document.getElementById('score-val').innerText = score;
             endTurn();
         } else {
             attempts++;
-            playSound(sfx.wrong); // Error notification trigger
+            playSound('wrong'); 
             b.classList.add('wrong');
             b.disabled = true;
             if(attempts === 1) {
@@ -407,6 +416,7 @@
         current++;
         if(current < pool.length) loadQuestion();
         else {
+            playSound('complete');
             document.getElementById('quiz-view').classList.add('hidden');
             document.getElementById('result-view').classList.remove('hidden');
             document.getElementById('final-pts').innerText = score;
