@@ -1,1 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Fractions Competency Evaluation</title>
+    <style>
+        :root {
+            --primary: #0284c7;
+            --primary-dark: #0369a1;
+            --success: #16a34a;
+            --error: #dc2626;
+            --bg: #f0f9ff;
+            --text: #1e293b;
+        }
 
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background-color: #e2e8f0;
+            color: var(--text);
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 10px;
+        }
+
+        #app-container {
+            width: 100%;
+            max-width: 580px;
+            background: #ffffff;
+            border-radius: 24px;
+            box-shadow: 0 15px 35px rgba(2, 132, 199, 0.12);
+            position: relative;
+            overflow: hidden;
+            min-height: 540px;
+        }
+
+        /* --- 5-SECOND MANDATORY WHITE SPLASH SCREEN --- */
+        #splash-screen {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .splash-logo-img {
+            max-width: 240px;
+            width: 80%;
+            height: auto;
+            object-fit: contain;
+        }
+
+        /* --- INTERFACE CORE PADDING --- */
+        .quiz-padding {
+            padding: 25px;
+        }
+
+        .instruction-box {
+            background: var(--bg);
+            border-left: 4px solid var(--primary);
+            padding: 15px;
+            border-radius: 8px;
+            text-align: left;
+            margin: 20px 0;
+            font-size: 0.95rem;
+            color: #475569;
+            line-height: 1.5;
+        }
+        .instruction-box ul { margin: 5px 0 0 20px; padding: 0; }
+        .instruction-box li { margin-bottom: 6px; }
+
+        .hud-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        .hud-pill {
+            flex: 1;
+            text-align: center;
+            padding: 12px 6px;
+            border-radius: 14px;
+            font-size: 0.95rem;
+            font-weight: 800;
+            background-color: #e0f2fe;
+            color: var(--primary-dark);
+        }
+        .hud-pill.gold { background-color: #fef08a; color: #a16207; }
+
+        .timer-track { width: 100%; height: 8px; background: #cbd5e1; border-radius: 10px; margin-bottom: 20px; overflow: hidden; }
+        #timer-bar { height: 100%; width: 100%; background: var(--primary); transition: width 1s linear; }
+
+        .question-text { font-size: 1.1rem; font-weight: 600; line-height: 1.5; margin-bottom: 15px; white-space: pre-line; }
+
+        .options-grid { display: grid; gap: 12px; }
+        .opt-btn {
+            background: #fff; border: 2px solid #e2e8f0; padding: 16px;
+            border-radius: 14px; text-align: left; font-size: 1rem; cursor: pointer; transition: 0.2s;
+            color: #334155; font-weight: 500;
+        }
+        .opt-btn:hover:not(:disabled) { border-color: var(--primary); background: #f8fafc; }
+        .opt-btn.correct { background: #dcfce7 !important; color: var(--success) !important; border-color: #bbf7d0 !important; font-weight: 700; }
+        .opt-btn.wrong { background: #fee2e2 !important; color: var(--error) !important; border-color: #fca5a5 !important; }
+
+        .feedback { margin-top: 20px; padding: 15px; border-radius: 12px; display: none; line-height: 1.5; font-size: 0.95rem; }
+        .hint-box { background: #fef9c3; border: 1px solid #fef08a; color: #a16207; }
+        .expl-box { background: #e0f2fe; border: 1px solid #bae6fd; color: var(--primary-dark); }
+
+        #action-btn { width: 100%; margin-top: 20px; padding: 16px; background: var(--primary); color: white; border: none; border-radius: 14px; font-weight: 700; cursor: pointer; font-size: 1rem; }
+        #action-btn:hover { background: var(--primary-dark); }
+        
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+
+<audio id="quiz-audio-engine" preload="auto"></audio>
+
+<div id="app-container">
+
+    <div id="splash-screen">
+        <img class="splash-logo-img" src="assets/logo.png" alt="Company Logo">
+    </div>
+
+    <div id="intro-view" class="hidden">
+        <div class="quiz-padding">
+            <h1 style="text-align:center; color:var(--primary); margin: 10px 0 5px 0; font-size: 26px;">Fractions Challenge</h1>
+            <p style="text-align:center; color:#64748b; margin-top: 0; font-weight: 600; text-transform: uppercase; font-size: 12px; letter-spacing: 1px;">Session Evaluation</p>
+            
+            <div class="instruction-box">
+                <strong>⚡ Assessment Framework:</strong>
+                <ul>
+                    <li>You will solve 10 real-world story problems based on partitioning, equivalent values, and fraction operations.</li>
+                    <li>A precise 60-second animated progress bar counts down for every question.</li>
+                    <li>If a problem is missed on your first attempt, a helpful hint panel instantly unlocks.</li>
+                </ul>
+            </div>
+
+            <button id="start-btn" style="width:100%; padding:18px; background:var(--primary); color:white; border:none; border-radius:14px; font-weight:bold; font-size:1.1rem; cursor:pointer; margin-top: 10px;">Begin Evaluation ⚡</button>
+        </div>
+    </div>
+
+    <div id="quiz-view" class="hidden">
+        <div class="quiz-padding">
+            <div class="hud-row">
+                <div class="hud-pill">Question <span id="q-num">1</span>/10</div>
+                <div class="hud-pill">Points: <span id="score-val">0</span></div>
+                <div class="hud-pill gold"><span id="timer-text">60s</span></div>
+            </div>
+            <div class="timer-track"><div id="timer-bar"></div></div>
+            
+            <div id="q-text" class="question-text"></div>
+            
+            <div id="options-area" class="options-grid"></div>
+            
+            <div id="feedback-box" class="feedback"></div>
+            <button id="action-btn" class="hidden">Next Question →</button>
+        </div>
+    </div>
+
+    <div id="result-view" class="hidden" style="text-align:center;">
+        <div class="quiz-padding">
+            <div style="font-size: 4rem; margin-bottom: 5px;">🏆</div>
+            <h2 style="font-size:1.6rem; margin: 5px 0;">Evaluation Finalised</h2>
+            <div style="font-size: 4rem; font-weight: 800; color: var(--primary); margin: 10px 0;"><span id="final-pts">0</span>/10</div>
+            <div id="result-msg" style="color:#475569; font-size: 0.95rem; line-height: 1.5; margin: 0 0 25px 0; text-align: left; background: #f8fafc; border: 1px solid #e2e8f0; padding: 16px; border-radius: 16px;"></div>
+            <button onclick="location.reload()" style="width:100%; padding:16px; background:var(--primary); color:white; border:none; border-radius:14px; font-weight:700; cursor:pointer; font-size: 1rem;">Restart Assessment Loop</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const audioCache = {
+        'correct': 'assets/correct.mp3',
+        'wrong': 'assets/wrong.mp3',
+        'timeout': 'assets/wrong.mp3',
+        'complete': 'assets/freesound_community-claps-44774.mp3'
+    };
+
+    function playSound(type) {
+        const audioNode = document.getElementById('quiz-audio-engine');
+        const filePath = audioCache[type];
+
+        if (filePath) {
+            audioNode.src = filePath;
+            audioNode.currentTime = 0;
+            audioNode.play().catch(err => {
+                console.log("Audio exception handled: ", err);
+            });
+        }
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+        setTimeout(() => {
+            const splash = document.getElementById('splash-screen');
+            splash.style.opacity = '0';
+            
+            setTimeout(() => {
+                splash.style.display = 'none';
+                document.getElementById('intro-view').classList.remove('hidden');
+            }, 800); 
+        }, 5000);
+    });
+
+    const rawPool = [
+        { 
+            q: "A teacher brings a box of 32 coloured pencils to a classroom. She distributes exactly 3/8 of the pencils to the art group.\n\nHow many individual pencils did the art group receive?", 
+            opts: ["12 pencils", "8 pencils", "4 pencils", "24 pencils"], 
+            correctText: "12 pencils", 
+            hint: "Find 1/8 of 32 by dividing 32 by 8. Then multiply that answer by 3 to find 3/8.", 
+            expl: "First, divide the total by the denominator: 32 ÷ 8 = 4. Next, multiply by the numerator: 4 × 3 = 12 pencils." 
+        },
+        { 
+            q: "A rectangle plot of land inside a village allotment is split up among different growers. One grower is given 4/12 of the entire area.\n\nWhich of the following values shows an equivalent fraction for this exact share?", 
+            opts: ["2/3", "1/4", "1/3", "3/12"], 
+            correctText: "1/3", 
+            hint: "Divide both the top number and the bottom number of 4/12 by their largest common factor.", 
+            expl: "By dividing the numerator (4) and the denominator (12) by 4, the fraction simplifies down to 1/3." 
+        },
+        { 
+            q: "A baker tracks the remaining stock of lemon traybakes left over at the end of a school fête. The logbook records the remaining amount as 18/24.\n\nWhat is this fraction written in its simplest terms?", 
+            opts: ["9/12", "3/4", "6/8", "2/3"], 
+            correctText: "3/4", 
+            hint: "The Highest Common Factor (HCF) for 18 and 24 is 6. Divide both numbers by 6.", 
+            expl: "Dividing both 18 and 24 by their Highest Common Factor of 6 gives 3/4. This cannot be simplified any further." 
+        },
+        { 
+            q: "A group of builders use an equation where a missing equivalent fraction value must be calculated:\n\n2/5 = ? / 20\n\nWhat is the value of the missing numerator?", 
+            opts: ["8", "10", "4", "6"], 
+            correctText: "8", 
+            hint: "Look at the denominators. To turn 5 into 20, you must multiply by 4. Do the exact same to the top number.", 
+            expl: "Since 5 × 4 = 20, you must also multiply the top number by 4 to keep it equal: 2 × 4 = 8." 
+        },
+        { 
+            q: "During a cooking class, George logs that he has 13/4 blocks of butter stored in the fridge.\n\nHow would this improper fraction look if written down as a mixed number?", 
+            opts: ["2 whole and 3/4", "3 whole and 1/4", "4 whole and 1/3", "3 whole and 3/4"], 
+            correctText: "3 whole and 1/4", 
+            hint: "Divide 13 by 4. The whole number answer is your whole units, and the remainder is the top of the fraction left over.", 
+            expl: "4 goes into 13 a total of 3 times, with a remainder of 1. This gives us 3 whole and 1/4." 
+        },
+        { 
+            q: "A delivery driver unloads crates of milk bottles at a doorstep. The manifest shows he has delivered 4 whole and 2/3 crates.\n\nWhat is this amount written entirely as an improper fraction?", 
+            opts: ["14/3", "10/3", "8/3", "12/3"], 
+            correctText: "14/3", 
+            hint: "Multiply the whole number (4) by the bottom number (3), then add the top number (2). Keep the bottom number the same.", 
+            expl: "Multiply 4 × 3 = 12. Then add the original top number: 12 + 2 = 14. This gives us 14/3." 
+        },
+        { 
+            q: "A student needs to show a whole integer value as a fraction to complete a math puzzle on a worksheets sheet.\n\nWhich option correctly represents the whole number 6 as a fraction?", 
+            opts: ["6/6", "1/6", "6/1", "3/6"], 
+            correctText: "6/1", 
+            hint: "Any whole number can be turned into a fraction by placing it over a denominator of 1.", 
+            expl: "Writing a whole number over 1 means it is divided into 1 part per unit, so 6/1 is exactly equal to 6 wholes." 
+        },
+        { 
+            q: "A landscape project uses distinct grass mixtures on a pitch. \n\nArea Alpha takes up 3/10 of the pitch and Area Beta takes up 4/10 of the pitch.\n\nWhat is the combined total fraction of the pitch covered by these two areas?", 
+            opts: ["7/20", "12/10", "7/10", "1/10"], 
+            correctText: "7/10", 
+            hint: "When the bottom numbers are identical, simply add the top numbers together and keep the bottom number exactly the same.", 
+            expl: "Since the denominators are the same, add the numerators directly: 3 + 4 = 7. The total is 7/10." 
+        },
+        { 
+            q: "Sarah buys a large ball of knitting wool. She uses 1/3 of the wool to make a winter hat and 1/6 of it to make a small matching drink coaster.\n\nWhat total fraction of the wool ball has she used up altogether?", 
+            opts: ["2/9", "1/2", "2/6", "3/6"], 
+            correctText: "1/2", 
+            hint: "These fractions have different bottom numbers. First convert 1/3 into an equivalent fraction with a 6 on the bottom.", 
+            expl: "Convert 1/3 to 2/6 so it matches the other fraction. Then add: 2/6 + 1/6 = 3/6. Simplifying 3/6 gives exactly 1/2." 
+        },
+        { 
+            q: "A carpenter has a wooden plank measuring 7/8 of a metre long. He saws off a piece that is 3/4 of a metre long to complete a repair.\n\nWhat fraction of a metre of wood is left over on the plank?", 
+            opts: ["4/4", "1/8", "4/8", "2/8"], 
+            correctText: "1/8", 
+            hint: "Convert 3/4 into eighths first by multiplying its top and bottom numbers by 2. Then subtract it from 7/8.", 
+            expl: "3/4 is equivalent to 6/8. Subtracting this from the original piece: 7/8 - 6/8 = 1/8 of a metre left." 
+        }
+    ];
+
+    let pool = [];
+    let current = 0, score = 0, attempts = 0, timer, timeLeft = 60;
+    let computedCorrectIdx = -1;
+
+    function shuffleArray(arr) {
+        for (let i = arr.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [arr[i], arr[j]] = [arr[j], arr[i]];
+        }
+        return arr;
+    }
+
+    function initQuizData() {
+        pool = JSON.parse(JSON.stringify(rawPool));
+        shuffleArray(pool); 
+        pool.forEach(qItem => {
+            shuffleArray(qItem.opts); 
+        });
+    }
+
+    document.getElementById('start-btn').onclick = () => {
+        const engine = document.getElementById('quiz-audio-engine');
+        engine.src = audioCache['correct'];
+        engine.load();
+
+        initQuizData();
+        document.getElementById('intro-view').classList.add('hidden');
+        document.getElementById('quiz-view').classList.remove('hidden');
+        loadQuestion();
+    };
+
+    function loadQuestion() {
+        attempts = 0; timeLeft = 60;
+        const q = pool[current];
+        document.getElementById('feedback-box').style.display = 'none';
+        document.getElementById('action-btn').classList.add('hidden');
+        document.getElementById('q-num').innerText = current + 1;
+        document.getElementById('q-text').innerText = q.q;
+        document.getElementById('timer-text').innerText = timeLeft + "s";
+
+        const area = document.getElementById('options-area');
+        area.innerHTML = "";
+        
+        const prefixes = ["A) ", "B) ", "C) ", "D) "];
+        q.opts.forEach((o, i) => {
+            if (o === q.correctText) {
+                computedCorrectIdx = i;
+            }
+            const b = document.createElement('button');
+            b.className = 'opt-btn';
+            b.innerText = prefixes[i] + o;
+            b.onclick = () => check(i, b);
+            area.appendChild(b);
+        });
+        startTimer();
+    }
+
+    function startTimer() {
+        clearInterval(timer);
+        timer = setInterval(() => {
+            timeLeft--;
+            document.getElementById('timer-text').innerText = timeLeft + "s";
+            document.getElementById('timer-bar').style.width = (timeLeft / 60 * 100) + "%";
+            if(timeLeft <= 0) { 
+                clearInterval(timer); 
+                playSound('timeout'); 
+                endTurn(); 
+            }
+        }, 1000);
+    }
+
+    function check(i, b) {
+        if(i === computedCorrectIdx) {
+            clearInterval(timer);
+            playSound('correct'); 
+            b.classList.add('correct');
+            score++;
+            document.getElementById('score-val').innerText = score;
+            endTurn();
+        } else {
+            attempts++;
+            playSound('wrong'); 
+            b.classList.add('wrong');
+            b.disabled = true;
+            if(attempts === 1) {
+                const f = document.getElementById('feedback-box');
+                f.className = 'feedback hint-box';
+                f.innerHTML = "<b>💡 Clue:</b> " + pool[current].hint;
+                f.style.display = 'block';
+            } else {
+                clearInterval(timer);
+                endTurn();
+            }
+        }
+    }
+
+    function endTurn() {
+        document.querySelectorAll('.opt-btn').forEach(btn => btn.disabled = true);
+        const f = document.getElementById('feedback-box');
+        f.className = 'feedback expl-box';
+        f.innerHTML = "<b>🔍 Solution Step:</b> " + pool[current].expl;
+        f.style.display = 'block';
+        document.querySelectorAll('.opt-btn')[computedCorrectIdx].classList.add('correct');
+        document.getElementById('action-btn').classList.remove('hidden');
+    }
+
+    document.getElementById('action-btn').onclick = () => {
+        current++;
+        if(current < pool.length) loadQuestion();
+        else {
+            playSound('complete');
+            document.getElementById('quiz-view').classList.add('hidden');
+            document.getElementById('result-view').classList.remove('hidden');
+            document.getElementById('final-pts').innerText = score;
+
+            let statusMessage = "Review equivalent fractions, mixed number conversions, and subtraction rules to practice your accuracy.";
+            if(score === 10) {
+                statusMessage = "Fantastic! You solved every single fractional competency problem, partition challenge, and operation question flawlessly.";
+            } else if(score >= 7) {
+                statusMessage = "Good work! You show dependable skills in fraction reduction, finding equivalent values, and matching formats.";
+            }
+
+            document.getElementById('result-msg').innerHTML = `
+                <span style="font-weight:700; color:var(--primary-dark); display:block; margin-bottom:6px;">Performance Summary:</span>
+                ${statusMessage}
+            `;
+        }
+    };
+</script>
+</body>
+</html>
