@@ -102,17 +102,81 @@
         .category-text { font-size: 0.85rem; color: #b7950b; font-weight: 700; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 1px; }
         .question-text { font-size: 1.1rem; font-weight: 600; line-height: 1.5; margin-bottom: 15px; white-space: pre-line; }
 
-        .lattice-backup-box {
-            background: #fcfcfc;
-            border: 2px dashed #bdc3c7;
-            padding: 15px;
-            border-radius: 12px;
-            text-align: center;
-            font-family: monospace;
-            font-size: 1.2rem;
-            font-weight: bold;
-            margin: 15px 0;
-            line-height: 1.4;
+        /* --- DYNAMIC LATTICE CELL GRAPHIC COMPONENT --- */
+        .lattice-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 25px 0;
+            padding: 10px;
+            background-color: #fafbfc;
+            border-radius: 16px;
+            border: 1px dashed #cfd8dc;
+        }
+
+        .lattice-grid {
+            display: grid;
+            grid-template-columns: 80px 40px;
+            grid-template-rows: 40px 80px;
+            align-items: center;
+            justify-items: center;
+        }
+
+        .lattice-factor-top {
+            grid-column: 1;
+            grid-row: 1;
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--primary-dark);
+        }
+
+        .lattice-factor-right {
+            grid-column: 2;
+            grid-row: 2;
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--primary-dark);
+        }
+
+        .lattice-cell {
+            grid-column: 1;
+            grid-row: 2;
+            width: 80px;
+            height: 80px;
+            border: 3px solid #34495e;
+            position: relative;
+            background: #ffffff;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+
+        .lattice-cell::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-top: 2px dashed #7f8c8d;
+            transform: rotate(45deg);
+            transform-origin: top left;
+        }
+
+        .lattice-digit-tens {
+            position: absolute;
+            top: 12px;
+            right: 15px;
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #2980b9;
+        }
+
+        .lattice-digit-ones {
+            position: absolute;
+            bottom: 10px;
+            left: 15px;
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #c0392b;
         }
 
         .options-grid { display: grid; gap: 12px; }
@@ -137,8 +201,6 @@
 </head>
 <body>
 
-<audio id="quiz-audio-engine" preload="auto"></audio>
-
 <div id="app-container">
 
     <div id="splash-screen">
@@ -155,7 +217,7 @@
                 <ul>
                     <li>You will be presented with 10 multi-digit multiplication challenges.</li>
                     <li>Each task features a strict 60-second limit countdown.</li>
-                    <li>You have up to 2 evaluation attempts per question before locking.</li>
+                    <li>The order of tasks and options is completely randomized every session.</li>
                     <li>Helpful processing hints appear immediately on your first error.</li>
                 </ul>
             </div>
@@ -198,22 +260,15 @@
 
 <script>
     // --- AUDIO SYSTEM CONFIGURATION ---
-    const audioCache = {
-        'correct': 'assets/correct.mp3',
-        'wrong': 'assets/wrong.mp3',
-        'timeout': 'assets/wrong.mp3',
-        'complete': 'assets/freesound_community-claps-44774.mp3'
+    const audioSFX = {
+        correct: new Audio('assets/correct.mp3'),
+        wrong: new Audio('assets/wrong.mp3')
     };
 
-    // Robust audio playback interface
-    function triggerSound(type) {
-        const audioNode = document.getElementById('quiz-audio-engine');
-        const filePath = audioCache[type];
-
-        if (filePath) {
-            audioNode.src = filePath;
-            audioNode.currentTime = 0; // Reset clip to tracking index 0
-            audioNode.play().catch(error => {
+    function triggerSound(soundObject) {
+        if (soundObject) {
+            soundObject.currentTime = 0;
+            soundObject.play().catch(error => {
                 console.warn("Audio element initialization paused by system safety context rules:", error);
             });
         }
@@ -232,98 +287,119 @@
         }, 5000);
     });
 
-    const pool = [
+    // --- RESTRUCTURED & RANDOMIZABLE QUESTION BANK ---
+    const rawPool = [
         { 
             cat: "Conceptual Framework", 
             q: "A teacher writes the following mathematical sentence on the blackboard:\n18 + 18 + 18 + 18 + 18 + 18 + 18\n\nWhich expression accurately translates this repeated addition setup into standard multiplication form?", 
-            opts: ["A) 18 × 6", "B) 18 × 7", "C) 7 × 7 × 18", "D) 18 + 7"], 
-            ans: 1, 
+            opts: ["18 × 6", "18 × 7", "7 × 7 × 18", "18 + 7"], 
+            correctText: "18 × 7", 
             hint: "Count how many times the number 18 is written down sequentially.", 
             expl: "Multiplication is defined as repeated addition. Since 18 is added 7 times, it can be written as 18 × 7." 
         },
         { 
             cat: "Table Fluency (1 to 25)", 
             q: "During a competitive mental math sprint, players are asked to evaluate the product of the 24 times table:\n\n24 × 12 = ?", 
-            opts: ["A) 268", "B) 288", "C) 244", "D) 278"], 
-            ans: 1, 
+            opts: ["268", "288", "244", "278"], 
+            correctText: "288", 
             hint: "Think of it as (24 × 10) + (24 × 2) to compute the total mentally.", 
             expl: "24 × 10 = 240, and 24 × 2 = 48. Adding them together gives 240 + 48 = 288." 
         },
         { 
             cat: "Multiplying by Powers of 10", 
             q: "An assembly line packs a shipping carton containing exactly 4,320 microchips. \n\nIf a cargo ship carries 1,000 of these identical cartons, how many microchips are on board in total?", 
-            opts: ["A) 43,200", "B) 432,000", "C) 4,320,000", "D) 43,200,000"], 
-            ans: 2, 
+            opts: ["43,200", "432,000", "4,320,000", "43,200,000"], 
+            correctText: "4,320,000", 
             hint: "When multiplying an integer by 1000, append three zeros to the right of the original number.", 
             expl: "4,320 × 1,000 = 4,320,000. Shift the decimal digits three column places to the left." 
         },
         { 
             cat: "4-Digit by 2-Digit Calculation", 
             q: "A wholesale textbook retailer orders 35 collection boxes. Each box contains exactly 1,212 reference manuals. \n\nWhat is the total quantity of manuals delivered?", 
-            opts: ["A) 42,420 manuals", "B) 41,320 manuals", "C) 42,320 manuals", "D) 39,840 manuals"], 
-            ans: 0, 
+            opts: ["42,420 manuals", "41,320 manuals", "42,320 manuals", "39,840 manuals"], 
+            correctText: "42,420 manuals", 
             hint: "Calculate 1,212 × 35 using standard vertical alignment or partial products.", 
             expl: "1,212 × 5 = 6,060. 1,212 × 30 = 36,360. 6,060 + 36,360 = 42,420." 
         },
         { 
             cat: "Large Number Multiplications", 
             q: "A concrete mixing complex outputs 145,200 kg of materials every hour. \n\nHow many kilograms of concrete does it produce over a 12-hour continuous runtime window?", 
-            opts: ["A) 1,642,400 kg", "B) 1,742,400 kg", "C) 1,742,000 kg", "D) 1,842,400 kg"], 
-            ans: 1, 
+            opts: ["1,642,400 kg", "1,742,400 kg", "1,742,000 kg", "1,842,400 kg"], 
+            correctText: "1,742,400 kg", 
             hint: "Perform a 6-digit by 2-digit multiplication: 145,200 × 12.", 
             expl: "145,200 × 12 = 1,742,400 kg after working out the column distributions." 
         },
         { 
             cat: "Lattice Method Strategy", 
-            q: "Look at the lattice multiplication structure layout below representing standard partial values:\n\nWhat digit belongs inside the bottom-left half [?] of this standard single multi-unit cell configuration?", 
+            q: "Look at the visual lattice partition grid layout below representing multi-unit factor multiplication values:\n\nWhat digit belongs inside the unknown split ones place corner marked by the question mark [?]?", 
             hasLattice: true,
-            opts: ["A) 1", "B) 2", "C) 3", "D) 4"], 
-            ans: 3, 
-            hint: "The digit assigned to the top of the column is 4 and the right-side multiplier is 6. Multiply 4 × 6 = 24. If the upper half takes 2, what goes in the bottom-left corner?", 
-            expl: "4 × 6 = 24. In a standard lattice box partition, the tens digit (2) occupies the upper-right corner while the ones digit (4) fills the lower-left slot." 
+            opts: ["1", "2", "3", "4"], 
+            correctText: "4", 
+            hint: "The digit assigned to the top of the column is 4 and the right-side multiplier is 6. Multiply 4 × 6 = 24. If the upper tens half takes 2, what goes in the lower ones corner?", 
+            expl: "4 × 6 = 24. In a standard lattice cell partition, the tens digit (2) occupies the upper-right corner while the ones digit (4) fills the lower-left slot." 
         },
         { 
             cat: "Product Estimation", 
             q: "A storage fleet loads 28 crates. Each individual crate weighs 415 kg. \n\nEstimate the total weight load by rounding the number of crates to the nearest ten and the weight of each crate to the nearest hundred.", 
-            opts: ["A) 8,000 kg", "B) 12,000 kg", "C) 15,000 kg", "D) 16,000 kg"], 
-            ans: 1, 
+            opts: ["8,000 kg", "12,000 kg", "15,000 kg", "16,000 kg"], 
+            correctText: "12,000 kg", 
             hint: "28 rounds to 30. 415 rounds to 400. Now find the product of these rounded figures.", 
             expl: "28 rounds to 30. 415 rounds to 400. Estimated product = 30 × 400 = 12,000 kg." 
         },
         { 
             cat: "Method Effectiveness Analysis", 
             q: "When asked to multiply 2,500 × 40 mentally, which strategy is the most efficient and mathematically direct?", 
-            opts: ["A) Draw a full 4x2 lattice box diagram on paper.", "B) Add 2,500 forty times row-by-row.", "C) Multiply 25 × 4 to get 100, then append the three combined zeros to get 100,000.", "D) Round 2,500 up to 3,000 and calculate an estimated guess."], 
-            ans: 2, 
+            opts: ["Draw a full 4x2 lattice box diagram on paper.", "Add 2,500 forty times row-by-row.", "Multiply 25 × 4 to get 100, then append the three combined zeros to get 100,000.", "Round 2,500 up to 3,000 and calculate an estimated guess."], 
+            correctText: "Multiply 25 × 4 to get 100, then append the three combined zeros to get 100,000.", 
             hint: "Look for the shortcut that counts terminal trailing zeros to save calculation time.", 
             expl: "Multiplying base non-zero values (25 × 4 = 100) and adding the trailing zeros (2 from 2,500 and 1 from 40) gives 100,000 quickly and accurately." 
         },
         { 
             cat: "Story Sum Mastery", 
             q: "An agricultural cooperative buys 125 trucks. Each vehicle is loaded with 2,400 organic saplings. \n\nWhat is the total number of saplings across the entire fleet?", 
-            opts: ["A) 280,000 saplings", "B) 300,000 saplings", "C) 325,000 saplings", "D) 30,000 saplings"], 
-            ans: 1, 
+            opts: ["280,000 saplings", "300,000 saplings", "325,000 saplings", "30,000 saplings"], 
+            correctText: "300,000 saplings", 
             hint: "Set up the multiplication problem: 2,400 × 125.", 
             expl: "2,400 × 125 = 300,000 saplings carried collectively by the vehicles." 
         },
         { 
             cat: "Word Problem Design", 
             q: "Identify which real-world scenario perfectly matches the core math statement: \nTotal = 450 × 15", 
-            opts: ["A) A library shelves 450 books and gives away 15 to a student.", "B) A school hall has 450 rows with 15 seats in each row. Find the total seating capacity.", "C) A courier agent delivers 450 packages across 15 separate city addresses evenly.", "D) A car travel log records 450 km on day one and 15 km on day two."], 
-            ans: 1, 
+            opts: ["A library shelves 450 books and gives away 15 to a student.", "A school hall has 450 rows with 15 seats in each row. Find the total seating capacity.", "A courier agent delivers 450 packages across 15 separate city addresses evenly.", "A car travel log records 450 km on day one and 15 km on day two."], 
+            correctText: "A school hall has 450 rows with 15 seats in each row. Find the total seating capacity.", 
             hint: "Look for equal groupings or sets where a value is repeated a specific number of times.", 
             expl: "Having 450 rows with 15 seats each sets up a uniform repeating group, which translates directly to 450 × 15." 
         }
     ];
 
+    let pool = [];
     let current = 0, score = 0, attempts = 0, timer, timeLeft = 60;
+    let computedCorrectIdx = -1;
+
+    // --- FISHER-YATES UTILITY SHUFFLE ALGORITHMS ---
+    function shuffleArray(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+        return array;
+    }
+
+    function initializeQuizSession() {
+        // Deep copy and randomize pool items
+        pool = JSON.parse(JSON.stringify(rawPool));
+        shuffleArray(pool);
+        
+        // Randomize options for each individual pool item setup
+        pool.forEach(item => {
+            shuffleArray(item.opts);
+        });
+    }
 
     document.getElementById('start-btn').onclick = () => {
-        // Safe context priming sequence to unlock engine runtime buffers
-        const engine = document.getElementById('quiz-audio-engine');
-        engine.src = audioCache['correct'];
-        engine.load();
-
+        audioSFX.correct.load();
+        audioSFX.wrong.load();
+        initializeQuizSession();
         document.getElementById('intro-view').classList.add('hidden');
         document.getElementById('quiz-view').classList.remove('hidden');
         loadQuestion();
@@ -342,12 +418,15 @@
         const tableArea = document.getElementById('custom-table-area');
         if (q.hasLattice) {
             tableArea.innerHTML = `
-                <div class="lattice-backup-box">
-                    Lattice Factor Top: [ 4 ] <br>
-                    Lattice Factor Right: [ 6 ] <br>
-                    ---------------------------<br>
-                    Cell Upper-Right Half (Tens)  = [ 2 ]<br>
-                    Cell Lower-Left Half (Ones)   = [ ? ]
+                <div class="lattice-container">
+                    <div class="lattice-grid">
+                        <div class="lattice-factor-top">4</div>
+                        <div class="lattice-factor-right">6</div>
+                        <div class="lattice-cell">
+                            <span class="lattice-digit-tens">2</span>
+                            <span class="lattice-digit-ones">?</span>
+                        </div>
+                    </div>
                 </div>
             `;
         } else {
@@ -356,10 +435,17 @@
 
         const area = document.getElementById('options-area');
         area.innerHTML = "";
+        
+        // Find alphabetical listing prefixes map setup dynamically
+        const prefixes = ["A) ", "B) ", "C) ", "D) "];
+        
         q.opts.forEach((o, i) => {
+            if(o === q.correctText) {
+                computedCorrectIdx = i;
+            }
             const b = document.createElement('button');
             b.className = 'opt-btn';
-            b.innerText = o;
+            b.innerText = prefixes[i] + o;
             b.onclick = () => check(i, b);
             area.appendChild(b);
         });
@@ -374,23 +460,23 @@
             document.getElementById('timer-bar').style.width = (timeLeft / 60 * 100) + "%";
             if(timeLeft <= 0) { 
                 clearInterval(timer); 
-                triggerSound('timeout'); 
+                triggerSound(audioSFX.wrong);
                 endTurn(); 
             }
         }, 1000);
     }
 
     function check(i, b) {
-        if(i === pool[current].ans) {
+        if(i === computedCorrectIdx) {
             clearInterval(timer);
-            triggerSound('correct'); 
+            triggerSound(audioSFX.correct);
             b.classList.add('correct');
             score++;
             document.getElementById('score-val').innerText = score;
             endTurn();
         } else {
             attempts++;
-            triggerSound('wrong'); 
+            triggerSound(audioSFX.wrong);
             b.classList.add('wrong');
             b.disabled = true;
             if(attempts === 1) {
@@ -411,7 +497,7 @@
         f.className = 'feedback expl-box';
         f.innerHTML = "<b>🔍 Explanation:</b> " + pool[current].expl;
         f.style.display = 'block';
-        document.querySelectorAll('.opt-btn')[pool[current].ans].classList.add('correct');
+        document.querySelectorAll('.opt-btn')[computedCorrectIdx].classList.add('correct');
         document.getElementById('action-btn').classList.remove('hidden');
     }
 
@@ -419,7 +505,6 @@
         current++;
         if(current < pool.length) loadQuestion();
         else {
-            triggerSound('complete');
             document.getElementById('quiz-view').classList.add('hidden');
             document.getElementById('result-view').classList.remove('hidden');
             document.getElementById('final-pts').innerText = score;
