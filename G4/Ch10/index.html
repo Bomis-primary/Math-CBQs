@@ -156,7 +156,7 @@
     <div id="intro-view" class="hidden">
         <div class="quiz-padding">
             <h1 style="text-align:center; color:var(--primary); margin: 10px 0 5px 0; font-size: 26px;">Measurement Challenge</h1>
-            <p style="text-align:center; color:#64748b; margin-top: 0; font-weight: 600; text-transform: uppercase; font-size: 12px; letter-spacing: 1px;">Result</p>
+            <p style="text-align:center; color:#64748b; margin-top: 0; font-weight: 600; text-transform: uppercase; font-size: 12px; letter-spacing: 1px;">Quiz</p>
             
             <div class="instruction-box">
                 <strong>⚡ Measurement: Length, Weight, Capacity:</strong>
@@ -193,12 +193,12 @@
 
     <div id="result-view" class="hidden" style="text-align:center;">
         <div class="quiz-padding">
-            <div style="font-size: 4rem; margin-bottom: 5px;">🏆</div>
-            <h2 style="font-size:1.6rem; margin: 5px 0;">Well Done!</h2>
-            <p style="color:#64748b; margin: 0 0 15px 0; font-size: 1.1rem;">You finished the quiz.</p>
+            <div id="result-emoji" style="font-size: 4rem; margin-bottom: 5px;">🏆</div>
+            <h2 id="result-heading" style="font-size:1.8rem; margin: 5px 0; color: var(--text);">Well Done!</h2>
+            <p id="result-subtext" style="color:#64748b; margin: 0 0 15px 0; font-size: 1.1rem;">You finished the quiz.</p>
             
             <div style="font-size: 1.2rem; font-weight: bold; margin-bottom: 25px; color: var(--text);">
-                Your Score: <span id="final-pts" style="color: var(--primary); font-size: 2rem; font-weight: 800;">0</span> / 10
+                Your Score: <span id="final-pts" style="color: var(--primary); font-size: 2.2rem; font-weight: 800;">0</span> / 10
             </div>
             
             <button onclick="location.reload()" style="width:100%; padding:16px; background:var(--primary); color:white; border:none; border-radius:14px; font-weight:700; cursor:pointer; font-size: 1rem;">Try Again</button>
@@ -463,6 +463,29 @@
             document.getElementById('quiz-view').classList.add('hidden');
             document.getElementById('result-view').classList.remove('hidden');
             document.getElementById('final-pts').innerText = score;
+
+            // Simple Dynamic feedback tier logic
+            const heading = document.getElementById('result-heading');
+            const subtext = document.getElementById('result-subtext');
+            const emoji = document.getElementById('result-emoji');
+
+            if (score === 10) {
+                emoji.innerText = "👑";
+                heading.innerText = "Perfect Score!";
+                subtext.innerText = "Sensational metric mastery! You got every answer right.";
+            } else if (score >= 8) {
+                emoji.innerText = "🌟";
+                heading.innerText = "Fantastic Job!";
+                subtext.innerText = "Brilliant effort! You really know your metric units.";
+            } else if (score >= 5) {
+                emoji.innerText = "👍";
+                heading.innerText = "Good Effort!";
+                subtext.innerText = "Well done! You have a solid grasp on conversions.";
+            } else {
+                emoji.innerText = "📚";
+                heading.innerText = "Keep Practising!";
+                subtext.innerText = "A good try! Keep working on your units and try again.";
+            }
         }
     };
 </script>
