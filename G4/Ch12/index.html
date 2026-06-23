@@ -101,6 +101,21 @@
 
         .question-text { font-size: 1.1rem; font-weight: 600; line-height: 1.5; margin-bottom: 15px; white-space: pre-line; }
 
+        /* --- DYNAMIC GRAPHIC HOLDER --- */
+        .question-graphic-container {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        .pattern-svg {
+            background-color: #f8fafc;
+            border: 2px dashed #cbd5e1;
+            border-radius: 16px;
+            max-width: 100%;
+            height: auto;
+        }
+
         .options-grid { display: grid; gap: 12px; }
         .opt-btn {
             background: #fff; border: 2px solid #ffccab; padding: 16px;
@@ -159,6 +174,8 @@
             <div class="timer-track"><div id="timer-bar"></div></div>
             
             <div id="q-text" class="question-text"></div>
+
+            <div id="graphic-container" class="question-graphic-container hidden"></div>
             
             <div id="options-area" class="options-grid"></div>
             
@@ -216,16 +233,44 @@
     });
 
     const rawPool = [
+        /* IMAGE-BASED QUESTION 1 */
+        { 
+            q: "Analyze the repeating matrix block layout provided in the graphic display.\n\nWhich shape code accurately fills the final space to maintain the pattern?", 
+            hasGraphic: true,
+            graphicType: "matrix",
+            opts: ["Red Circle", "Blue Square", "Yellow Triangle", "Green Star"], 
+            correctText: "Red Circle", 
+            hint: "Look at the sequence horizontally: Circle, Square, Triangle... then it restarts.", 
+            expl: "Each row contains one Red Circle, one Blue Square, and one Yellow Triangle. The missing spot requires the Red Circle to complete the row." 
+        },
+        /* IMAGE-BASED QUESTION 2 */
+        { 
+            q: "Examine the dynamic line balance design illustrated below.\n\nDetermine which dashed axis represents a clean line of reflective symmetry.", 
+            hasGraphic: true,
+            graphicType: "symmetry",
+            opts: ["Line A (Vertical)", "Line B (Horizontal)", "Both Line A and Line B", "Neither line shows symmetry"], 
+            correctText: "Line A (Vertical)", 
+            hint: "Fold the diamond shape along both lines mentally to see which half mirrors the other perfectly.", 
+            expl: "Folding along Line A (Vertical) aligns the left and right design details exactly. The top and bottom details do not match perfectly, so Line B is not an axis of symmetry." 
+        },
+        /* IMAGE-BASED QUESTION 3 */
+        { 
+            q: "Observe the growing geometric block stack sequence shown below.\n\nFollowing this progressive rule, how many individual unit boxes must be drawn to form Step 4?", 
+            hasGraphic: true,
+            graphicType: "blocks",
+            opts: ["10 boxes", "8 boxes", "7 boxes", "12 boxes"], 
+            correctText: "10 boxes", 
+            hint: "Step 1 has 1, Step 2 has 3 (+2), Step 3 has 6 (+3). Look at how much the addition value grows each time.", 
+            expl: "The pattern adds a new base row corresponding to the step number. Step 4 adds 4 boxes to the previous 6 boxes, totaling 10 boxes (forming a triangle sequence)." 
+        },
+        /* TEXT-BASED QUESTIONS */
         { q: "Look at this addition pattern:\n1 + 2 = 3\n2 + 3 = 5\n3 + 4 = 7\n\nWhat is the next entry in this sequence?", opts: ["4 + 5 = 9", "4 + 5 = 10", "5 + 6 = 11", "4 + 4 = 8"], correctText: "4 + 5 = 9", hint: "Increase each starting number by 1.", expl: "Following the number pattern in addition, the next sequential integers to add are 4 and 5, which equals 9." },
         { q: "A tiling layout repeats shapes perfectly to fill a floor without leaving any empty gaps or overlaps.\n\nWhat is the specific term for this type of pattern style?", opts: ["Tessellation", "Reflection", "Rotational Symmetry", "Code Progression"], correctText: "Tessellation", hint: "Think of regular geometric tiles covering a surface completely.", expl: "A pattern that covers a flat surface without gaps or overlaps is called a tessellation." },
-        { q: "Look at this multiplication sequence:\n2 x 2 = 4\n2 x 4 = 8\n2 x 8 = 16\n\nWhat is the next entry in this sequence?", opts: ["2 x 16 = 32", "2 x 10 = 20", "2 x 12 = 24", "2 x 16 = 48"], correctText: "2 x 16 = 32", hint: "The second multiplier doubles in every step.", expl: "Following the number patterns in multiplication, doubling 8 gives 12, so the next line is 2 x 16 = 32." },
+        { q: "Look at this multiplication sequence:\n2 x 2 = 4\n2 x 4 = 8\n2 x 8 = 16\n\nWhat is the next entry in this sequence?", opts: ["2 x 16 = 32", "2 x 10 = 20", "2 x 12 = 24", "2 x 16 = 48"], correctText: "2 x 16 = 32", hint: "The second multiplier doubles in every step.", expl: "Following the number patterns in multiplication, doubling 8 gives 16, so the next line is 2 x 16 = 32." },
         { q: "A design can be divided down the middle into two parts that match each other exactly.\n\nWhat concept is displayed by this matching balance?", opts: ["Symmetry", "Multiplication", "Addition", "Coding Systems"], correctText: "Symmetry", hint: "Think about mirror reflections.", expl: "Symmetry is identified when a line divides a pattern into two identical mirror-image halves." },
         { q: "You create a secret message code system where letter A is 1, letter B is 2, and letter C is 3.\n\nHow will you write the word 'CAB' using this system?", opts: ["312", "123", "213", "321"], correctText: "312", hint: "Substitute each letter with its corresponding number position code.", expl: "Using this simple code, C becomes 3, A becomes 1, and B becomes 2, giving the combination 312." },
-        { q: "Look at this growing shape sequence:\nStep 1: One triangle\nStep 2: Three triangles\nStep 3: Five triangles\n\nHow many triangles will you need to draw for Step 4?", opts: ["7 triangles", "6 triangles", "8 triangles", "9 triangles"], correctText: "7 triangles", hint: "Count how many new shapes are added at each stage.", expl: "The sequence adds two triangles at each step, so adding two to five gives seven triangles." },
-        { q: "You want to design an original repeating pattern for a textile print using a single geometric shape.\n\nWhich of these options works best to ensure no overlaps or gaps occur?", opts: ["A regular hexagon", "A star shape", "A perfect circle", "An irregular oval"], correctText: "A regular hexagon", hint: "Choose a shape that can form a continuous tessellation.", expl: "Regular hexagons fit together perfectly on a flat grid to form a clean, gap-free tessellation pattern." },
         { q: "A code pattern shifts letters forward by two spots in the alphabet. Under this system, letter A becomes C, and letter B becomes D.\n\nWhat does the code word 'FOR' look like when shifted forward?", opts: ["HQT", "GNS", "HQU", "FPS"], correctText: "HQT", hint: "Move F, O, and R forward by exactly two steps in the alphabet.", expl: "Shifting two steps forward makes F become H, O become Q, and R become T, which spells HQT." },
-        { q: "Look at this decreasing sequence:\n100, 90, 81, 73, ...\n\nWhat rule is being used to build this number progression?", opts: ["Subtract 10, then subtract 9, then subtract 8", "Subtract 10 at each step", "Divide by 2 at each step", "Subtract 9 at each step"], correctText: "Subtract 10, then subtract 9, then subtract 8", hint: "Look at the changing difference between consecutive numbers.", expl: "The pattern subtracts one less than before at each step: 100 - 10 = 90, 90 - 9 = 81, and 81 - 8 = 73." },
-        { q: "Why do programmers and developers analyze symmetry and repeating sequences when writing codes?", opts: ["To find rules that help solve problems efficiently", "To draw pretty pictures on screen", "To practice basic adding up", "To count the number of shapes"], correctText: "To find rules that help solve problems efficiently", hint: "Think about how patterns help us understand underlying systems.", expl: "Analyzing patterns allows us to explain the underlying rules and build efficient systems to solve complex problems." }
+        { q: "Look at this decreasing sequence:\n100, 90, 81, 73, ...\n\nWhat rule is being used to build this number progression?", opts: ["Subtract 10, then subtract 9, then subtract 8", "Subtract 10 at each step", "Divide by 2 at each step", "Subtract 9 at each step"], correctText: "Subtract 10, then subtract 9, then subtract 8", hint: "Look at the changing difference between consecutive numbers.", expl: "The pattern subtracts one less than before at each step: 100 - 10 = 90, 90 - 9 = 81, and 81 - 8 = 73." }
     ];
 
     let pool = [];
@@ -248,6 +293,70 @@
         });
     }
 
+    /* SVG GENERATION ENGINES FOR DIGITAL ART QUESTIONS */
+    function generateGraphic(type) {
+        if (type === "matrix") {
+            return `
+                <svg class="pattern-svg" width="240" height="160" viewBox="0 0 240 160">
+                    <circle cx="40" cy="30" r="15" fill="#dc2626"/>
+                    <rect x="105" y="15" width="30" height="30" fill="#2563eb" rx="4"/>
+                    <polygon points="200,12 185,42 215,42" fill="#eab308"/>
+                    
+                    <rect x="25" y="65" width="30" height="30" fill="#2563eb" rx="4"/>
+                    <polygon points="120,62 105,92 135,92" fill="#eab308"/>
+                    <circle cx="200" cy="80" r="15" fill="#dc2626"/>
+                    
+                    <polygon points="40,112 25,142 55,142" fill="#eab308"/>
+                    <rect x="105" y="115" width="30" height="30" fill="#2563eb" rx="4"/>
+                    <rect x="182" y="112" width="36" height="36" fill="none" stroke="#94a3b8" stroke-width="2" stroke-dasharray="4 4" rx="6"/>
+                    <text x="200" y="136" font-family="sans-serif" font-size="22" font-weight="bold" fill="#64748b" text-anchor="middle">?</text>
+                </svg>
+            `;
+        }
+        if (type === "symmetry") {
+            return `
+                <svg class="pattern-svg" width="240" height="160" viewBox="0 0 240 160">
+                    <polygon points="120,15 200,80 120,145 40,80" fill="#ffedd5" stroke="#c2410c" stroke-width="2"/>
+                    <circle cx="70" cy="80" r="8" fill="#16a34a"/>
+                    <circle cx="170" cy="80" r="8" fill="#16a34a"/>
+                    <rect x="112" y="30" width="16" height="16" fill="#2563eb" rx="2"/>
+                    
+                    <line x1="120" y1="5" x2="120" y2="155" stroke="#dc2626" stroke-width="2" stroke-dasharray="5 5"/>
+                    <text x="128" y="20" font-family="sans-serif" font-size="12" font-weight="bold" fill="#dc2626">Line A</text>
+                    
+                    <line x1="10" y1="80" x2="230" y2="80" stroke="#2563eb" stroke-width="2" stroke-dasharray="5 5"/>
+                    <text x="15" y="75" font-family="sans-serif" font-size="12" font-weight="bold" fill="#2563eb">Line B</text>
+                </svg>
+            `;
+        }
+        if (type === "blocks") {
+            return `
+                <svg class="pattern-svg" width="280" height="140" viewBox="0 0 280 140">
+                    <rect x="20" y="100" width="20" height="20" fill="#c2410c" stroke="#fff" stroke-width="1"/>
+                    <text x="30" y="135" font-family="sans-serif" font-size="11" fill="#64748b" text-anchor="middle">Step 1</text>
+                    
+                    <rect x="75" y="100" width="20" height="20" fill="#c2410c" stroke="#fff" stroke-width="1"/>
+                    <rect x="95" y="100" width="20" height="20" fill="#c2410c" stroke="#fff" stroke-width="1"/>
+                    <rect x="85" y="80" width="20" height="20" fill="#c2410c" stroke="#fff" stroke-width="1"/>
+                    <text x="95" y="135" font-family="sans-serif" font-size="11" fill="#64748b" text-anchor="middle">Step 2</text>
+                    
+                    <rect x="140" y="100" width="20" height="20" fill="#c2410c" stroke="#fff" stroke-width="1"/>
+                    <rect x="160" y="100" width="20" height="20" fill="#c2410c" stroke="#fff" stroke-width="1"/>
+                    <rect x="180" y="100" width="20" height="20" fill="#c2410c" stroke="#fff" stroke-width="1"/>
+                    <rect x="150" y="80" width="20" height="20" fill="#c2410c" stroke="#fff" stroke-width="1"/>
+                    <rect x="170" y="80" width="20" height="20" fill="#c2410c" stroke="#fff" stroke-width="1"/>
+                    <rect x="160" y="60" width="20" height="20" fill="#c2410c" stroke="#fff" stroke-width="1"/>
+                    <text x="170" y="135" font-family="sans-serif" font-size="11" fill="#64748b" text-anchor="middle">Step 3</text>
+                    
+                    <rect x="225" y="90" width="40" height="30" fill="none" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="3 3" rx="4"/>
+                    <text x="245" y="110" font-family="sans-serif" font-size="16" font-weight="bold" fill="#94a3b8" text-anchor="middle">?</text>
+                    <text x="245" y="135" font-family="sans-serif" font-size="11" fill="#64748b" text-anchor="middle">Step 4</text>
+                </svg>
+            `;
+        }
+        return "";
+    }
+
     document.getElementById('start-btn').onclick = () => {
         const engine = document.getElementById('quiz-audio-engine');
         engine.src = audioCache['correct'];
@@ -267,6 +376,16 @@
         document.getElementById('q-num').innerText = current + 1;
         document.getElementById('q-text').innerText = q.q;
         document.getElementById('timer-text').innerText = timeLeft + "s";
+
+        // Handle graphic injection logic
+        const gContainer = document.getElementById('graphic-container');
+        if (q.hasGraphic) {
+            gContainer.innerHTML = generateGraphic(q.graphicType);
+            gContainer.classList.remove('hidden');
+        } else {
+            gContainer.innerHTML = "";
+            gContainer.classList.add('hidden');
+        }
 
         const area = document.getElementById('options-area');
         area.innerHTML = "";
