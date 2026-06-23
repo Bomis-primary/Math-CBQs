@@ -2,491 +2,276 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Integrated Indian Money CBQ Master Quiz</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Indian Money Quiz</title>
     <style>
-        :root {
-            --primary: #c2410c; /* CBQ Rust */
-            --primary-dark: #9a3412;
-            --success: #15803d; /* Competency Green */
-            --error: #b91c1c; /* Solution Red */
-            --bg: #fff7ed;
-            --text: #111827;
-        }
-
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-
         body {
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-            background-color: #fce7d2;
-            color: var(--text);
-            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #fff7ed;
+            color: #111827;
+            padding: 20px;
             display: flex;
             justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            padding: 10px;
         }
-
-        #app-container {
+        .quiz-container {
             width: 100%;
-            max-width: 620px;
+            max-width: 600px;
             background: #ffffff;
-            border-radius: 24px;
-            box-shadow: 0 20px 40px rgba(194, 65, 12, 0.15);
-            position: relative;
-            overflow: hidden;
-            min-height: 580px;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         }
-
-        /* --- 5-SECOND MANDATORY WHITE SPLASH SCREEN --- */
-        #splash-screen {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background-color: #ffffff;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 100;
-            transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        
-        .splash-logo-img {
-            max-width: 240px;
-            width: 80%;
-            height: auto;
-            object-fit: contain;
-        }
-
-        /* --- INTERFACE CORE PADDING --- */
-        .quiz-padding {
-            padding: 25px;
-        }
-
         .instruction-box {
-            background: var(--bg);
-            border-left: 4px solid var(--primary);
+            background: #ffedd5;
             padding: 15px;
-            border-radius: 8px;
-            text-align: left;
-            margin: 20px 0;
-            font-size: 0.95rem;
-            color: #475569;
-            line-height: 1.5;
+            border-left: 5px solid #c2410c;
+            margin-bottom: 25px;
+            border-radius: 4px;
         }
-        .instruction-box ul { margin: 5px 0 0 20px; padding: 0; }
-        .instruction-box li { margin-bottom: 6px; }
-
-        .hud-row {
+        .hud {
             display: flex;
             justify-content: space-between;
-            gap: 10px;
-            margin-bottom: 15px;
-        }
-        .hud-pill {
-            flex: 1;
-            text-align: center;
-            padding: 12px 6px;
-            border-radius: 14px;
-            font-size: 0.95rem;
-            font-weight: 800;
-            background-color: #ffedd5;
-            color: var(--primary-dark);
-        }
-        .hud-pill.gold { background-color: #fef9c3; color: #a16207; }
-
-        .timer-track { width: 100%; height: 8px; background: #cbd5e1; border-radius: 10px; margin-bottom: 20px; overflow: hidden; }
-        #timer-bar { height: 100%; width: 100%; background: var(--primary); transition: width 1s linear; }
-
-        .category-text { font-size: 0.8rem; color: #f97316; font-weight: 700; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 1px; }
-        .question-text { font-size: 1.05rem; font-weight: 600; line-height: 1.5; margin-bottom: 15px; white-space: pre-line; }
-
-        /* --- GEOMETRIC SHAPE VISUAL CONTAINERS --- */
-        .geometry-display-box {
-            background: #fafafa;
-            border: 2px dashed #ffb980;
-            padding: 15px;
-            border-radius: 12px;
-            text-align: center;
-            font-family: monospace;
-            font-size: 1.1rem;
             font-weight: bold;
-            margin: 15px 0;
-            line-height: 1.5;
-            color: var(--primary-dark);
+            margin-bottom: 20px;
+            background: #f3f4f6;
+            padding: 10px;
+            border-radius: 8px;
         }
-
-        .irregular-shape-grid {
-            border-collapse: collapse;
-            margin: 15px auto;
-            background: white;
+        .timer-bar-container {
+            width: 100%;
+            height: 10px;
+            background: #e5e7eb;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            overflow: hidden;
         }
-        .irregular-shape-grid td {
-            width: 25px;
-            height: 25px;
-            border: 1px solid #ffccab;
-            text-align: center;
-            font-size: 0.8rem;
+        .timer-bar {
+            height: 100%;
+            width: 100%;
+            background: #c2410c;
+            transition: width 1s linear;
         }
-        .irregular-shape-grid .shaded {
-            background-color: #ff914d;
+        .question {
+            font-size: 1.15rem;
+            font-weight: bold;
+            margin-bottom: 20px;
         }
-        .irregular-shape-grid .partial {
-            background: linear-gradient(135deg, #ff914d 50%, white 50%);
+        .options {
+            display: grid;
+            gap: 10px;
         }
-
-        .options-grid { display: grid; gap: 12px; }
-        .opt-btn {
-            background: #fff; border: 2px solid #ffccab; padding: 16px;
-            border-radius: 14px; text-align: left; font-size: 1rem; cursor: pointer; transition: 0.2s;
-            color: #334155; font-weight: 500;
+        .btn {
+            padding: 12px;
+            border: 2px solid #ffccab;
+            background: #fff;
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: left;
+            font-size: 1rem;
         }
-        .opt-btn:hover:not(:disabled) { border-color: var(--primary); background: #fdf2e9; }
-        .opt-btn.correct { background: #dcfce7 !important; color: var(--success) !important; border-color: #bbf7d0 !important; font-weight: 700; }
-        .opt-btn.wrong { background: #fee2e2 !important; color: var(--error) !important; border-color: #fca5a5 !important; }
-
-        .feedback { margin-top: 20px; padding: 15px; border-radius: 12px; display: none; line-height: 1.5; font-size: 0.95rem; }
-        .hint-box { background: #fef9c3; border: 1px solid #fef08a; color: #a16207; }
-        .expl-box { background: #ffedd5; border: 1px solid #ffccab; color: var(--primary-dark); }
-
-        #action-btn { width: 100%; margin-top: 20px; padding: 16px; background: var(--primary); color: white; border: none; border-radius: 14px; font-weight: 700; cursor: pointer; font-size: 1rem; }
-        #action-btn:hover { background: var(--primary-dark); }
-        
-        .hidden { display: none !important; }
+        .btn:hover:not(:disabled) {
+            background: #fdf2e9;
+            border-color: #c2410c;
+        }
+        .correct { background: #dcfce7 !important; border-color: #15803d !important; color: #15803d; font-weight: bold; }
+        .wrong { background: #fee2e2 !important; border-color: #b91c1c !important; color: #b91c1c; }
+        .feedback {
+            margin-top: 15px;
+            padding: 12px;
+            border-radius: 6px;
+            display: none;
+        }
+        .hint { background: #fef9c3; border: 1px solid #fef08a; color: #a16207; }
+        .explanation { background: #ffedd5; border: 1px solid #ffccab; color: #9a3412; }
+        .next-btn {
+            width: 100%;
+            padding: 12px;
+            background: #c2410c;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            margin-top: 15px;
+            cursor: pointer;
+            font-weight: bold;
+            display: none;
+        }
+        .next-btn:hover { background: #9a3412; }
+        .hidden { display: none; }
+        .result { text-align: center; font-size: 1.25rem; }
     </style>
 </head>
 <body>
 
-<audio id="quiz-audio-engine" preload="auto"></audio>
-
-<div id="app-container">
-
-    <div id="splash-screen">
-        <img class="splash-logo-img" src="assets/logo.png" alt="Company Logo">
+<div class="quiz-container">
+    <!-- Screen 1: Instructions -->
+    <div id="start-screen">
+        <h2>Indian Money Assessment Quiz</h2>
+        <div class="instruction-box">
+            <p>1) You will have exactly 60 seconds to answer each question before the timer runs out.</p>
+            <p>2) The complete assessment consists of exactly 10 questions focused on Indian currency operations.</p>
+            <p>3) You will receive exactly 2 chances to choose the correct answer before the solution reveals.</p>
+        </div>
+        <button class="next-btn" id="start-btn" style="display: block;">Start Quiz</button>
     </div>
 
-    <div id="intro-view" class="hidden">
-        <div class="quiz-padding">
-            <h1 style="text-align:center; color:var(--primary); margin: 10px 0 5px 0; font-size: 24px;">Money Management Mastery</h1>
-            <p style="text-align:center; color:#64748b; margin-top: 0; font-weight: 600; text-transform: uppercase; font-size: 12px; letter-spacing: 1px;">Integrated Syllabus Modules</p>
-            
-            <div class="instruction-box">
-                <strong>⚡ Assessment Framework:</strong>
-                <ul>
-                    <li>You will solve 10 critical multi-step story scenarios bridging Geometry, Time, Fractions, and Indian Money logic.</li>
-                    <li>The questions test conceptual understanding and practical problem-solving logic.</li>
-                    <li>Questions appear in a completely randomized order for every new attempt.</li>
-                    <li>A precise 60-second animated progress bar counts down for every question.</li>
-                    <li>If a problem is missed on your first attempt, a custom clue panel instantly unlocks.</li>
-                </ul>
-            </div>
-
-            <button id="start-btn" style="width:100%; padding:18px; background:var(--primary); color:white; border:none; border-radius:14px; font-weight:bold; font-size:1.1rem; cursor:pointer; margin-top: 10px;">Begin Master Quiz ⚡</button>
+    <!-- Screen 2: Active Quiz Framework -->
+    <div id="quiz-screen" class="hidden">
+        <div class="hud">
+            <div>Question: <span id="q-index">1</span>/10</div>
+            <div>Score: <span id="score">0</span></div>
+            <div>Time Left: <span id="timer-text">60</span>s</div>
         </div>
+        <div class="timer-bar-container">
+            <div class="timer-bar" id="timer-bar"></div>
+        </div>
+        <div class="question" id="question-text"></div>
+        <div class="options" id="options-container"></div>
+        <div class="feedback" id="feedback-box"></div>
+        <button class="next-btn" id="next-btn">Next Question</button>
     </div>
 
-    <div id="quiz-view" class="hidden">
-        <div class="quiz-padding">
-            <div class="hud-row">
-                <div class="hud-pill">Question <span id="q-num">1</span>/10</div>
-                <div class="hud-pill">Points: <span id="score-val">0</span></div>
-                <div class="hud-pill gold"><span id="timer-text">60s</span></div>
-            </div>
-            <div class="timer-track"><div id="timer-bar"></div></div>
-            
-            <div id="q-category" class="category-text"></div>
-            <div id="q-text" class="question-text"></div>
-            
-            <div id="custom-display-area"></div>
-            
-            <div id="options-area" class="options-grid"></div>
-            
-            <div id="feedback-box" class="feedback"></div>
-            <button id="action-btn" class="hidden">Next Question →</button>
-        </div>
-    </div>
-
-    <div id="result-view" class="hidden" style="text-align:center;">
-        <div class="quiz-padding">
-            <div style="font-size: 4rem; margin-bottom: 5px;">🏆</div>
-            <h2 style="font-size:1.6rem; margin: 5px 0;">Evaluation Finalised</h2>
-            <div style="font-size: 4rem; font-weight: 800; color: var(--primary); margin: 10px 0;"><span id="final-pts">0</span>/10</div>
-            <div id="result-msg" style="color:#475569; font-size: 0.95rem; line-height: 1.5; margin: 0 0 25px 0; text-align: left; background: #f8fafc; border: 1px solid #ffccab; padding: 16px; border-radius: 16px;"></div>
-            <button onclick="location.reload()" style="width:100%; padding:16px; background:var(--primary); color:white; border:none; border-radius:14px; font-weight:700; cursor:pointer; font-size: 1rem;">Restart Assessment Loop</button>
-        </div>
+    <!-- Screen 3: Results -->
+    <div id="result-screen" class="hidden result">
+        <h2>Quiz Completed!</h2>
+        <p>Your final score is <span id="final-score">0</span> out of 10 points.</p>
+        <button class="next-btn" style="display: block; margin: 20px auto 0;" onclick="location.reload()">Restart Quiz</button>
     </div>
 </div>
 
 <script>
-    const audioCache = {
-        'correct': 'assets/correct.mp3',
-        'wrong': 'assets/wrong.mp3',
-        'timeout': 'assets/wrong.mp3',
-        'complete': 'assets/freesound_community-claps-44774.mp3'
-    };
-
-    function playSound(type) {
-        const audioNode = document.getElementById('quiz-audio-engine');
-        const filePath = audioCache[type];
-        if (filePath) {
-            audioNode.src = filePath;
-            audioNode.currentTime = 0;
-            audioNode.play().catch(err => console.log("Audio routing exception: ", err));
-        }
-    }
-
-    window.addEventListener('DOMContentLoaded', () => {
-        setTimeout(() => {
-            const splash = document.getElementById('splash-screen');
-            splash.style.opacity = '0';
-            setTimeout(() => {
-                splash.style.display = 'none';
-                document.getElementById('intro-view').classList.remove('hidden');
-            }, 800); 
-        }, 5000);
-    });
-
-    // Content Pool mapping every outcome from image_4.png using Indian Money logic.
-    // Categorization aligns to competency goals.
-    const rawPool = [
-        { 
-            cat: "Basic Operations & Conversions", 
-            q: "A farmer in Maharashtra harvests and sells sacks of potatoes. He receives ₹3,450 from one buyer and ₹12,780 from another. \n\nWhat is the total combined amount the farmer earned from these sales?", 
-            opts: ["₹16,230", "₹15,230", "₹16,320", "₹12,780 Maud"], 
-            correctText: "₹16,230", 
-            hint: "Perform standard multi-step addition of large values using your knowledge of Indian Money operations.", 
-            expl: "Total earnings = First sale + Second sale = ₹3,450 + ₹12,780 = ₹16,230." 
-        },
-        { 
-            cat: "Bill Components & Operations", 
-            q: "Review the components listed on a departmental store bill. \n\n- Pack 1 (Item value): ₹1,200 \n- Pack 2 (Item value): ₹850 \n- Fixed Delivery Charge: ₹60 \n- Coupon Applied: - ₹110 \n\nWhat is the final 'Payable Amount' listed at the bottom of the bill?", 
-            opts: ["₹2,000", "₹2,110", "₹1,940", "₹2,050"], 
-            correctText: "₹2,000", 
-            hint: "Analyze and interpret the components of a financial transaction. Add the item values and delivery charge, then apply the coupon reduction.", 
-            expl: "Bill total: Item values + Delivery - Coupon = (₹1,200 + ₹850 + ₹60) - ₹110 = ₹2,110 - ₹110 = ₹2,000." 
-        },
-        { 
-            cat: "Evaluate & Make Informed Decisions", 
-            q: "You are creating a budget plan for a local school's annual project. You need to purchase exactly 12 similar paint kits. \n\nTwo different suppliers in Chennai provide quotes: \n- Supplier A: ₹18,000 total for the bulk order. \n- Supplier B: ₹1,600 per kit. \n\nBased on your calculations, which option is more budget-friendly?", 
-            opts: ["Supplier A bulk quote", "Supplier B individual rate", "Both quotes are identical", "Quote comparisons require quantity variables Maud"], 
-            correctText: "Supplier A bulk quote", 
-            hint: "Evaluate financial scenarios involving bulk purchasing vs unit pricing using standard monetary multiplication.", 
-            expl: "Calculate Supplier B's cost: ₹1,600/kit × 12 kits = ₹19,200. Comparing ₹18,000 (Supplier A) vs ₹19,200 (Supplier B), Supplier A is cheaper." 
-        },
-        { 
-            cat: "Fractions & Operations Logic", 
-            q: "A student received ₹500 for textbooks. He used exactly ₹125 to buy drawing sheets. \n\nWhat fractional component of his total textbook money did he use for drawing sheets?", 
-            opts: ["1/4", "1/5", "1/3", "4/1"], 
-            correctText: "1/4", 
-            hint: "Represent the specific used monetary component as a fraction of the total whole number value.", 
-            expl: "The fraction is ₹125 / ₹500. Divide both parts by ₹125 (HCF): (125/125) / (500/125) = 1/4." 
-        },
-        { 
-            cat: "Geometry & Informed Decisions", 
-            q: "A family is planning to build a rectangular border wall around a specific agricultural allotment in their village. \n\nThe allotment is exactly 120 metres long and 40 metres wide. A contractor quotes ₹18 per linear metre for a basic wire fence. \n\nWhat total budget must the family set aside for this specific competency task?", 
-            opts: ["₹5,760", "₹2,880", "₹4,320", "₹11,520 Maud"], 
-            correctText: "₹5,760", 
-            hint: "Bridging outcomes: Calculate the geometric perimeter of the rectangular allotment (Length + Width, then double), then multiply that value by the specific competency quote rate.", 
-            expl: "Perimeter = 2 × (Length + Width) = 2 × (120 m + 40 m) = 2 × 160 m = 320 linear metres. Total budget = ₹18/m × 320 m = ₹5,760." 
-        },
-        { 
-            cat: "Time Scenarios & Operative Money Management", 
-            q: "An employee works specific competency-based hours on a rotational schedule in Bengaluru. Her contract specifies a rate of ₹150 for every full hour worked. \n\nA system alert log shows she worked for exactly 8 hours and 30 minutes in a single day. \n\nUsing informed decision logic, determine how much the rotational schedule pay calculator must record as her monetary compensation?", 
-            opts: ["₹1,275", "₹1,200", "₹1,350", "₹1,275.50 Maud"], 
-            correctText: "₹1,275", 
-            hint: "Formulate a multi-step calculation: first multiply the full hours by the full hour rate, then calculate the pro-rated monetary value for the additional component (30 minutes = 1/2 hour).", 
-            expl: "Total Pay = (Full Hours × Rate) + (Partial Hour proportion × Rate) = (8 hr × ₹150) + (1/2 hr × ₹150) = ₹1,200 + ₹75 = ₹1,275." 
-        },
-        { 
-            cat: "Integrated Syllabus: Irregular Area Grid Method", 
-            q: "Review the components of a garden design project plan. The visual display shows an irregular garden patch mapped on an irregular grid, where each full shaded block matches an actual area component costing ₹75 per specific unit. Partial shaded blocks are ignored. \n\nDetermine the estimated area component total cost based on counting full shaded grid boxes.", 
-            hasTable: true,
-            tableData: [
-                [0, 1, 1, 1, 0, 0],
-                [1, 1, 1, 1, 1, 0],
-                [1, 1, 1, 1, 1, 1],
-                [0, 1, 1, 1, 1, 0],
-                [0, 0, 1, 1, 0, 0]
-            ],
-            opts: ["₹1,425", "₹1,350", "₹1,500", "₹1,425.75 Maud"], 
-            correctText: "₹1,425", 
-            hint: "Integrated outcome bridging geometry irregular shape area logic to specific Indian Money operations: count up all full grid squares, then apply standard monetary multiplication. Partial grid squares are ignored.", 
-            expl: "Total count of fully shaded squares = (3 in row 1) + (5 in row 2) + (6 in row 3) + (3 in row 4) + (2 in row 5) = 19 squares. Total monetary component = 19 squares × ₹75/square = ₹1,425." 
-        },
-        { 
-            cat: "integrated Syllabus: complex Story problems - Time conversions", 
-            q: "A small delivery business in Lucknow calculates operations time intervals to apply money management variables. \n\nThe logistics manager logs a specific competency trip took 4 hours and 48 minutes total. The driver is paid ₹125 for every full hour and ₹2 for every remaining minute component. \n\nFormulate the steps to identify the required solutions variables and calculate the driver's specific monetary compensation.", 
-            opts: ["₹596", "₹625", "₹500", "₹598 Maud"], 
-            correctText: "₹596", 
-            hint: "Formulate a multi-step scenario solution: perform money operations including addition and pro-rated monetary component logic for remaining fractional time components.", 
-            expl: "Payment formula = (Full Hours × ₹125/hr) + (Remaining Minutes × ₹2/min) = (4 hr × ₹125/hr) + (48 min × ₹2/min) = ₹500 + ₹96 = ₹596." 
-        },
-        { 
-            cat: "integrated Syllabus: geometric 3D shape identification", 
-            q: "A manufacturing unit produces rectangular gift boxes. A system monitoring prompt shows the production team is using a manufacturing net as displayed below. \n\n- Net Type Variable X folds to create shape A. Net variable Y folds to create shape B. \n\nThe prompt shows Net Variable X is a pattern of 6 identical flat connected squares. What mathematical outcome variable logic should the team apply to make informed decisions about product identification?", 
-            opts: ["Apply cube identification logic", "Apply cuboid specific competency outcome", "Apply square pyramid outcome variable Maud", "Apply pyramid geometric net parameters"], 
-            correctText: "Apply cube identification logic", 
-            hint: "Bridging geometry and money informed decisions: interpret 2D representations (geometric nets) to classify the 3D solid figure, allowing proper specific money Management and production cost allocation.", 
-            expl: "A geometric net made exclusively of 6 identical connected squares can only fold along its structural edges to form a cube. The production team must apply cube identification variable outcomes." 
-        },
-        { 
-            cat: "Create A Budget", 
-            q: "A research student in Mumbai wants to allocate exactly ₹1,000 of textbook money to build a library budget across three categories based on proportional allocation outcomes. The categories are: reference textbooks, scientific manuals, and study guides. \n\nThe informed decisions variables call for allocating exactly ₹350 to textbooks and ₹400 to manuals. Based on calculations involving mathematical outcomes variables, determine the final required budgetary plan components.", 
-            opts: ["₹250 Study Guides", "₹350 Study Guides", "₹200 Study Guides", "₹300 Study Guides Maud"], 
-            correctText: "₹250 Study Guides", 
-            hint: "Create a precise monetary budget or financial plan components based on knowledge of money measures and multi-step scenario analysis logic.", 
-            expl: "Total Budget (₹1,000) - Reference category (₹350) - Manuals category (₹400) = Remaining guides category (₹250)." 
-        }
+    // 10 Simplified Indian Money Questions matching the outcomes in image_0d5218.png
+    const questions = [
+        { q: "Convert ₹45 into paise.", opts: ["450 paise", "4,500 paise", "45 paise", "45,000 paise"], answer: "4,500 paise", hint: "Multiply the rupee value by 100.", exp: "Since ₹1 equals 100 paise, ₹45 multiplied by 100 equals 4,500 paise." },
+        { q: "Rohan buys a notebook for ₹45 and a pen for ₹20. How much total money does he spend?", opts: ["₹55", "₹60", "₹65", "₹70"], answer: "₹65", hint: "Add the prices of both items together.", exp: "Adding ₹45 and ₹20 gives a total expenditure of ₹65." },
+        { q: "Aarav pays with a ₹100 note for a toy costing ₹75. How much change does he get back?", opts: ["₹25", "₹35", "₹15", "₹45"], answer: "₹25", hint: "Subtract the cost of the toy from the total money paid.", exp: "Subtracting ₹75 from ₹100 leaves exactly ₹25 in change." },
+        { q: "If one chocolate box costs ₹150, what is the cost of 4 identical chocolate boxes?", opts: ["₹450", "₹500", "₹550", "₹600"], answer: "₹600", hint: "Multiply the cost of one box by the total number of boxes.", exp: "Multiplying ₹150 by 4 boxes equals a total price of ₹600." },
+        { q: "Seema divides ₹450 equally among her 3 children. How much money does each child receive?", opts: ["₹120", "₹150", "₹200", "₹130"], answer: "₹150", hint: "Divide the total money value by 3.", exp: "Dividing ₹450 by 3 results in exactly ₹150 for each child." },
+        { q: "A shop bill shows: Rice = ₹120, Sugar = ₹45, and Flour = ₹80. What is the grand total of the bill?", opts: ["₹245", "₹235", "₹255", "₹265"], answer: "₹245", hint: "Add the values of all three bill items together.", exp: "The total is calculated by adding ₹120 + ₹45 + ₹80, which equals ₹245." },
+        { q: "You want to buy a game for ₹800. Store A sells it for ₹800. Store B sells it for ₹850 with a ₹70 discount coupon. Which store offers the cheaper deal?", opts: ["Store A", "Store B", "Both cost the same", "The deals cannot be compared"], answer: "Store A", hint: "Calculate Store B's final price by subtracting the discount from ₹850.", exp: "Store B costs ₹850 - ₹70 = ₹780, making Store B cheaper than Store A's ₹800 price." },
+        { q: "Convert 8,200 paise into rupees.", opts: ["₹820", "₹82", "₹8.20", "₹8,200"], answer: "₹82", hint: "Divide the total paise value by 100.", exp: "Since 100 paise equals ₹1, dividing 8,200 paise by 100 gives ₹82." },
+        { q: "A school budget sets aside ₹1,000 for events. It spends ₹400 on decorations and ₹350 on snacks. How much money is left over?", opts: ["₹250", "₹300", "₹200", "₹150"], answer: "₹250", hint: "Subtract both expenses from the total budget of ₹1,000.", exp: "The remaining budget is calculated as ₹1,000 - ₹400 - ₹350 = ₹250." },
+        { q: "Which combination of notes exactly equals ₹750?", opts: ["One ₹500 note and two ₹100 notes", "One ₹500 note, one ₹200 note, and one ₹50 note", "Three ₹200 notes and one ₹50 note", "One ₹500 note and five ₹20 notes"], answer: "One ₹500 note, one ₹200 note, and one ₹50 note", hint: "Add the values of the notes to see which option totals exactly 750.", exp: "Adding ₹500 + ₹200 + ₹50 results in a total value of exactly ₹750." }
     ];
 
-    let pool = [];
-    let current = 0, score = 0, attempts = 0, timer, timeLeft = 60;
-    let computedCorrectIdx = -1;
+    let currentQuestionIndex = 0;
+    let currentScore = 0;
+    let remainingChances = 2;
+    let timeLeft = 60;
+    let timerInterval;
 
-    function shuffleArray(arr) {
-        for (let i = arr.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [arr[i], arr[j]] = [arr[j], arr[i]];
-        }
-        return arr;
-    }
+    const startScreen = document.getElementById('start-screen');
+    const quizScreen = document.getElementById('quiz-screen');
+    const resultScreen = document.getElementById('result-screen');
+    const startBtn = document.getElementById('start-btn');
+    const nextBtn = document.getElementById('next-btn');
+    const questionText = document.getElementById('question-text');
+    const optionsContainer = document.getElementById('options-container');
+    const feedbackBox = document.getElementById('feedback-box');
+    const timerText = document.getElementById('timer-text');
+    const timerBar = document.getElementById('timer-bar');
 
-    function initQuizData() {
-        pool = JSON.parse(JSON.stringify(rawPool));
-        shuffleArray(pool); // Randomizes question order
-        pool.forEach(qItem => {
-            shuffleArray(qItem.opts); // Randomizes multiple choice button layout
-        });
-    }
-
-    document.getElementById('start-btn').onclick = () => {
-        const engine = document.getElementById('quiz-audio-engine');
-        engine.src = audioCache['correct'];
-        engine.load();
-
-        initQuizData();
-        document.getElementById('intro-view').classList.add('hidden');
-        document.getElementById('quiz-view').classList.remove('hidden');
+    startBtn.addEventListener('click', () => {
+        startScreen.classList.add('hidden');
+        quizScreen.classList.remove('hidden');
         loadQuestion();
-    };
+    });
 
     function loadQuestion() {
-        attempts = 0; timeLeft = 60;
-        const q = pool[current];
-        document.getElementById('feedback-box').style.display = 'none';
-        document.getElementById('action-btn').classList.add('hidden');
-        document.getElementById('q-num').innerText = current + 1;
-        document.getElementById('q-category').innerText = q.cat;
-        document.getElementById('q-text').innerText = q.q;
-        document.getElementById('timer-text').innerText = timeLeft + "s";
+        remainingChances = 2;
+        timeLeft = 60;
+        feedbackBox.style.display = 'none';
+        nextBtn.style.display = 'none';
         
-        // Generate Visual Rendering based on scenario requirement
-        const displayArea = document.getElementById('custom-display-area');
-        if (q.hasTable && q.tableData) {
-            let tableHTML = '<table class="irregular-shape-grid">';
-            q.tableData.forEach(row => {
-                tableHTML += '<tr>';
-                row.forEach(cell => {
-                    let cellClass = cell === 1 ? 'class="shaded"' : '';
-                    tableHTML += `<td ${cellClass}></td>`;
-                });
-                tableHTML += '</tr>';
-            });
-            tableHTML += '</table>';
-            displayArea.innerHTML = tableHTML;
-        } else {
-            displayArea.innerHTML = "";
-        }
-
-        const area = document.getElementById('options-area');
-        area.innerHTML = "";
+        const qData = questions[currentQuestionIndex];
+        document.getElementById('q-index').innerText = currentQuestionIndex + 1;
+        questionText.innerText = qData.q;
         
-        const prefixes = ["A) ", "B) ", "C) ", "D) "];
-        q.opts.forEach((o, i) => {
-            if (o === q.correctText) {
-                computedCorrectIdx = i;
-            }
-            const b = document.createElement('button');
-            b.className = 'opt-btn';
-            b.innerText = prefixes[i] + o;
-            b.onclick = () => check(i, b);
-            area.appendChild(b);
+        optionsContainer.innerHTML = '';
+        qData.opts.forEach(option => {
+            const button = document.createElement('button');
+            button.className = 'btn';
+            button.innerText = option;
+            button.addEventListener('click', () => handleOptionClick(button, option, qData));
+            optionsContainer.appendChild(button);
         });
+
         startTimer();
     }
 
     function startTimer() {
-        clearInterval(timer);
-        timer = setInterval(() => {
+        clearInterval(timerInterval);
+        timerText.innerText = timeLeft;
+        timerBar.style.width = '100%';
+        
+        timerInterval = setInterval(() => {
             timeLeft--;
-            document.getElementById('timer-text').innerText = timeLeft + "s";
-            document.getElementById('timer-bar').style.width = (timeLeft / 60 * 100) + "%";
-            if(timeLeft <= 0) { 
-                clearInterval(timer); 
-                playSound('timeout'); 
-                endTurn(); 
+            timerText.innerText = timeLeft;
+            timerBar.style.width = (timeLeft / 60 * 100) + '%';
+            
+            if (timeLeft <= 0) {
+                clearInterval(timerInterval);
+                revealCorrectAnswer();
             }
         }, 1000);
     }
 
-    function check(i, b) {
-        if(i === computedCorrectIdx) {
-            clearInterval(timer);
-            playSound('correct'); 
-            b.classList.add('correct');
-            score++;
-            document.getElementById('score-val').innerText = score;
-            endTurn();
+    function handleOptionClick(button, selectedOption, qData) {
+        if (selectedOption === qData.answer) {
+            clearInterval(timerInterval);
+            button.classList.add('correct');
+            currentScore++;
+            document.getElementById('score').innerText = currentScore;
+            showFinalExplanation(qData);
         } else {
-            attempts++;
-            playSound('wrong'); 
-            b.classList.add('wrong');
-            b.disabled = true;
-            if(attempts === 1) {
-                const f = document.getElementById('feedback-box');
-                f.className = 'feedback hint-box';
-                f.innerHTML = "<b>💡 Clue:</b> " + pool[current].hint;
-                f.style.display = 'block';
-            } else {
-                clearInterval(timer);
-                endTurn();
+            remainingChances--;
+            button.classList.add('wrong');
+            button.disabled = true;
+            
+            if (remainingChances === 1) {
+                feedbackBox.className = 'feedback hint';
+                feedbackBox.innerHTML = `<b>Hint:</b> ${qData.hint}`;
+                feedbackBox.style.display = 'block';
+            } else if (remainingChances === 0) {
+                clearInterval(timerInterval);
+                revealCorrectAnswer();
             }
         }
     }
 
-    function endTurn() {
-        document.querySelectorAll('.opt-btn').forEach(btn => btn.disabled = true);
-        const f = document.getElementById('feedback-box');
-        f.className = 'feedback expl-box';
-        f.innerHTML = "<b>🔍 Scenario Analysis:</b> " + pool[current].expl;
-        f.style.display = 'block';
-        document.querySelectorAll('.opt-btn')[computedCorrectIdx].classList.add('correct');
-        document.getElementById('action-btn').classList.remove('hidden');
+    function revealCorrectAnswer() {
+        const qData = questions[currentQuestionIndex];
+        const buttons = optionsContainer.getElementsByClassName('btn');
+        for (let button of buttons) {
+            if (button.innerText === qData.answer) {
+                button.classList.add('correct');
+            }
+            button.disabled = true;
+        }
+        showFinalExplanation(qData);
     }
 
-    document.getElementById('action-btn').onclick = () => {
-        current++;
-        if(current < pool.length) loadQuestion();
-        else {
-            playSound('complete');
-            document.getElementById('quiz-view').classList.add('hidden');
-            document.getElementById('result-view').classList.remove('hidden');
-            document.getElementById('final-pts').innerText = score;
-
-            let statusMessage = "Review specific competency money management outcomes including basic operations, bill analysis components, and complex scenario formulation logic based on Indian money measures variables.";
-            if(score === 10) {
-                statusMessage = "Spectacular work! You successfully navigated every geometry outcome variable, time conversion outcome, and specific money Management scenario involving Indian Money measurements logic flawlessy.";
-            } else if(score >= 7) {
-                statusMessage = "Good job! You demonstrate robust competency in handling mixed contextual mathematics including Indian Money measures variables, bill components, and multi-step story sums logic outcomes.";
-            }
-
-            document.getElementById('result-msg').innerHTML = `
-                <span style="font-weight:700; color:var(--primary-dark); display:block; margin-bottom:6px;">Competency Performance Summary:</span>
-                ${statusMessage}
-            `;
+    function showFinalExplanation(qData) {
+        const buttons = optionsContainer.getElementsByClassName('btn');
+        for (let button of buttons) {
+            button.disabled = true;
         }
-    };
+        feedbackBox.className = 'feedback explanation';
+        feedbackBox.innerHTML = `<b>Explanation:</b> ${qData.exp}`;
+        feedbackBox.style.display = 'block';
+        nextBtn.style.display = 'block';
+    }
+
+    nextBtn.addEventListener('click', () => {
+        currentQuestionIndex++;
+        if (currentQuestionIndex < questions.length) {
+            loadQuestion();
+        } else {
+            quizScreen.classList.add('hidden');
+            resultScreen.classList.remove('hidden');
+            document.getElementById('final-score').innerText = currentScore;
+        }
+    });
 </script>
+
 </body>
 </html>
