@@ -137,6 +137,8 @@
 </head>
 <body>
 
+<audio id="quiz-audio-engine" preload="auto"></audio>
+
 <div id="app-container">
 
     <div id="splash-screen">
@@ -196,16 +198,22 @@
 
 <script>
     // --- AUDIO SYSTEM CONFIGURATION ---
-    const audioSFX = {
-        correct: new Audio('assets/correct.mp3'),
-        wrong: new Audio('assets/wrong.mp3')
+    const audioCache = {
+        'correct': 'assets/correct.mp3',
+        'wrong': 'assets/wrong.mp3',
+        'timeout': 'assets/wrong.mp3',
+        'complete': 'assets/freesound_community-claps-44774.mp3'
     };
 
     // Robust audio playback interface
-    function triggerSound(soundObject) {
-        if (soundObject) {
-            soundObject.currentTime = 0; // Reset clip to tracking index 0
-            soundObject.play().catch(error => {
+    function triggerSound(type) {
+        const audioNode = document.getElementById('quiz-audio-engine');
+        const filePath = audioCache[type];
+
+        if (filePath) {
+            audioNode.src = filePath;
+            audioNode.currentTime = 0; // Reset clip to tracking index 0
+            audioNode.play().catch(error => {
                 console.warn("Audio element initialization paused by system safety context rules:", error);
             });
         }
@@ -312,8 +320,9 @@
 
     document.getElementById('start-btn').onclick = () => {
         // Safe context priming sequence to unlock engine runtime buffers
-        audioSFX.correct.load();
-        audioSFX.wrong.load();
+        const engine = document.getElementById('quiz-audio-engine');
+        engine.src = audioCache['correct'];
+        engine.load();
 
         document.getElementById('intro-view').classList.add('hidden');
         document.getElementById('quiz-view').classList.remove('hidden');
@@ -365,7 +374,7 @@
             document.getElementById('timer-bar').style.width = (timeLeft / 60 * 100) + "%";
             if(timeLeft <= 0) { 
                 clearInterval(timer); 
-                triggerSound(audioSFX.wrong); // Play wrong track upon timeout
+                triggerSound('timeout'); 
                 endTurn(); 
             }
         }, 1000);
@@ -374,14 +383,14 @@
     function check(i, b) {
         if(i === pool[current].ans) {
             clearInterval(timer);
-            triggerSound(audioSFX.correct); // Play accurate validation audio track
+            triggerSound('correct'); 
             b.classList.add('correct');
             score++;
             document.getElementById('score-val').innerText = score;
             endTurn();
         } else {
             attempts++;
-            triggerSound(audioSFX.wrong); // Play failure tracking audio track
+            triggerSound('wrong'); 
             b.classList.add('wrong');
             b.disabled = true;
             if(attempts === 1) {
@@ -410,6 +419,7 @@
         current++;
         if(current < pool.length) loadQuestion();
         else {
+            triggerSound('complete');
             document.getElementById('quiz-view').classList.add('hidden');
             document.getElementById('result-view').classList.remove('hidden');
             document.getElementById('final-pts').innerText = score;
