@@ -188,9 +188,10 @@
             <div class="instruction-box">
                 <strong>⚡ Assessment Framework:</strong>
                 <ul>
-                    <li>You will solve 10 critical competency-based fraction problems covering multiple curriculum goals.</li>
+                    <li>You will solve 10 targeted problems structured directly from the core fraction curriculum goals.</li>
+                    <li>The evaluation combines identification tasks with reduction, conversion, and fractional arithmetic modules.</li>
                     <li>A precise 60-second animated progress bar counts down for every question.</li>
-                    <li>If a problem is missed on your first attempt, a helpful hint panel instantly unlocks.</li>
+                    <li>If a problem is missed on your first attempt, a custom hint panel instantly unlocks.</li>
                 </ul>
             </div>
 
@@ -245,7 +246,7 @@
             audioNode.src = filePath;
             audioNode.currentTime = 0;
             audioNode.play().catch(err => {
-                console.log("Audio exception handled safely: ", err);
+                console.log("Audio feedback exception bypassed: ", err);
             });
         }
     }
@@ -262,9 +263,9 @@
         }, 5000);
     });
 
-    // Content mapping containing mixed structured goals (Identify vs Compute/Manipulate/Operators)
+    // Content pool focusing strictly on learning outcomes from image_d7399c.png / image_0bf442.png
     const rawPool = [
-        /* --- TYPE A: IDENTIFY QUESTIONS --- */
+        /* --- IDENTIFICATION OUTCOMES --- */
         { 
             q: "A structural panel at a construction site is divided into equal zones. Look closely at the active shaded regions shown on the display.\n\nIdentify the exact fraction of the panel that is shaded.", 
             visualType: "shape",
@@ -296,21 +297,10 @@
             hint: "Locate how many slots are colored out of the total individual plots available.", 
             expl: "The visual highlights 2 sections out of 6 available plots, representing a fraction of 2/6." 
         },
-        { 
-            q: "An assembly layout shows an option grid containing 20 separate toggle switches. The highlighted indicator lights represent switches that are flipped on.\n\nIdentify the fraction of switches that are currently flipped on.", 
-            visualType: "grid",
-            totalItems: 20,
-            activeItems: 9,
-            gridCols: 5,
-            opts: ["9/20", "11/20", "9/11", "1/2"], 
-            correctText: "9/20", 
-            hint: "Count the active dots to establish the top parameter, and write it over the total dots in the layout.", 
-            expl: "There are 9 active indicators out of 20 total components on the board, establishing the fraction 9/20." 
-        },
 
-        /* --- TYPE B: LEARNING OUTCOME MANIPULATION QUESTIONS (From Blueprint Engine) --- */
+        /* --- COMPUTATION & MANIPULATION OUTCOMES --- */
         { 
-            q: "A teacher brings a box of 32 coloured pencils to a classroom. She distributes exactly 3/8 of the pencils to the art group.\n\nHow many individual pencils did the art group receive?", 
+            q: "A teacher brings a box of 32 coloured pencils to a classroom. She distributes exactly 3/8 of the pencils to the art group.\n\nCalculate how many individual pencils the art group received.", 
             visualType: "text-only",
             opts: ["12 pencils", "8 pencils", "4 pencils", "24 pencils"], 
             correctText: "12 pencils", 
@@ -328,7 +318,7 @@
             expl: "The layout represents 4/12. Dividing both the numerator and denominator by 4 reduces the value down to 1/3." 
         },
         { 
-            q: "A baker tracks the remaining stock of lemon traybakes left over at the end of a school fête. The logbook records the remaining amount visually below.\n\nWhat is this fraction written in its simplest terms?", 
+            q: "A baker tracks the remaining stock of lemon traybakes left over at the end of a school fête. The logbook records the remaining amount visually below.\n\nWhat is this fraction written in its lowest terms?", 
             visualType: "grid",
             totalItems: 24,
             activeItems: 18,
@@ -339,7 +329,18 @@
             expl: "The grid contains 18 active dots out of 24, yielding 18/24. Dividing both values by 6 simplifies the fraction to 3/4." 
         },
         { 
-            q: "During a cooking class, George logs that he has 13/4 blocks of butter stored in the fridge.\n\nHow would this improper fraction look if written down as a mixed number?", 
+            q: "A calibration console scales up fractional parts to establish parity between values:\n\n2/5 = ? / 20\n\nDetermine the missing value required to make these fractions perfectly equivalent.", 
+            visualType: "grid",
+            totalItems: 20,
+            activeItems: 8,
+            gridCols: 5,
+            opts: ["8", "10", "4", "6"], 
+            correctText: "8", 
+            hint: "To change a denominator of 5 into 20, you multiply by 4. Perform the exact same multiplication on the numerator.", 
+            expl: "Since 5 × 4 = 20, you must multiply the numerator by the same scaling factor: 2 × 4 = 8." 
+        },
+        { 
+            q: "During a cooking class, George logs that he has 13/4 blocks of butter stored in the fridge.\n\nConvert this improper fraction into its matching mixed number format.", 
             visualType: "text-only",
             extraText: "🧩 [Configuration details: 13 quarter-blocks total]",
             opts: ["2 whole and 3/4", "3 whole and 1/4", "4 whole and 1/3", "3 whole and 3/4"], 
@@ -348,7 +349,7 @@
             expl: "4 goes into 13 a total of 3 times, with a remainder of 1 left over. This converts to 3 whole and 1/4." 
         },
         { 
-            q: "Sarah buys a large ball of knitting wool. She uses 1/3 of the wool to make a winter hat and 1/6 of it to make a small matching drink coaster.\n\nWhat total fraction of the wool ball has she used up altogether?", 
+            q: "Sarah buys a large ball of knitting wool. She uses 1/3 of the wool to make a winter hat and 1/6 of it to make a small matching drink coaster.\n\nPerform addition to calculate what total fraction of the wool ball she has consumed.", 
             visualType: "text-only",
             opts: ["2/9", "1/2", "2/6", "3/6"], 
             correctText: "1/2", 
@@ -356,7 +357,7 @@
             expl: "1/3 expands into 2/6. Adding the fractions together gives 2/6 + 1/6 = 3/6. Simplifying 3/6 results in exactly 1/2." 
         },
         { 
-            q: "A carpenter has a wooden plank measuring 7/8 of a metre long. He saws off a piece that is 3/4 of a metre long to complete a repair.\n\nWhat fraction of a metre of wood is left over on the plank?", 
+            q: "A carpenter has a wooden plank measuring 7/8 of a metre long. He saws off a piece that is 3/4 of a metre long to complete a repair.\n\nPerform subtraction to calculate what fraction of a metre remains active on the plank.", 
             visualType: "shape",
             totalItems: 8,
             activeItems: 1,
@@ -371,6 +372,7 @@
     let current = 0, score = 0, attempts = 0, timer, timeLeft = 60;
     let computedCorrectIdx = -1;
 
+    // Internal Shuffling Mechanisms (Fisher-Yates framework applied automatically behind the scenes)
     function shuffleArray(arr) {
         for (let i = arr.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
