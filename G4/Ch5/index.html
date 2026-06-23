@@ -115,6 +115,39 @@
             line-height: 1.4;
         }
 
+        /* --- PLACE VALUE MATH TABLES --- */
+        .math-table-container {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
+        .math-table {
+            border-collapse: collapse;
+            font-family: 'Courier New', monospace, sans-serif;
+            font-size: 1.3rem;
+            font-weight: bold;
+        }
+        .math-table th {
+            font-family: 'Segoe UI', sans-serif;
+            font-size: 0.85rem;
+            color: #7f8c8d;
+            padding: 4px 10px;
+            border-bottom: 1px solid #bdc3c7;
+            text-align: center;
+        }
+        .math-table td {
+            padding: 6px 10px;
+            text-align: center;
+            letter-spacing: 2px;
+        }
+        .divisor-cell {
+            border-right: 2px solid #34495e;
+            padding-right: 12px !important;
+        }
+        .dividend-top-bar {
+            border-top: 2px solid #34495e;
+        }
+
         .options-grid { display: grid; gap: 12px; }
         .opt-btn {
             background: #fff; border: 2px solid #edf2f4; padding: 16px;
@@ -155,7 +188,7 @@
                 <ul>
                     <li>You will face 10 advanced division operations and modeling challenges.</li>
                     <li>Every question is bound to a strict 60-second limit tracking bar.</li>
-                    <li>You are granted up to 2 calculation attempts per task item.</li>
+                    <li>Questions and choice combinations are randomized dynamically on every run.</li>
                     <li>Targeted procedural clues will unlock if your initial attempt is incorrect.</li>
                 </ul>
             </div>
@@ -205,14 +238,13 @@
         'complete': 'assets/freesound_community-claps-44774.mp3'
     };
 
-    // Central Audio Router Function
     function playSound(type) {
         const audioNode = document.getElementById('quiz-audio-engine');
         const filePath = audioCache[type];
 
         if (filePath) {
             audioNode.src = filePath;
-            audioNode.currentTime = 0; // Rewind track if already playing
+            audioNode.currentTime = 0;
             audioNode.play().catch(err => {
                 console.log("Audio playback caught by browser autoplay rules:", err);
             });
@@ -232,68 +264,82 @@
         }, 5000);
     });
 
-    const pool = [
+    const rawPool = [
         { 
             cat: "Division Terminology", 
             q: "A logistics company maps out a delivery dispatch layout:\n\n4,800 packages ÷ 40 trucks = 120 packages per truck\n\nWhat is the exact mathematical name assigned to the number 4,800 in this operational phrase?", 
-            opts: ["A) Divisor", "B) Quotient", "C) Dividend", "D) Remainder"], 
-            ans: 2, 
+            opts: ["Divisor", "Quotient", "Dividend", "Remainder"], 
+            correctText: "Dividend", 
             hint: "This refers to the total initial value or quantity that is going to be split up into equal parts.", 
             expl: "In division syntax, the total amount being divided is the 'dividend' (4,800), the number you divide by is the 'divisor' (40), and the result is the 'quotient' (120)." 
         },
         { 
             cat: "Powers of 10 Shortcuts", 
             q: "An industrial agricultural facility packages a seasonal surplus of 345,000 grain tokens evenly into 1,000 structural storage boxes.\n\nUsing base-10 division shortcut properties, how many tokens are allocated to each individual box?", 
-            opts: ["A) 34,500", "B) 3,450", "C) 345", "D) 34"], 
-            ans: 2, 
+            opts: ["34,500", "3,450", "345", "34"], 
+            correctText: "345", 
             hint: "When dividing by 1,000, you drop three trailing zeros from the dividend.", 
             expl: "Dividing an integer ending in zeros by 1,000 can be evaluated instantly by eliminating three decimal place positions: 345,000 ÷ 1,000 = 345." 
         },
         { 
             cat: "Short Division Method", 
-            q: "A team of researchers splits a small localized testing block of 741 core items into 3 separate reference groups.\n\nUsing short division with a single-digit divisor, determine the precise volume of each group.", 
-            opts: ["A) 247", "B) 237", "C) 246", "D) 257"], 
-            ans: 0, 
+            q: "A team of researchers splits a small localized testing block of 741 core items into 3 separate reference groups. Compute the exact placeholder elements using the place-value column configuration below:", 
+            hasTable: true,
+            tableType: "short",
+            tableData: {
+                headers: ["Divisor", "H", "T", "O"],
+                divisor: "3",
+                dividend: ["7", "4", "1"]
+            },
+            opts: ["247", "237", "246", "257"], 
+            correctText: "247", 
             hint: "Divide column by column from left to right, tracking remainders down line: 7÷3=2 (remainder 1), making the next step 14÷3.", 
             expl: "7 ÷ 3 = 2 rem 1; 14 ÷ 3 = 4 rem 2; 21 ÷ 3 = 7. Combining these results gives an exact quotient of 247 with no leftover remainder." 
         },
         { 
             cat: "4-Digit Long Division", 
-            q: "A high-density server cluster partitions a packet containing 6,832 data frames across 16 primary network nodes.\n\nCalculate the uniform size of the data slice assigned to each node.", 
-            opts: ["A) 417", "B) 427", "C) 437", "D) 422"], 
-            ans: 1, 
+            q: "A high-density server cluster partitions a packet containing 6,832 data frames across 16 primary network nodes. Calculate the uniform size of the data slice assigned to each node.", 
+            hasTable: true,
+            tableType: "long",
+            tableData: {
+                headers: ["Divisor", "Th", "H", "T", "O"],
+                divisor: "16",
+                dividend: ["6", "8", "3", "2"]
+            },
+            opts: ["417", "427", "437", "422"], 
+            correctText: "427", 
             hint: "Find how many times 16 goes into 68, carry down the remainder, and continue long division steps.", 
             expl: "68 ÷ 16 = 4 (remainder 4); bring down 3 to get 43. 43 ÷ 16 = 2 (remainder 11); bring down 2 to get 112. 112 ÷ 16 = 7. Total = 427." 
         },
         { 
             cat: "Result Verification", 
             q: "A data engineer evaluates a division tracking output to see if it is valid:\n\nDividend = 4,525 | Divisor = 25 | Quotient = 181\n\nWhich inverse equation properly checks and confirms the absolute accuracy of this division result?", 
-            opts: ["A) 181 + 25 = 4,525", "B) 181 × 25 = 4,525", "C) 4,525 + 25 = 181", "D) 4,525 × 181 = 25"], 
-            ans: 1, 
+            opts: ["181 + 25 = 4,525", "181 × 25 = 4,525", "4,525 + 25 = 181", "4,525 × 181 = 25"], 
+            correctText: "181 × 25 = 4,525", 
             hint: "To verify standard division without remainders, multiply the quotient by the divisor to confirm it equals the dividend.", 
             expl: "The formula for verification is (Quotient × Divisor) + Remainder = Dividend. Since the remainder is zero here, 181 × 25 must equal exactly 4,525." 
         },
         { 
             cat: "Quotients & Remainders", 
             q: "A manufacturing asset manager splits 948 identical structural bolts into shipping crates that each hold a capacity limit of 45 bolts.\n\nWhat is the correct configuration of complete crates filled and the leftover bolt remainder?", 
-            opts: ["A) 20 crates, 48 bolts left", "B) 21 crates, 3 bolts left", "C) 21 crates, 13 bolts left", "D) 22 crates, 0 bolts left"], 
-            ans: 1, 
+            opts: ["20 crates, 48 bolts left", "21 crates, 3 bolts left", "21 crates, 13 bolts left", "22 crates, 0 bolts left"], 
+            correctText: "21 crates, 3 bolts left", 
             hint: "Perform division on 948 by 45 to locate both the whole integer quotient and the terminal remainder value.", 
             expl: "948 ÷ 45 gives a whole quotient of 21, because 21 × 45 = 945. The residual leftover remainder is 948 - 945 = 3 bolts." 
         },
         { 
             cat: "Large Scale Operations", 
             q: "A municipal urban planning model balances a water registry tracking field containing 142,500 liters across 125 secondary collection tanks.\n\nWhat is the exact volume capacity distribution metrics assigned per tank?", 
-            opts: ["A) 1,140 liters", "B) 1,130 liters", "C) 1,040 liters", "D) 1,240 liters"], 
-            ans: 0, 
+            opts: ["1,140 liters", "1,130 liters", "1,040 liters", "1,240 liters"], 
+            correctText: "1,140 liters", 
             hint: "Execute a standard multi-digit long division algorithm using 142,500 divided by the 3-digit divisor 125.", 
             expl: "142,500 ÷ 125 = 1,140. This can be processed step-by-step: 142÷125=1 (rem 17); 175÷125=1 (rem 50); 500÷125=4; trailing zero makes it 1,140." 
         },
         { 
             cat: "Quotient Estimation", 
             q: "An operations manager needs to quickly estimate a baseline threshold before running complete tracking logs. \n\nEstimate the quotient of 5,942 ÷ 31 by rounding the dividend to the nearest thousand and the divisor to the nearest ten.", 
-            opts: ["A) 150", "B) 300", "C) 200", "D) 250"], 
-            ans: 2, 
+            opts: ["150", "300", "200", "250"], 
+            correctText: "200", 
             hint: "5,942 rounds to 6,000 at the nearest thousand, while 31 rounds down to 30 at the nearest ten place.", 
             expl: "Rounding yields the simplified calculation model: 6,000 ÷ 30. Canceling trailing placeholder zeros leaves 600 ÷ 3 = 200 estimated quotient." 
         },
@@ -301,29 +347,48 @@
             cat: "Verification Analysis", 
             q: "Examine the verification check panel layout displayed below:", 
             hasVisual: true,
-            opts: ["A) The equation matches a completely valid division state", "B) The quotient is wrong because the verification check does not equal the dividend", "C) The remainder value must be larger than the divisor field", "D) The check setup is structurally invalid because it adds the quotient first"], 
-            ans: 1, 
+            opts: ["The equation matches a completely valid division state", "The quotient is wrong because the verification check does not equal the dividend", "The remainder value must be larger than the divisor field", "The check setup is structurally invalid because it adds the quotient first"], 
+            correctText: "The quotient is wrong because the verification check does not equal the dividend", 
             hint: "Test the checking math sequence: (Quotient × Divisor) + Remainder. Does it match the stated dividend?", 
             expl: "Running the inverse check calculation: (102 × 12) + 8 = 1,224 + 8 = 1,232. Because 1,232 does not equal the stated dividend of 1,235, the division state is incorrect." 
         },
         { 
             cat: "Contextual Modeling", 
             q: "A regional textile hub manufactures 25,600 uniform threads. Management intends to group them identically across a variable setup.\n\nWhich scenario represents an explicit real-world application of finding a division remainder?", 
-            opts: ["A) Determining the exact cost of expanding production infrastructure capacity by 25,600 elements.", "B) Finding out how many leftover individual threads remain loose after packing items into standardized bundles of 50.", "C) Adding an influx of 25,600 new threads to an existing repository pool.", "D) Multiplying the total manufacturing time baseline across a group of 50 operators."], 
-            ans: 1, 
+            opts: ["Determining the exact cost of expanding production infrastructure capacity by 25,600 elements.", "Finding out how many leftover individual threads remain loose after packing items into standardized bundles of 50.", "Adding an influx of 25,600 new threads to an existing repository pool.", "Multiplying the total manufacturing time baseline across a group of 50 operators."], 
+            correctText: "Finding out how many leftover individual threads remain loose after packing items into standardized bundles of 50.", 
             hint: "Remainders measure structural leftovers when an initial pool cannot be partitioned completely into equal sets.", 
             expl: "Finding loose, extra items after distributing values into fixed bundles directly applies the mathematical remainder property." 
         }
     ];
 
+    let pool = [];
     let current = 0, score = 0, attempts = 0, timer, timeLeft = 60;
+    let computedCorrectIdx = -1;
+
+    // --- FISHER-YATES ARRAY SHUFFLER ---
+    function shuffleArray(arr) {
+        for (let i = arr.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [arr[i], arr[j]] = [arr[j], arr[i]];
+        }
+        return arr;
+    }
+
+    function initQuizData() {
+        pool = JSON.parse(JSON.stringify(rawPool));
+        shuffleArray(pool); 
+        pool.forEach(qItem => {
+            shuffleArray(qItem.opts); 
+        });
+    }
 
     document.getElementById('start-btn').onclick = () => {
-        // Unlock browser audio layer explicitly within user gesture loop
         const engine = document.getElementById('quiz-audio-engine');
         engine.src = audioCache['correct'];
         engine.load();
 
+        initQuizData();
         document.getElementById('intro-view').classList.add('hidden');
         document.getElementById('quiz-view').classList.remove('hidden');
         loadQuestion();
@@ -348,16 +413,41 @@
                     Verification Check: (102 × 12) + 8 = [ ? ]
                 </div>
             `;
+        } else if (q.hasTable && q.tableData) {
+            const d = q.tableData;
+            let headerRow = d.headers.map(h => `<th>${h}</th>`).join('');
+            let quotientRow = d.headers.map((h, idx) => idx === 0 ? `<td></td>` : `<td>?</td>`).join('');
+            let dividendCells = d.dividend.map((divDigit, idx) => idx === 0 ? `<td class="dividend-top-bar">${divDigit}</td>` : `<td class="dividend-top-bar">${divDigit}</td>`).join('');
+            
+            tableArea.innerHTML = `
+                <div class="math-table-container">
+                    <table class="math-table">
+                        <thead><tr>${headerRow}</tr></thead>
+                        <tbody>
+                            <tr>${quotientRow}</tr>
+                            <tr>
+                                <td class="divisor-cell">${d.divisor}</td>
+                                ${dividendCells}
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            `;
         } else {
             tableArea.innerHTML = "";
         }
 
         const area = document.getElementById('options-area');
         area.innerHTML = "";
+        
+        const prefixes = ["A) ", "B) ", "C) ", "D) "];
         q.opts.forEach((o, i) => {
+            if (o === q.correctText) {
+                computedCorrectIdx = i;
+            }
             const b = document.createElement('button');
             b.className = 'opt-btn';
-            b.innerText = o;
+            b.innerText = prefixes[i] + o;
             b.onclick = () => check(i, b);
             area.appendChild(b);
         });
@@ -379,7 +469,7 @@
     }
 
     function check(i, b) {
-        if(i === pool[current].ans) {
+        if(i === computedCorrectIdx) {
             clearInterval(timer);
             playSound('correct'); 
             b.classList.add('correct');
@@ -409,7 +499,7 @@
         f.className = 'feedback expl-box';
         f.innerHTML = "<b>🔍 Explanation:</b> " + pool[current].expl;
         f.style.display = 'block';
-        document.querySelectorAll('.opt-btn')[pool[current].ans].classList.add('correct');
+        document.querySelectorAll('.opt-btn')[computedCorrectIdx].classList.add('correct');
         document.getElementById('action-btn').classList.remove('hidden');
     }
 
