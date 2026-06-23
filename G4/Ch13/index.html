@@ -39,7 +39,7 @@
             min-height: 540px;
         }
 
-        /* --- FIX: UPDATED SPLASH SCREEN BACKGROUND AND FALLBACK TEXT --- */
+        /* --- 5-SECOND MANDATORY WHITE SPLASH SCREEN --- */
         #splash-screen {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -240,7 +240,6 @@
         }
     }
 
-    // FIX: ADDED AUTOMATIC SAFETY BACKUP REMOVAL IN CASE TRANSITION TRIGGERS FAIL
     window.addEventListener('DOMContentLoaded', () => {
         setTimeout(() => {
             const splash = document.getElementById('splash-screen');
@@ -327,13 +326,13 @@
             expl: "Herons has one block of 5 and 3 extra strokes, representing a frequency count of exactly 8." 
         },
         { 
-            q: "A baker tracks the inventory of leftover items using a simple circle data map showing portions.\n\nIf the entire circle represents a total of 60 individual baked goods, how many pastries do the pie slices show?", 
+            q: "A baker tracks the inventory of leftover items using a circle data map.\n\nIf the entire pie chart represents a total inventory of 60 individual baked goods, how many pastries are left over?", 
             hasGraphic: true,
             graphicType: "pie1",
             opts: ["30 items", "15 items", "20 items", "45 items"], 
             correctText: "30 items", 
-            hint: "Determine what fraction of the whole circle is allocated to the Pastries section.", 
-            expl: "The Pastries slice covers exactly half (1/2) of the circle area. Half of the grand total 60 is equal to 30 items." 
+            hint: "Determine what fraction of the whole circle layout is allocated to the Pastries section.", 
+            expl: "The Pastries section covers exactly half (50% or 1/2) of the circle area. Half of the grand total 60 is equal to 30 items." 
         },
         { 
             q: "Why is a scale or key always included when designing graphs, charts, and data maps?", 
@@ -508,14 +507,28 @@
             `;
         }
         if (type === "pie1") {
+            /* FIX: Reworked the pie chart to use standard native SVG layout arcs 
+               so it renders natively on all environments without custom element tags. */
             return `
-                <svg class="chart-svg" width="240" height="140" viewBox="0 0 240 140">
-                    <path d="M120,70 L120,15 A55,55 0 0,1 120,125 Z" fill="#ffedd5" stroke="#c2410c" stroke-width="2"/>
-                    <path d="M120,70 L120,125 A55,55 0 0,1 120,15 Z" fill="#fef08a" stroke="#a16207" stroke-width="2"/>
+                <svg class="chart-svg" width="280" height="150" viewBox="0 0 280 150">
+                    <g transform="translate(90, 75)">
+                        <path d="M 0 0 L 0 -55 A 55 55 0 0 1 0 55 Z" fill="#ffedd5" stroke="#c2410c" stroke-width="2"/>
+                        
+                        <path d="M 0 0 L 0 55 A 55 55 0 0 1 -55 0 Z" fill="#fef08a" stroke="#a16207" stroke-width="2"/>
+                        
+                        <path d="M 0 0 L -55 0 A 55 55 0 0 1 0 -55 Z" fill="#fed7aa" stroke="#9a3412" stroke-width="2"/>
+                    </g>
                     
-                    <text x="135" y="74" font-family="sans-serif" font-size="11" font-weight="bold" fill="#9a3412">Pastries (1/2)</text>
-                    <text x="35" y="65" font-family="sans-serif" font-size="10" font-weight="bold" fill="#a16207">Cakes (1/4)</text>
-                    <text x="30" y="90" font-family="sans-serif" font-size="10" font-weight="bold" fill="#a16207">Cookies (1/4)</text>
+                    <g transform="translate(165, 35)">
+                        <rect x="0" y="0" width="12" height="12" fill="#ffedd5" stroke="#c2410c"/>
+                        <text x="18" y="10" font-family="sans-serif" font-size="11" font-weight="bold" fill="#1e293b">Pastries (1/2)</text>
+                        
+                        <rect x="0" y="22" width="12" height="12" fill="#fed7aa" stroke="#9a3412"/>
+                        <text x="18" y="32" font-family="sans-serif" font-size="11" fill="#475569">Cakes (1/4)</text>
+                        
+                        <rect x="0" y="44" width="12" height="12" fill="#fef08a" stroke="#a16207"/>
+                        <text x="18" y="54" font-family="sans-serif" font-size="11" fill="#475569">Cookies (1/4)</text>
+                    </g>
                 </svg>
             `;
         }
@@ -542,7 +555,6 @@
         document.getElementById('q-text').innerText = q.q;
         document.getElementById('timer-text').innerText = timeLeft + "s";
 
-        // Handle vector/table display injection
         const gContainer = document.getElementById('graphic-container');
         if (q.hasGraphic) {
             gContainer.innerHTML = generateGraphic(q.graphicType);
