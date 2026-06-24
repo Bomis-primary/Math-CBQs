@@ -334,7 +334,7 @@
 
         <div id="game-view" class="view">
             <div class="game-header">
-                <div class="hud-item" id="q-counter">Question: 1/20</div>
+                <div class="hud-item" id="q-counter">Question: 1/14</div>
                 <div class="hud-group">
                     <div class="hud-item timer-badge" id="timer-display">60s</div>
                     <button class="mute-btn" id="btn-mute" onclick="gameEngine.toggleMute()">🔊 Mute</button>
@@ -369,13 +369,13 @@
     <audio id="snd-wrong" src="assets/wrong.mp3" preload="auto"></audio>
 
     <script>
-        // Currently keeping all 20 questions active. Let me know which 8 to drop!
+        // EXACTLY 14 QUESTIONS RETAINED (Items 3 through 8 from screenshot list deleted; Abacus & Jars kept)
         const questionsDatabase = [
             {
                 text: "Look at the flying kites containing math expressions side by side. Which kite yields the largest total sum?",
                 image: "assets/kites.png",
                 options: ["Kite A", "Kite B", "Kite C", "Kite D"],
-                answer: 3, // Maps to "Kite D" string
+                answer: 3,
                 hint: "Calculate each sum: A is 110+115=225, B is 205+145=350, C is 120+260=380, D is 210+215=425.",
                 explanation: "210 + 215 = 425. Kite D yields the largest total sum."
             },
@@ -385,13 +385,6 @@
                 answer: 0,
                 hint: "Break it down: 200 + 200 = 400. Now add the tens together (15 + 40).",
                 explanation: "215 + 240 = 455. Since 455 is larger than 450, the correct evaluation is Yes."
-            },
-            {
-                text: "Karan has a tray with 160 green buttons. Meera places an identical tray with 110 purple buttons next to him. They want to find out how many buttons they have in all. What mathematical process should they use?",
-                options: ["Combine both groups using addition", "Find the difference using subtraction", "Separate them equally using division", "Multiply the green buttons only"],
-                answer: 0,
-                hint: "Think about what happens when you combine two distinct collections into one layout group.",
-                explanation: "To find out the total quantity when groups are put together, you must always add them. 160 + 110 = 270 buttons."
             },
             {
                 text: "Aayan solved an expression: 216 + 252 = 468. Which statement is correct about his work?",
@@ -439,13 +432,6 @@
                 explanation: "The first abacus shows 176 and the second shows 300. Joining them results in 176 + 300 = 476."
             },
             {
-                text: "Tickets sold over two days: Day 1 – 140 tickets, Day 2 – 150 tickets. Which statement is completely true?",
-                options: ["The total is 290", "The total is less than 280", "The total is more than 300", "The total is 200"],
-                answer: 0,
-                hint: "Add the baseline values directly: 140 + 150.",
-                explanation: "Adding 140 and 150 gives an exact calculation outcome of 290 tickets."
-            },
-            {
                 text: "A fruit shop owner has 230 red apples and buys 120 green apples. What is the total number of apples available at the shop?",
                 options: ["350 apples", "320 apples", "250 apples", "400 apples"],
                 answer: 0,
@@ -458,13 +444,6 @@
                 answer: 0,
                 hint: "Combine the values: 170 + 200. Does it cross 400?",
                 explanation: "170 + 200 = 370. Since 370 is less than 400, the true statement evaluation answer is No."
-            },
-            {
-                text: "Which of the following addition layouts requires regrouping (carrying)?",
-                options: ["134 + 212", "258 + 124", "303 + 172", "210 + 230"],
-                answer: 1,
-                hint: "Look at the digits in the ones place. If they equal 10 or more when combined, you must carry over.",
-                explanation: "In 258 + 124, adding the ones digits (8 + 4) gives 12, which requires carrying over 1 ten to the tens place. The total is 382."
             },
             {
                 text: "Which of the following expressions does NOT fit because it does not represent an addition setup?",
@@ -482,13 +461,6 @@
                 explanation: "Three separate unit blocks of 100 group together side by side to form a total value of 300."
             },
             {
-                text: "A student calculates 150 + 150 and then incorporates 60 more units. What is the final value?",
-                options: ["Total is 360", "Total is less than 350", "Total is more than 370", "Total is 300"],
-                answer: 0,
-                hint: "Add 150 and 150 together to reach a flat hundred milestone (300), then add 60.",
-                explanation: "150 + 150 = 300. Adding 60 more gives 360."
-            },
-            {
                 text: "A community drive gathered 200 non-perishable cans and later added 140 more. Is the total higher than 300?",
                 options: ["Yes, because it is 340", "No, because it is 290", "It matches 300", "Less than 250"],
                 answer: 0,
@@ -501,20 +473,6 @@
                 answer: 0,
                 hint: "Add the numbers together: 150 + 250. Does it cross 400 or hit it?",
                 explanation: "150 + 250 = 400. Since 400 is equal to 400 (not higher), the true evaluation answer is No."
-            },
-            {
-                text: "A chef matches 200 + 120 + 80 ingredient units during meal prep. What is the total sum?",
-                options: ["Total is 400", "Total is less than 400", "Total is more than 400", "Total is 320"],
-                answer: 0,
-                hint: "Group the smaller values first: 120 + 80 makes 200. Now add that to 200.",
-                explanation: "120 + 80 = 200. Then 200 + 200 gives a total of 400."
-            },
-            {
-                text: "Which of the following numbers, when added to 200, does not require carrying?",
-                options: ["100", "150", "199", "250"],
-                answer: 2,
-                hint: "Look at the ones and tens places. 200 has 0s there, so you only have to check if the incoming ones/tens are 9 or less.",
-                explanation: "200 has zeros in both tens and ones. In 199, ones (0+9=9) and tens (0+9=9) do not cross 10. The layout does not require carrying over."
             }
         ];
 
@@ -529,7 +487,6 @@
                 this.timeLeft = 60;
                 this.isMuted = false;
                 
-                // Track randomized runtime data for the current question
                 this.currentRuntimeOptions = [];
                 this.correctRuntimeIndex = -1;
 
@@ -606,7 +563,6 @@
                     imgElem.src = ''; 
                 }
 
-                // RANDOMIZE OPTIONS ON EACH LOAD
                 const correctOptionText = q.options[q.answer]; 
                 this.currentRuntimeOptions = this.shuffle(q.options);
                 this.correctRuntimeIndex = this.currentRuntimeOptions.indexOf(correctOptionText);
