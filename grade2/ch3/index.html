@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Grade 2: Math Challenge</title>
+    <title>Grade 2: Subtraction Challenge</title>
     <style>
         :root {
             --primary: #4f46e5;
@@ -236,7 +236,7 @@
             color: #7f1d1d !important;
         }
 
-        .feedback-box {
+        .background-box, .feedback-box {
             padding: 14px 18px;
             border-radius: 10px;
             margin-bottom: 20px;
@@ -320,7 +320,7 @@
         </div>
 
         <div id="instruction-view" class="view">
-            <h2 style="color: var(--primary);">Math Challenge</h2>
+            <h2 style="color: var(--primary);">Subtraction Challenge</h2>
             <div class="instruction-box">
                 <p><strong>Rules:</strong></p>
                 <ul>
@@ -334,7 +334,7 @@
 
         <div id="game-view" class="view">
             <div class="game-header">
-                <div class="hud-item" id="q-counter">Question: 1/15</div>
+                <div class="hud-item" id="q-counter">Question: 1/12</div>
                 <div class="hud-group">
                     <div class="hud-item timer-badge" id="timer-display">60s</div>
                     <button class="mute-btn" id="btn-mute" onclick="gameEngine.toggleMute()">🔊 Mute</button>
@@ -369,117 +369,95 @@
     <audio id="snd-wrong" src="assets/wrong.mp3" preload="auto"></audio>
 
     <script>
-        // 15 QUESTIONS TOTAL (Includes the newly added simplified subtraction item)
+        // DATABASE CONTAINING EXCLUSIVELY SUBTRACTION QUESTIONS
         const questionsDatabase = [
             {
                 text: "Four shops are counting their leftover toys. Which shop has the fewest toys left?",
                 options: ["Shop A: 450 - 150", "Shop B: 500 - 200", "Shop C: 300 - 50", "Shop D: 400 - 150"],
                 answer: 2,
-                hint: "Work out each subtraction box: Shop A left = 300, Shop B left = 300, Shop C left = 250, Shop D left = 250. Check which value is the absolute smallest.",
+                hint: "Work out each subtraction box: Shop A = 300, Shop B = 300, Shop C = 250, Shop D = 250. Check which value is the absolute smallest.",
                 explanation: "Shop C has 300 - 50 = 250 toys left, which matches the smallest leftover item count."
             },
             {
-                text: "Look at the flying kites containing math expressions side by side. Which kite yields the largest total sum?",
+                text: "Look at the flying kites containing math expressions. Which kite gives the smallest answer after subtracting?",
                 image: "assets/kites.png",
                 options: ["Kite A", "Kite B", "Kite C", "Kite D"],
-                answer: 3,
-                hint: "Calculate each sum: A is 110+115=225, B is 205+145=350, C is 120+260=380, D is 210+215=425.",
-                explanation: "210 + 215 = 425. Kite D yields the largest total sum."
-            },
-            {
-                text: "A student adds 215 and 240. Is the final sum greater than 450?",
-                options: ["Yes, because it equals 455", "No, because it equals 445", "It matches 450", "Less than 400"],
                 answer: 0,
-                hint: "Break it down: 200 + 200 = 400. Now add the tens together (15 + 40).",
-                explanation: "215 + 240 = 455. Since 455 is larger than 450, the correct evaluation is Yes."
+                hint: "Let's change these to subtraction checks! If Kite A was 250 - 110, it equals 140. Check which one drops the lowest.",
+                explanation: "Kite A results in the lowest leftover value after evaluating our subtraction step."
             },
             {
-                text: "Aayan solved an expression: 216 + 252 = 468. Which statement is correct about his work?",
+                text: "A student subtracts: 450 - 215. Is the final answer less than 250?",
+                options: ["Yes, because it equals 235", "No, because it equals 235", "No, it equals 245", "It equals 300"],
+                answer: 0,
+                hint: "Take away 200 from 450 first to get 250, then take away 15 more.",
+                explanation: "450 - 215 = 235. Since 235 is smaller than 250, the answer is Yes."
+            },
+            {
+                text: "Aayan solved this problem: 468 - 252 = 216. Which statement is true about his work?",
                 options: ["Ones place is wrong", "Tens place is wrong", "Hundreds place is wrong", "No mistake, it is correct"],
                 answer: 3,
-                hint: "Check column by column: Ones (6+2), Tens (1+5), and Hundreds (2+2).",
-                explanation: "6+2=8, 1+5=6, and 2+2=4. All positional columns are perfectly calculated."
+                hint: "Check column by column: Ones (8 - 2), Tens (6 - 5), and Hundreds (4 - 2).",
+                explanation: "8-2=6, 6-5=1, and 4-2=2. All rows are completely correct."
             },
             {
-                text: "A storage facility houses 240 crates and receives 210 more crates. The facility must hold at least 450 crates to meet its goal. Did it reach the goal?",
-                options: ["Yes, they have 450 crates", "No, they need 10 more", "Yes, they have 460 crates", "No, they only have 400"],
+                text: "A storage room has 450 crates. A worker takes away 210 crates. How many crates are left in the room?",
+                options: ["240 crates", "200 crates", "250 crates", "140 crates"],
                 answer: 0,
-                hint: "Add 240 and 210 first to find out the current storage count.",
-                explanation: "240 + 210 = 450 crates. This hits the targeted benchmark."
+                hint: "Subtract the hundreds first (400 - 200 = 200), then subtract the tens (50 - 10).",
+                explanation: "450 - 210 = 240 crates left in the room."
             },
             {
-                text: "Three tracking teams measure their collection targets. Team Alpha has 210 + 80 items, Team Beta has 300 + 110 items, and Team Gamma has 250 + 20 items. Which team reached the highest total?",
-                options: ["Team Alpha", "Team Beta", "Team Gamma", "Team Alpha and Team Beta tied"],
-                answer: 1,
-                hint: "Find the sums: Alpha = 290, Beta = 410, Gamma = 270.",
-                explanation: "Team Beta reached 300 + 110 = 410 items, which is higher than the other tracking teams."
-            },
-            {
-                text: "Examine Zayan's puzzle card with blue and green item jars. Jar X has 190 items and Jar Y has 140 items. He states that the combined total is 50 items. What went wrong?",
+                text: "Examine Zayan's puzzle card. Jar X has 190 marbles. He gives 140 marbles away to Jar Y. He says he has 50 marbles left. Is his answer correct?",
                 image: "assets/jars.png",
-                options: ["He subtracted instead of adding the groups together", "He divided the items by accident", "He only counted the items in Jar Y", "His logic is correct"],
+                options: ["Yes, because 190 - 140 = 50", "No, because he should add", "No, it should be 40", "Yes, because 190 - 140 = 100"],
                 answer: 0,
-                hint: "When finding a combined total of multiple sets, should you use subtraction or addition?",
-                explanation: "Zayan subtracted (190 − 140 = 50) instead of adding the groups together to get the full amount of 330."
+                hint: "Count backward from 190 by 140, or think: 19 tens minus 14 tens.",
+                explanation: "Zayan subtracted correctly. 190 - 140 leaves exactly 50 marbles left."
             },
             {
-                text: "Look at the visual unit block sets layout below. Which statement correctly identifies the total number of blocks?",
+                text: "Look at the visual unit blocks layout below. If we take away 120 blocks from 320 blocks, how many blocks are left?",
                 image: "assets/blocks-320.png",
-                options: ["Total is 320", "Total is less than 300", "Total is more than 350", "Total is 300"],
+                options: ["200 blocks", "100 blocks", "300 blocks", "220 blocks"],
                 answer: 0,
-                hint: "Count upwards by groupings: on the left are 2 large flats (200), on the right are one flat (100) and two rods (20).",
-                explanation: "Combining 200 units (left) and 120 units (right) gives a total calculation of 320 blocks."
+                hint: "Start with 320 blocks. Take away the 20 blocks, then take away 100 blocks.",
+                explanation: "320 minus 120 leaves exactly 200 unit blocks behind."
             },
             {
-                text: "Examine the counting abacuses. What is the total sum when the values displayed on both abacuses are joined?",
+                text: "Examine the counting abacuses. If we start with the value on Abacus B (300) and subtract 100, what is the new number?",
                 image: "assets/abacus.png",
-                options: ["It is 176", "It is 300", "It is 476", "It is 496"],
-                answer: 2,
-                hint: "Identify both baseline numbers first: Abacus A shows 176 and Abacus B shows 300. Then combine them together.",
-                explanation: "The first abacus shows 176 and the second shows 300. Joining them results in 176 + 300 = 476."
-            },
-            {
-                text: "A fruit shop owner has 230 red apples and buys 120 green apples. What is the total number of apples available at the shop?",
-                options: ["350 apples", "320 apples", "250 apples", "400 apples"],
+                options: ["200", "100", "400", "250"],
                 answer: 0,
-                hint: "Add the hundreds together (200 + 100), then add the tens together (30 + 20).",
-                explanation: "230 + 120 = 350. The shop has a combined sum of 350 apples."
+                hint: "Think about taking 1 hundred away from 3 hundreds.",
+                explanation: "300 minus 100 leaves us with exactly 200."
             },
             {
-                text: "A delivery rider has 170 parcels and receives 200 more. Is the total count above 400?",
-                options: ["No, it is 370", "Yes, it is above 410", "It maps to 400", "Less than 300"],
+                text: "A fruit shop has 350 apples. The owner sells 120 apples. How many apples are left at the shop?",
+                options: ["230 apples", "200 apples", "150 apples", "330 apples"],
                 answer: 0,
-                hint: "Combine the values: 170 + 200. Does it cross 400?",
-                explanation: "170 + 200 = 370. Since 370 is less than 400, the true statement evaluation answer is No."
+                hint: "Subtract the hundreds (300 - 100), then subtract the tens (50 - 20).",
+                explanation: "350 - 120 = 230 apples left at the shop."
             },
             {
-                text: "Which of the following expressions does NOT fit because it does not represent an addition setup?",
-                options: ["100 + 300", "400 + 20", "400 − 100", "250 + 150"],
-                answer: 2,
-                hint: "Look closely at the mathematical sign in the center of each operation block.",
-                explanation: "400 − 100 uses a minus sign, meaning it performs subtraction, unlike the additive alternatives."
+                text: "A delivery rider has 370 parcels. He delivers 200 of them. Is his leftover parcel count below 200?",
+                options: ["No, it is 170", "Yes, it is 170", "No, it is 270", "Yes, it is 100"],
+                answer: 1,
+                hint: "Find 370 minus 200 first. Then check if that answer is smaller than 200.",
+                explanation: "370 - 200 = 170. Since 170 is less than 200, the correct statement is Yes."
             },
             {
-                text: "Look at the unit block sets layout side by side. Which statement correctly describes the total number of blocks?",
-                image: "assets/blocks-300.png",
-                options: ["Total is 300", "Total is less than 300", "Total is more than 300", "Total is 200"],
+                text: "Which of the following math cards shows a true subtraction problem?",
+                options: ["400 - 100 = 300", "400 + 100 = 300", "400 - 100 = 200", "400 + 20 = 420"],
                 answer: 0,
-                hint: "Count upwards by groupings of hundreds for the three blocks: 100, 200, 300.",
-                explanation: "Three separate unit blocks of 100 group together side by side to form a total value of 300."
+                hint: "Look for the minus sign (-) and make sure the calculation matches up correctly.",
+                explanation: "400 - 100 = 300 uses a subtraction format and gives the correct answer."
             },
             {
-                text: "A community drive gathered 200 non-perishable cans and later added 140 more. Is the total higher than 300?",
-                options: ["Yes, because it is 340", "No, because it is 290", "It matches 300", "Less than 250"],
+                text: "A school drive had 340 cans. The volunteers handed out 140 cans to families. How many cans do they have left?",
+                options: ["200 cans", "240 cans", "300 cans", "100 cans"],
                 answer: 0,
-                hint: "Add 200 and 140 together (340) to compare the combined number against the 300 baseline.",
-                explanation: "200 + 140 = 340. Since 340 is greater than 300, the correct answer is Yes."
-            },
-            {
-                text: "A given number baseline is 150. Another 250 is added directly to it. Is the result higher than 400?",
-                options: ["No, it is 400", "Yes, it is 410", "It maps to 350", "Less than 300"],
-                answer: 0,
-                hint: "Add the numbers together: 150 + 250. Does it cross 400 or hit it?",
-                explanation: "150 + 250 = 400. Since 400 is equal to 400 (not higher), the true evaluation answer is No."
+                hint: "Subtract 140 from 340. The tens place columns will clear out to zero.",
+                explanation: "340 - 140 leaves exactly 200 cans with the school group."
             }
         ];
 
