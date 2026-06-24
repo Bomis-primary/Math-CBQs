@@ -47,7 +47,7 @@
             min-height: 500px;
         }
 
-        /* 5-second Splash Screen */
+        /* 5-second Splash Screen Fixes */
         #intro-view {
             display: flex;
             justify-content: center;
@@ -376,4 +376,327 @@
                 explanation: "7 is in the tens place, so its place value is 70. Writing just '7' is giving its face value."
             },
             {
-                text: "Class 3A collected 452 bottles, and Class 3B collected 425 bottles. Which statement about the
+                text: "Class 3A collected 452 bottles, and Class 3B collected 425 bottles. Which statement about their collections is correct?",
+                options: ["452 < 425", "452 = 425", "452 > 425", "425 > 452"],
+                answer: 2,
+                hint: "Compare the hundreds place first. They are the same. Now compare the tens place (5 tens vs 2 tens).",
+                explanation: "Since 5 tens is greater than 2 tens, 452 is greater than 425 (452 > 425)."
+            },
+            {
+                text: "Sita wants to write the number 'Nine hundred fifteen' using digits. Help her choose the correct form.",
+                options: ["905", "915", "951", "90015"],
+                answer: 1,
+                hint: "Nine hundred means a 9 in the hundreds spot, followed by fifteen (15).",
+                explanation: "'Nine hundred fifteen' is written numerically as 915."
+            },
+            {
+                text: "Look at the pattern: 110, 120, 130, 140, ___. What number comes next?",
+                options: ["141", "145", "150", "200"],
+                answer: 2,
+                hint: "The numbers are increasing by counting in tens. Add 10 to 140.",
+                explanation: "This pattern counts up by 10s. 140 + 10 = 150."
+            },
+            {
+                text: "Which of the following numbers has a 4 in the hundreds place, 9 in the tens place, and 2 in the ones place?",
+                options: ["294", "492", "942", "429"],
+                answer: 1,
+                hint: "Match the digits to the places: H T O configuration.",
+                explanation: "4 hundreds, 9 tens, and 2 ones makes 492."
+            },
+            {
+                text: "Rohan has an odd number of chocolates. Which of these could be the total number of chocolates Rohan has?",
+                options: ["342", "560", "789", "124"],
+                answer: 2,
+                hint: "An odd number always ends in a 1, 3, 5, 7, or 9.",
+                explanation: "789 ends with a 9, which makes it an odd number."
+            },
+            {
+                text: "What is the standard standard number form of 800 + 70?",
+                options: ["87", "807", "870", "80070"],
+                answer: 2,
+                hint: "Add 800 and 70 together. There are 0 ones.",
+                explanation: "800 + 70 + 0 = 870."
+            },
+            {
+                text: "Which list shows the numbers sorted from smallest to largest?",
+                options: ["123, 321, 231", "123, 231, 321", "321, 231, 123", "231, 123, 321"],
+                answer: 1,
+                hint: "Look at the hundreds digit to find the smallest number first.",
+                explanation: "123 (one hundred) < 231 (two hundreds) < 321 (three hundreds)."
+            },
+            {
+                text: "What is the face value of the digit 5 in the number 591?",
+                options: ["500", "50", "5", "9"],
+                answer: 2,
+                hint: "Face value is simply what the digit looks like, no matter its position.",
+                explanation: "The face value of a digit is always the digit itself. So, it is 5."
+            },
+            {
+                text: "A postman is delivering letters to houses on a street. He jumps houses by skip counting by 5s: 505, 510, 515, ___. What house is next?",
+                options: ["516", "520", "525", "530"],
+                answer: 1,
+                hint: "Add 5 to the last number 515.",
+                explanation: "Skip counting by 5s means 515 + 5 = 520."
+            },
+            {
+                text: "What is the largest 3-digit number you can form using the digits 3, 8, and 1 only once?",
+                options: ["138", "813", "831", "381"],
+                answer: 2,
+                hint: "To make the largest number, place the biggest digit in the hundreds spot, then the next biggest.",
+                explanation: "Arranging digits from greatest to least gives 8, 3, 1, forming 831."
+            },
+            {
+                text: "How many tens are there in total in the number 360?",
+                options: ["3", "6", "36", "0"],
+                answer: 2,
+                hint: "Think about how many bundles of 10 go into 360, or break down 300 into tens too.",
+                explanation: "300 contains 30 tens, and 60 contains 6 tens. Combined, 360 contains 36 tens."
+            },
+            {
+                text: "Meera counts backwards by 2s starting from 200. What is the next number she will say?",
+                options: ["202", "199", "198", "190"],
+                answer: 2,
+                hint: "Subtract 2 from 200.",
+                explanation: "Counting backwards by 2s from 200 gives 198."
+            },
+            {
+                text: "Which number is exactly 100 more than 459?",
+                options: ["469", "559", "359", "549"],
+                answer: 1,
+                hint: "Increase only the digit in the hundreds place by 1.",
+                explanation: "Adding 100 to 459 changes the 4 hundreds to 5 hundreds, resulting in 559."
+            },
+            {
+                text: "Which number comes right before the smallest 3-digit number?",
+                options: ["101", "100", "99", "9"],
+                answer: 2,
+                hint: "The smallest 3-digit number is 100. What is 1 less than 100?",
+                explanation: "The smallest 3-digit number is 100, and the number immediately before it is 99."
+            },
+            {
+                text: "If a number has 0 in its ones place, it is always a/an:",
+                options: ["Odd number", "Even number", "Single digit number", "Greater than 500"],
+                answer: 1,
+                hint: "Numbers ending in 0, 2, 4, 6, or 8 can always be split into equal pairs.",
+                explanation: "Any number that ends in 0 is divisible by 2, meaning it is an even number."
+            },
+            {
+                text: "What is the value of 4 hundreds + 12 tens + 5 ones?",
+                options: ["4125", "425", "525", "417"],
+                answer: 2,
+                hint: "12 tens is the same as 1 hundred and 2 tens. Combine everything carefully!",
+                explanation: "4 hundreds (400) + 12 tens (120) + 5 ones (5) = 525."
+            }
+        ];
+
+        // QUIZ GAME ENGINE OBJECT
+        const gameEngine = {
+            currentQuestionIndex: 0,
+            score: 0,
+            attempts: 0,
+            timer: null,
+            timeLeft: 60,
+            isMuted: false,
+
+            init() {
+                // Initial 5-second splash transition
+                setTimeout(() => {
+                    const intro = document.getElementById('intro-view');
+                    intro.classList.add('fade-out');
+                    document.getElementById('instruction-view').classList.add('active');
+                    
+                    // Fixed: Cleanly remove overlay from layout tree once opacity finishes animating
+                    intro.addEventListener('transitionend', () => {
+                        intro.style.display = 'none';
+                    });
+                }, 5000); // Configured to 5 seconds
+            },
+
+            startQuiz() {
+                document.getElementById('instruction-view').classList.remove('active');
+                document.getElementById('game-view').classList.add('active');
+                this.loadQuestion();
+            },
+
+            loadQuestion() {
+                this.attempts = 0;
+                this.timeLeft = 60;
+                
+                // Reset UI elements
+                document.getElementById('feedback-display').style.display = 'none';
+                document.getElementById('feedback-display').className = 'feedback-box';
+                document.getElementById('btn-next').style.display = 'none';
+                
+                const qData = questionsDatabase[this.currentQuestionIndex];
+                document.getElementById('q-counter').innerText = `Question: ${this.currentQuestionIndex + 1}/${questionsDatabase.length}`;
+                document.getElementById('score-counter').innerText = `Score: ${this.score}`;
+                document.getElementById('q-txt').innerText = qData.text;
+
+                const optionsBox = document.getElementById('options-box');
+                optionsBox.innerHTML = '';
+
+                qData.options.forEach((opt, idx) => {
+                    const btn = document.createElement('button');
+                    btn.className = 'option-btn';
+                    btn.innerText = opt;
+                    btn.onclick = () => this.handleAnswer(idx, btn);
+                    optionsBox.appendChild(btn);
+                });
+
+                this.startTimer();
+            },
+
+            startTimer() {
+                clearInterval(this.timer);
+                document.getElementById('timer-display').innerText = `${this.timeLeft}s`;
+                
+                this.timer = setInterval(() => {
+                    this.timeLeft--;
+                    document.getElementById('timer-display').innerText = `${this.timeLeft}s`;
+                    
+                    if (this.timeLeft <= 0) {
+                        clearInterval(this.timer);
+                        this.revealSystemExplanation(false);
+                    }
+                }, 1000);
+            },
+
+            handleAnswer(selectedIndex, selectedBtn) {
+                const qData = questionsDatabase[this.currentQuestionIndex];
+                this.attempts++;
+
+                if (selectedIndex === qData.answer) {
+                    clearInterval(this.timer);
+                    selectedBtn.classList.add('correct');
+                    this.playSound('correct');
+                    this.triggerWinEffects();
+                    
+                    // Award points dynamically based on attempts
+                    if (this.attempts === 1) this.score += 5;
+                    else this.score += 2;
+                    
+                    document.getElementById('score-counter').innerText = `Score: ${this.score}`;
+                    this.revealSystemExplanation(true);
+                } else {
+                    selectedBtn.classList.add('wrong');
+                    selectedBtn.disabled = true;
+                    this.playSound('wrong');
+
+                    if (this.attempts === 1) {
+                        // First bad attempt -> Display Hint
+                        const feedback = document.getElementById('feedback-display');
+                        feedback.innerText = `💡 Hint: ${qData.hint}`;
+                        feedback.className = 'feedback-box hint';
+                        feedback.style.display = 'block';
+                    } else {
+                        // Second bad attempt -> Out of options
+                        clearInterval(this.timer);
+                        this.revealSystemExplanation(false);
+                    }
+                }
+            },
+
+            revealSystemExplanation(isCorrect) {
+                const qData = questionsDatabase[this.currentQuestionIndex];
+                const feedback = document.getElementById('feedback-display');
+                
+                // Disable remaining buttons
+                const buttons = document.querySelectorAll('.option-btn');
+                buttons.forEach((btn, idx) => {
+                    btn.disabled = true;
+                    if (idx === qData.answer) {
+                        btn.classList.add('correct');
+                    }
+                });
+
+                feedback.innerText = (isCorrect ? "Excellent! " : "Time's up or out of attempts! ") + qData.explanation;
+                feedback.className = 'feedback-box explanation';
+                feedback.style.display = 'block';
+
+                document.getElementById('btn-next').style.display = 'block';
+            },
+
+            nextQuestion() {
+                this.currentQuestionIndex++;
+                if (this.currentQuestionIndex < questionsDatabase.length) {
+                    this.loadQuestion();
+                } else {
+                    this.endQuiz();
+                }
+            },
+
+            endQuiz() {
+                clearInterval(this.timer);
+                document.getElementById('game-view').classList.remove('active');
+                document.getElementById('result-view').classList.add('active');
+
+                // Perfect max score calculation: 20 items * 5 points max = 100 max raw units
+                const percentage = Math.round((this.score / 100) * 100);
+                document.getElementById('final-score').innerText = `${percentage}%`;
+
+                let reviewMsg = "Keep practicing! You can do it!";
+                if (percentage >= 85) reviewMsg = "Spectacular work! You are a master of place values!";
+                else if (percentage >= 60) reviewMsg = "Great job! You have a solid grasp of numbers.";
+
+                document.getElementById('final-msg').innerText = reviewMsg;
+            },
+
+            toggleMute() {
+                this.isMuted = !this.isMuted;
+                document.getElementById('btn-mute').innerText = this.isMuted ? "🔈 Unmute" : "🔊 Mute";
+            },
+
+            playSound(type) {
+                if (this.isMuted) return;
+                const audio = document.getElementById(`snd-${type}`);
+                if (audio) {
+                    audio.currentTime = 0;
+                    audio.play().catch(() => {/* Handle browser block safely */});
+                }
+            },
+
+            triggerWinEffects() {
+                const canvas = document.getElementById('fx-canvas');
+                const ctx = canvas.getContext('2d');
+                canvas.width = canvas.parentElement.clientWidth;
+                canvas.height = canvas.parentElement.clientHeight;
+
+                let particles = Array.from({ length: 40 }, () => ({
+                    x: canvas.width / 2,
+                    y: canvas.height / 2,
+                    vx: (Math.random() - 0.5) * 8,
+                    vy: (Math.random() - 0.5) * 8 - 2,
+                    color: `hsl(${Math.random() * 360}, 80%, 60%)`,
+                    radius: Math.random() * 4 + 2,
+                    alpha: 1
+                }));
+
+                function animate() {
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    let ongoing = false;
+                    particles.forEach(p => {
+                        p.x += p.vx;
+                        p.y += p.vy;
+                        p.vy += 0.1; // gravity
+                        p.alpha -= 0.02;
+                        if (p.alpha > 0) {
+                            ongoing = true;
+                            ctx.globalAlpha = p.alpha;
+                            ctx.beginPath();
+                            ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                            ctx.fillStyle = p.color;
+                            ctx.fill();
+                        }
+                    });
+                    if (ongoing) requestAnimationFrame(animate);
+                    else ctx.clearRect(0, 0, canvas.width, canvas.height);
+                }
+                animate();
+            }
+        };
+
+        // Fire up execution framework when loading the DOM context
+        window.onload = () => gameEngine.init();
+    </script>
+</body>
+</html>
