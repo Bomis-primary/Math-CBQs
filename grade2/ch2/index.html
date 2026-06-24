@@ -1,1 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Addition Up To 20 CBQ</title>
 
+<style>
+body{
+  margin:0;
+  font-family:Arial;
+  background:#fff;
+}
+
+/* SCREENS */
+.screen{
+  display:none;
+  height:100vh;
+  justify-content:center;
+  align-items:center;
+  flex-direction:column;
+  text-align:center;
+}
+
+.active{
+  display:flex;
+}
+
+/* LOGO */
+.logo{
+  width:180px;
+}
+
+/* BUTTON */
+button{
+  padding:14px 26px;
+  font-size:20px;
+  border:none;
+  border-radius:12px;
+  background:#0077e6;
+  color:#fff;
+  margin-top:20px;
+}
+
+/* GAME */
+.game-container{
+  padding:20px;
+}
+
+.question{
+  font-size:26px;
+  margin:20px 0;
+}
+
+.options button{
+  display:block;
+  width:80%;
+  margin:10px auto;
+  background:#eaeaea;
+  color:#000;
+}
+
+.correct{background:#2ecc71 !important;color:#fff;}
+.wrong{background:#e74c3c !important;color:#fff;}
+
+.status{
+  display:flex;
+  justify-content:space-around;
+  margin:10px 0;
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- LOGO SCREEN -->
+<div id="logoScreen" class="screen active">
+  <img src="assets/logo.png" class="logo">
+</div>
+
+<!-- INSTRUCTIONS -->
+<div id="instructionScreen" class="screen">
+  <h2>Addition Up To 20</h2>
+  <p>Read each question carefully and choose the correct answer.</p>
+  <button onclick="startGame()">Start</button>
+</div>
+
+<!-- GAME -->
+<div id="gameScreen" class="screen">
+  <div class="game-container">
+
+    <div class="status">
+      <div id="qNo">Q1</div>
+      <div id="timer">60</div>
+      <div id="attempts">2 attempts</div>
+    </div>
+
+    <div id="question" class="question"></div>
+
+    <img id="img" style="max-width:300px;display:none;">
+
+    <div class="options" id="options"></div>
+
+    <div id="feedback"></div>
+    <div id="explain"></div>
+
+  </div>
+</div>
+
+<!-- SCORE -->
+<div id="scoreScreen" class="screen">
+  <h1>Great Job!</h1>
+  <h2 id="score"></h2>
+  <button onclick="restart()">Play Again</button>
+</div>
+
+<audio id="correctSound" src="assets/claps.mp3"></audio>
+<audio id="wrongSound" src="assets/wrong.mp3"></audio>
+
+<script>
+
+const questions = [
+  {
+    q:"Rohan has 8 pencils. He adds 1 more. Is 10 correct?",
+    options:["No, 9","No, 8","Yes, 10","No, 11"],
+    a:0,
+    exp:"8 + 1 = 9"
+  },
+  {
+    q:"10 + 8 = ?",
+    options:["17","18","19","20"],
+    a:1,
+    exp:"10 + 8 = 18"
+  },
+  {
+    q:"5 white + 5 yellow shells = ?",
+    img:"assets/shells.png",
+    options:["8","9","10","11"],
+    a:2,
+    exp:"5 + 5 = 10"
+  },
+  {
+    q:"Frog from 7 to 10 jumps?",
+    img:"assets/frog.png",
+    options:["2","3","4","5"],
+    a:1,
+    exp:"7→8→9→10 = 3 jumps"
+  },
+  {
+    q:"12 + 3 = ?",
+    options:["14","15","16","17"],
+    a:1,
+    exp:"12 + 3 = 15"
+  },
+  {
+    q:"11 + 5 + 3 = ?",
+    options:["18","19","20","21"],
+    a:1,
+    exp:"=19"
+  },
+  {
+    q:"10 + 2 = ?",
+    options:["12","13","14","15"],
+    a:0,
+    exp:"=12"
+  },
+  {
+    q:"Which equals 15?",
+    options:["10+5","12+3","14+1","10+2"],
+    a:3,
+    exp:"10+2=12"
+  },
+  {
+    q:"12 + 7 = ?",
+    options:["18","19","20","21"],
+    a:1,
+    exp:"=19"
+  },
+  {
+    q:"Which group makes 10?",
+    options:["5+3","6+4","7+3","8+2"],
+    a:0,
+    exp:"Only 6+4,7+3,8+2 = 10"
+  }
+];
+
+let i=0, score=0, attempts=2, timer;
+
+function startGame(){
+  document.getElementById("instructionScreen").classList.remove("active");
+  document.getElementById("gameScreen").classList.add("active");
+  loadQ();
+}
+
+function loadQ(){
+  clearInterval(timer);
+  attempts=2;
+
+  let q=questions[i];
+
+  document.getElementById("qNo").innerText="Q"+(i+1);
+  document.getElementById("question").innerText=q.q;
+  document.getElementById("attempts").innerText="2 attempts";
+
+  let img=document.getElementById("img");
+  if(q.img){
+    img.src=q.img;
+    img.style.display="block";
+  }else img.style.display="none";
+
+  let opt=document.getElementById("options");
+  opt.innerHTML="";
+
+  q.options.forEach((o,idx)=>{
+    let b=document.createElement("button");
+    b.innerText=o;
+    b.onclick=()=>check(idx,b);
+    opt.appendChild(b);
+  });
+
+  startTimer();
+}
+
+function startTimer(){
+  let t=60;
+  timer=setInterval(()=>{
+    t--;
+    document.getElementById("timer").innerText=t;
+    if(t<=0){clearInterval(timer); next();}
+  },1000);
+}
+
+function check(idx,b){
+  let q=questions[i];
+  let btns=document.querySelectorAll("button");
+
+  if(idx===q.a){
+    b.classList.add("correct");
+    document.getElementById("correctSound").play();
+    score++;
+    setTimeout(next,1200);
+  }else{
+    attempts--;
+    document.getElementById("wrongSound").play();
+
+    b.classList.add("wrong");
+    document.getElementById("attempts").innerText=attempts+" attempts";
+
+    if(attempts==0){
+      setTimeout(next,1000);
+    }
+  }
+}
+
+function next(){
+  i++;
+  if(i<questions.length) loadQ();
+  else end();
+}
+
+function end(){
+  document.getElementById("gameScreen").classList.remove("active");
+  document.getElementById("scoreScreen").classList.add("active");
+  document.getElementById("score").innerText=score+"/"+questions.length;
+}
+
+function restart(){
+  location.reload();
+}
+
+/* LOGO FLOW */
+setTimeout(()=>{
+  document.getElementById("logoScreen").classList.remove("active");
+  document.getElementById("instructionScreen").classList.add("active");
+},5000);
+
+</script>
+
+</body>
+</html>
