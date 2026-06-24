@@ -1,1 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>CBQ - Subtraction Part 1</title>
 
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:Arial, sans-serif}
+
+body{
+  background:#f4f7ff;
+  color:#1f2937;
+  -webkit-text-size-adjust: 100%;
+}
+
+/* SPLASH */
+#splash{
+  position:fixed;
+  inset:0;
+  background:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  z-index:10;
+  transition: opacity 0.5s ease;
+}
+
+#splash img{
+  width:300px;
+}
+
+/* SCREEN */
+.screen{
+  display:none;
+  min-height: 100dvh;
+  padding:16px;
+}
+
+.screen.active{
+  display:flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.card{
+  width: 100%;
+  max-width:900px;
+  margin:auto;
+  background:#fff;
+  padding:24px;
+  border-radius:20px;
+  box-shadow:0 10px 25px rgba(0,0,0,0.1);
+}
+
+/* TOP BAR */
+.top{
+  display:grid;
+  grid-template-columns:1fr 1fr 1fr;
+  gap:10px;
+  margin-bottom:20px;
+  text-align:center;
+  font-weight:bold;
+}
+
+.box{
+  background:#e8f0ff;
+  padding:12px;
+  border-radius:12px;
+  font-size: 14px;
+}
+
+/* QUESTION */
+.question{
+  font-size:22px;
+  font-weight:bold;
+  margin:20px 0;
+  line-height: 1.4;
+}
+
+/* OPTIONS */
+.options{
+  display:grid;
+  grid-template-columns: 1fr;
+  gap:12px;
+}
+
+@media(min-width: 600px) {
+  .options {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.btn{
+  padding:16px;
+  border-radius:12px;
+  border:2px solid #1f4e79;
+  background:#fff;
+  font-size:16px;
+  font-weight: 500;
+  cursor:pointer;
+  min-height:60px;
+  transition: all 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.btn:hover:not([disabled]){background:#eef5ff}
+
+.correct{background:#c8f7d5 !important; border-color: #2e7d32 !important;}
+.wrong{background:#ffd6d6 !important; border-color: #c62828 !important;}
+
+/* BUTTON */
+.next{
+  margin-top:20px;
+  padding:14px 28px;
+  background:#1f4e79;
+  color:#fff;
+  border:none;
+  border-radius:10px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor:pointer;
+  display: none;
+}
+
+.next:hover {
+  background:#143553;
+}
+
+/* RESULT */
+.result{
+  text-align:center;
+  font-size:24px;
+  font-weight:bold;
+  line-height: 1.5;
+}
+</style>
+</head>
+
+<body>
+
+<div id="splash">
+  <img src="assets/logo.png" alt="Logo">
+</div>
+
+<div id="game" class="screen active">
+  <div class="card">
+    <div class="top">
+      <div class="box">Q: <span id="qno">1</span>/19</div>
+      <div class="box">Score: <span id="score">0</span></div>
+      <div class="box">Time: <span id="time">60</span>s</div>
+    </div>
+
+    <div class="question" id="question"></div>
+    <div class="options" id="options"></div>
+
+    <button class="next" onclick="nextQ()" id="nextBtn">Next Question →</button>
+  </div>
+</div>
+
+<div id="result" class="screen">
+  <div class="card result" id="resultText"></div>
+</div>
+
+<audio id="correct" src="assets/claps.mp3" preload="auto"></audio>
+<audio id="wrong" src="assets/wrong.mp3" preload="auto"></audio>
+
+<script>
+/* SPLASH SCREEN CLOSURE */
+setTimeout(()=>{
+  const splash = document.getElementById("splash");
+  splash.style.opacity = 0;
+  setTimeout(() => splash.style.display="none", 500);
+}, 2500);
+
+/* VERIFIED SUBTRACTION CHAPTER DATA ARRAY */
+const questions = [
+  { q:"A child has 350 stickers and gives away 120. Is the remaining number more than 200?", a:["Yes","No","Exactly 200","Less than 150"], c:0 },
+  { q:"Which shows subtraction correctly?", a:["Joining two groups","Taking away objects","Sharing equally","Making equal groups"], c:1 },
+  { q:"Kabir solved: 345 - 120 = 235. What is the mistake?", a:["Final answer is incorrect","Tens place is incorrect","Hundreds place is incorrect","No mistake"], c:3 },
+  { q:"A shop has 500 apples. It sells 260 apples. The shop wants at least 250 apples left. Does it have enough?", a:["Yes","No","Exactly 250","Less than 200"], c:1 },
+  { q:"Which subtraction needs borrowing?", a:["432 - 121","400 - 200","356 - 129","300 - 100"], c:2 },
+  { q:"Which result is smaller?", a:["500 - 200","450 - 150","400 - 150","300 - 50"], c:2 },
+  { q:"Arjun says: \"Subtraction means adding numbers.\" What is wrong?", a:["Subtraction means taking away","Addition and subtraction are same","Subtraction means grouping","No mistake"], c:0 },
+  { q:"Books in a library: 300 - 100 and 250 - 50. Which statement is correct?", a:["Both results are equal","First result is more","Second result is more","Both are zero"], c:0 },
+  { q:"Using the same data, how many books are left in the first case?", a:["200","150","100","250"], c:0 },
+  { q:"A child has 280 marbles and gives away 100. Is the remaining number more than 150?", a:["Yes","No","Exactly 150","Less than 100"], c:0 },
+  { q:"Which does NOT belong because it is not subtraction?", a:["400 - 100","300 - 50","200 + 100","500 - 200"], c:2 },
+  { q:"(Picture-Based) Image: 300 blocks with 100 removed. Which statement is correct?", a:["200 blocks remain","100 blocks remain","300 blocks remain","150 blocks remain"], c:0 },
+  { q:"(Picture-Based) Image: 400 objects with 200 crossed out. Which statement is correct?", a:["Exactly 200 remain","Less than 200 remain","More than 200 remain","Nothing remains"], c:0 },
+  { q:"A child has 500 candies. First gives away 200, then 100 more. Which statement is correct?", a:["200 candies remain","300 candies remain","100 candies remain","No candies remain"], c:0 },
+  { q:"A school has 450 books. It gives away 150 books. Is the remaining number more than 250?", a:["Yes","No","Exactly 250","Less than 200"], c:0 },
+  { q:"Using the same data, is exactly 300 books left?", a:["Yes","No","More than 300","Less than 250"], c:0 },
+  { q:"A number is 600. 250 is taken away. Is the result more than 300?", a:["Yes","No","Exactly 300","Less than 200"], c:0 },
+  { q:"A child subtracts 150 from 450 and then subtracts 100 more. Which statement is correct?", a:["200 remain","300 remain","100 remain","150 remain"], c:0 },
+  { q:"I am more than 80-25. Which number am I?", a:["15","61","24","39"], c:1 }
+];
+
+let i=0, score=0, time=60, attempt=0, lock=false;
+let timerInterval = null;
+
+/* ENGINE START/LOAD */
+function load(){
+  clearInterval(timerInterval); 
+  time = 60;
+  document.getElementById("time").innerText = time;
+  
+  let q = questions[i];
+  document.getElementById("qno").innerText = i + 1;
+  document.getElementById("question").innerText = q.q;
+
+  let html = "";
+  q.a.forEach((o, idx) => {
+    html += `<button class="btn" id="opt-${idx}" onclick="check(this,${idx})">${o}</button>`;
+  });
+
+  document.getElementById("options").innerHTML = html;
+  document.getElementById("nextBtn").style.display = "none";
+
+  attempt = 0;
+  lock = false;
+  
+  timerInterval = setInterval(() => {
+    if(time > 0) {
+      time--;
+      document.getElementById("time").innerText = time;
+    } else {
+      clearInterval(timerInterval);
+      handleTimeout();
+    }
+  }, 1000);
+}
+
+/* CHECK SELECTION ENGINE */
+function check(btn, ans){
+  if(lock) return;
+
+  const currentQuestion = questions[i];
+
+  if(ans == currentQuestion.c){
+    clearInterval(timerInterval); 
+    btn.classList.add("correct");
+    playAudio("correct");
+    
+    let pointsAwarded = (attempt === 0) ? 10 : 5;
+    score += pointsAwarded;
+    document.getElementById("score").innerText = score;
+    
+    lockOptions();
+    lock = true;
+    document.getElementById("nextBtn").style.display = "inline-block";
+  } else {
+    attempt++;
+    btn.classList.add("wrong");
+    btn.setAttribute("disabled", "true"); 
+    playAudio("wrong");
+
+    if(attempt >= 2){
+      clearInterval(timerInterval);
+      lock = true;
+      lockOptions();
+      document.getElementById(`opt-${currentQuestion.c}`).classList.add("correct");
+      document.getElementById("nextBtn").style.display = "inline-block";
+    }
+  }
+}
+
+/* TIMEOUT HANDLER */
+function handleTimeout() {
+  lock = true;
+  lockOptions();
+  const currentQuestion = questions[i];
+  document.getElementById(`opt-${currentQuestion.c}`).classList.add("correct");
+  document.getElementById("nextBtn").style.display = "inline-block";
+}
+
+function lockOptions() {
+  const buttons = document.querySelectorAll(".options .btn");
+  buttons.forEach(b => b.setAttribute("disabled", "true"));
+}
+
+/* AUDIO LAYER WITH ECO SAFETIES */
+function playAudio(id) {
+  const audio = document.getElementById(id);
+  if (audio) {
+    audio.currentTime = 0;
+    audio.play().catch(e => console.log("Audio play deferred to user interaction gesture:", e));
+  }
+}
+
+/* ROUTING NAVIGATION */
+function nextQ(){
+  i++;
+  if(i < questions.length){
+    load();
+  } else {
+    show();
+  }
+}
+
+/* END SCREEN DISPLAY CONTAINER */
+function show(){
+  clearInterval(timerInterval);
+  document.getElementById("game").style.display="none";
+  document.getElementById("result").style.display="flex";
+
+  const maxPossibleScore = questions.length * 10;
+  let percent = (score / maxPossibleScore) * 100;
+
+  let msg = "";
+  if(percent >= 75) msg = "Good job 🎉";
+  else if(percent >= 40) msg = "Review this chapter and try again 🙂";
+  else msg = "Let’s practise more 📘";
+
+  document.getElementById("resultText").innerHTML = 
+    `<div>${msg}</div><div style="font-size:18px; margin-top:10px; color:#4b5563;">Total Points: ${score} / ${maxPossibleScore}</div>`;
+}
+
+// Global runtime execution launcher
+load();
+</script>
+
+</body>
+</html>
