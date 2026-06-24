@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Grade 2 Maths: Data Handling Adventure</title>
     <style>
         :root {
@@ -45,11 +45,12 @@
             position: relative;
             overflow: hidden;
             border: 4px solid var(--secondary);
+            min-height: 480px;
         }
 
         /* 5-Second Splash Screen */
         #splash-screen {
-            position: fixed;
+            position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
             background: #ffffff;
             display: flex;
@@ -57,7 +58,13 @@
             justify-content: center;
             align-items: center;
             z-index: 9999;
+            opacity: 1;
             transition: opacity 0.5s ease;
+        }
+
+        #splash-screen.fade-out {
+            opacity: 0;
+            pointer-events: none;
         }
 
         .logo-placeholder {
@@ -87,15 +94,16 @@
 
         /* Game HUD Layout */
         .hud {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 8px;
             background: #e0f2fe;
             padding: 10px 14px;
             border-radius: 16px;
             margin-bottom: 16px;
             font-weight: bold;
-            font-size: 1rem;
+            font-size: 0.95rem;
+            text-align: center;
             border: 2px dashed var(--primary);
         }
 
@@ -105,7 +113,7 @@
 
         /* Question Area */
         .question-text {
-            font-size: 1.2rem;
+            font-size: 1.15rem;
             font-weight: bold;
             line-height: 1.6;
             margin-bottom: 16px;
@@ -129,12 +137,13 @@
             border-radius: 16px;
             padding: 14px;
             text-align: left;
-            font-size: 1.1rem;
+            font-size: 1.05rem;
             cursor: pointer;
             transition: all 0.2s ease;
             font-weight: bold;
             width: 100%;
             color: #374151;
+            min-height: 54px;
         }
 
         .option-btn:hover:not(:disabled) {
@@ -142,16 +151,21 @@
             background: #f0f9ff;
         }
 
+        .option-btn:disabled {
+            cursor: not-allowed;
+            opacity: 0.85;
+        }
+
         .option-btn.correct {
             background-color: #dcfce7 !important;
             border-color: var(--success) !important;
-            color: #14532d;
+            color: #14532d !important;
         }
 
         .option-btn.wrong {
             background-color: #fee2e2 !important;
             border-color: var(--danger) !important;
-            color: #7f1d1d;
+            color: #7f1d1d !important;
         }
 
         /* Context Drawers */
@@ -222,25 +236,22 @@
 
         @media (max-width: 480px) {
             .container { padding: 14px; }
-            .question-text { font-size: 1.1rem; }
-            .option-btn { padding: 12px; font-size: 1rem; }
+            .question-text { font-size: 1.05rem; }
+            .option-btn { padding: 12px; font-size: 0.95rem; }
+            .hud { font-size: 0.85rem; }
         }
     </style>
 </head>
 <body>
 
-    <canvas id="particle-canvas"></canvas>
-
-    <div id="splash-screen">
-        <img src="grade-2/maths/chapter-12/assets/logo.png" alt="Innovine Logo" class="logo-placeholder" onerror="this.style.display='none'; document.getElementById('logo-text').style.display='block';">
-        <h2 id="logo-text" style="display:none; color: var(--primary);">Innovine</h2>
-    </div>
-
-    <audio id="audio-correct" src="grade-2/maths/chapter-12/assets/correct.mp3" preload="auto"></audio>
-    <audio id="audio-wrong" src="grade-2/maths/chapter-12/assets/wrong.mp3" preload="auto"></audio>
-
     <div class="container">
-        
+        <canvas id="particle-canvas"></canvas>
+
+        <div id="splash-screen">
+            <img src="grade-2/maths/chapter-12/assets/logo.png" alt="Innovine Logo" class="logo-placeholder" onerror="this.style.display='none'; document.getElementById('logo-text').style.display='block';">
+            <h2 id="logo-text" style="display:none; color: var(--primary);">Innovine</h2>
+        </div>
+
         <div id="welcome-screen" class="screen active">
             <h1>Data Handling Quest</h1>
             <p class="description">Become a Data Detective! Learn how to collect answers from surveys, count interesting objects, and read fun picture graphs to unlock secrets!</p>
@@ -249,7 +260,7 @@
 
         <div id="game-screen" class="screen">
             <div class="hud">
-                <div id="progress-text">Quest: 1/12</div>
+                <div id="progress-text">Quest: 1/18</div>
                 <div id="score-text">Score: 0 ⭐</div>
                 <div class="timer-box">⏱️ <span id="timer-counter">60</span>s</div>
             </div>
@@ -267,141 +278,94 @@
 
         <div id="result-screen" class="screen">
             <h2>Quest Complete! 🎉</h2>
-            <div class="score-circle" id="final-score-value">0/12</div>
+            <div class="score-circle" id="final-score-value">0/18</div>
             <p class="description" id="final-status-msg">Gathering your shiny stars...</p>
             <button class="action-btn" onclick="resetInteractive()">Play Again! 🔄</button>
         </div>
-
     </div>
 
+    <audio id="audio-correct" src="grade-2/maths/chapter-12/assets/correct.mp3" preload="auto"></audio>
+    <audio id="audio-wrong" src="grade-2/maths/chapter-12/assets/wrong.mp3" preload="auto"></audio>
+
     <script>
-        const questionBank = [
+        // PROTECTED SYSTEM DATABASE
+        const questionBankDatabase = [
             {
                 type: "Understanding Data",
                 question: "What do we call a collection of information, numbers, or facts that we gather together by looking around or asking questions?",
-                options: [
-                    "A secret riddle",
-                    "Data",
-                    "A guess",
-                    "A baseline"
-                ],
-                answer: 1,
+                options: ["Data", "A secret riddle", "A guess", "A baseline"],
+                answer: 0,
                 hint: "It starts with the letter 'D' and helps us build mathematical charts.",
                 explanation: "Data is a collection of facts, counts, or measurements gathered together to learn or show information."
             },
             {
                 type: "Data Gathering Activity",
                 question: "Riya wants to find out which outdoor game her friends like playing the most. What is the best way for her to gather this data?",
-                options: [
-                    "Close her eyes and make a guess.",
-                    "Look at a book about old sports stories.",
-                    "Ask each friend directly by doing a simple survey.",
-                    "Count how many toys she has in her room."
-                ],
-                answer: 2,
+                options: ["Ask each friend directly by doing a simple survey.", "Close her eyes and make a guess.", "Look at a book about old sports stories.", "Count how many toys she has in her room."],
+                answer: 0,
                 hint: "To find out what people like, you need to talk to them and record their real choices.",
                 explanation: "Conducting a simple survey by asking people directly is a perfect way to gather fresh, accurate data."
             },
             {
                 type: "Reading Pictographs",
                 question: "Look at this chart showing favorite lunch treats:\n🍦 Ice Cream: 🍦 🍦 🍦 🍦\n🍩 Donut: 🍩 🍩\n\n(Note: 1 picture = 1 child)\nHow many children chose Ice Cream?",
-                options: [
-                    "2 children",
-                    "4 children",
-                    "6 children",
-                    "1 child"
-                ],
-                answer: 1,
+                options: ["4 children", "2 children", "6 children", "1 child"],
+                answer: 0,
                 hint: "Count each ice cream cone picture one by one in that specific row.",
                 explanation: "There are 4 ice cream pictures, which means 4 children voted for ice cream."
             },
             {
                 type: "Comparing Quantities",
                 question: "Look at the lunch chart again:\n🍦 Ice Cream: 🍦 🍦 🍦 🍦\n🍩 Donut: 🍩 🍩\n\nHow many MORE children preferred Ice Cream than Donuts?",
-                options: [
-                    "2 more children",
-                    "4 more children",
-                    "6 more children",
-                    "3 more children"
-                ],
+                options: ["2 more children", "4 more children", "6 more children", "3 more children"],
                 answer: 0,
                 hint: "Subtract the number of donuts (2) from the number of ice creams (4).",
-                explanation: "To compare the quantities, we look at the difference: $4 - 2 = 2$. So, 2 more children preferred ice cream."
+                explanation: "To compare the quantities, we look at the difference: 4 - 2 = 2. So, 2 more children preferred ice cream."
             },
             {
                 type: "Purpose of Pictographs",
                 question: "Why do we draw data using pictures in a pictograph instead of just writing down a long messy list of random words?",
-                options: [
-                    "To hide our findings from other people.",
-                    "Because drawing pictures takes much longer.",
-                    "To share information with others in an easy-to-understand and quick way.",
-                    "Because math rules say words are not allowed."
-                ],
-                answer: 2,
+                options: ["To share information with others in an easy-to-understand and quick way.", "To hide our findings from other people.", "Because drawing pictures takes much longer.", "Because math rules say words are not allowed."],
+                answer: 0,
                 hint: "Think about what is faster to read: scanning 100 messy names, or looking at organized picture groups.",
                 explanation: "Pictographs use clear symbols to display data cleanly, making it very easy for anyone to compare items at a single glance."
             },
             {
                 type: "Gathering by Observation",
                 question: "Dev stands near the classroom window and watches the sky to note down how many birds fly past in 10 minutes. What kind of data activity is Dev doing?",
-                options: [
-                    "An interview survey",
-                    "An observation activity",
-                    "A guessing game",
-                    "A reading challenge"
-                ],
-                answer: 1,
+                options: ["An observation activity", "An interview survey", "A guessing game", "A reading challenge"],
+                answer: 0,
                 hint: "He is watching and tracking events carefully with his eyes without asking anyone questions.",
                 explanation: "Watching events happen naturally and recording them is called gathering data through observation."
             },
             {
                 type: "Comparing Totals",
                 question: "A picture chart displays weather patterns over two weeks:\n☀️ Sunny Days: ☀️ ☀️ ☀️ ☀️ ☀️\n🌧️ Rainy Days: 🌧️ 🌧️\n\nWhich type of weather happened the LEAST (smallest number of days)?",
-                options: [
-                    "☀️ Sunny Days",
-                    "🌧️ Rainy Days",
-                    "Both happened the same amount",
-                    "Cloudy Days"
-                ],
-                answer: 1,
+                options: ["🌧️ Rainy Days", "☀️ Sunny Days", "Both happened the same amount", "Cloudy Days"],
+                answer: 0,
                 hint: "Look for the row that has the shortest line of symbols.",
                 explanation: "Rainy Days only has 2 symbols, while Sunny Days has 5. 2 is smaller than 5, so Rainy Days happened the least."
             },
             {
                 type: "Drawing Rules",
                 question: "When you draw a pictograph to represent your collected data, what must you do to ensure your chart is accurate and fair?",
-                options: [
-                    "Draw symbols in different sizes so some look giant.",
-                    "Use the exact same size symbol for each count and align them cleanly.",
-                    "Change the symbol meaning halfway through the row.",
-                    "Leave out categories that you don't like."
-                ],
-                answer: 1,
+                options: ["Use the exact same size symbol for each count and align them cleanly.", "Draw symbols in different sizes so some look giant.", "Change the symbol meaning halfway through the row.", "Leave out categories that you don't like."],
+                answer: 0,
                 hint: "If one picture is drawn huge and another tiny, it will confuse people who look at your graph.",
                 explanation: "To keep a pictograph accurate, every symbol must be drawn equal in size and placed in structured rows so counts can be compared fairly."
             },
             {
                 type: "Data Sources",
                 question: "Which of the following is NOT a real source where we can find or collect data for a school project?",
-                options: [
-                    "Asking classmates what pets they have.",
-                    "Counting the color of cars parked outside.",
-                    "Making up random numbers from an imaginary dream.",
-                    "Looking at a school attendance log book."
-                ],
-                answer: 2,
+                options: ["Making up random numbers from an imaginary dream.", "Asking classmates what pets they have.", "Counting the color of cars parked outside.", "Looking at a school attendance log book."],
+                answer: 0,
                 hint: "Data must always come from real-world counts, logs, questions, or tracking, never from made-up stories.",
                 explanation: "Inventing numbers from imagination does not produce real data. Real data must come from true measurements, surveys, or observations."
             },
             {
                 type: "Assertion & Reason Logic",
                 question: "Assertion: A pictograph showing 6 star symbols represents more items than a row with 3 star symbols (where 1 symbol = 1 item).\nReason: In a pictograph, the row with more identical symbols represents a greater quantity.",
-                options: [
-                    "Both statements are true and the reason explains the assertion perfectly!",
-                    "The assertion is true, but the reason makes no sense.",
-                    "The assertion is false.",
-                    "Both statements are completely false."
-                ],
+                options: ["Both statements are true and the reason explains the assertion perfectly!", "The assertion is true, but the reason makes no sense.", "The assertion is false.", "Both statements are completely false."],
                 answer: 0,
                 hint: "Is 6 bigger than 3? Does drawing more icons mean you counted a larger group?",
                 explanation: "Both statements are correct. Since each symbol equals 1 item, 6 symbols means 6 items and 3 symbols means 3 items. More symbols directly mean a larger amount."
@@ -409,43 +373,113 @@
             {
                 type: "Case Story Challenge (Part 1)",
                 question: "Case Story Part 1: Kabir counts the pencils in his team's storage boxes:\n🔴 Red Boxes: ✏️ ✏️ ✏️\n🔵 Blue Boxes: ✏️ ✏️ ✏️ ✏️ ✏️\n\nHow many total pencils are in the Blue Boxes?",
-                options: [
-                    "3 pencils",
-                    "5 pencils",
-                    "8 pencils",
-                    "2 pencils"
-                ],
-                answer: 1,
+                options: ["5 pencils", "3 pencils", "8 pencils", "2 pencils"],
+                answer: 0,
                 hint: "Count only the pencil symbols next to the Blue Boxes row.",
                 explanation: "The row for Blue Boxes has 5 pencil drawings, meaning there are 5 pencils inside."
             },
             {
                 type: "Case Story Challenge (Part 2)",
                 question: "Case Story Part 2: Kabir needs to find the absolute sum of his entire chart from Part 1 (3 Red Box pencils, 5 Blue Box pencils). How many pencils did his team collect altogether?",
-                options: [
-                    "5 pencils",
-                    "3 pencils",
-                    "8 pencils",
-                    "2 pencils"
-                ],
-                answer: 2,
-                hint: "Combine the values of both rows together by adding: $3 + 5$.",
-                explanation: "To find the complete total amount of data gathered, calculate the sum: $3 + 5 = 8$ pencils in total."
+                options: ["8 pencils", "5 pencils", "3 pencils", "2 pencils"],
+                answer: 0,
+                hint: "Combine the values of both rows together by adding: 3 + 5.",
+                explanation: "To find the complete total amount of data gathered, calculate the sum: 3 + 5 = 8 pencils in total."
+            },
+            {
+                type: "Analyzing Lists",
+                question: "A teacher writes down student favorite fruits on the board:\nApple, Banana, Apple, Mango, Apple, Banana.\nWhich fruit was written down the most times?",
+                options: ["Apple", "Banana", "Mango", "All are equal"],
+                answer: 0,
+                hint: "Count how many times each word appears. Apple appears 3 times.",
+                explanation: "Apple appears 3 times, Banana 2 times, and Mango 1 time. Apple appears the most."
+            },
+            {
+                type: "Chart Keys",
+                question: "If a chart states: '🔑 1 Star Sticker = 2 Points', how many points do you get if you collect 3 Star Stickers?",
+                options: ["6 points", "3 points", "2 points", "5 points"],
+                answer: 0,
+                hint: "Each star is worth 2, so skip-count by twos three times: 2, 4, 6.",
+                explanation: "Since 1 sticker equals 2 points, 3 stickers equal 3 x 2 = 6 points."
+            },
+            {
+                type: "Data Grouping",
+                question: "Anu counts blocks by grouping them into piles of 5. She has three full piles. How many blocks does she have in total?",
+                options: ["15 blocks", "10 blocks", "5 blocks", "20 blocks"],
+                answer: 0,
+                hint: "Add 5 three times together, or calculate 3 x 5.",
+                explanation: "Grouping makes counting faster. 3 groups of 5 equals 5 + 5 + 5 = 15 blocks."
+            },
+            {
+                type: "Interpreting Tables",
+                question: "Look at this table of rainy days:\nJuly: 12 days | August: 15 days | September: 8 days\nWhich month had the fewest rainy days?",
+                options: ["September", "July", "August", "None"],
+                answer: 0,
+                hint: "Compare the numbers 12, 15, and 8. Find the smallest one.",
+                explanation: "8 is the smallest number, so September had the fewest rainy days."
+            },
+            {
+                type: "Tally Marks Concept",
+                question: "When recording data, why do we draw a slanting diagonal line across four vertical lines for the fifth count?",
+                options: ["To make groups of 5 that are very easy to see and count quickly.", "To show that we made a mistake.", "Because we ran out of space.", "To end the survey immediately."],
+                answer: 0,
+                hint: "Think about how grouping lines into bundles of 5 helps you avoid counting individual sticks.",
+                explanation: "Bundling tally marks into groups of 5 allows us to skip-count by 5s later, making large data sets quick to read."
+            },
+            {
+                type: "Incomplete Data",
+                question: "If some pictures get erased from a pictograph row by accident, what happens to our data results?",
+                options: ["The chart becomes inaccurate because information is missing.", "The chart stays exactly the same.", "The answer choices become automatically correct.", "The timer speeds up."],
+                answer: 0,
+                hint: "Missing symbols mean we lose parts of our real counts.",
+                explanation: "A pictograph relies on exact visual tallies. If symbols are lost, the chart becomes incomplete and inaccurate."
             }
         ];
 
+        let runtimeQuestionBank = [];
         let currentIndex = 0;
         let runningScore = 0;
         let attemptTracker = 0; 
         let countdownTimer;
         let activeSeconds = 60;
 
+        // FISHER-YATES SHUFFLE CORE
+        function shuffleArray(arr) {
+            for (let idx = arr.length - 1; idx > 0; idx--) {
+                const j = Math.floor(Math.random() * (idx + 1));
+                [arr[idx], arr[j]] = [arr[j], arr[idx]];
+            }
+            return arr;
+        }
+
+        // INITIALIZE RUNTIME DATA CLONE
+        function bootstrapDatabase() {
+            runtimeQuestionBank = questionBankDatabase.map(item => {
+                const choicesCopy = [...item.options];
+                const trueValue = choicesCopy[item.answer];
+                
+                shuffleArray(choicesCopy);
+                const dynamicCorrectIdx = choicesCopy.indexOf(trueValue);
+                
+                return {
+                    type: item.type,
+                    question: item.question,
+                    options: choicesCopy,
+                    answer: dynamicCorrectIdx,
+                    hint: item.hint,
+                    explanation: item.explanation
+                };
+            });
+            shuffleArray(runtimeQuestionBank);
+        }
+
         window.addEventListener('DOMContentLoaded', () => {
             setTimeout(() => {
                 const splash = document.getElementById('splash-screen');
-                splash.style.opacity = '0';
-                setTimeout(() => splash.style.display = 'none', 500);
-            }, 5000); // Strict 5-second brand screen configuration
+                splash.classList.add('fade-out');
+                splash.addEventListener('transitionend', () => splash.style.display = 'none');
+            }, 5000);
+            bootstrapDatabase();
         });
 
         function startInteractive() {
@@ -464,8 +498,8 @@
             document.getElementById('explain-feedback').style.display = 'none';
             document.getElementById('next-btn').style.display = 'none';
 
-            let qData = questionBank[currentIndex];
-            document.getElementById('progress-text').innerText = `Quest: ${currentIndex + 1}/${questionBank.length}`;
+            let qData = runtimeQuestionBank[currentIndex];
+            document.getElementById('progress-text').innerText = `Quest: ${currentIndex + 1}/${runtimeQuestionBank.length}`;
             document.getElementById('target-question').innerText = `[${qData.type}]\n${qData.question}`;
             
             const optionsBox = document.getElementById('target-options');
@@ -494,8 +528,12 @@
         }
 
         function lockButtonsOnTimeout() {
-            let qData = questionBank[currentIndex];
             disableAllOptions();
+            let qData = runtimeQuestionBank[currentIndex];
+            
+            const optionsList = document.getElementById('target-options').children;
+            optionsList[qData.answer].classList.add('correct');
+
             const explBox = document.getElementById('explain-feedback');
             explBox.innerHTML = `<strong>Time's Up! ⏱️</strong> ${qData.explanation}`;
             explBox.style.display = 'block';
@@ -504,7 +542,7 @@
         }
 
         function evaluateSelection(selectedBtn, chosenIdx) {
-            let qData = questionBank[currentIndex];
+            let qData = runtimeQuestionBank[currentIndex];
             
             if (chosenIdx === qData.answer) {
                 clearInterval(countdownTimer);
@@ -523,7 +561,6 @@
                 explBox.innerHTML = `<strong>Super! Correct! 🎉</strong> ${qData.explanation}`;
                 explBox.style.display = 'block';
                 document.getElementById('next-btn').style.display = 'block';
-
             } else {
                 attemptTracker++;
                 selectedBtn.classList.add('wrong');
@@ -541,8 +578,7 @@
                     const optionsList = document.getElementById('target-options').children;
                     optionsList[qData.answer].classList.add('correct');
 
-                    const hintBox = document.getElementById('hint-feedback');
-                    hintBox.style.display = 'none';
+                    document.getElementById('hint-feedback').style.display = 'none';
 
                     const explBox = document.getElementById('explain-feedback');
                     explBox.innerHTML = `<strong>Let's check! 🌟</strong> ${qData.explanation}`;
@@ -563,13 +599,13 @@
             const audio = document.getElementById(`audio-${type}`);
             if (audio) {
                 audio.currentTime = 0;
-                audio.play().catch(e => console.log("Sound engine activated!"));
+                audio.play().catch(e => {});
             }
         }
 
         function advanceQuestion() {
             currentIndex++;
-            if (currentIndex < questionBank.length) {
+            if (currentIndex < runtimeQuestionBank.length) {
                 displayQuestion();
             } else {
                 showFinalResults();
@@ -580,9 +616,9 @@
             document.getElementById('game-screen').classList.remove('active');
             document.getElementById('result-screen').classList.add('active');
             
-            document.getElementById('final-score-value').innerText = `${runningScore}/${questionBank.length}`;
+            document.getElementById('final-score-value').innerText = `${runningScore}/${runtimeQuestionBank.length}`;
             
-            let finalPercentage = (runningScore / questionBank.length) * 100;
+            let finalPercentage = (runningScore / runtimeQuestionBank.length) * 100;
             let statusText = "";
 
             if (finalPercentage >= 75) {
@@ -601,10 +637,11 @@
             runningScore = 0;
             document.getElementById('score-text').innerText = `Score: 0 ⭐`;
             document.getElementById('result-screen').classList.remove('active');
+            bootstrapDatabase();
             document.getElementById('welcome-screen').classList.add('active');
         }
 
-        // Sky Blue Shimmer Particle Engine
+        // PARTICLE EFFECTS ENGINE
         const canvas = document.getElementById('particle-canvas');
         const ctx = canvas.getContext('2d');
         let particles = [];
