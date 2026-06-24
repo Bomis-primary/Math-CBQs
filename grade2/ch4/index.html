@@ -47,7 +47,7 @@
             min-height: 500px;
         }
 
-        /* 5-second Splash Screen Fixes */
+        /* 5-second Splash Screen Configuration */
         #intro-view {
             display: flex;
             justify-content: center;
@@ -173,8 +173,21 @@
         .question-text {
             font-size: 1.15rem;
             font-weight: 700;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
             color: var(--text-main);
+        }
+
+        .image-container {
+            text-align: center;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .image-container img {
+            max-width: 100%;
+            max-height: 180px;
+            border-radius: 8px;
+            object-fit: contain;
         }
 
         .options-grid {
@@ -324,6 +337,10 @@
             
             <div class="question-text" id="q-txt">Question Text Placeholder</div>
 
+            <div class="image-container" id="q-img-container">
+                <img id="q-img" src="" alt="Question Graphic">
+            </div>
+
             <div class="options-grid" id="options-box"></div>
 
             <div id="feedback-display" class="feedback-box"></div>
@@ -345,12 +362,13 @@
     <audio id="snd-wrong" src="assets/wrong.mp3" preload="auto"></audio>
 
     <script>
-        // COMPREHENSIVE GR2 CHAPTER 4 NUMBER SYSTEM DATABASE (20 MCQs)
+        // FULL GR2 COMPREHENSIVE REVISED DATABASE
         const questionsDatabase = [
             {
                 text: "A cinema hall has seat numbers printed on the chairs. Amit sits on seat 248, and his father sits on seat 250. Amit's younger brother wants to sit exactly between them. Which seat number will Amit's brother sit on?",
                 options: ["247", "249", "251", "240"],
                 answer: 1,
+                image: "assets/chair.png",
                 hint: "Think about what counting number comes right after 248 and just before 250.",
                 explanation: "249 comes exactly between 248 and 250."
             },
@@ -377,10 +395,10 @@
             },
             {
                 text: "Class 3A collected 452 bottles, and Class 3B collected 425 bottles. Which statement about their collections is correct?",
-                options: ["452 < 425", "452 = 425", "452 > 425", "425 > 452"],
+                options: ["Class 3A < Class 3B", "Class 3A = Class 3B", "Class 3A > Class 3B", "Class 3B > Class 3A"],
                 answer: 2,
-                hint: "Compare the hundreds place first. They are the same. Now compare the tens place (5 tens vs 2 tens).",
-                explanation: "Since 5 tens is greater than 2 tens, 452 is greater than 425 (452 > 425)."
+                hint: "Compare the tens place of both numbers. Class 3A has 5 tens (52) and Class 3B has 2 tens (25). Which class collected more?",
+                explanation: "Class 3A collected 452 bottles and Class 3B collected 425 bottles. Since 452 is greater than 425, Class 3A > Class 3B is the correct statement."
             },
             {
                 text: "Sita wants to write the number 'Nine hundred fifteen' using digits. Help her choose the correct form.",
@@ -411,7 +429,7 @@
                 explanation: "789 ends with a 9, which makes it an odd number."
             },
             {
-                text: "What is the standard standard number form of 800 + 70?",
+                text: "What is the standard form of the number 800 + 70?",
                 options: ["87", "807", "870", "80070"],
                 answer: 2,
                 hint: "Add 800 and 70 together. There are 0 ones.",
@@ -486,10 +504,49 @@
                 answer: 2,
                 hint: "12 tens is the same as 1 hundred and 2 tens. Combine everything carefully!",
                 explanation: "4 hundreds (400) + 12 tens (120) + 5 ones (5) = 525."
+            },
+            {
+                text: "If you arrange these numbers in descending order (largest to smallest), which number will come 4th? Numbers: 511, 529, 597, 500, 503",
+                options: ["511", "500", "503", "529"],
+                answer: 2,
+                hint: "Descending order means counting down from the biggest number to the smallest number. Line them up from greatest to least first!",
+                explanation: "Arranging from largest to smallest gives: 597, 529, 511, 503, and 500. The 4th number in this list is 503."
+            },
+            {
+                text: "A toy chest has the following numbers painted on it: 672, 674, 675, 676, 678, and 772. Which of the following number names does NOT belong to this given collection of numbers?",
+                options: ["Six hundred seventy two", "Seven hundred seventy two", "Six hundred seventy five", "Seven hundred sixty four"],
+                answer: 3,
+                image: "assets/toy-chest.png",
+                hint: "Read the word choices carefully and compare each one to the actual numbers painted on the toy chest.",
+                explanation: "The number 764 (Seven hundred sixty four) is not painted anywhere on the toy chest, making it the odd one out."
+            },
+            {
+                text: "How many numbers are there on the piggy bank which are more than 400 but less than 700? Numbers listed: 750, 400, 521, 699, 315, 612",
+                options: ["2", "3", "4", "5"],
+                answer: 1,
+                image: "assets/piggy-bank.png",
+                hint: "Look for numbers that start with a 4, 5, or 6 in the hundreds place, but remember that exactly 400 is not 'more than' 400!",
+                explanation: "The numbers that fit the rule are 521, 699, and 612. That makes exactly 3 numbers total."
+            },
+            {
+                text: "An abacus shows a 3-digit number. It has 6 beads in the Hundreds column, 3 beads in the Tens column, and 4 beads in the Ones column. Which of the following numbers is greater than the number shown on the abacus?",
+                options: ["629", "599", "631", "712"],
+                answer: 3,
+                image: "assets/abacus.png",
+                hint: "First find the value of the abacus (6 hundreds, 3 tens, 4 ones). Then look for an option that is a bigger number than that value.",
+                explanation: "The abacus shows the number 634. Comparing the options, 712 is the only number that is greater than 634."
+            },
+            {
+                text: "Four bowls are filled with soup, and each bowl shows a different place value. Bowl W has 24 tens, Bowl X has 32 tens, Bowl Y has 4 hundreds, and Bowl Z has 90 ones. Which bowl shows the largest value?",
+                options: ["Bowl W", "Bowl X", "Bowl Y", "Bowl Z"],
+                answer: 2,
+                image: "assets/bowls.png",
+                hint: "Convert each value into a standard number: 1 hundred = 100, 1 ten = 10, and 1 one = 1. Then compare them!",
+                explanation: "Let's find the values: Bowl W = 240 (24 x 10), Bowl X = 320 (32 x 10), Bowl Y = 400 (4 x 100), and Bowl Z = 90 (90 x 1). 400 is the biggest number, so Bowl Y has the largest value."
             }
         ];
 
-        // QUIZ GAME ENGINE OBJECT
+        // GAME OPERATIONS MANAGEMENT OBJECT
         const gameEngine = {
             currentQuestionIndex: 0,
             score: 0,
@@ -499,17 +556,16 @@
             isMuted: false,
 
             init() {
-                // Initial 5-second splash transition
+                // Fixed 5-second entry configuration framework
                 setTimeout(() => {
                     const intro = document.getElementById('intro-view');
                     intro.classList.add('fade-out');
                     document.getElementById('instruction-view').classList.add('active');
                     
-                    // Fixed: Cleanly remove overlay from layout tree once opacity finishes animating
                     intro.addEventListener('transitionend', () => {
                         intro.style.display = 'none';
                     });
-                }, 5000); // Configured to 5 seconds
+                }, 5000);
             },
 
             startQuiz() {
@@ -522,7 +578,6 @@
                 this.attempts = 0;
                 this.timeLeft = 60;
                 
-                // Reset UI elements
                 document.getElementById('feedback-display').style.display = 'none';
                 document.getElementById('feedback-display').className = 'feedback-box';
                 document.getElementById('btn-next').style.display = 'none';
@@ -531,6 +586,18 @@
                 document.getElementById('q-counter').innerText = `Question: ${this.currentQuestionIndex + 1}/${questionsDatabase.length}`;
                 document.getElementById('score-counter').innerText = `Score: ${this.score}`;
                 document.getElementById('q-txt').innerText = qData.text;
+
+                // Handle visual media rendering logic blocks
+                const imgContainer = document.getElementById('q-img-container');
+                const imgElem = document.getElementById('q-img');
+                
+                if (qData.image) {
+                    imgElem.src = qData.image;
+                    imgContainer.style.display = 'block';
+                } else {
+                    imgContainer.style.display = 'none';
+                    imgElem.src = '';
+                }
 
                 const optionsBox = document.getElementById('options-box');
                 optionsBox.innerHTML = '';
@@ -571,7 +638,6 @@
                     this.playSound('correct');
                     this.triggerWinEffects();
                     
-                    // Award points dynamically based on attempts
                     if (this.attempts === 1) this.score += 5;
                     else this.score += 2;
                     
@@ -583,13 +649,11 @@
                     this.playSound('wrong');
 
                     if (this.attempts === 1) {
-                        // First bad attempt -> Display Hint
                         const feedback = document.getElementById('feedback-display');
                         feedback.innerText = `💡 Hint: ${qData.hint}`;
                         feedback.className = 'feedback-box hint';
                         feedback.style.display = 'block';
                     } else {
-                        // Second bad attempt -> Out of options
                         clearInterval(this.timer);
                         this.revealSystemExplanation(false);
                     }
@@ -600,7 +664,6 @@
                 const qData = questionsDatabase[this.currentQuestionIndex];
                 const feedback = document.getElementById('feedback-display');
                 
-                // Disable remaining buttons
                 const buttons = document.querySelectorAll('.option-btn');
                 buttons.forEach((btn, idx) => {
                     btn.disabled = true;
@@ -630,8 +693,9 @@
                 document.getElementById('game-view').classList.remove('active');
                 document.getElementById('result-view').classList.add('active');
 
-                // Perfect max score calculation: 20 items * 5 points max = 100 max raw units
-                const percentage = Math.round((this.score / 100) * 100);
+                // Dynamic raw percentage calculation system based on maximum threshold variables
+                const maxPossibleScore = questionsDatabase.length * 5; 
+                const percentage = Math.round((this.score / maxPossibleScore) * 100);
                 document.getElementById('final-score').innerText = `${percentage}%`;
 
                 let reviewMsg = "Keep practicing! You can do it!";
@@ -651,7 +715,7 @@
                 const audio = document.getElementById(`snd-${type}`);
                 if (audio) {
                     audio.currentTime = 0;
-                    audio.play().catch(() => {/* Handle browser block safely */});
+                    audio.play().catch(() => {});
                 }
             },
 
@@ -677,7 +741,7 @@
                     particles.forEach(p => {
                         p.x += p.vx;
                         p.y += p.vy;
-                        p.vy += 0.1; // gravity
+                        p.vy += 0.1;
                         p.alpha -= 0.02;
                         if (p.alpha > 0) {
                             ongoing = true;
@@ -695,7 +759,6 @@
             }
         };
 
-        // Fire up execution framework when loading the DOM context
         window.onload = () => gameEngine.init();
     </script>
 </body>
