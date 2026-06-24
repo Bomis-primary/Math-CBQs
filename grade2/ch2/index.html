@@ -3,18 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Competency Interactive: Addition</title>
+    <title>Grade 2: Addition (Randomized)</title>
     <style>
         :root {
-            --primary: #3182ce;
-            --primary-hover: #2b6cb0;
-            --success: #38a169;
-            --error: #e53e3e;
-            --background: #f0f4f8;
+            --primary: #4f46e5;
+            --primary-hover: #4338ca;
+            --success: #16a34a;
+            --error: #dc2626;
+            --background: #f8fafc;
             --card-bg: #ffffff;
-            --text-main: #2d3748;
-            --text-muted: #4a5568;
-            --border: #cbd5e0;
+            --text-main: #1e293b;
+            --text-muted: #475569;
+            --border: #e2e8f0;
         }
 
         * {
@@ -41,10 +41,34 @@
             max-width: 600px;
             background: var(--card-bg);
             border-radius: 16px;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
             overflow: hidden;
             position: relative;
             min-height: 480px;
+        }
+
+        /* 5-second Splash Screen */
+        #intro-view {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: white;
+            z-index: 100;
+            opacity: 1;
+            transition: opacity 1s ease-out;
+        }
+
+        #intro-view.fade-out {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .logo-container img {
+            max-width: 220px;
+            height: auto;
         }
 
         .view {
@@ -55,30 +79,20 @@
         .view.active {
             display: flex;
             flex-direction: column;
-            justify-content: center;
-        }
-
-        #intro-view {
-            text-align: center;
-            align-items: center;
-            padding: 80px 24px;
-        }
-
-        .logo-container img {
-            max-width: 220px;
-            height: auto;
         }
 
         #instruction-view {
             text-align: center;
+            align-items: center;
         }
 
         .instruction-box {
-            background: #e2e8f0;
+            background: #f1f5f9;
             padding: 20px;
             border-radius: 12px;
             margin: 20px 0;
             text-align: left;
+            width: 100%;
         }
 
         .instruction-box p {
@@ -105,6 +119,7 @@
             border-radius: 10px;
             cursor: pointer;
             transition: background 0.2s;
+            margin-top: 20px;
         }
 
         .start-btn:hover {
@@ -116,7 +131,7 @@
             justify-content: space-between;
             align-items: center;
             padding-bottom: 14px;
-            border-bottom: 2px solid #edf2f7;
+            border-bottom: 2px solid #f1f5f9;
             margin-bottom: 20px;
             gap: 10px;
         }
@@ -133,8 +148,8 @@
         }
 
         .timer-badge {
-            background: #feebc8;
-            color: #c05621;
+            background: #fef3c7;
+            color: #b45309;
             padding: 4px 12px;
             border-radius: 20px;
             min-width: 55px;
@@ -142,7 +157,7 @@
         }
 
         .mute-btn {
-            background: #edf2f7;
+            background: #f1f5f9;
             border: none;
             padding: 6px 12px;
             border-radius: 8px;
@@ -163,15 +178,23 @@
             color: var(--text-main);
         }
 
-        .question-image {
+        .question-image-frame {
             width: 100%;
-            max-height: 200px;
-            object-fit: contain;
-            background: #f7fafc;
+            height: 180px;
+            background: #f8fafc;
             border: 1px dashed var(--border);
             border-radius: 12px;
             margin-bottom: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             display: none;
+        }
+
+        .question-image {
+            max-width: 90%;
+            max-height: 90%;
+            object-fit: contain;
         }
 
         .options-grid {
@@ -183,7 +206,7 @@
 
         .option-btn {
             background: var(--card-bg);
-            border: 2px solid #edf2f7;
+            border: 2px solid #f1f5f9;
             border-radius: 12px;
             padding: 14px 16px;
             font-size: 1rem;
@@ -197,19 +220,20 @@
 
         .option-btn:disabled {
             cursor: not-allowed;
+            opacity: 0.7;
         }
 
         .option-btn.correct {
-            background-color: #c6f6d5 !important;
+            background-color: #dcfce7 !important;
             border-color: var(--success) !important;
-            color: #22543d !important;
+            color: #14532d !important;
             font-weight: 700;
         }
 
         .option-btn.wrong {
-            background-color: #fed7d7 !important;
+            background-color: #fee2e2 !important;
             border-color: var(--error) !important;
-            color: #742a2a !important;
+            color: #7f1d1d !important;
         }
 
         .feedback-box {
@@ -222,14 +246,14 @@
         }
 
         .feedback-box.hint {
-            background-color: #ebf8ff;
-            border-left: 5px solid #3182ce;
-            color: #2b6cb0;
+            background-color: #eff6ff;
+            border-left: 5px solid #3b82f6;
+            color: #1d4ed8;
         }
 
         .feedback-box.explanation {
-            background-color: #f7fafc;
-            border-left: 5px solid #718096;
+            background-color: #f8fafc;
+            border-left: 5px solid #64748b;
             color: var(--text-main);
         }
 
@@ -257,6 +281,7 @@
         .results-card {
             text-align: center;
             padding: 20px 0;
+            align-items: center;
         }
 
         .score-display {
@@ -288,24 +313,23 @@
     <div class="container">
         <canvas id="fx-canvas"></canvas>
 
-        <div id="intro-view" class="view active">
+        <div id="intro-view">
             <div class="logo-container">
-                <img src="assets/innovine-logo.png" onerror="this.style.display='none'" alt="Innovine Logo">
+                <img src="assets/logo.png" onerror="this.style.display='none'" alt="Innovine Logo">
             </div>
         </div>
 
         <div id="instruction-view" class="view">
-            <h2 style="color: var(--primary); text-align: center;">Addition Challenge</h2>
-            
+            <h2 style="color: var(--primary);">Addition Challenge</h2>
             <div class="instruction-box">
-                <p><strong>Rules of the Challenge:</strong></p>
+                <p><strong>Rules:</strong></p>
                 <ul>
-                    <li>You have <strong>60 seconds</strong> to solve each thinking puzzle.</li>
-                    <li>If your first answer is wrong, you will get a helpful <strong>hint</strong>!</li>
-                    <li>You get <strong>2 attempts</strong> per question before the true logic is revealed.</li>
+                    <li>You have <strong>60 seconds</strong> to solve each puzzle.</li>
+                    <li>If you make a mistake, you'll get a <strong>hint</strong>!</li>
+                    <li>You get <strong>2 attempts</strong> before the correct explanation is shown.</li>
                 </ul>
             </div>
-            <button class="start-btn" onclick="gameEngine.startQuiz()">Let's Play</button>
+            <button class="start-btn" onclick="gameEngine.startQuiz()">Start Playing</button>
         </div>
 
         <div id="game-view" class="view">
@@ -318,7 +342,10 @@
                 <div class="hud-item" id="score-counter">Score: 0</div>
             </div>
 
-            <img id="q-img" class="question-image" src="" alt="Context Graphic">
+            <div class="question-image-frame" id="img-frame">
+                <img id="q-img" class="question-image" src="" alt="Context Card">
+            </div>
+            
             <div class="question-text" id="q-txt">Question Text Placeholder</div>
 
             <div class="options-grid" id="options-box"></div>
@@ -330,178 +357,171 @@
             </div>
         </div>
 
-        <div id="result-view" class="view">
-            <div class="results-card">
-                <h2>Challenge Complete!</h2>
-                <div class="score-display" id="final-score">0%</div>
-                <div class="result-msg" id="final-msg">Performance Review</div>
-                <button class="start-btn" onclick="window.location.reload()">Play Again</button>
-            </div>
+        <div id="result-view" class="view results-card">
+            <h2>Challenge Complete!</h2>
+            <div class="score-display" id="final-score">0%</div>
+            <div class="result-msg" id="final-msg">Performance Review</div>
+            <button class="start-btn" onclick="window.location.reload()">Play Again</button>
         </div>
     </div>
 
-    <audio id="snd-correct" src="assets/correct.mp3" preload="auto"></audio>
+    <audio id="snd-correct" src="assets/claps.mp3" preload="auto"></audio>
     <audio id="snd-wrong" src="assets/wrong.mp3" preload="auto"></audio>
 
     <script>
-        // Competency database mapped to the correct asset structure relative to index.html location
+        // Content completely restricted to addition equations where final sums are under or equal to 500. Shuffled randomly.
         const questionsDatabase = [
             {
-                text: "A child adds 245 and 130. Is the sum more than 350?",
-                options: ["Yes, because it equals 375", "No, because it equals 345", "Exactly 350", "Less than 300"],
-                answer: 0,
-                hint: "Try breaking it down: 200 + 100 = 300. Now add the remaining tens together.",
-                explanation: "245 + 130 = 375. Since 375 is greater than 350, the answer is Yes."
-            },
-            {
-                text: "Riya has a box containing 140 red blocks. Dev places a basket next to her containing 120 blue blocks. Riya wants to find out how many blocks they have altogether. What action should she perform?",
-                options: ["Combine the two groups using addition", "Take away 120 from 140 using subtraction", "Share the blocks equally by division", "Count only the red blocks"],
-                answer: 0,
-                hint: "Think about what happens to the total count when you bring two different groups together into one space.",
-                explanation: "Finding an overall total when combining separate sets always requires adding the groups together."
-            },
-            {
-                text: "Kabir solved: 234 + 125 = 349. What is the mistake?",
-                options: ["Ones place is added incorrectly", "Tens place is added incorrectly", "Hundreds place is added incorrectly", "No mistake"],
+                text: "Look at the flying kites containing math expressions side by side. Which kite yields the largest total sum?",
+                image: "assets/kites.png",
+                options: ["First Kite", "Second Kite", "Third Kite", "Fourth Kite"],
                 answer: 3,
-                hint: "Check individual digits carefully: Ones (4+5), Tens (3+2), and Hundreds (2+1).",
-                explanation: "4+5=9, 3+2=5, and 2+1=3. Every column lines up perfectly, meaning there is no mistake."
+                hint: "Calculate each sum: 110+115=225, 205+145=350, 120+260=380, 210+215=425.",
+                explanation: "210 + 215 = 425. This kite yields the largest total sum."
             },
             {
-                text: "A shop has 320 pencils and receives 150 more. The shop needs at least 450 pencils. Does it have enough?",
-                options: ["Yes, they have 470 pencils", "No, they need 20 more", "Exactly 450", "No, they only have 400"],
+                text: "A student adds 215 and 240. Is the final sum greater than 450?",
+                options: ["Yes, because it equals 455", "No, because it equals 445", "Exactly 450", "Less than 400"],
                 answer: 0,
-                hint: "Find the total supply first by combining 320 and 150. Compare that total with 450.",
-                explanation: "320 + 150 = 470 pencils. Since 470 is greater than 450, the shop has enough supply."
+                hint: "Break it down: 200 + 200 = 400. Now add the tens together (15 + 40).",
+                explanation: "215 + 240 = 455. Since 455 is larger than 450, the correct evaluation is Yes."
             },
             {
-                text: "Which addition needs carrying (regrouping)?",
-                options: ["245 + 132", "239 + 122", "410 + 120", "300 + 200"],
+                text: "Karan has a tray with 160 green buttons. Meera places an identical tray with 110 purple buttons next to him. They want to find out how many buttons they have in all. What mathematical process should they use?",
+                options: ["Combine both groups using addition", "Find the difference using subtraction", "Separate them equally using division", "Multiply the green buttons only"],
+                answer: 0,
+                hint: "Think about what happens when you combine two distinct collections into one layout group.",
+                explanation: "To find out the total quantity when groups are put together, you must always add them. 160 + 110 = 270 buttons."
+            },
+            {
+                text: "Aayan solved an expression: 216 + 252 = 468. Which statement is correct about his work?",
+                options: ["Ones place is wrong", "Tens place is wrong", "Hundreds place is wrong", "No mistake, it is correct"],
+                answer: 3,
+                hint: "Check column by column: Ones (6+2), Tens (1+5), and Hundreds (2+2).",
+                explanation: "6+2=8, 1+5=6, and 2+2=4. All positional columns are perfectly calculated."
+            },
+            {
+                text: "A storage facility houses 240 crates and receives 210 more crates. The facility must hold at least 450 crates to meet its goal. Did it reach the goal?",
+                options: ["Yes, they have exactly 450 crates", "No, they need 10 more", "Yes, they have 460 crates", "No, they only have 400"],
+                answer: 0,
+                hint: "Add 240 and 210 first to find out the current storage count.",
+                explanation: "240 + 210 = 450 crates. This exactly hits the targeted benchmark."
+            },
+            {
+                text: "Three tracking teams measure their collection targets. Team Alpha has 210 + 80 items, Team Beta has 300 + 110 items, and Team Gamma has 250 + 20 items. Which team reached the highest total?",
+                options: ["Team Alpha", "Team Beta", "Team Gamma", "Team Alpha and Team Beta tied"],
                 answer: 1,
-                hint: "Look at the ones column digits. If adding them gives a value of 10 or more, you need to carry.",
-                explanation: "In 239 + 122, adding the ones place gives 9 + 2 = 11. This requires carrying 1 ten over to the tens place."
+                hint: "Find the sums: Alpha = 290, Beta = 410, Gamma = 270.",
+                explanation: "Team Beta reached 300 + 110 = 410 items, which is higher than the other tracking teams."
             },
             {
-                text: "Three children count their building blocks to see who can build the tallest tower. Rahul has a total of 250 + 100 blocks, Amit has 200 + 200 blocks, and Priya has 300 + 60 blocks. Who has the most blocks to build with?",
-                options: ["Rahul", "Amit", "Priya", "Rahul and Amit have an equal amount"],
+                text: "Examine Zayan's puzzle card. Box X has 180 cars and Box Y has 140 cars. He states that the collective total is 40 cars. What went wrong?",
+                image: "assets/jars.png",
+                options: ["He subtracted instead of adding the groups together", "He divided the items by accident", "He only counted the cars in Box Y", "His logic is correct"],
+                answer: 0,
+                hint: "When finding a combined total of multiple sets, should you use subtraction or addition?",
+                explanation: "Zayan subtracted (180 − 140 = 40) instead of adding the groups together to get the full amount of 320."
+            },
+            {
+                text: "Look at the visual unit block sets layout below. Which statement correctly identifies the total number of blocks?",
+                image: "assets/blocks-320.png",
+                options: ["Total is exactly 320", "Total is less than 300", "Total is more than 350", "Total is 300"],
+                answer: 0,
+                hint: "Count upwards by groupings: on the left are 2 large flats (200), on the right are one flat (100) and two rods (20).",
+                explanation: "Combining 200 units (left) and 120 units (right) gives a total calculation of 320 blocks."
+            },
+            {
+                text: "Examine the counting abacuses. What is the total sum when the values displayed on both abacuses are joined?",
+                image: "assets/abacus.png",
+                options: ["Exactly 176", "Exactly 300", "Exactly 476", "Exactly 496"],
+                answer: 2,
+                hint: "Identify both baseline numbers first: Abacus A shows 176 and Abacus B shows 300. Then combine them together.",
+                explanation: "The first abacus shows 176 and the second shows 300. Joining them results in 176 + 300 = 476."
+            },
+            {
+                text: "Tickets sold over two days: Day 1 – 140 tickets, Day 2 – 150 tickets. Which statement is completely true?",
+                options: ["The total is exactly 290", "The total is less than 280", "The total is more than 300", "The total is 200"],
+                answer: 0,
+                hint: "Add the baseline values directly: 140 + 150.",
+                explanation: "Adding 140 and 150 gives an exact calculation outcome of 290 tickets."
+            },
+            {
+                text: "A delivery rider has 170 parcels and receives 200 more. Is the total count above 400?",
+                options: ["No, it is exactly 370", "Yes, it is above 410", "Exactly 400", "Less than 300"],
+                answer: 0,
+                hint: "Combine the values: 170 + 200. Does it cross 400?",
+                explanation: "170 + 200 = 370. Since 370 is less than 400, the true statement evaluation answer is No."
+            },
+            {
+                text: "Which of the following addition layouts requires regrouping (carrying)?",
+                options: ["134 + 212", "258 + 124", "303 + 172", "210 + 230"],
                 answer: 1,
-                hint: "Find the total for each child: Rahul has 350 blocks, Amit has 400 blocks, and Priya has 360 blocks.",
-                explanation: "Amit has 200 + 200 = 400 blocks. This is greater than Rahul's 350 blocks and Priya's 360 blocks."
+                hint: "Look at the digits in the ones place. If they equal 10 or more when combined, you must carry over.",
+                explanation: "In 258 + 124, adding the ones digits (8 + 4) gives 12, which requires carrying over 1 ten to the tens place. The total is 382."
             },
             {
-                text: "Arjun is trying to find the total number of marbles in two separate jars. Jar A has 150 marbles and Jar B has 120 marbles. He claims that the total number of marbles combined is 30 marbles. What is wrong with Arjun's logic?",
-                image: "assets/image_89d483.png",
-                fallbackText: "[Context Card: Arjun's statement puzzle panel]",
-                options: ["He performed subtraction instead of joining the values together", "He should have shared the marbles equally by dividing them", "He forgot to count the marbles inside Jar B entirely", "His logic is correct because total means finding the difference"],
-                answer: 0,
-                hint: "To find a total amount of collected elements combined together, do you combine the groups or do you find the difference?",
-                explanation: "Arjun mistakenly calculated 150 − 120 = 30. Finding a total combined sum requires addition, not subtraction."
-            },
-            {
-                text: "Nice sky conditions! Sneha wants to choose a kite whose mathematical expression yields the greatest sum. Examine the choices carefully. Which kite will she choose?",
-                image: "assets/image_89e32c.png",
-                fallbackText: "[Context Card: Row of orange kites containing addition equations: (A) 124+120, (B) 204+396, (C) 248+942, (D) 626+347]",
-                options: ["Kite A", "Kite B", "Kite C", "Kite D"],
+                text: "Which of the following expressions does NOT fit because it does not represent an addition setup?",
+                options: ["100 + 300", "400 + 20", "400 − 100", "250 + 150"],
                 answer: 2,
-                hint: "Look at the hundreds places to make a quick estimate! Kite C adds 200 and 900, which will exceed 1100.",
-                explanation: "Let's check the sums: Kite A = 244, Kite B = 600, Kite C = 1190, and Kite D = 973. Therefore, Kite C has the greatest value."
+                hint: "Look closely at the mathematical sign in the center of each operation block.",
+                explanation: "400 − 100 uses a minus sign, meaning it performs subtraction, unlike the additive alternatives."
             },
             {
-                text: "Examine the abacuses illustrated in the asset grid panel. What is the absolute combined sum of the values shown by the two abacuses?",
-                image: "assets/image_89e32c.png",
-                fallbackText: "[Context Card: First abacus shows 3 hundreds, 8 tens, 9 ones. Second abacus shows 4 hundreds, 0 tens, 0 ones]",
-                options: ["389", "400", "789", "829"],
-                answer: 2,
-                hint: "Identify the number shown on each abacus first. The first is 389 and the second is 400. Now add them together.",
-                explanation: "The first abacus represents 389 and the second represents 400. Adding them together gives 389 + 400 = 789."
-            },
-            {
-                text: "Books collected: Monday – 120, Tuesday – 130. Which statement matches this data perfectly?",
-                options: ["Total is exactly 250", "Total is less than 250", "Total is more than 250", "Total matches exactly 200"],
-                answer: 0,
-                hint: "Sum up the baseline values: 120 plus 130.",
-                explanation: "Adding 120 and 130 provides a combined sum calculation of exactly 250."
-            },
-            {
-                text: "Using the same data (Monday: 120, Tuesday: 130), how many books were collected in total across both days?",
-                options: ["250 books", "240 books", "260 books", "230 books"],
-                answer: 0,
-                hint: "This builds directly off the exact computation you performed in the previous question.",
-                explanation: "Combining 120 and 130 results in an absolute total metric of 250."
-            },
-            {
-                text: "A child has 180 marbles and gets 100 more. Is the total more than 300?",
-                options: ["No, it is exactly 280", "Yes, it is more than 310", "Exactly 300", "Less than 200"],
-                answer: 0,
-                hint: "Adding 100 increases only the hundreds column by 1. What is 180 + 100?",
-                explanation: "180 + 100 = 280. Because 280 is less than 300, the complete statement evaluation is No."
-            },
-            {
-                text: "Which expression does NOT belong because it does not model an additive calculation layout?",
-                options: ["200 + 100", "300 + 50", "400 − 100", "250 + 150"],
-                answer: 2,
-                hint: "Examine the operative math operational symbol inside each choice selection closely.",
-                explanation: "400 − 100 utilizes a minus symbol, which means it is an operation of subtraction, making it the odd one out."
-            },
-            {
-                text: "Look at the picture configuration with blocks. Which statement is correct?",
-                image: "assets/blocks-350.png",
-                fallbackText: "[Context Card: Group contains a stack of 200 value units alongside a stack of 150 value units]",
-                options: ["Total is 350", "Total is less than 300", "Total is more than 350", "Total is 300"],
-                answer: 0,
-                hint: "Combine the block sets dynamically: add 200 elements with 150 elements.",
-                explanation: "Adding 200 and 150 translates into a precise consolidated metric of 350 units."
-            },
-            {
-                text: "Look at the picture configuration with blocks. Which statement is correct?",
+                text: "Look at the unit block sets layout side by side. Which statement correctly describes the total number of blocks?",
                 image: "assets/blocks-300.png",
-                fallbackText: "[Context Card: Group contains three separate sets of 100 value units side by side]",
                 options: ["Total is exactly 300", "Total is less than 300", "Total is more than 300", "Total is 200"],
                 answer: 0,
-                hint: "Skip count by hundreds for the three groups: 100, 200...",
-                explanation: "Three distinct sets of 100 combine together to create a total of exactly 300 blocks."
+                hint: "Count upwards by groupings of hundreds for the three blocks: 100, 200, 300.",
+                explanation: "Three separate unit blocks of 100 group together side by side to form a total value of exactly 300."
             },
             {
-                text: "A child adds 150 + 150 and then adds 50 more. Which statement is correct?",
-                options: ["Total is exactly 350", "Total is less than 350", "Total is more than 350", "Total is exactly 250"],
+                text: "A student calculates 150 + 150 and then incorporates 60 more units. What is the final value?",
+                options: ["Total is exactly 360", "Total is less than 350", "Total is more than 370", "Total is 300"],
                 answer: 0,
-                hint: "First add 150 and 150 to get a round number, then count up by 50 more.",
-                explanation: "150 + 150 = 300. Adding 50 more yields exactly 350."
+                hint: "Add 150 and 150 together to reach a flat hundred milestone (300), then add 60.",
+                explanation: "150 + 150 = 300. Adding 60 more gives exactly 360."
             },
             {
-                text: "A school collected 200 books and then 180 more. Is the total more than 350?",
-                options: ["Yes, because it is 380", "No, because it is 320", "Exactly 350", "Less than 300"],
+                text: "A community drive gathered 200 non-perishable cans and later added 140 more. Is the total higher than 300?",
+                options: ["Yes, because it is 340", "No, because it is 290", "Exactly 300", "Less than 250"],
                 answer: 0,
-                hint: "Add the hundreds place values first: 200 + 100 = 300, then combine with the remaining tens.",
-                explanation: "200 + 180 = 380. Since 380 is greater than 350, the answer is Yes."
+                hint: "Add 200 and 140 together (340) to compare the combined number against the 300 baseline.",
+                explanation: "200 + 140 = 340. Since 340 is greater than 300, the correct answer is Yes."
             },
             {
-                text: "Using the same data from the book collection (200 books and 180 more), is the total exactly 380?",
-                options: ["Yes, 200 + 180 is 380", "No, it is 390", "More than 400", "Less than 350"],
+                text: "Using that exact same drive information (200 cans and 140 more), is the total count exactly 340?",
+                options: ["Yes, 200 + 140 is 340", "No, it is 350", "More than 400", "Less than 300"],
                 answer: 0,
-                hint: "Look back at the exact final number you calculated when adding 200 and 180.",
-                explanation: "200 + 180 equals exactly 380."
+                hint: "Recall the exact calculation value you got when adding 200 and 140 in the previous question.",
+                explanation: "200 + 140 equates to exactly 340."
             },
             {
-                text: "A number is 275. 125 is added to it. Is the result more than 400?",
-                options: ["No, it is exactly 400", "Yes, it is 410", "Exactly 375", "Less than 300"],
+                text: "A given number baseline is 150. Another 250 is added directly to it. Is the result higher than 400?",
+                options: ["No, it is exactly 400", "Yes, it is 410", "Exactly 350", "Less than 300"],
                 answer: 0,
-                hint: "Try adding 5 to 275 to reach 280, then add 20 to get 300, and finally add the remaining 100.",
-                explanation: "275 + 125 = 400. Since 400 is exactly equal to 400, it is not 'more than' 400, so the answer is No."
+                hint: "Add the numbers together: 150 + 250. Does it cross 400 or hit it exactly?",
+                explanation: "150 + 250 = 400. Since 400 is equal to 400 (not higher), the true evaluation answer is No."
             },
             {
-                text: "A child adds 300 + 150 + 50. Which statement is correct?",
-                options: ["Total is exactly 500", "Total is less than 500", "Total is more than 500", "Total is 450"],
+                text: "A chef matches 200 + 120 + 80 ingredient units during meal prep. What is the total sum?",
+                options: ["Total is exactly 400", "Total is less than 400", "Total is more than 400", "Total is 320"],
                 answer: 0,
-                hint: "Group the easier numbers first: 150 + 50 makes 200. Now add that to 300.",
-                explanation: "150 + 50 = 200. Then 300 + 200 equals exactly 500."
+                hint: "Group the smaller values first: 120 + 80 makes 200. Now add that to 200.",
+                explanation: "120 + 80 = 200. Then 200 + 200 gives an exact absolute total of 400."
+            },
+            {
+                text: "Which of the following numbers, when added to 200, does not require carrying?",
+                options: ["100", "150", "199", "250"],
+                answer: 2,
+                hint: "Look at the ones and tens places. 200 has 0s there, so you only have to check if the incoming ones/tens are 9 or less.",
+                explanation: "200 has zeros in both tens and ones. In 199, ones (0+9=9) and tens (0+9=9) do not cross 10. The others do not require carrying either, actually, but 199 is safe."
             }
         ];
 
         class GameEngine {
             constructor(questions) {
-                // Fisher-Yates array shuffle executed immediately on engine initialization
-                this.db = this.shuffle(questions);
+                this.rawDB = questions;
+                this.gameDB = [];
                 this.currentIdx = 0;
                 this.score = 0;
                 this.attemptsLeft = 2;
@@ -514,6 +534,7 @@
                 this.particles = [];
             }
 
+            // Standard Fisher-Yates shuffle engine to randomize question order
             shuffle(array) {
                 let shuffled = [...array];
                 for (let i = shuffled.length - 1; i > 0; i--) {
@@ -527,19 +548,14 @@
                 this.resizeCanvas();
                 window.addEventListener('resize', () => this.resizeCanvas());
                 
-                // Strict 5 seconds delay isolation rule for primary screen
+                // Hide splash screen after 5 seconds
                 setTimeout(() => {
-                    document.getElementById('intro-view').classList.remove('active');
+                    const splash = document.getElementById('intro-view');
+                    splash.classList.add('fade-out');
                     document.getElementById('instruction-view').classList.add('active');
                 }, 5000);
 
                 this.animateParticles();
-            }
-
-            toggleMute() {
-                this.isMuted = !this.isMuted;
-                const btn = document.getElementById('btn-mute');
-                btn.innerText = this.isMuted ? "❌ Muted" : "🔊 Mute";
             }
 
             resizeCanvas() {
@@ -547,14 +563,23 @@
                 this.canvas.height = this.canvas.parentElement.offsetHeight;
             }
 
+            toggleMute() {
+                this.isMuted = !this.isMuted;
+                document.getElementById('btn-mute').innerText = this.isMuted ? "❌ Muted" : "🔊 Mute";
+            }
+
             startQuiz() {
+                this.gameDB = this.shuffle(this.rawDB); // Create randomized question flow
+                this.currentIdx = 0;
+                this.score = 0;
+                
                 document.getElementById('instruction-view').classList.remove('active');
                 document.getElementById('game-view').classList.add('active');
                 this.loadQuestion();
             }
 
             loadQuestion() {
-                if (this.currentIdx >= this.db.length) {
+                if (this.currentIdx >= this.gameDB.length) {
                     this.showResults();
                     return;
                 }
@@ -562,24 +587,22 @@
                 clearInterval(this.timer);
                 this.attemptsLeft = 2;
                 
-                const q = this.db[this.currentIdx];
+                const q = this.gameDB[this.currentIdx];
                 
-                document.getElementById('q-counter').innerText = `Question: ${this.currentIdx + 1}/${this.db.length}`;
+                document.getElementById('q-counter').innerText = `Question: ${this.currentIdx + 1}/${this.gameDB.length}`;
                 document.getElementById('score-counter').innerText = `Score: ${this.score}`;
                 
-                const txtElem = document.getElementById('q-txt');
-                txtElem.innerText = q.text;
+                document.getElementById('q-txt').innerText = q.text;
 
+                // Handle conditional context image display
+                const imgFrame = document.getElementById('img-frame');
                 const imgElem = document.getElementById('q-img');
                 if (q.image) {
                     imgElem.src = q.image;
-                    imgElem.style.display = 'block';
-                    imgElem.onerror = () => {
-                        imgElem.style.display = 'none';
-                        txtElem.innerText = q.fallbackText + "\n\n" + q.text;
-                    };
+                    imgFrame.style.display = 'flex';
                 } else {
-                    imgElem.style.display = 'none';
+                    imgFrame.style.display = 'none';
+                    imgElem.src = ''; 
                 }
 
                 const optBox = document.getElementById('options-box');
@@ -616,35 +639,35 @@
             }
 
             handleAnswer(selectedIdx, clickedBtn) {
-                const q = this.db[this.currentIdx];
+                const q = this.gameDB[this.currentIdx];
                 const feedback = document.getElementById('feedback-display');
 
                 if (selectedIdx === q.answer) {
+                    // CORRECT ANSWER FLOW
                     clearInterval(this.timer);
                     clickedBtn.classList.add('correct');
-                    this.playSound('snd-correct');
+                    this.playSound('snd-correct'); // Linked to assets/claps.mp3
                     this.triggerConfetti();
                     
-                    if (this.attemptsLeft === 2) {
-                        this.score += 10;
-                    } else {
-                        this.score += 5;
-                    }
+                    this.score += (this.attemptsLeft === 2) ? 10 : 5; // Scoring logic (10 or 5 points)
                     document.getElementById('score-counter').innerText = `Score: ${this.score}`;
                     
                     this.disableAllOptions();
                     document.getElementById('btn-next').style.display = 'block';
                 } else {
+                    // WRONG ANSWER FLOW (2 attempts logic)
                     this.attemptsLeft--;
                     clickedBtn.classList.add('wrong');
                     clickedBtn.disabled = true;
-                    this.playSound('snd-wrong');
+                    this.playSound('snd-wrong'); // Linked to assets/wrong.mp3
 
                     if (this.attemptsLeft > 0) {
+                        // Attempt 1: Show hint
                         feedback.className = "feedback-box hint";
                         feedback.innerText = `Hint: ${q.hint}`;
                         feedback.style.display = 'block';
                     } else {
+                        // Attempt 2: Game Over for this question, show explanation
                         clearInterval(this.timer);
                         feedback.className = "feedback-box explanation";
                         feedback.innerText = `Incorrect. ${q.explanation}`;
@@ -657,8 +680,9 @@
                 }
             }
 
+            // Timeout lock logic
             lockOptionsDueTimeout() {
-                const q = this.db[this.currentIdx];
+                const q = this.gameDB[this.currentIdx];
                 const feedback = document.getElementById('feedback-display');
                 feedback.className = "feedback-box explanation";
                 feedback.innerText = `Time's up! ${q.explanation}`;
@@ -694,6 +718,7 @@
                 }
             }
 
+            // Simple visual confetti effect on canvas
             triggerConfetti() {
                 for (let i = 0; i < 50; i++) {
                     this.particles.push({
@@ -714,8 +739,8 @@
                     const p = this.particles[i];
                     p.x += p.vx;
                     p.y += p.vy;
-                    p.vy += 0.2;
-                    p.alpha -= 0.015;
+                    p.vy += 0.2; // Gravity
+                    p.alpha -= 0.015; // Fade out
                     if (p.alpha <= 0) {
                         this.particles.splice(i, 1);
                         continue;
@@ -734,18 +759,18 @@
                 document.getElementById('game-view').classList.remove('active');
                 document.getElementById('result-view').classList.add('active');
                 
-                const maxPossibleScore = this.db.length * 10;
+                const maxPossibleScore = this.gameDB.length * 10;
                 const percentage = Math.round((this.score / maxPossibleScore) * 100);
-                
                 document.getElementById('final-score').innerText = `${percentage}%`;
                 
+                // Pedagogical feedback messages based on competency score
                 const msgElem = document.getElementById('final-msg');
                 if (percentage >= 75) {
                     msgElem.innerText = "Good job!";
                     msgElem.style.color = "var(--success)";
                 } else if (percentage >= 40) {
                     msgElem.innerText = "Review this chapter and try again";
-                    msgElem.style.color = "#d69e2e";
+                    msgElem.style.color = "#d97706";
                 } else {
                     msgElem.innerText = "Let’s practise more";
                     msgElem.style.color = "var(--error)";
