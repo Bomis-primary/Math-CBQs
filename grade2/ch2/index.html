@@ -1,281 +1,661 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Addition Up To 20 CBQ</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Grade 2 - Chapter 2: Addition (Part 2) CBQ Interactive</title>
+    <style>
+        :root {
+            --primary: #3182ce;
+            --primary-hover: #2b6cb0;
+            --success: #38a169;
+            --error: #e53e3e;
+            --background: #f0f4f8;
+            --card-bg: #ffffff;
+            --text-main: #2d3748;
+            --text-muted: #4a5568;
+            --border: #cbd5e0;
+        }
 
-<style>
-body{
-  margin:0;
-  font-family:Arial;
-  background:#fff;
-}
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
 
-/* SCREENS */
-.screen{
-  display:none;
-  height:100vh;
-  justify-content:center;
-  align-items:center;
-  flex-direction:column;
-  text-align:center;
-}
+        body {
+            background-color: var(--background);
+            color: var(--text-main);
+            line-height: 1.5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 16px;
+        }
 
-.active{
-  display:flex;
-}
+        .container {
+            width: 100%;
+            max-width: 600px;
+            background: var(--card-bg);
+            border-radius: 16px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+            position: relative;
+            min-height: 480px;
+        }
 
-/* LOGO */
-.logo{
-  width:180px;
-}
+        /* Views Configuration */
+        .view {
+            display: none;
+            padding: 24px;
+        }
 
-/* BUTTON */
-button{
-  padding:14px 26px;
-  font-size:20px;
-  border:none;
-  border-radius:12px;
-  background:#0077e6;
-  color:#fff;
-  margin-top:20px;
-}
+        .view.active {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
 
-/* GAME */
-.game-container{
-  padding:20px;
-}
+        /* 1. Intro Screen (Exactly 5 Seconds) */
+        #intro-view {
+            text-align: center;
+            align-items: center;
+            padding: 60px 24px;
+        }
 
-.question{
-  font-size:26px;
-  margin:20px 0;
-}
+        .logo-container img {
+            max-width: 200px;
+            height: auto;
+            margin-bottom: 24px;
+        }
 
-.options button{
-  display:block;
-  width:80%;
-  margin:10px auto;
-  background:#eaeaea;
-  color:#000;
-}
+        /* 2. Instructions Screen */
+        #instruction-view {
+            text-align: center;
+        }
 
-.correct{background:#2ecc71 !important;color:#fff;}
-.wrong{background:#e74c3c !important;color:#fff;}
+        .instruction-box {
+            background: #e2e8f0;
+            padding: 20px;
+            border-radius: 12px;
+            margin: 20px 0;
+            text-align: left;
+        }
 
-.status{
-  display:flex;
-  justify-content:space-around;
-  margin:10px 0;
-}
+        .instruction-box ul {
+            margin-left: 20px;
+        }
 
-</style>
+        .instruction-box li {
+            margin-bottom: 8px;
+        }
+
+        .start-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .start-btn:hover {
+            background: var(--primary-hover);
+        }
+
+        /* HUD Header */
+        .game-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 14px;
+            border-bottom: 2px solid #edf2f7;
+            margin-bottom: 20px;
+        }
+
+        .hud-item {
+            font-weight: 700;
+            font-size: 1rem;
+        }
+
+        .timer-badge {
+            background: #feebc8;
+            color: #c05621;
+            padding: 4px 12px;
+            border-radius: 20px;
+        }
+
+        /* Questions Layout */
+        .question-text {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: var(--text-main);
+        }
+
+        .question-image {
+            width: 100%;
+            max-height: 160px;
+            object-fit: contain;
+            background: #edf2f7;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        /* Options Grid */
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .option-btn {
+            background: var(--card-bg);
+            border: 2px solid #edf2f7;
+            border-radius: 12px;
+            padding: 16px;
+            font-size: 1.05rem;
+            font-weight: 600;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: var(--text-main);
+            width: 100%;
+        }
+
+        .option-btn:disabled {
+            cursor: not-allowed;
+        }
+
+        .option-btn.correct {
+            background-color: #c6f6d5 !important;
+            border-color: var(--success) !important;
+            color: #22543d !important;
+            font-weight: 700;
+        }
+
+        .option-btn.wrong {
+            background-color: #fed7d7 !important;
+            border-color: var(--error) !important;
+            color: #742a2a !important;
+        }
+
+        /* Feedback Panels */
+        .feedback-box {
+            padding: 14px 18px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-weight: 600;
+            font-size: 1rem;
+            display: none;
+        }
+
+        .feedback-box.hint {
+            background-color: #ebf8ff;
+            border-left: 5px solid #3182ce;
+            color: #2b6cb0;
+        }
+
+        .feedback-box.explanation {
+            background-color: #f7fafc;
+            border-left: 5px solid #718096;
+            color: var(--text-main);
+        }
+
+        /* Form Actions */
+        .action-container {
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .next-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            font-size: 1.05rem;
+            font-weight: 700;
+            border-radius: 8px;
+            cursor: pointer;
+            display: none;
+        }
+
+        .next-btn:hover {
+            background: var(--primary-hover);
+        }
+
+        /* End View Dashboard */
+        .results-card {
+            text-align: center;
+            padding: 20px 0;
+        }
+
+        .score-display {
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin: 20px 0;
+        }
+
+        .result-msg {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 30px;
+        }
+
+        /* Interactive FX Canvas overlay */
+        #fx-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 10;
+        }
+    </style>
 </head>
-
 <body>
 
-<!-- LOGO SCREEN -->
-<div id="logoScreen" class="screen active">
-  <img src="assets/logo.png" class="logo">
-</div>
+    <div class="container">
+        <canvas id="fx-canvas"></canvas>
 
-<!-- INSTRUCTIONS -->
-<div id="instructionScreen" class="screen">
-  <h2>Addition Up To 20</h2>
-  <p>Read each question carefully and choose the correct answer.</p>
-  <button onclick="startGame()">Start</button>
-</div>
+        <!-- 1. BRANDING SPLASH VIEW (5 Seconds only) -->
+        <div id="intro-view" class="view active">
+            <div class="logo-container">
+                <img src="assets/innovine-logo.png" onerror="this.style.display='none'" alt="Innovine Logo">
+            </div>
+            <h2 style="font-size: 1.6rem; color: var(--primary);">Competency Learning Portal</h2>
+        </div>
 
-<!-- GAME -->
-<div id="gameScreen" class="screen">
-  <div class="game-container">
+        <!-- 2. INSTRUCTIONS VIEW (Shown after Splash) -->
+        <div id="instruction-view" class="view">
+            <h2 style="color: var(--primary);">Addition Challenge!</h2>
+            <p style="margin-top: 6px; color: var(--text-muted);">Grade 2 &bull; Mathematics &bull; Chapter 2</p>
+            
+            <div class="instruction-box">
+                <p><strong>Rules of the Challenge:</strong></p>
+                <ul>
+                    <li>You have <strong>60 seconds</strong> to solve each thinking puzzle.</li>
+                    <li>If your first answer is wrong, you will get a helpful <strong>hint</strong>!</li>
+                    <li>You get <strong>2 attempts</strong> per question before the true logic is revealed.</li>
+                </ul>
+            </div>
+            <button class="start-btn" onclick="gameEngine.startQuiz()">Let's Play</button>
+        </div>
 
-    <div class="status">
-      <div id="qNo">Q1</div>
-      <div id="timer">60</div>
-      <div id="attempts">2 attempts</div>
+        <!-- 3. INTERACTIVE QUIZ ENGINE VIEW -->
+        <div id="game-view" class="view">
+            <div class="game-header">
+                <div class="hud-item" id="q-counter">Question: 1/12</div>
+                <div class="hud-item timer-badge" id="timer-display">60s</div>
+                <div class="hud-item" id="score-counter">Score: 0</div>
+            </div>
+
+            <img id="q-img" class="question-image" src="" alt="Context Graphic">
+            <div class="question-text" id="q-txt">Question Text Placeholder</div>
+
+            <div class="options-grid" id="options-box"></div>
+
+            <div id="feedback-display" class="feedback-box"></div>
+
+            <div class="action-container">
+                <button id="btn-next" class="next-btn" onclick="gameEngine.nextQuestion()">Continue</button>
+            </div>
+        </div>
+
+        <!-- 4. RESULTS CONSOLE VIEW -->
+        <div id="result-view" class="view">
+            <div class="results-card">
+                <h2>Challenge Complete!</h2>
+                <div class="score-display" id="final-score">0%</div>
+                <div class="result-msg" id="final-msg">Performance Review</div>
+                <button class="start-btn" onclick="window.location.reload()">Play Again</button>
+            </div>
+        </div>
     </div>
 
-    <div id="question" class="question"></div>
+    <!-- AUDIO DRIVERS -->
+    <audio id="snd-correct" src="assets/correct.mp3" preload="auto"></audio>
+    <audio id="snd-wrong" src="assets/wrong.mp3" preload="auto"></audio>
 
-    <img id="img" style="max-width:300px;display:none;">
+    <script>
+        const questionsDatabase = [
+            {
+                text: "A child adds 245 and 130. Is the sum more than 350?",
+                options: ["Yes", "No", "Exactly 350", "Less than 300"],
+                answer: 0,
+                hint: "Try breaking it down: 200 + 100 = 300. Now add the remaining tens together.",
+                explanation: "245 + 130 = 375. Since 375 is greater than 350, the answer is Yes."
+            },
+            {
+                text: "Which shows addition correctly?",
+                options: ["Joining two groups", "Taking away objects", "Breaking into parts", "Sharing equally"],
+                answer: 0,
+                hint: "Think about what happens when you collect two piles of marbles together into one basket.",
+                explanation: "Addition means combining or joining separate groups together to discover a final total sum."
+            },
+            {
+                text: "Kabir solved: 234 + 125 = 349. What is the mistake?",
+                options: ["Ones place is added incorrectly", "Tens place is added incorrectly", "Hundreds place is added incorrectly", "No mistake"],
+                answer: 3,
+                hint: "Check individual digits carefully: Ones (4+5), Tens (3+2), and Hundreds (2+1).",
+                explanation: "4+5=9, 3+2=5, and 2+1=3. Every column lines up perfectly, meaning there is no mistake."
+            },
+            {
+                text: "A shop has 320 pencils and receives 150 more. The shop needs at least 450 pencils. Does it have enough?",
+                options: ["Yes", "No", "Exactly 450", "Less than 400"],
+                answer: 0,
+                hint: "Find the total supply first by combining 320 and 150. Compare that total with 450.",
+                explanation: "320 + 150 = 470 pencils. Since 470 is greater than 450, the shop has enough supply."
+            },
+            {
+                text: "Which addition needs carrying (regrouping)?",
+                options: ["245 + 132", "239 + 122", "410 + 120", "300 + 200"],
+                answer: 1,
+                hint: "Look at the ones column digits. If adding them gives a value of 10 or more, you need to carry.",
+                explanation: "In 239 + 122, adding the ones place gives 9 + 2 = 11. This requires carrying 1 ten over to the tens place."
+            },
+            {
+                text: "Which sum is greater?",
+                options: ["250 + 100", "200 + 200", "Both are equal", "300 + 60"],
+                answer: 1,
+                hint: "Calculate all choices: A is 350, B is 400, and D is 360.",
+                explanation: "200 + 200 equals 400, which yields a higher total value than all other configurations."
+            },
+            {
+                text: "Arjun says: 'When adding, we subtract numbers.' What is wrong?",
+                options: ["Addition means joining numbers", "Subtraction is correct", "Both are same", "No mistake"],
+                answer: 0,
+                hint: "Does performing addition cause a value to increase in size or decrease in size?",
+                explanation: "Arjun's rule is backward. Addition is the specific process of uniting groups to calculate a total sum."
+            },
+            {
+                text: "Books collected: Monday – 120, Tuesday – 130. Which statement is correct?",
+                options: ["Total is exactly 250", "Total is less than 250", "Total is more than 250", "Total is 200"],
+                answer: 0,
+                hint: "Sum up the baseline values: 120 plus 130.",
+                explanation: "Adding 120 and 130 provides a combined sum calculation of exactly 250."
+            },
+            {
+                text: "Using the same data (Monday: 120, Tuesday: 130), how many books were collected in total?",
+                options: ["250", "240", "260", "230"],
+                answer: 0,
+                hint: "This builds directly off the exact computation you performed in the previous question.",
+                explanation: "Combining 120 and 130 results in an absolute total metric of 250."
+            },
+            {
+                text: "A child has 180 marbles and gets 100 more. Is the total more than 300?",
+                options: ["Yes", "No", "Exactly 300", "Less than 200"],
+                answer: 1,
+                hint: "Adding 100 increases only the hundreds column by 1. What is 180 + 100?",
+                explanation: "180 + 100 = 280. Because 280 is less than 300, the complete statement evaluation is No."
+            },
+            {
+                text: "Which expression does NOT belong because it is not an addition problem?",
+                options: ["200 + 100", "300 + 50", "400 − 100", "250 + 150"],
+                answer: 2,
+                hint: "Examine the operative math operational symbol inside each choice choice selection closely.",
+                explanation: "400 − 100 utilizes a minus symbol, which means it is an operation of subtraction, making it the odd one out."
+            },
+            {
+                text: "Look at the picture configuration with blocks. Which statement is correct?",
+                image: "assets/blocks-350.png",
+                fallbackText: "[Context Card: Group contains a stack of 200 value units alongside a stack of 150 value units]",
+                options: ["Total is 350", "Total is less than 300", "Total is more than 350", "Total is 300"],
+                answer: 0,
+                hint: "Combine the block sets dynamically: add 200 elements with 150 elements.",
+                explanation: "Adding 200 and 150 translates into a precise consolidated metric of 350 units."
+            }
+        ];
 
-    <div class="options" id="options"></div>
+        class GameEngine {
+            constructor(questions) {
+                this.db = questions;
+                this.currentIdx = 0;
+                this.score = 0;
+                this.attemptsLeft = 2;
+                this.timer = null;
+                this.timeLeft = 60;
+                
+                this.canvas = document.getElementById('fx-canvas');
+                this.ctx = this.canvas.getContext('2d');
+                this.particles = [];
+            }
 
-    <div id="feedback"></div>
-    <div id="explain"></div>
+            init() {
+                this.resizeCanvas();
+                window.addEventListener('resize', () => this.resizeCanvas());
+                
+                // Rule: Branding displayed on screen 1 for exactly 5 seconds
+                setTimeout(() => {
+                    document.getElementById('intro-view').classList.remove('active');
+                    document.getElementById('instruction-view').classList.add('active');
+                }, 5000);
 
-  </div>
-</div>
+                this.animateParticles();
+            }
 
-<!-- SCORE -->
-<div id="scoreScreen" class="screen">
-  <h1>Great Job!</h1>
-  <h2 id="score"></h2>
-  <button onclick="restart()">Play Again</button>
-</div>
+            resizeCanvas() {
+                this.canvas.width = this.canvas.parentElement.offsetWidth;
+                this.canvas.height = this.canvas.parentElement.offsetHeight;
+            }
 
-<audio id="correctSound" src="assets/claps.mp3"></audio>
-<audio id="wrongSound" src="assets/wrong.mp3"></audio>
+            startQuiz() {
+                document.getElementById('instruction-view').classList.remove('active');
+                document.getElementById('game-view').classList.add('active');
+                this.loadQuestion();
+            }
 
-<script>
+            loadQuestion() {
+                if (this.currentIdx >= this.db.length) {
+                    this.showResults();
+                    return;
+                }
 
-const questions = [
-  {
-    q:"Rohan has 8 pencils. He adds 1 more. Is 10 correct?",
-    options:["No, 9","No, 8","Yes, 10","No, 11"],
-    a:0,
-    exp:"8 + 1 = 9"
-  },
-  {
-    q:"10 + 8 = ?",
-    options:["17","18","19","20"],
-    a:1,
-    exp:"10 + 8 = 18"
-  },
-  {
-    q:"5 white + 5 yellow shells = ?",
-    img:"assets/shells.png",
-    options:["8","9","10","11"],
-    a:2,
-    exp:"5 + 5 = 10"
-  },
-  {
-    q:"Frog from 7 to 10 jumps?",
-    img:"assets/frog.png",
-    options:["2","3","4","5"],
-    a:1,
-    exp:"7→8→9→10 = 3 jumps"
-  },
-  {
-    q:"12 + 3 = ?",
-    options:["14","15","16","17"],
-    a:1,
-    exp:"12 + 3 = 15"
-  },
-  {
-    q:"11 + 5 + 3 = ?",
-    options:["18","19","20","21"],
-    a:1,
-    exp:"=19"
-  },
-  {
-    q:"10 + 2 = ?",
-    options:["12","13","14","15"],
-    a:0,
-    exp:"=12"
-  },
-  {
-    q:"Which equals 15?",
-    options:["10+5","12+3","14+1","10+2"],
-    a:3,
-    exp:"10+2=12"
-  },
-  {
-    q:"12 + 7 = ?",
-    options:["18","19","20","21"],
-    a:1,
-    exp:"=19"
-  },
-  {
-    q:"Which group makes 10?",
-    options:["5+3","6+4","7+3","8+2"],
-    a:0,
-    exp:"Only 6+4,7+3,8+2 = 10"
-  }
-];
+                clearInterval(this.timer);
+                this.attemptsLeft = 2;
+                
+                const q = this.db[this.currentIdx];
+                
+                document.getElementById('q-counter').innerText = `Question: ${this.currentIdx + 1}/${this.db.length}`;
+                document.getElementById('score-counter').innerText = `Score: ${this.score}`;
+                
+                const txtElem = document.getElementById('q-txt');
+                txtElem.innerText = q.text;
 
-let i=0, score=0, attempts=2, timer;
+                const imgElem = document.getElementById('q-img');
+                if (q.image) {
+                    imgElem.src = q.image;
+                    imgElem.style.display = 'block';
+                    imgElem.onerror = () => {
+                        imgElem.style.display = 'none';
+                        txtElem.innerText = q.fallbackText + "\n\n" + q.text;
+                    };
+                } else {
+                    imgElem.style.display = 'none';
+                }
 
-function startGame(){
-  document.getElementById("instructionScreen").classList.remove("active");
-  document.getElementById("gameScreen").classList.add("active");
-  loadQ();
-}
+                const optBox = document.getElementById('options-box');
+                optBox.innerHTML = '';
+                
+                q.options.forEach((opt, idx) => {
+                    const btn = document.createElement('button');
+                    btn.className = 'option-btn';
+                    btn.innerText = opt;
+                    btn.onclick = () => this.handleAnswer(idx, btn);
+                    optBox.appendChild(btn);
+                });
 
-function loadQ(){
-  clearInterval(timer);
-  attempts=2;
+                document.getElementById('feedback-display').style.display = 'none';
+                document.getElementById('btn-next').style.display = 'none';
+                
+                this.timeLeft = 60;
+                this.startTimer();
+            }
 
-  let q=questions[i];
+            startTimer() {
+                const display = document.getElementById('timer-display');
+                display.innerText = `${this.timeLeft}s`;
+                
+                this.timer = setInterval(() => {
+                    this.timeLeft--;
+                    display.innerText = `${this.timeLeft}s`;
+                    
+                    if (this.timeLeft <= 0) {
+                        clearInterval(this.timer);
+                        this.lockOptionsDueTimeout();
+                    }
+                }, 1000);
+            }
 
-  document.getElementById("qNo").innerText="Q"+(i+1);
-  document.getElementById("question").innerText=q.q;
-  document.getElementById("attempts").innerText="2 attempts";
+            handleAnswer(selectedIdx, clickedBtn) {
+                const q = this.db[this.currentIdx];
+                const feedback = document.getElementById('feedback-display');
 
-  let img=document.getElementById("img");
-  if(q.img){
-    img.src=q.img;
-    img.style.display="block";
-  }else img.style.display="none";
+                if (selectedIdx === q.answer) {
+                    clearInterval(this.timer);
+                    clickedBtn.classList.add('correct');
+                    this.playSound('snd-correct');
+                    this.triggerConfetti();
+                    
+                    if (this.attemptsLeft === 2) {
+                        this.score += 10;
+                    } else {
+                        this.score += 5;
+                    }
+                    document.getElementById('score-counter').innerText = `Score: ${this.score}`;
+                    
+                    this.disableAllOptions();
+                    document.getElementById('btn-next').style.display = 'block';
+                } else {
+                    this.attemptsLeft--;
+                    clickedBtn.classList.add('wrong');
+                    clickedBtn.disabled = true;
+                    this.playSound('snd-wrong');
 
-  let opt=document.getElementById("options");
-  opt.innerHTML="";
+                    if (this.attemptsLeft > 0) {
+                        feedback.className = "feedback-box hint";
+                        feedback.innerText = `Hint: ${q.hint}`;
+                        feedback.style.display = 'block';
+                    } else {
+                        clearInterval(this.timer);
+                        feedback.className = "feedback-box explanation";
+                        feedback.innerText = `Incorrect. ${q.explanation}`;
+                        feedback.style.display = 'block';
+                        
+                        this.highlightCorrectAnswer(q.answer);
+                        this.disableAllOptions();
+                        document.getElementById('btn-next').style.display = 'block';
+                    }
+                }
+            }
 
-  q.options.forEach((o,idx)=>{
-    let b=document.createElement("button");
-    b.innerText=o;
-    b.onclick=()=>check(idx,b);
-    opt.appendChild(b);
-  });
+            lockOptionsDueTimeout() {
+                const q = this.db[this.currentIdx];
+                const feedback = document.getElementById('feedback-display');
+                feedback.className = "feedback-box explanation";
+                feedback.innerText = `Time's up! ${q.explanation}`;
+                feedback.style.display = 'block';
+                
+                this.highlightCorrectAnswer(q.answer);
+                this.disableAllOptions();
+                document.getElementById('btn-next').style.display = 'block';
+            }
 
-  startTimer();
-}
+            highlightCorrectAnswer(targetIdx) {
+                const buttons = document.querySelectorAll('.option-btn');
+                if (buttons[targetIdx]) {
+                    buttons[targetIdx].classList.add('correct');
+                }
+            }
 
-function startTimer(){
-  let t=60;
-  timer=setInterval(()=>{
-    t--;
-    document.getElementById("timer").innerText=t;
-    if(t<=0){clearInterval(timer); next();}
-  },1000);
-}
+            disableAllOptions() {
+                document.querySelectorAll('.option-btn').forEach(btn => btn.disabled = true);
+            }
 
-function check(idx,b){
-  let q=questions[i];
-  let btns=document.querySelectorAll("button");
+            nextQuestion() {
+                this.currentIdx++;
+                this.loadQuestion();
+            }
 
-  if(idx===q.a){
-    b.classList.add("correct");
-    document.getElementById("correctSound").play();
-    score++;
-    setTimeout(next,1200);
-  }else{
-    attempts--;
-    document.getElementById("wrongSound").play();
+            playSound(id) {
+                const sound = document.getElementById(id);
+                if (sound) {
+                    sound.currentTime = 0;
+                    sound.play().catch(() => {});
+                }
+            }
 
-    b.classList.add("wrong");
-    document.getElementById("attempts").innerText=attempts+" attempts";
+            triggerConfetti() {
+                for (let i = 0; i < 50; i++) {
+                    this.particles.push({
+                        x: this.canvas.width / 2,
+                        y: this.canvas.height / 3,
+                        vx: (Math.random() - 0.5) * 10,
+                        vy: (Math.random() - 0.7) * 10,
+                        color: `hsla(${Math.random() * 360}, 100%, 50%, 1)`,
+                        size: Math.random() * 5 + 3,
+                        alpha: 1
+                    });
+                }
+            }
 
-    if(attempts==0){
-      setTimeout(next,1000);
-    }
-  }
-}
+            animateParticles() {
+                this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+                for (let i = this.particles.length - 1; i >= 0; i--) {
+                    const p = this.particles[i];
+                    p.x += p.vx;
+                    p.y += p.vy;
+                    p.vy += 0.2; // Gravity Simulation
+                    p.alpha -= 0.015;
+                    if (p.alpha <= 0) {
+                        this.particles.splice(i, 1);
+                        continue;
+                    }
+                    this.ctx.fillStyle = p.color;
+                    this.ctx.globalAlpha = p.alpha;
+                    this.ctx.beginPath();
+                    this.ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                    this.ctx.fill();
+                }
+                this.ctx.globalAlpha = 1.0;
+                requestAnimationFrame(() => this.animateParticles());
+            }
 
-function next(){
-  i++;
-  if(i<questions.length) loadQ();
-  else end();
-}
+            showResults() {
+                document.getElementById('game-view').classList.remove('active');
+                document.getElementById('result-view').classList.add('active');
+                
+                const maxPossibleScore = this.db.length * 10;
+                const percentage = Math.round((this.score / maxPossibleScore) * 100);
+                
+                document.getElementById('final-score').innerText = `${percentage}%`;
+                
+                const msgElem = document.getElementById('final-msg');
+                if (percentage >= 75) {
+                    msgElem.innerText = "Good job!";
+                    msgElem.style.color = "var(--success)";
+                } else if (percentage >= 40) {
+                    msgElem.innerText = "Review this chapter and try again";
+                    msgElem.style.color = "#d69e2e";
+                } else {
+                    msgElem.innerText = "Let’s practise more";
+                    msgElem.style.color = "var(--error)";
+                }
+            }
+        }
 
-function end(){
-  document.getElementById("gameScreen").classList.remove("active");
-  document.getElementById("scoreScreen").classList.add("active");
-  document.getElementById("score").innerText=score+"/"+questions.length;
-}
-
-function restart(){
-  location.reload();
-}
-
-/* LOGO FLOW */
-setTimeout(()=>{
-  document.getElementById("logoScreen").classList.remove("active");
-  document.getElementById("instructionScreen").classList.add("active");
-},5000);
-
-</script>
-
+        const gameEngine = new GameEngine(questionsDatabase);
+        window.onload = () => gameEngine.init();
+    </script>
 </body>
 </html>
