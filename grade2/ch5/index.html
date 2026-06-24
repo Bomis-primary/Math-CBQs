@@ -1,1 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>CBQ - Addition & Subtraction</title>
+    <style>
+        :root {
+            --primary: #1f4e79;
+            --primary-hover: #153a5c;
+            --success: #16a34a;
+            --error: #dc2626;
+            --background: #f4f7ff;
+            --card-bg: #ffffff;
+            --text-main: #1f2937;
+            --text-muted: #475569;
+            --border: #e2e8f0;
+        }
 
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background: var(--background);
+            color: var(--text-main);
+            line-height: 1.5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 16px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 600px;
+            background: var(--card-bg);
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            overflow: hidden;
+            position: relative;
+            min-height: 480px;
+        }
+
+        /* 5-second Splash Overlay */
+        #splash {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            opacity: 1;
+            transition: opacity 1s ease-out;
+        }
+
+        #splash.fade-out {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        #splash img {
+            max-width: 240px;
+            height: auto;
+        }
+
+        /* Views Configuration */
+        .screen {
+            display: none;
+            padding: 24px;
+        }
+
+        .screen.active {
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Top HUD Row */
+        .top {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .box {
+            background: #e8f0ff;
+            padding: 10px;
+            border-radius: 12px;
+            font-size: 0.95rem;
+        }
+
+        /* Question Area */
+        .question {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: var(--text-main);
+        }
+
+        /* Image Display Box */
+        .image-container {
+            text-align: center;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .image-container img {
+            max-width: 100%;
+            max-height: 180px;
+            border-radius: 8px;
+            object-fit: contain;
+        }
+
+        /* Options Grid Layout */
+        .options {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            padding: 14px 16px;
+            border-radius: 12px;
+            border: 2px solid var(--primary);
+            background: var(--card-bg);
+            font-size: 1rem;
+            font-weight: 600;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: var(--text-main);
+            width: 100%;
+            min-height: 56px;
+        }
+
+        .btn:hover:not(:disabled) {
+            background: #eef5ff;
+        }
+
+        .btn:disabled {
+            cursor: not-allowed;
+            opacity: 0.75;
+        }
+
+        .btn.correct {
+            background: #dcfce7 !important;
+            border-color: var(--success) !important;
+            color: #14532d !important;
+            font-weight: 700;
+        }
+
+        .btn.wrong {
+            background: #fee2e2 !important;
+            border-color: var(--error) !important;
+            color: #7f1d1d !important;
+        }
+
+        /* Controls Area */
+        .action-container {
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .next {
+            padding: 12px 24px;
+            background: var(--primary);
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.2s;
+            display: none;
+        }
+
+        .next:hover {
+            background: var(--primary-hover);
+        }
+
+        /* End View Formatting */
+        .result-card {
+            text-align: center;
+            padding: 40px 0;
+            align-items: center;
+        }
+
+        .score-display {
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin: 20px 0;
+        }
+
+        .result-msg {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 30px;
+        }
+
+        .restart-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        
+        .restart-btn:hover {
+            background: var(--primary-hover);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div id="splash">
+            <img src="assets/innovine-logo.png" onerror="this.style.display='none'">
+        </div>
+
+        <div id="game" class="screen active">
+            <div class="top">
+                <div class="box">Q: <span id="qno">1</span>/18</div>
+                <div class="box">Score: <span id="score">0</span></div>
+                <div class="box">Time: <span id="time">60</span>s</div>
+            </div>
+
+            <div class="question" id="question"></div>
+            
+            <div class="image-container" id="q-img-container">
+                <img id="q-img" src="" alt="Question Support Asset">
+            </div>
+
+            <div class="options" id="options"></div>
+
+            <div class="action-container">
+                <button class="next" onclick="nextQ()" id="nextBtn">Continue</button>
+            </div>
+        </div>
+
+        <div id="result" class="screen result-card">
+            <h2>Chapter Complete!</h2>
+            <div class="score-display" id="final-score">0%</div>
+            <div class="result-msg" id="resultText">Performance Review</div>
+            <button class="restart-btn" onclick="window.location.reload()">Play Again</button>
+        </div>
+    </div>
+
+    <audio id="correct" src="assets/correct.mp3" preload="auto"></audio>
+    <audio id="wrong" src="assets/wrong.mp3" preload="auto"></audio>
+
+    <script>
+        // CHAPTER 5: ADDITION & SUBTRACTION DATABASE ARRAY
+        const questions = [
+            { 
+                q: "Anaya has 245 stickers. She gets 132 more. She wants at least 350 stickers. Does she reach her goal?", 
+                a: ["Yes, exactly 350", "Yes, more than 350", "No, less than 350", "Cannot be found"], 
+                c: 1 
+            },
+            { 
+                q: "A shop had 500 chocolates. It sold 278 chocolates. The shopkeeper wants at least 230 chocolates left. Will he have enough?", 
+                a: ["Yes, exactly enough", "Yes, more than enough", "No, less than needed", "Cannot be found"], 
+                c: 2 
+            },
+            { 
+                q: "Kabir solved: 346 + 125 = 461. Which step is incorrect?", 
+                a: ["Ones added incorrectly", "Tens added incorrectly", "Hundreds added incorrectly", "No mistake"], 
+                c: 1 
+            },
+            { 
+                q: "A library had 320 books and bought 150 more. Another library has 460 books. Which statement is correct?", 
+                a: ["First library has more books", "Second library has more books", "Both have equal books", "Cannot be found"], 
+                c: 0 
+            },
+            { 
+                q: "A school collected 200 books and then received 150 more. The school needs at least 300 books. Does it have enough?", 
+                a: ["Yes, exactly enough", "Yes, more than enough", "No, less than needed", "Cannot be found"], 
+                c: 1 
+            },
+            { 
+                q: "The school has 350 books and gives away 100 books. Do they have at least 250 books?", 
+                a: ["Yes", "No", "Exactly 250", "Cannot be found"], 
+                c: 0 
+            },
+            { 
+                q: "A class collected 275 notebooks, then 125 more, and used 100 notebooks. Which statement is correct?", 
+                a: ["Exactly 300 notebooks remain", "More than 300 notebooks remain", "Less than 300 notebooks remain", "Cannot be found"], 
+                c: 0 
+            },
+            { 
+                q: "Arjun solved: 500 − 275 = 325. Which step is incorrect?", 
+                a: ["Borrowing step is incorrect", "Tens subtraction is incorrect", "Hundreds subtraction is incorrect", "No mistake"], 
+                c: 0 
+            },
+            { 
+                q: "Books collected: Mon – 120, Tue – 150, Wed – 130. Which day had the highest collection?", 
+                a: ["Monday", "Tuesday", "Wednesday", "All equal"], 
+                c: 1 
+            },
+            { 
+                q: "Using the same book collection data (Mon: 120, Tue: 150, Wed: 130), does the total number of books exceed 380?", 
+                a: ["Yes", "No", "Exactly 380", "Cannot be found"], 
+                c: 0 
+            },
+            { 
+                q: "A farmer harvested 480 apples and sold 215 apples. He wants to keep at least 250 apples. Does he have enough?", 
+                a: ["Yes", "No", "Exactly 250", "Cannot be found"], 
+                c: 0 
+            },
+            { 
+                q: "Which equation does NOT belong to the collection because it is a subtraction sentence?", 
+                a: ["450 + 150 = 600", "320 + 180 = 500", "275 + 125 = 400", "600 − 100 = 500"], 
+                c: 3 
+            },
+            { 
+                q: "Which two baskets shown together have exactly 360 apples?", 
+                a: ["245 & 130", "130 & 115", "245 & 115", "All three"], 
+                image: "assets/baskets.png",
+                c: 2 
+            },
+            { 
+                q: "A student starts at 750 on the number line and moves back 250 blocks. Which statement is correct?", 
+                a: ["Lands exactly at 500", "Lands more than 500", "Lands less than 500", "Cannot be found"], 
+                image: "assets/number-line.png",
+                c: 0 
+            },
+            { 
+                q: "A school collected 240 books on Monday and 160 books on Tuesday. Do they collect more than 380 books in total?", 
+                a: ["Yes", "No", "Exactly 380", "Cannot be found"], 
+                c: 0 
+            },
+            { 
+                q: "Using the same data (240 books on Monday and 160 on Tuesday), the school needs at least 420 books. Do they have enough?", 
+                a: ["Yes, more than needed", "Yes, exactly enough", "No, less than needed", "Cannot be found"], 
+                c: 2 
+            },
+            { 
+                q: "Assertion: 500 − 200 = 300. Reason: Subtracting 200 reduces the number value by 200.", 
+                a: ["Both are correct and reason explains assertion", "Both are correct but reason does not explain", "Assertion is correct, reason is wrong", "Both are wrong"], 
+                c: 0 
+            },
+            { 
+                q: "A shop had 600 pens. It sold 245 pens and later sold 155 pens. The owner wants at least 220 pens left. Does he meet the goal?", 
+                a: ["Yes, more than needed", "Yes, exactly 220", "No, less than needed", "Cannot be found"], 
+                c: 2 
+            }
+        ];
+
+        let i = 0, score = 0, time = 60, attempt = 0, lock = false, timerInterval = null;
+
+        const quizEngine = {
+            init() {
+                setTimeout(() => {
+                    const splash = document.getElementById("splash");
+                    splash.classList.add("fade-out");
+                    
+                    splash.addEventListener('transitionend', () => {
+                        splash.style.display = "none";
+                    });
+                }, 5000);
+                
+                load();
+            }
+        };
+
+        function load() {
+            if (i >= questions.length) {
+                showResult();
+                return;
+            }
+
+            let q = questions[i];
+            document.getElementById("qno").innerText = i + 1;
+            document.getElementById("question").innerText = q.q;
+
+            // Handle graphic assets cleanly
+            const imgContainer = document.getElementById('q-img-container');
+            const imgElem = document.getElementById('q-img');
+            if (q.image) {
+                imgElem.src = q.image;
+                imgContainer.style.display = 'block';
+            } else {
+                imgContainer.style.display = 'none';
+                imgElem.src = '';
+            }
+
+            let html = "";
+            q.a.forEach((o, idx) => {
+                html += `<button class="btn" onclick="check(this,${idx})">${o}</button>`;
+            });
+
+            document.getElementById("options").innerHTML = html;
+            document.getElementById("nextBtn").style.display = "none";
+
+            attempt = 0;
+            lock = false;
+            
+            time = 60;
+            document.getElementById("time").innerText = time;
+            startCountdown();
+        }
+
+        function startCountdown() {
+            clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                if (time > 0) {
+                    time--;
+                    document.getElementById("time").innerText = time;
+                } else {
+                    clearInterval(timerInterval);
+                    revealCorrectAnswer();
+                }
+            }, 1000);
+        }
+
+        function check(btn, ans) {
+            if (lock) return;
+
+            const currentQuestion = questions[i];
+
+            if (ans == currentQuestion.c) {
+                clearInterval(timerInterval);
+                btn.classList.add("correct");
+                safePlayAudio("correct");
+                score++;
+                document.getElementById("score").innerText = score;
+                lock = true;
+                document.getElementById("nextBtn").style.display = "inline-block";
+            } else {
+                attempt++;
+                btn.classList.add("wrong");
+                btn.disabled = true;
+                safePlayAudio("wrong");
+
+                if (attempt >= 2) {
+                    clearInterval(timerInterval);
+                    revealCorrectAnswer();
+                }
+            }
+        }
+
+        function revealCorrectAnswer() {
+            lock = true;
+            const currentQuestion = questions[i];
+            const buttons = document.querySelectorAll(".options .btn");
+            
+            buttons.forEach((btn, idx) => {
+                btn.disabled = true;
+                if (idx == currentQuestion.c) {
+                    btn.classList.add("correct");
+                }
+            });
+            
+            document.getElementById("nextBtn").style.display = "inline-block";
+        }
+
+        function nextQ() {
+            i++;
+            load();
+        }
+
+        function showResult() {
+            clearInterval(timerInterval);
+            document.getElementById("game").style.display = "none";
+            document.getElementById("result").style.display = "flex";
+
+            let percent = Math.round((score / questions.length) * 100);
+            document.getElementById("final-score").innerText = `${percent}%`;
+
+            let msg = "";
+            if (percent >= 75) msg = "Good job 🎉";
+            else if (percent >= 40) msg = "Review this chapter 🙂";
+            else msg = "Let’s practise more 📘";
+
+            document.getElementById("resultText").innerText = `${msg}\nFinal Score: ${score}/${questions.length}`;
+        }
+
+        function safePlayAudio(id) {
+            const audio = document.getElementById(id);
+            if (audio) {
+                audio.currentTime = 0;
+                audio.play().catch(() => {});
+            }
+        }
+
+        window.onload = () => quizEngine.init();
+    </script>
+</body>
+</html>
