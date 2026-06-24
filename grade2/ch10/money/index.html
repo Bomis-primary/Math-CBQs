@@ -1,329 +1,429 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CBQ - Money</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>CBQ - Money Challenge</title>
+    <style>
+        :root {
+            --primary: #1f4e79;
+            --primary-hover: #153a5c;
+            --success: #16a34a;
+            --error: #dc2626;
+            --background: #f4f7ff;
+            --card-bg: #ffffff;
+            --text-main: #1f2937;
+            --border: #e2e8f0;
+        }
 
-<style>
-*{box-sizing:border-box;margin:0;padding:0;font-family:Arial}
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+            font-family: Arial, sans-serif;
+        }
 
-body{
-  background:#f4f7ff;
-  color:#1f2937;
-}
+        body {
+            background: var(--background);
+            color: var(--text-main);
+            line-height: 1.5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 16px;
+        }
 
-/* SPLASH */
-#splash{
-  position:fixed;
-  inset:0;
-  background:#fff;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  z-index:10;
-}
+        .container {
+            width: 100%;
+            max-width: 600px;
+            background: var(--card-bg);
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            overflow: hidden;
+            position: relative;
+            min-height: 480px;
+        }
 
-#splash img{
-  width:300px;
-}
+        /* 5-second Splash Overlay Frame */
+        #splash {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            opacity: 1;
+            transition: opacity 1s ease-out;
+        }
 
-/* SCREEN */
-.screen{
-  display:none;
-  min-height:100vh;
-  padding:16px;
-}
+        #splash.fade-out {
+            opacity: 0;
+            pointer-events: none;
+        }
 
-.screen.active{
-  display:block;
-}
+        #splash img {
+            max-width: 240px;
+            height: auto;
+        }
 
-.card{
-  max-width:900px;
-  margin:auto;
-  background:#fff;
-  padding:20px;
-  border-radius:20px;
-  box-shadow:0 10px 25px rgba(0,0,0,0.1);
-}
+        /* View Layout System */
+        .screen {
+            display: none;
+            padding: 24px;
+        }
 
-/* TOP */
-.top{
-  display:grid;
-  grid-template-columns:1fr 1fr 1fr;
-  gap:10px;
-  margin-bottom:15px;
-  text-align:center;
-  font-weight:bold;
-}
+        .screen.active {
+            display: flex;
+            flex-direction: column;
+        }
 
-.box{
-  background:#e8f0ff;
-  padding:10px;
-  border-radius:12px;
-}
+        /* Top HUD Panel */
+        .top {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: bold;
+        }
 
-/* QUESTION */
-.question{
-  font-size:20px;
-  font-weight:bold;
-  margin:15px 0;
-}
+        .box {
+            background: #e8f0ff;
+            padding: 10px;
+            border-radius: 12px;
+            font-size: 0.95rem;
+        }
 
-/* OPTIONS */
-.options{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:12px;
-}
+        /* Question View Element */
+        .question {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: var(--text-main);
+        }
 
-.btn{
-  padding:14px;
-  border-radius:12px;
-  border:2px solid #1f4e79;
-  background:#fff;
-  font-size:16px;
-  cursor:pointer;
-  min-height:60px;
-}
+        /* Options Interactive Interface (Single Column Layout) */
+        .options {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
 
-.btn:hover{background:#eef5ff}
+        .btn {
+            padding: 14px 16px;
+            border-radius: 12px;
+            border: 2px solid var(--primary);
+            background: var(--card-bg);
+            font-size: 1rem;
+            font-weight: 600;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: var(--text-main);
+            width: 100%;
+            min-height: 56px;
+        }
 
-.correct{background:#c8f7d5 !important}
-.wrong{background:#ffd6d6 !important}
+        .btn:hover:not(:disabled) {
+            background: #eef5ff;
+        }
 
-/* NEXT */
-.next{
-  margin-top:15px;
-  padding:12px 20px;
-  background:#1f4e79;
-  color:#fff;
-  border:none;
-  border-radius:10px;
-  cursor:pointer;
-}
+        .btn:disabled {
+            cursor: not-allowed;
+            opacity: 0.75;
+        }
 
-/* RESULT */
-.result{
-  text-align:center;
-  font-size:22px;
-  font-weight:bold;
-}
-</style>
+        .btn.correct {
+            background: #c8f7d5 !important;
+            border-color: var(--success) !important;
+            color: #14532d !important;
+            font-weight: 700;
+        }
+
+        .btn.wrong {
+            background: #ffd6d6 !important;
+            border-color: var(--error) !important;
+            color: #7f1d1d !important;
+        }
+
+        /* Control Button Container */
+        .action-container {
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .next {
+            padding: 12px 24px;
+            background: var(--primary);
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.2s;
+            display: none;
+        }
+
+        .next:hover {
+            background: var(--primary-hover);
+        }
+
+        /* Summary Panel Formatting */
+        .result-card {
+            text-align: center;
+            padding: 40px 0;
+            align-items: center;
+        }
+
+        .score-display {
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin: 20px 0;
+        }
+
+        .result-msg {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 30px;
+            white-space: pre-line;
+        }
+
+        .restart-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        
+        .restart-btn:hover {
+            background: var(--primary-hover);
+        }
+    </style>
 </head>
-
 <body>
 
-<!-- SPLASH -->
-<div id="splash">
-  <img src="assets/innovine-logo.png">
-</div>
+    <div class="container">
+        <div id="splash">
+            <img src="assets/innovine-logo.png" onerror="this.style.display='none'">
+        </div>
 
-<!-- GAME -->
-<div id="game" class="screen active">
-  <div class="card">
+        <div id="game" class="screen active">
+            <div class="top">
+                <div class="box">Q: <span id="qno">1</span>/<span id="qtotal">18</span></div>
+                <div class="box">Score: <span id="score">0</span></div>
+                <div class="box">Time: <span id="time">60</span>s</div>
+            </div>
 
-    <div class="top">
-      <div class="box">Q: <span id="qno">1</span>/18</div>
-      <div class="box">Score: <span id="score">0</span></div>
-      <div class="box">Time: <span id="time">60</span></div>
+            <div class="question" id="question"></div>
+            <div class="options" id="options"></div>
+
+            <div class="action-container">
+                <button class="next" onclick="nextQ()" id="nextBtn">Next</button>
+            </div>
+        </div>
+
+        <div id="result" class="screen result-card">
+            <h2>Chapter Complete!</h2>
+            <div class="score-display" id="final-score">0%</div>
+            <div class="result-msg" id="resultText">Performance Review</div>
+            <button class="restart-btn" onclick="window.location.reload()">Play Again</button>
+        </div>
     </div>
 
-    <div class="question" id="question"></div>
-    <div class="options" id="options"></div>
+    <audio id="correct" src="assets/correct.mp3" preload="auto"></audio>
+    <audio id="wrong" src="assets/wrong.mp3" preload="auto"></audio>
 
-    <button class="next" onclick="nextQ()" id="nextBtn">Next</button>
+    <script>
+        // MASTER Reference Database
+        const questionsDatabase = [
+            { q: "Who has more money: ₹20 or ₹15?", a: ["₹20", "₹15", "Equal", "None"], c: 0 },
+            { q: "What is money used for?", a: ["Buy things", "Measure length", "Weigh objects", "Draw"], c: 0 },
+            { q: "₹10 > ₹20?", a: ["Wrong", "Correct", "Equal", "Unknown"], c: 0 },
+            { q: "Can ₹30 buy ₹25 toy?", a: ["Yes", "No", "Exact", "Cannot"], c: 0 },
+            { q: "Which is greater?", a: ["₹10", "₹50", "₹5", "₹2"], c: 1 },
+            { q: "Which costs more?", a: ["Book ₹20", "Pencil ₹5", "Equal", "Both cheap"], c: 0 },
+            { q: "Money measures length?", a: ["Wrong", "Correct", "Both", "Sometimes"], c: 0 },
+            { q: "Which is cheaper?", a: ["Pen ₹10", "Eraser ₹5", "Equal", "Both"], c: 1 },
+            { q: "₹10 - ₹5 = ?", a: ["₹5", "₹10", "₹15", "₹2"], c: 0 },
+            { q: "₹40 - ₹35 = ?", a: ["₹5", "₹10", "₹15", "₹0"], c: 0 },
+            { q: "NOT money?", a: ["Ruler", "₹10", "₹20", "₹50"], c: 0 },
+            { q: "Highest coin?", a: ["₹1", "₹2", "₹5", "All equal"], c: 2 },
+            { q: "₹10+₹10 vs ₹5+₹5+₹5", a: ["Equal", "A more", "B more", "None"], c: 1 },
+            { q: "₹50 - ₹20 - ₹10 = ?", a: ["₹20", "₹10", "₹30", "₹40"], c: 0 },
+            { q: "₹30 - ₹20 = ?", a: ["₹10", "₹5", "₹20", "₹15"], c: 0 },
+            { q: "₹100 - ₹40 - ₹30 = ?", a: ["₹30", "₹20", "₹10", "₹40"], c: 0 },
+            { q: "₹25 toy + ₹25 toy = ?", a: ["₹50", "₹40", "₹30", "₹60"], c: 0 },
+            { q: "₹20 + ₹15 vs ₹50", a: ["Less", "More", "Equal", "Cannot"], c: 0 }
+        ];
 
-  </div>
-</div>
+        let runtimeQuestions = [];
+        let i = 0, score = 0, time = 60, attempt = 0, lock = false, currentCorrectIndex = null, timerInterval = null;
 
-<!-- RESULT -->
-<div id="result" class="screen">
-  <div class="card result" id="resultText"></div>
-</div>
+        // FISHER-YATES UNBIASED SHUFFLE UTILITY
+        function shuffleArray(array) {
+            for (let idx = array.length - 1; idx > 0; idx--) {
+                const j = Math.floor(Math.random() * (idx + 1));
+                [array[idx], array[j]] = [array[j], array[idx]];
+            }
+            return array;
+        }
 
-<audio id="correct" src="assets/correct.mp3"></audio>
-<audio id="wrong" src="assets/wrong.mp3"></audio>
+        // DEEP COPY AND TRANSLATION BOOTSTRAP
+        function bootstrapQuizData() {
+            runtimeQuestions = questionsDatabase.map(item => {
+                const originalAnswers = [...item.a];
+                const trueAnswerValue = originalAnswers[item.c];
+                
+                const shuffledAnswers = shuffleArray(originalAnswers);
+                const dynamicCorrectIdx = shuffledAnswers.indexOf(trueAnswerValue);
+                
+                return {
+                    q: item.q,
+                    a: shuffledAnswers,
+                    c: dynamicCorrectIdx
+                };
+            });
 
-<script>
+            shuffleArray(runtimeQuestions);
+            document.getElementById("qtotal").innerText = runtimeQuestions.length;
+        }
 
-/* SPLASH */
-setTimeout(()=>{
-  document.getElementById("splash").style.display="none";
-},5000);
+        const appEngine = {
+            init() {
+                setTimeout(() => {
+                    const splash = document.getElementById("splash");
+                    splash.classList.add("fade-out");
+                    
+                    splash.addEventListener('transitionend', () => {
+                        splash.style.display = "none";
+                    });
+                }, 5000);
+                
+                bootstrapQuizData();
+                load();
+            }
+        };
 
-/* QUESTIONS */
-const questions=[
-{
-q:"Who has more money: ₹20 or ₹15?",
-a:["₹20","₹15","Equal","None"],
-c:0
-},
-{
-q:"What is money used for?",
-a:["Buy things","Measure length","Weigh objects","Draw"],
-c:0
-},
-{
-q:"₹10 > ₹20?",
-a:["Wrong","Correct","Equal","Unknown"],
-c:0
-},
-{
-q:"Can ₹30 buy ₹25 toy?",
-a:["Yes","No","Exact","Cannot"],
-c:0
-},
-{
-q:"Which is greater?",
-a:["₹10","₹50","₹5","₹2"],
-c:1
-},
-{
-q:"Which costs more?",
-a:["Book ₹20","Pencil ₹5","Equal","Both cheap"],
-c:0
-},
-{
-q:"Money measures length?",
-a:["Wrong","Correct","Both","Sometimes"],
-c:0
-},
-{
-q:"Which is cheaper?",
-a:["Pen ₹10","Eraser ₹5","Equal","Both"],
-c:1
-},
-{
-q:"₹10 - ₹5 = ?",
-a:["₹5","₹10","₹15","₹2"],
-c:0
-},
-{
-q:"₹40 - ₹35 = ?",
-a:["₹5","₹10","₹15","₹0"],
-c:0
-},
-{
-q:"NOT money?",
-a:["Ruler","₹10","₹20","₹50"],
-c:0
-},
-{
-q:"Highest coin?",
-a:["₹1","₹2","₹5","All equal"],
-c:2
-},
-{
-q:"₹10+₹10 vs ₹5+₹5+₹5",
-a:["Equal","A more","B more","None"],
-c:1
-},
-{
-q:"₹50 - ₹20 - ₹10 = ?",
-a:["₹20","₹10","₹30","₹40"],
-c:0
-},
-{
-q:"₹30 - ₹20 = ?",
-a:["₹10","₹5","₹20","₹15"],
-c:0
-},
-{
-q:"₹100 - ₹40 - ₹30 = ?",
-a:["₹30","₹20","₹10","₹40"],
-c:0
-},
-{
-q:"₹25 toy + ₹25 toy = ?",
-a:["₹50","₹40","₹30","₹60"],
-c:0
-},
-{
-q:"₹20 + ₹15 vs ₹50",
-a:["Less","More","Equal","Cannot"],
-c:0
-}
-];
+        function load() {
+            if (i >= runtimeQuestions.length) {
+                showResult();
+                return;
+            }
 
-let i=0,score=0,time=60,attempt=0,lock=false;
+            let q = runtimeQuestions[i];
+            currentCorrectIndex = q.c;
 
-function load(){
-  let q=questions[i];
-  document.getElementById("qno").innerText=i+1;
-  document.getElementById("question").innerText=q.q;
+            document.getElementById("qno").innerText = i + 1;
+            document.getElementById("question").innerText = q.q;
 
-  let html="";
-  q.a.forEach((o,idx)=>{
-    html+=`<button class="btn" onclick="check(this,${idx})">${o}</button>`;
-  });
+            let html = "";
+            q.a.forEach((o, idx) => {
+                html += `<button class="btn" onclick="check(this,${idx})">${o}</button>`;
+            });
 
-  document.getElementById("options").innerHTML=html;
-  document.getElementById("nextBtn").style.display="none";
+            document.getElementById("options").innerHTML = html;
+            document.getElementById("nextBtn").style.display = "none";
 
-  attempt=0;
-  lock=false;
-}
+            attempt = 0;
+            lock = false;
+            
+            time = 60;
+            document.getElementById("time").innerText = time;
+            startCountdown();
+        }
 
-function check(btn,ans){
-  if(lock) return;
+        function startCountdown() {
+            clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                if (time > 0) {
+                    time--;
+                    document.getElementById("time").innerText = time;
+                } else {
+                    clearInterval(timerInterval);
+                    autoRevealCorrect();
+                }
+            }, 1000);
+        }
 
-  if(ans==questions[i].c){
-    btn.classList.add("correct");
-    document.getElementById("correct").play();
-    score++;
-    document.getElementById("score").innerText=score;
-    lock=true;
-    document.getElementById("nextBtn").style.display="inline-block";
-  } else {
-    attempt++;
-    btn.classList.add("wrong");
-    document.getElementById("wrong").play();
+        function check(btn, ans) {
+            if (lock) return;
 
-    if(attempt>=2){
-      lock=true;
-      document.getElementById("nextBtn").style.display="inline-block";
-    }
-  }
-}
+            if (ans == currentCorrectIndex) {
+                clearInterval(timerInterval);
+                btn.classList.add("correct");
+                safePlayAudio("correct");
+                score++;
+                document.getElementById("score").innerText = score;
+                lock = true;
+                document.getElementById("nextBtn").style.display = "inline-block";
+            } else {
+                attempt++;
+                btn.classList.add("wrong");
+                btn.disabled = true;
+                safePlayAudio("wrong");
 
-function nextQ(){
-  i++;
-  if(i<questions.length){
-    load();
-  } else {
-    show();
-  }
-}
+                if (attempt >= 2) {
+                    clearInterval(timerInterval);
+                    autoRevealCorrect();
+                }
+            }
+        }
 
-function show(){
-  document.getElementById("game").style.display="none";
-  document.getElementById("result").style.display="block";
+        function autoRevealCorrect() {
+            lock = true;
+            const buttons = document.querySelectorAll(".options .btn");
+            
+            buttons.forEach((btn, idx) => {
+                btn.disabled = true;
+                if (idx == currentCorrectIndex) {
+                    btn.classList.add("correct");
+                }
+            });
+            
+            document.getElementById("nextBtn").style.display = "inline-block";
+        }
 
-  let percent=(score/questions.length)*100;
+        function nextQ() {
+            i++;
+            load();
+        }
 
-  let msg="";
-  if(percent>=75) msg="Good job 🎉";
-  else if(percent>=40) msg="Review this chapter 🙂";
-  else msg="Let’s practise more 📘";
+        function showResult() {
+            clearInterval(timerInterval);
+            document.getElementById("game").style.display = "none";
+            document.getElementById("result").style.display = "flex";
 
-  document.getElementById("resultText").innerText =
-    `${msg}\nScore: ${score}/${questions.length}`;
-}
+            let percent = Math.round((score / runtimeQuestions.length) * 100);
+            document.getElementById("final-score").innerText = `${percent}%`;
 
-setInterval(()=>{
-  if(time>0){
-    time--;
-    document.getElementById("time").innerText=time;
-  } else {
-    show();
-  }
-},1000);
+            let msg = "";
+            if (percent >= 75) msg = "Good job 🎉";
+            else if (percent >= 40) msg = "Review this chapter 🙂";
+            else msg = "Let’s practise more 📘";
 
-load();
+            document.getElementById("resultText").innerText = `${msg}\nScore: ${score}/${runtimeQuestions.length}`;
+        }
 
-</script>
+        function safePlayAudio(id) {
+            const audio = document.getElementById(id);
+            if (audio) {
+                audio.currentTime = 0;
+                audio.play().catch(() => {});
+            }
+        }
 
+        window.onload = () => appEngine.init();
+    </script>
 </body>
 </html>
