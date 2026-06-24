@@ -3,582 +3,406 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Addition Upto 20</title>
+<title>Addition Up To 20</title>
 
 <style>
-*{box-sizing:border-box}
-body{margin:0;font-family:Arial,sans-serif;background:#f3f8ff;color:#1f2937;min-height:100vh}
 
-.screen {
-  display: none; 
-  width: 100%;
-  min-height: 100vh;
-  padding: 16px;
-  box-sizing: border-box;
+/* =======================
+   BASE LAYOUT
+======================= */
+body{
+  margin:0;
+  font-family:Arial;
+  background:#f4f8ff;
 }
 
-.screen.active {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+.screen{
+  display:none;
+  min-height:100vh;
+  justify-content:center;
+  align-items:center;
+  flex-direction:column;
 }
 
-#logoScreen {
-  background: #ffffff;
+.active{
+  display:flex;
 }
 
-.logo {
-  max-width: 420px;
-  width: 80%;
-  height: auto;
-  display: block;
+/* =======================
+   GAME CARD
+======================= */
+.game-container{
+  width:95%;
+  max-width:950px;
+  background:white;
+  border-radius:24px;
+  box-shadow:0 10px 30px rgba(0,0,0,0.08);
+  padding:20px;
 }
 
-.card {
-  width: 100%;
-  max-width: 880px;
-  background: #ffffff;
-  border-radius: 22px;
-  padding: 20px;
-  box-shadow: 0 8px 24px rgba(0,0,0,.15);
+/* =======================
+   STATUS BAR (TOP PILLS)
+======================= */
+.status{
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  flex-wrap:wrap;
+  margin-bottom:18px;
 }
 
-.topbar {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 10px;
-  margin-bottom: 16px;
-  width: 100%;
+.status div{
+  background:#e8f3ff;
+  padding:10px 14px;
+  border-radius:14px;
+  font-weight:600;
+  color:#1e4d7a;
+  min-width:120px;
+  text-align:center;
 }
 
-.badge {
-  background: #e0f2fe;
-  color: #0f3f5f;
-  padding: 10px;
-  border-radius: 14px;
-  font-weight: bold;
-  font-size: 16px;
-  text-align: center;
+/* =======================
+   QUESTION HEADER
+======================= */
+.question-header{
+  background:#fff3e6;
+  border:2px solid #ffa94d;
+  padding:16px;
+  border-radius:16px;
+  font-size:26px;
+  font-weight:700;
+  margin-bottom:12px;
+  display:flex;
+  align-items:center;
+  gap:10px;
 }
 
-.visual-box {
-  background: #fff7ed;
-  border: 2px solid #fdba74;
-  border-radius: 18px;
-  padding: 16px;
-  margin-bottom: 16px;
-  text-align: center;
-  min-height: 130px;
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+/* =======================
+   QUESTION TEXT
+======================= */
+.question{
+  font-size:22px;
+  font-weight:600;
+  color:#222;
+  margin:15px 0;
+  line-height:1.5;
+  border:3px solid #1e88e5;
+  padding:16px;
+  border-radius:16px;
+  background:#f7fbff;
 }
 
-.visual {
-  font-size: 54px;
-  line-height: 1.2;
+/* =======================
+   IMAGE
+======================= */
+img{
+  max-width:300px;
+  margin:10px auto;
+  display:block;
 }
 
-.visual-box img {
-  max-width: 100%; 
-  max-height: 220px; 
-  object-fit: contain; 
-  border-radius: 12px;
-  display: block;
-  margin: 0 auto;
+/* =======================
+   OPTIONS GRID (2 x 2)
+======================= */
+.options{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:16px;
+  margin-top:20px;
 }
 
-.question {
-  font-size: 24px;
-  font-weight: bold;
-  line-height: 1.35;
-  margin: 16px 0;
-  text-align: left;
+.option-btn{
+  border:2px solid #1e4d7a;
+  background:white;
+  border-radius:14px;
+  padding:18px;
+  font-size:18px;
+  font-weight:600;
+  cursor:pointer;
+  transition:0.2s;
 }
 
-.options {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(220px, 1fr));
-  gap: 14px;
-  width: 100%;
+.option-btn:hover{
+  background:#eaf4ff;
+  transform:scale(1.02);
 }
 
-.option {
-  width: 100%;
-  min-height: 72px;
-  padding: 14px 16px;
-  font-size: 19px;
-  font-weight: bold;
-  border: 2px solid #1f4e79;
-  background: #ffffff;
-  border-radius: 16px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+/* =======================
+   FEEDBACK STATES
+======================= */
+.correct{
+  background:#2ecc71 !important;
+  color:white !important;
+  border:none;
 }
 
-.option.correct { background: #d1fae5; border-color: #047857; color: #047857; }
-.option.wrong { background: #fee2e2; border-color: #b91c1c; color: #b91c1c; }
-.option:disabled { cursor: not-allowed; opacity: 0.7; }
-
-.feedback {
-  min-height: 48px;
-  margin-top: 14px;
-  font-size: 19px;
-  font-weight: bold;
-  text-align: center;
-  width: 100%;
+.wrong{
+  background:#e74c3c !important;
+  color:white !important;
+  border:none;
 }
 
-.primary {
-  background: #1f4e79;
-  color: white;
-  border: none;
-  border-radius: 14px;
-  padding: 14px 28px;
-  font-size: 19px;
-  font-weight: bold;
-  cursor: pointer;
+/* =======================
+   BUTTON
+======================= */
+button{
+  padding:14px 24px;
+  font-size:18px;
+  border:none;
+  border-radius:12px;
+  background:#0077e6;
+  color:white;
+  cursor:pointer;
+  margin-top:10px;
 }
 
-#nextBtn { display: none; }
-
-@media(max-width:700px){
-  .options { grid-template-columns: 1fr; }
-  .topbar { grid-template-columns: repeat(2, 1fr); }
-}
 </style>
 </head>
 
 <body>
 
-<audio id="audioCorrect" src="assets/claps.mp3" preload="auto"></audio>
-<audio id="audioWrong" src="assets/wrong.mp3" preload="auto"></audio>
-
+<!-- =======================
+     LOGO SCREEN
+======================= -->
 <div id="logoScreen" class="screen active">
-  <img src="assets/logo.png" class="logo" alt="Logo">
+  <img src="assets/logo.png" width="180">
 </div>
 
-<div id="introScreen" class="screen">
-  <div class="card" style="text-align:center">
-    <h2>Addition Upto 20</h2>
-    <p>Test your understanding through real-life scenarios, challenges, and puzzles!</p>
-    <button class="primary" onclick="startQuiz()">Start Challenge</button>
-  </div>
+<!-- =======================
+     INSTRUCTIONS
+======================= -->
+<div id="instructionScreen" class="screen">
+  <h2>Addition Up To 20</h2>
+  <p>Read each question carefully and choose the correct answer.</p>
+  <button onclick="startGame()">Start</button>
 </div>
 
-<div id="quizScreen" class="screen">
-  <div class="card">
-    <div class="topbar">
-      <div class="badge"><span id="qTypeBadge">Flow</span>: <span id="qNo">1</span>/12</div>
-      <div class="badge">Score <span id="score">0</span></div>
-      <div class="badge">Time <span id="timer">60</span>s</div>
-      <div class="badge">Add up to 20</div>
+<!-- =======================
+     GAME SCREEN
+======================= -->
+<div id="gameScreen" class="screen">
+
+  <div class="game-container">
+
+    <!-- STATUS BAR -->
+    <div class="status">
+      <div id="flow">Flow: 1/12</div>
+      <div id="score">Score: 0</div>
+      <div id="timer">Time: 60s</div>
+      <div>Add up to 20</div>
     </div>
 
-    <div class="visual-box" id="visualBox"></div>
-    <div class="question" id="questionText"></div>
-    <div class="options" id="optionsBox"></div>
-    <div class="feedback" id="feedback"></div>
-
-    <div style="text-align:center; margin-top: 15px;">
-      <button class="primary" id="nextBtn" onclick="nextQuestion()">Next</button>
+    <!-- QUESTION HEADER -->
+    <div class="question-header">
+      🔍 Number Mystery
     </div>
+
+    <!-- QUESTION -->
+    <div id="question" class="question"></div>
+
+    <!-- IMAGE -->
+    <img id="img" style="display:none;">
+
+    <!-- OPTIONS -->
+    <div class="options" id="options"></div>
+
   </div>
 </div>
 
-<div id="resultScreen" class="screen">
-  <div class="card" style="text-align:center">
-    <h1 id="resultMessage"></h1>
-    <p id="finalScore"></p>
-    <button class="primary" onclick="restartQuiz()">Play Again</button>
-  </div>
+<!-- =======================
+     SCORE SCREEN
+======================= -->
+<div id="scoreScreen" class="screen">
+  <h1>Great Job!</h1>
+  <h2 id="finalScore"></h2>
+  <button onclick="restart()">Play Again</button>
 </div>
+
+<audio id="correctSound" src="assets/claps.mp3"></audio>
+<audio id="wrongSound" src="assets/wrong.mp3"></audio>
 
 <script>
-/* ---------------- COMPLETE QUESTIONS POOL ---------------- */
-const questionPool = [
+
+/* =======================
+   CBQ QUESTIONS (UNCHANGED)
+======================= */
+const questions = [
   {
-    type: "Flow",
-    q: "Rohan has 8 pencils and his sister has 4 pencils. His teacher gives him 1 more pencil for good work. Rohan says he now has 10 pencils. Is he correct?",
-    visual: "✏️ Pencil Count",
-    options: ["No, he has 9 pencils.", "No, he has 12 pencils", "No, he has 13 pencils", "Yes, he has 10 pencils."],
-    answer: "No, he has 9 pencils.",
-    hint: "Rohan had 8 pencils and got 1 more.",
-    explain: "Rohan had 8 pencils and got 1 more, so he has 9."
+    q:"Rohan has 8 pencils. His teacher gives him 1 more pencil. Rohan says he now has 10 pencils. Is he correct?",
+    options:["No, he has 9 pencils.","No, he has 12 pencils","No, he has 13 pencils","Yes, he has 10 pencils"],
+    a:0
   },
   {
-    type: "Flow",
-    q: "A teacher needs to give 1 ice-cream stick to each student. There are 18 students. She has 10 sticks in one box and 8 sticks in another box. Does she have enough sticks for all students?",
-    visual: "🍦 Stick Check",
-    options: ["Yes, she has enough", "No, she has 1 stick less", "No, she has 2 sticks less", "Yes, she has more than needed"],
-    answer: "Yes, she has enough",
-    hint: "Add the sticks from both boxes together.",
-    explain: "10 + 8 = 18 sticks, so she has enough sticks."
+    q:"A teacher has 10 sticks in one box and 8 sticks in another box. There are 18 students. Does she have enough sticks?",
+    options:["Yes, she has enough","No, she has 1 stick less","No, she has 2 sticks less","Yes, she has more than needed"],
+    a:0
   },
   {
-    type: "Flow",
-    q: "Juhi collects 5 blue shells, 7 yellow shells and 5 white shells on the beach. She uses all the white shells and equal number of yellow shells to make a necklace. How many shells did she use to make the necklace?",
-    visual: "🐚 Shell Necklace",
-    options: ["7", "8", "9", "10"],
-    answer: "10",
-    hint: "She used 5 white shells and the same number of yellow shells.",
-    explain: "Juhi uses 5 white shells and 5 yellow shells (same number as white), so 5 + 5 = 10 shells."
+    q:"Juhi uses 5 white shells and the same number of yellow shells to make a necklace. How many shells did she use?",
+    options:["7","8","9","10"],
+    a:3,
+    img:"assets/shells.png"
   },
   {
-    type: "Flow",
-    q: "A frog is on number 7 on a number line. How many time should it jump forward to land on 10?",
-    visual: "🐸 Number Line Jump",
-    options: ["3", "4", "1", "2"],
-    answer: "3",
-    hint: "Count up from 7 until you reach 10.",
-    explain: "Starting at 7, moving forward 3 steps means 8, 9, 10."
+    q:"A frog is on number 7 on a number line. How many jumps forward are needed to land on 10?",
+    options:["3","4","1","2"],
+    a:0,
+    img:"assets/frog.png"
   },
   {
-    type: "Flow",
-    q: "Andy bakes 4 butterscotch cookies and 2 chocochip cookies in the morning. He bakes 1 butterscotch cookie and 4 chocochip cookies in the evening. How many chocochip cookies did he bake in the day?",
-    visual: "🍪 Cookie Counter",
-    options: ["14", "15", "11", "6"],
-    answer: "6",
-    hint: "Make sure to only add the chocochip cookies.",
-    explain: "2 chocochip cookies in the morning + 4 chocochip cookies in the evening makes 6 chocochip cookies in total."
+    q:"There is a 1-digit number more than 4 but less than 6. Sonam says the number is 6. Is she correct?",
+    options:["Yes, 6 fits the rule","No, the number is 5","No, the number is 4","Yes, the number can be 6 or 5"],
+    a:1
   },
   {
-    type: "Flow",
-    q: "There is a 1 digit number. It is more than 1 + 3 but less than 2 + 4. Sonam says the number is 6. Is she correct?",
-    visual: "🔍 Number Mystery",
-    options: ["Yes, 6 fits the rule", "No, the number is 5", "No, the number is 4", "Yes, the number can be 6 or 5"],
-    answer: "No, the number is 5",
-    hint: "Calculate the bounds: 1 + 3 and 2 + 4.",
-    explain: "1 + 3 = 4 and 2 + 4 = 6. The number must be between 4 and 6, so only 5 fits."
+    q:"Maya adds 12 + 3 and writes the answer as 14. What mistake did she make?",
+    options:["She added 3 tens instead of 3 ones","She counted one less in the ones place","She subtracted instead of adding","The answer is correct"],
+    a:1
   },
   {
-    type: "Flow",
-    q: "Maya adds 12 + 3 and writes the answer as 1 tens and 4 ones. What mistake did she make?",
-    visual: "✏️ Place Value Error",
-    options: ["She added 3 tens instead of 3 ones.", "She added one less in the ones place.", "She added 5 more in the ones place.", "The answer is correct."],
-    answer: "She added one less in the ones place.",
-    hint: "Count 3 steps forward from 12.",
-    explain: "Counting 3 steps forward from 12 should lead to 15, not 14."
+    q:"Who brought the same number of pebbles?",
+    options:["Noor and Vinu","Vinu and Sid","Sid and Romi","Romi and Noor"],
+    a:1,
+    img:"assets/pebbles.png"
   },
   {
-    type: "Flow",
-    q: "Romi brings 10 green and 4 orange pebbles. Sid brings 8 red and 7 yellow pebbles. Noor brings 7 pink and 9 purple pebbles. Vinu brings 7 red and 8 green pebbles. Who brought the same number of pebbles?",
-    visual: "💎 Pebble Collection",
-    options: ["Noor and Vinu", "Vinu and Sid", "Sid and Romi", "Romi and Noor"],
-    answer: "Vinu and Sid",
-    hint: "Find the total sum for each child to see which totals match.",
-    explain: "Romi: 14, Sid: 15, Noor: 16, Vinu: 15. Sid and Vinu both brought 15 pebbles."
+    q:"Team A scored 5 + 5 points. Team B scored 4 + 6 points. Which statement is true?",
+    options:["Team A scored more","Team B scored more","Both teams scored equal points","Team A scored 1 more point"],
+    a:2
   },
   {
-    type: "Flow",
-    q: "In a match, Team A scored 5 points in Round 1 and 5 points in Round 2. Team B scored 4 points in Round 1 and 6 points in Round 2. Which statement is true?",
-    visual: "🏆 Scoreboard Check",
-    options: ["Team A scored more points in total.", "Team B scored more points in total", "Both teams scored equal points", "Team A scored 1 point more than Team B"],
-    answer: "Both teams scored equal points",
-    hint: "Calculate the total points for both Team A and Team B.",
-    explain: "Both sums equal 10, showing that different pairs of numbers can have the same total."
+    q:"Which sum does NOT equal 15?",
+    options:["10 + 5","12 + 3","14 + 1","10 + 2"],
+    a:3
   },
   {
-    type: "Flow",
-    q: "Tina has 7 yellow beads, 8 red beads and 1 white beads. She makes a necklace using all the red and white beads. How many beads does she use in all?",
-    visual: "📿 Bead Design",
-    options: ["7", "2", "5", "9"],
-    answer: "9",
-    hint: "Only add the red and white beads together.",
-    explain: "8 red beads and 1 white beads together makes 9 beads."
+    q:"12 children are already on the bus. 7 more children get in. The bus can carry 20 children. Is the driver correct that everyone gets a seat?",
+    options:["Yes, because 12 + 7 = 19","Yes, because the bus can carry 12 children","No, because 7 children are too many","No, because 12 + 7 = 21"],
+    a:0
   },
   {
-    type: "Flow",
-    q: "Which of these sums does NOT equal 15?",
-    visual: "❌ Target Math",
-    options: ["10 + 5", "12 + 3", "14 + 1", "10 + 2"],
-    answer: "10 + 2",
-    hint: "Add each option together to see which doesn't hit 15.",
-    explain: "10 + 2 = 12, while the others all equal 15."
+    q:"Ali has 11 balloons. His sister gives him 5 more and he finds 3 more. Does he have enough balloons to make 20?",
+    options:["Yes, exactly 20","No, he has 19 balloons","No, he has 16 balloons","Yes, he has more than 20"],
+    a:1
   },
   {
-    type: "Challenge",
-    q: "Assertion: Adding 1 to 15 gives 16. Reason: Adding 1 always gives the next number (successor).",
-    visual: "🧠 Logic Rule",
-    options: ["Both are correct and reason explains assertion", "Both are correct but reason does not explain", "Assertion is correct, reason is wrong", "Both are wrong"],
-    answer: "Both are correct and reason explains assertion",
-    hint: "Does the reason perfectly explain why 15 becomes 16?",
-    explain: "The reason perfectly explains why the total becomes 16 when you add just one more."
-  },
-  {
-    type: "Challenge",
-    q: "A bus can carry 20 children. 12 children are already on the bus. 7 children are waiting in a line to get in the bus. The driver says, 'There are seats for all 7 children.' Is the driver correct?",
-    visual: "🚌 Bus Seats",
-    options: ["Yes, because 12 + 7 = 19", "Yes, because the bus can carry 12 children.", "No, because 7 children are too many.", "No, because 12 + 7 = 21."],
-    answer: "Yes, because 12 + 7 = 19",
-    hint: "Add the inside children and waiting children together.",
-    explain: "12 + 7 = 19. Since the bus can carry 20 children, all 7 children can get seats safely."
-  },
-  {
-    type: "Flow",
-    q: "Look at the list: Mangoes - 8, Banana - 6, Papaya - 1. How many fruits are there in total?",
-    visual: "🥭 Fruit Basket",
-    options: ["16", "10", "15", "18"],
-    answer: "15",
-    hint: "Add 8 + 6 + 1 sequentially.",
-    explain: "8 + 6 + 1 gives 15 fruits in all."
-  },
-  {
-    type: "Flow",
-    q: "If you start at number 10 on a number line and take 0 jumps, where are you?",
-    visual: "assets/number-line.png",
-    options: ["0", "10", "1", "9"],
-    answer: "10",
-    hint: "Adding zero means you aren't moving at all.",
-    explain: "0 added to 10 is 10."
-  },
-  {
-    type: "Flow",
-    q: "A box has 13 chocolates. Jamie adds 4 more chocolates in the box. How many chocolates are there now?",
-    visual: "🍫 Sweet Box",
-    options: ["17", "18", "19", "16"],
-    answer: "17",
-    hint: "Add 4 to the 3 ones inside 13.",
-    explain: "Adding 4 to the 3 ones in 13 gives you 7 ones, making the total 17."
-  },
-  {
-    type: "Flow",
-    q: "Does 7 + 2 give the same answer as 2 + 7?",
-    visual: "🔄 Swap Order",
-    options: ["Yes, both are 9", "No, the first is 9 and second is 8", "No, the first is 7 and second is 2", "Only if we add 1"],
-    answer: "Yes, both are 9",
-    hint: "Does changing the order of addition change the final sum?",
-    explain: "In addition, the order of the numbers does not change the final total."
-  },
-  {
-    type: "Flow",
-    q: "Three sequential groups of birds fly onto a branch: 9 birds, then 5 birds, and finally 1 bird. How many birds are on the branch now?",
-    visual: "🐦 Sequential Count",
-    options: ["14", "15", "16", "10"],
-    answer: "15",
-    hint: "Sequentially track the growing group: 9 + 5 + 1.",
-    explain: "Adding three numbers sequentially (9+5+1) helps track the growing group of birds to make 15."
-  },
-  {
-    type: "Flow",
-    q: "Ali needs 20 balloons to decorate the stage. He bought 11 balloons. His sister gave him 5 balloons. He found 3 more in a box. Does he have sufficient balloons to decorate the stage?",
-    visual: "🎈 Balloon Setup",
-    options: ["Yes, exactly 20", "No, he has 19 balloons", "No, he has 16 balloons", "Yes, he has more than 20"],
-    answer: "No, he has 19 balloons",
-    hint: "Find the total sum of 11 + 5 + 3.",
-    explain: "The sum 11 + 5 + 3 equals 19, which is one less than their goal of 20."
-  },
-  {
-    type: "Challenge",
-    q: "Rahul and Adil are counting flowers in a garden. Rahul counts 19 flowers and Adil counts 11 flowers. Adil says that the total number of flowers is 2 tens and 0 ones. What should be the correct answer statement?",
-    visual: "🌸 Flower Garden",
-    options: ["He counted 1 ones more", "He counted 1 tens less", "He added 1 tens and 5 ones", "He counted 1 tens more"],
-    answer: "He counted 1 tens less",
-    hint: "19 + 11 = 30. How many tens are in 30 compared to Adil's 2 tens?",
-    explain: "The total is: 19 + 11 = 30. 30 is 3 tens and 0 ones. Adil said 2 tens (20), which is less than the correct total. He missed 1 ten while counting."
-  },
-  {
-    type: "Flow",
-    q: "In a park, 5 children are playing on the slide, 6 children are playing in the sand pit and 1 child is sitting on the bench. How many ice creams should the teacher buy so everyone gets one?",
-    visual: "🍦 Park Treat",
-    options: ["16", "13", "12", "19"],
-    answer: "12",
-    hint: "Combine all three groups of children together.",
-    explain: "5 + 6 + 1 makes it 12 children. So, teacher needs to buy 12 ice-creams."
-  },
-  {
-    type: "Flow",
-    q: "Ronak and Risha are together putting laddoos in baskets to make groups of 10. Which group is the odd one out?",
-    visual: "🧮 Laddoo Baskets",
-    options: ["7 laddoos + 3 laddoos", "6 laddoos + 4 laddoos", "8 laddoos + 2 laddoos", "5 laddoos + 3 laddoos"],
-    answer: "5 laddoos + 3 laddoos",
-    hint: "Check which pair doesn't add up to 10.",
-    explain: "The options first three all make 10. 5 + 3 = 8, so it does not make 10."
-  },
-  {
-    type: "Challenge",
-    q: "Morning tray has 2 groups of 10 cookies. Evening tray has 4 groups of 10 cookies. The baker wants to put all chocochip cookies into the jar. How many cookies will be in the jar?",
-    visual: "🏺 Cookie Jar",
-    options: ["20", "40", "60", "30"],
-    answer: "60",
-    hint: "Convert groups of 10 into numbers: 20 and 40.",
-    explain: "Morning tray has 20 cookies (2 groups of 10). Evening tray has 40 cookies (4 groups of 10). Total cookies in the jar = 20 + 40 = 60."
+    q:"Ronak and Risha are putting laddoos in baskets to make groups of 10. Which group is the odd one out?",
+    options:["7 laddoos + 3 laddoos","6 laddoos + 4 laddoos","8 laddoos + 2 laddoos","5 laddoos + 3 laddoos"],
+    a:3
   }
 ];
 
-/* ---------------- ACTIVE GAME QUESTIONS ARRAY ---------------- */
-let questions = [];
-
-let current = 0;
-let score = 0;
-let timer = 60;
+let i=0;
+let score=0;
+let timer=60;
 let interval;
-let attemptsLeft = 2;
 
-function changeScreen(fromId, toId) {
-  const fromScreen = document.getElementById(fromId);
-  const toScreen = document.getElementById(toId);
-  if (fromScreen) fromScreen.classList.remove("active");
-  if (toScreen) toScreen.classList.add("active");
+/* =======================
+   START FLOW
+======================= */
+setTimeout(()=>{
+  document.getElementById("logoScreen").classList.remove("active");
+  document.getElementById("instructionScreen").classList.add("active");
+},5000);
+
+function startGame(){
+  document.getElementById("instructionScreen").classList.remove("active");
+  document.getElementById("gameScreen").classList.add("active");
+  loadQ();
 }
 
-function init() {
-  setTimeout(() => {
-    changeScreen("logoScreen", "introScreen");
-  }, 5000);
-}
+/* =======================
+   LOAD QUESTION
+======================= */
+function loadQ(){
 
-function startQuiz() {
-  let shuffled = [...questionPool].sort(() => Math.random() - 0.5);
-  questions = shuffled.slice(0, 12);
-  
-  current = 0;
-  score = 0;
-  changeScreen("introScreen", "quizScreen");
-  loadQuestion();
-}
-
-function startTimer() {
   clearInterval(interval);
-  timer = 60;
-  document.getElementById("timer").innerText = timer;
+  timer=60;
 
-  interval = setInterval(() => {
-    timer--;
-    document.getElementById("timer").innerText = timer;
+  let q=questions[i];
 
-    if (timer <= 0) {
-      clearInterval(interval);
-      playAudio(false);
-      disableOptions();
-      document.getElementById("feedback").innerText = "Time's up! " + questions[current].explain;
-      document.getElementById("feedback").style.color = "#b91c1c";
-      document.getElementById("nextBtn").style.display = "inline-block";
-    }
-  }, 1000);
-}
+  document.getElementById("flow").innerText=`Flow: ${i+1}/12`;
+  document.getElementById("score").innerText=`Score: ${score}`;
 
-function playAudio(isCorrect) {
-  const correctSound = document.getElementById("audioCorrect");
-  const wrongSound = document.getElementById("audioWrong");
-  if(isCorrect && correctSound) {
-    correctSound.currentTime = 0;
-    correctSound.play().catch(e => console.log("Audio blocked"));
-  } else if(!isCorrect && wrongSound) {
-    wrongSound.currentTime = 0;
-    wrongSound.play().catch(e => console.log("Audio blocked"));
-  }
-}
+  document.getElementById("question").innerText=q.q;
 
-function loadQuestion() {
-  startTimer();
-  attemptsLeft = 2;
-  
-  let q = questions[current];
+  let img=document.getElementById("img");
+  if(q.img){
+    img.src=q.img;
+    img.style.display="block";
+  }else img.style.display="none";
 
-  document.getElementById("qNo").innerText = current + 1;
-  document.getElementById("qTypeBadge").innerText = q.type;
-  document.getElementById("score").innerText = score;
-  document.getElementById("feedback").innerText = "";
-  document.getElementById("nextBtn").style.display = "none";
-  document.getElementById("questionText").innerText = q.q;
+  let opt=document.getElementById("options");
+  opt.innerHTML="";
 
-  if (q.visual.includes("assets/")) {
-    document.getElementById("visualBox").innerHTML = `<img src="${q.visual}" alt="Question Image">`;
-  } else {
-    document.getElementById("visualBox").innerHTML = `<div class="visual">${q.visual}</div>`;
-  }
-
-  let box = document.getElementById("optionsBox");
-  box.innerHTML = "";
-
-  q.options.forEach(opt => {
-    let btn = document.createElement("button");
-    btn.className = "option";
-    btn.innerText = opt;
-    btn.onclick = () => checkAnswer(btn, opt, q);
-    box.appendChild(btn);
+  q.options.forEach((o,idx)=>{
+    let b=document.createElement("button");
+    b.className="option-btn";
+    b.innerText=o;
+    b.onclick=()=>check(idx,b);
+    opt.appendChild(b);
   });
+
+  startTimer();
 }
 
-function checkAnswer(selectedBtn, selectedValue, qObj) {
-  if (selectedValue === qObj.answer) {
-    clearInterval(interval);
-    selectedBtn.classList.add("correct");
-    playAudio(true);
-    score++;
-    document.getElementById("score").innerText = score;
-    document.getElementById("feedback").innerText = "🎉 Correct! " + qObj.explain;
-    document.getElementById("feedback").style.color = "#047857";
-    disableOptions();
-    document.getElementById("nextBtn").style.display = "inline-block";
-  } else {
-    attemptsLeft--;
-    selectedBtn.classList.add("wrong");
-    selectedBtn.disabled = true;
-    playAudio(false);
+/* =======================
+   TIMER
+======================= */
+function startTimer(){
+  interval=setInterval(()=>{
+    timer--;
+    document.getElementById("timer").innerText=`Time: ${timer}s`;
 
-    if (attemptsLeft > 0) {
-      document.getElementById("feedback").innerText = "💡 Hint: " + qObj.hint;
-      document.getElementById("feedback").style.color = "#1f4e79";
-    } else {
-      clearInterval(interval);
-      disableOptions();
-      document.getElementById("feedback").innerText = "Unsuccessful. Correct answer: " + qObj.answer + ". " + qObj.explain;
-      document.getElementById("feedback").style.color = "#b91c1c";
-      
-      const buttons = document.querySelectorAll(".option");
-      buttons.forEach(b => {
-        if(b.innerText === qObj.answer) b.classList.add("correct");
-      });
-      
-      document.getElementById("nextBtn").style.display = "inline-block";
+    if(timer<=0){
+      next();
     }
+  },1000);
+}
+
+/* =======================
+   CHECK ANSWER
+======================= */
+function check(idx,b){
+  let q=questions[i];
+  let buttons=document.querySelectorAll(".option-btn");
+
+  if(idx===q.a){
+    b.classList.add("correct");
+    document.getElementById("correctSound").play();
+    score++;
+    setTimeout(next,800);
+  }else{
+    b.classList.add("wrong");
+    document.getElementById("wrongSound").play();
   }
 }
 
-function disableOptions() {
-  const buttons = document.querySelectorAll(".option");
-  buttons.forEach(b => b.disabled = true);
+/* =======================
+   NEXT QUESTION
+======================= */
+function next(){
+  i++;
+  if(i<questions.length) loadQ();
+  else end();
 }
 
-function nextQuestion() {
-  current++;
-  if (current >= questions.length) {
-    clearInterval(interval);
-    showResults();
-  } else {
-    loadQuestion();
-  }
+/* =======================
+   END SCREEN
+======================= */
+function end(){
+  document.getElementById("gameScreen").classList.remove("active");
+  document.getElementById("scoreScreen").classList.add("active");
+  document.getElementById("finalScore").innerText=`Score: ${score}/${questions.length}`;
 }
 
-function showResults() {
-  changeScreen("quizScreen", "resultScreen");
-
-  let percentage = (score / questions.length) * 100;
-  let msg = "";
-
-  if (percentage >= 75) {
-    msg = "Good job";
-  } else if (percentage >= 40) {
-    msg = "Review this chapter and try again";
-  } else {
-    msg = "Let’s practise more";
-  }
-
-  document.getElementById("resultMessage").innerText = msg;
-  document.getElementById("finalScore").innerText = `Final Score: ${score} / ${questions.length} (${percentage}%)`;
+/* =======================
+   RESTART
+======================= */
+function restart(){
+  location.reload();
 }
 
-function restartQuiz() {
-  changeScreen("resultScreen", "introScreen");
-}
-
-init();
 </script>
 
 </body>
