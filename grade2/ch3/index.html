@@ -194,24 +194,24 @@ setTimeout(()=>{
 
 /* VERIFIED DATA ARRAY (21 QUESTIONS TOTAL) */
 const questions = [
-  { q:"A child has 350 stickers and gives away 120. Is the remaining number more than 200?", a:["Yes","No","Exactly 200","Less than 150"], c:0 }, // [cite: 2, 3]
-  { q:"Which shows subtraction correctly?", a:["Joining two groups","Taking away objects","Sharing equally","Making equal groups"], c:1 }, // [cite: 4]
-  { q:"Kabir solved: 345 - 120 = 235. What is the mistake?", a:["Final answer is incorrect","Tens place is incorrect","Hundreds place is incorrect","No mistake"], c:3 }, // [cite: 5, 6]
-  { q:"A shop has 500 apples. It sells 260 apples. The shop wants at least 250 apples left. Does it have enough?", a:["Yes","No","Exactly 250","Less than 200"], c:1 }, // [cite: 7, 8]
-  { q:"Which subtraction needs borrowing?", a:["432 - 121","400 - 200","356 - 129","300 - 100"], c:2 }, // [cite: 9]
-  { q:"Which result is smaller?", a:["500 - 200","450 - 150","400 - 150","300 - 50"], c:2 }, // [cite: 10]
-  { q:"Arjun says: \"Subtraction means adding numbers.\" What is wrong?", a:["Subtraction means taking away","Addition and subtraction are same","Subtraction means grouping","No mistake"], c:0 }, // [cite: 11, 12]
-  { q:"Books in a library: 300 - 100 and 250 - 50. Which statement is correct?", a:["Both results are equal","First result is more","Second result is more","Both are zero"], c:0 }, // [cite: 13, 14]
-  { q:"Using the same data, how many books are left in the first case?", a:["200","150","100","250"], c:0 }, // [cite: 15, 16]
-  { q:"A child has 280 marbles and gives away 100. Is the remaining number more than 150?", a:["Yes","No","Exactly 150","Less than 100"], c:0 }, // [cite: 17, 18]
-  { q:"Which does NOT belong because it is not subtraction?", a:["400 - 100","300 - 50","200 + 100","500 - 200"], c:2 }, // [cite: 19, 20]
-  { q:"(Picture-Based) Image: 300 blocks with 100 removed. Which statement is correct?", a:["200 blocks remain","100 blocks remain","300 blocks remain","150 blocks remain"], c:0 }, // [cite: 21, 22]
-  { q:"(Picture-Based) Image: 400 objects with 200 crossed out. Which statement is correct?", a:["Exactly 200 remain","Less than 200 remain","More than 200 remain","Nothing remains"], c:0 }, // [cite: 23, 24]
-  { q:"A child has 500 candies. First gives away 200, then 100 more. Which statement is correct?", a:["200 candies remain","300 candies remain","100 candies remain","No candies remain"], c:0 }, // [cite: 25, 26]
-  { q:"A school has 450 books. It gives away 150 books. Is the remaining number more than 250?", a:["Yes","No","Exactly 250","Less than 200"], c:0 }, // [cite: 27, 28]
-  { q:"Using the same data, is exactly 300 books left?", a:["Yes","No","More than 300","Less than 250"], c:0 }, // [cite: 29, 30]
-  { q:"A number is 600. 250 is taken away. Is the result more than 300?", a:["Yes","No","Exactly 300","Less than 200"], c:0 }, // [cite: 31, 32]
-  { q:"A child subtracts 150 from 450 and then subtracts 100 more. Which statement is correct?", a:["200 remain","300 remain","100 remain","150 remain"], c:0 }, // [cite: 33, 34]
+  { q:"A child has 350 stickers and gives away 120. Is the remaining number more than 200?", a:["Yes","No","Exactly 200","Less than 150"], c:0 },
+  { q:"Which shows subtraction correctly?", a:["Joining two groups","Taking away objects","Sharing equally","Making equal groups"], c:1 },
+  { q:"Kabir solved: 345 - 120 = 235. What is the mistake?", a:["Final answer is incorrect","Tens place is incorrect","Hundreds place is incorrect","No mistake"], c:3 },
+  { q:"A shop has 500 apples. It sells 260 apples. The shop wants at least 250 apples left. Does it have enough?", a:["Yes","No","Exactly 250","Less than 200"], c:1 },
+  { q:"Which subtraction needs borrowing?", a:["432 - 121","400 - 200","356 - 129","300 - 100"], c:2 },
+  { q:"Which result is smaller?", a:["500 - 200","450 - 150","400 - 150","300 - 50"], c:2 },
+  { q:"Arjun says: \"Subtraction means adding numbers.\" What is wrong?", a:["Subtraction means taking away","Addition and subtraction are same","Subtraction means grouping","No mistake"], c:0 },
+  { q:"Books in a library: 300 - 100 and 250 - 50. Which statement is correct?", a:["Both results are equal","First result is more","Second result is more","Both are zero"], c:0 },
+  { q:"Using the same data, how many books are left in the first case?", a:["200","150","100","250"], c:0 },
+  { q:"A child has 280 marbles and gives away 100. Is the remaining number more than 150?", a:["Yes","No","Exactly 150","Less than 100"], c:0 },
+  { q:"Which does NOT belong because it is not subtraction?", a:["400 - 100","300 - 50","200 + 100","500 - 200"], c:2 },
+  { q:"(Picture-Based) Image: 300 blocks with 100 removed. Which statement is correct?", a:["200 blocks remain","100 blocks remain","300 blocks remain","150 blocks remain"], c:0, img: "assets/blocks.png" },
+  { q:"(Picture-Based) Image: 400 objects with 200 crossed out. Which statement is correct?", a:["Exactly 200 remain","Less than 200 remain","More than 200 remain","Nothing remains"], c:0 },
+  { q:"A child has 500 candies. First gives away 200, then 100 more. Which statement is correct?", a:["200 candies remain","300 candies remain","100 candies remain","No candies remain"], c:0 },
+  { q:"A school has 450 books. It gives away 150 books. Is the remaining number more than 250?", a:["Yes","No","Exactly 250","Less than 200"], c:0 },
+  { q:"Using the same data, is exactly 300 books left?", a:["Yes","No","More than 300","Less than 250"], c:0 },
+  { q:"A number is 600. 250 is taken away. Is the result more than 300?", a:["Yes","No","Exactly 300","Less than 200"], c:0 },
+  { q:"A child subtracts 150 from 450 and then subtracts 100 more. Which statement is correct?", a:["200 remain","300 remain","100 remain","150 remain"], c:0 },
   { q:"I am more than 90 - 35. Which number am I?", a:["24","45","64","52"], c:2 },
   { q:"(Picture-Based) Look at the ice cream cones. There are 14 total, and 6 are crossed out. Which subtraction sentence is correct?", a:["14 - 8 = 6","14 - 6 = 8","14 - 4 = 10","12 - 6 = 6"], c:1, img: "assets/icecream.png" },
   { q:"(Picture-Based) Look at the shipping boxes with numbers: 215, 523, 460, and 189. What is the sum of the greatest and the smallest numbers?", a:["649","704","712","675"], c:2, img: "assets/boxes.png" }
@@ -219,6 +219,27 @@ const questions = [
 
 let i=0, score=0, time=60, attempt=0, lock=false;
 let timerInterval = null;
+
+/* UNIVERSAL FISHER-YATES SHUFFLE ALGORITHM */
+function shuffleArray(array) {
+  for (let idx = array.length - 1; idx > 0; idx--) {
+    const j = Math.floor(Math.random() * (idx + 1));
+    [array[idx], array[j]] = [array[j], array[idx]];
+  }
+}
+
+/* INITIALIZE GAME DATA RANDOMIZATION */
+function initGameData() {
+  // 1. Shuffle the main array sequence
+  shuffleArray(questions);
+
+  // 2. Iterate and securely shuffle internal multiple-choice structures
+  questions.forEach(item => {
+    let correctText = item.a[item.c]; // Keep string value of the correct answer
+    shuffleArray(item.a);            // Scramble options array
+    item.c = item.a.indexOf(correctText); // Re-map 'c' property dynamically
+  });
+}
 
 /* ENGINE START/LOAD */
 function load(){
@@ -348,7 +369,8 @@ function show(){
     `<div>${msg}</div><div style="font-size:18px; margin-top:10px; color:#4b5563;">Total Points: ${score} / ${maxPossibleScore}</div>`;
 }
 
-// Start Runtime
+// Scramble database structures and launch quiz runtime
+initGameData();
 load();
 </script>
 
