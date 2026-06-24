@@ -414,12 +414,12 @@
                 explanation: "Team Beta reached 300 + 110 = 410 items, which is higher than the other tracking teams."
             },
             {
-                text: "Examine Zayan's puzzle card. Box X has 180 cars and Box Y has 140 cars. He states that the collective total is 40 cars. What went wrong?",
+                text: "Examine Zayan's puzzle card with blue and green item jars. Jar X has 190 items and Jar Y has 140 items. He states that the combined total is 50 items. What went wrong?",
                 image: "assets/jars.png",
-                options: ["He subtracted instead of adding the groups together", "He divided the items by accident", "He only counted the cars in Box Y", "His logic is correct"],
+                options: ["He subtracted instead of adding the groups together", "He divided the items by accident", "He only counted the items in Jar Y", "His logic is correct"],
                 answer: 0,
                 hint: "When finding a combined total of multiple sets, should you use subtraction or addition?",
-                explanation: "Zayan subtracted (180 − 140 = 40) instead of adding the groups together to get the full amount of 320."
+                explanation: "Zayan subtracted (190 − 140 = 50) instead of adding the groups together to get the full amount of 330."
             },
             {
                 text: "Look at the visual unit block sets layout below. Which statement correctly identifies the total number of blocks?",
@@ -678,97 +678,3 @@
                 feedback.className = "feedback-box explanation";
                 feedback.innerText = `Time's up! ${q.explanation}`;
                 feedback.style.display = 'block';
-                
-                this.highlightCorrectAnswer(q.answer);
-                this.disableAllOptions();
-                document.getElementById('btn-next').style.display = 'block';
-            }
-
-            highlightCorrectAnswer(targetIdx) {
-                const buttons = document.querySelectorAll('.option-btn');
-                if (buttons[targetIdx]) {
-                    buttons[targetIdx].classList.add('correct');
-                }
-            }
-
-            disableAllOptions() {
-                document.querySelectorAll('.option-btn').forEach(btn => btn.disabled = true);
-            }
-
-            nextQuestion() {
-                this.currentIdx++;
-                this.loadQuestion();
-            }
-
-            playSound(id) {
-                if (this.isMuted) return;
-                const sound = document.getElementById(id);
-                if (sound) {
-                    sound.currentTime = 0;
-                    sound.play().catch(() => {});
-                }
-            }
-
-            triggerConfetti() {
-                for (let i = 0; i < 50; i++) {
-                    this.particles.push({
-                        x: this.canvas.width / 2,
-                        y: this.canvas.height / 3,
-                        vx: (Math.random() - 0.5) * 10,
-                        vy: (Math.random() - 0.7) * 10,
-                        color: `hsla(${Math.random() * 360}, 100%, 50%, 1)`,
-                        size: Math.random() * 5 + 3,
-                        alpha: 1
-                    });
-                }
-            }
-
-            animateParticles() {
-                this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-                for (let i = this.particles.length - 1; i >= 0; i--) {
-                    const p = this.particles[i];
-                    p.x += p.vx;
-                    p.y += p.vy;
-                    p.vy += 0.2;
-                    p.alpha -= 0.015;
-                    if (p.alpha <= 0) {
-                        this.particles.splice(i, 1);
-                        continue;
-                    }
-                    this.ctx.fillStyle = p.color;
-                    this.ctx.globalAlpha = p.alpha;
-                    this.ctx.beginPath();
-                    this.ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-                    this.ctx.fill();
-                }
-                this.ctx.globalAlpha = 1.0;
-                requestAnimationFrame(() => this.animateParticles());
-            }
-
-            showResults() {
-                document.getElementById('game-view').classList.remove('active');
-                document.getElementById('result-view').classList.add('active');
-                
-                const maxPossibleScore = this.gameDB.length * 10;
-                const percentage = Math.round((this.score / maxPossibleScore) * 100);
-                document.getElementById('final-score').innerText = `${percentage}%`;
-                
-                const msgElem = document.getElementById('final-msg');
-                if (percentage >= 75) {
-                    msgElem.innerText = "Good job!";
-                    msgElem.style.color = "var(--success)";
-                } else if (percentage >= 40) {
-                    msgElem.innerText = "Review this chapter and try again";
-                    msgElem.style.color = "#d97706";
-                } else {
-                    msgElem.innerText = "Let’s practise more";
-                    msgElem.style.color = "var(--error)";
-                }
-            }
-        }
-
-        const gameEngine = new GameEngine(questionsDatabase);
-        window.onload = () => gameEngine.init();
-    </script>
-</body>
-</html>
