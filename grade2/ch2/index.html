@@ -369,12 +369,13 @@
     <audio id="snd-wrong" src="assets/wrong.mp3" preload="auto"></audio>
 
     <script>
+        // Currently keeping all 20 questions active. Let me know which 8 to drop!
         const questionsDatabase = [
             {
                 text: "Look at the flying kites containing math expressions side by side. Which kite yields the largest total sum?",
                 image: "assets/kites.png",
                 options: ["Kite A", "Kite B", "Kite C", "Kite D"],
-                answer: 3,
+                answer: 3, // Maps to "Kite D" string
                 hint: "Calculate each sum: A is 110+115=225, B is 205+145=350, C is 120+260=380, D is 210+215=425.",
                 explanation: "210 + 215 = 425. Kite D yields the largest total sum."
             },
@@ -528,6 +529,10 @@
                 this.timeLeft = 60;
                 this.isMuted = false;
                 
+                // Track randomized runtime data for the current question
+                this.currentRuntimeOptions = [];
+                this.correctRuntimeIndex = -1;
+
                 this.canvas = document.getElementById('fx-canvas');
                 this.ctx = this.canvas.getContext('2d');
                 this.particles = [];
@@ -601,10 +606,15 @@
                     imgElem.src = ''; 
                 }
 
+                // RANDOMIZE OPTIONS ON EACH LOAD
+                const correctOptionText = q.options[q.answer]; 
+                this.currentRuntimeOptions = this.shuffle(q.options);
+                this.correctRuntimeIndex = this.currentRuntimeOptions.indexOf(correctOptionText);
+
                 const optBox = document.getElementById('options-box');
                 optBox.innerHTML = '';
                 
-                q.options.forEach((opt, idx) => {
+                this.currentRuntimeOptions.forEach((opt, idx) => {
                     const btn = document.createElement('button');
                     btn.className = 'option-btn';
                     btn.innerText = opt;
@@ -638,7 +648,7 @@
                 const q = this.gameDB[this.currentIdx];
                 const feedback = document.getElementById('feedback-display');
 
-                if (selectedIdx === q.answer) {
+                if (selectedIdx === this.correctRuntimeIndex) {
                     clearInterval(this.timer);
                     clickedBtn.classList.add('correct');
                     this.playSound('snd-correct');
@@ -665,7 +675,7 @@
                         feedback.innerText = `Incorrect. ${q.explanation}`;
                         feedback.style.display = 'block';
                         
-                        this.highlightCorrectAnswer(q.answer);
+                        this.highlightCorrectAnswer(this.correctRuntimeIndex);
                         this.disableAllOptions();
                         document.getElementById('btn-next').style.display = 'block';
                     }
@@ -678,3 +688,97 @@
                 feedback.className = "feedback-box explanation";
                 feedback.innerText = `Time's up! ${q.explanation}`;
                 feedback.style.display = 'block';
+                
+                this.highlightCorrectAnswer(this.correctRuntimeIndex);
+                this.disableAllOptions();
+                document.getElementById('btn-next').style.display = 'block';
+            }
+
+            highlightCorrectAnswer(targetIdx) {
+                const buttons = document.querySelectorAll('.option-btn');
+                if (buttons[targetIdx]) {
+                    buttons[targetIdx].classList.add('correct');
+                }
+            }
+
+            disableAllOptions() {
+                document.querySelectorAll('.option-btn').forEach(btn => btn.disabled = true);
+            }
+
+            nextQuestion() {
+                this.currentIdx++;
+                this.loadQuestion();
+            }
+
+            playSound(id) {
+                if (this.isMuted) return;
+                const sound = document.getElementById(id);
+                if (sound) {
+                    sound.currentTime = 0;
+                    sound.play().catch(() => {});
+                }
+            }
+
+            triggerConfetti() {
+                for (let i = 0; i < 50; i++) {
+                    this.particles.push({
+                        x: this.canvas.width / 2,
+                        y: this.canvas.height / 3,
+                        vx: (Math.random() - 0.5) * 10,
+                        vy: (Math.random() - 0.7) * 10,
+                        color: `hsla(${Math.random() * 360}, 100%, 50%, 1)`,
+                        size: Math.random() * 5 + 3,
+                        alpha: 1
+                    });
+                }
+            }
+
+            animateParticles() {
+                this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+                for (let i = this.particles.length - 1; i >= 0; i--) {
+                    const p = this.particles[i];
+                    p.x += p.vx;
+                    p.y += p.vy;
+                    p.vy += 0.2;
+                    p.alpha -= 0.015;
+                    if (p.alpha <= 0) {
+                        this.particles.splice(i, 1);
+                        continue;
+                    }
+                    this.ctx.fillStyle = p.color;
+                    this.ctx.globalAlpha = p.alpha;
+                    this.ctx.beginPath();
+                    this.ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                    this.ctx.fill();
+                }
+                this.ctx.globalAlpha = 1.0;
+                requestAnimationFrame(() => this.animateParticles());
+            }
+
+            showResults() {
+                document.getElementById('game-view').classList.remove('active');
+                document.getElementById('result-view').classList.add('active');
+                
+                const maxPossibleScore = this.gameDB.length * 10;
+                const percentage = Math.round((this.score / maxPossibleScore) * 100);
+                document.getElementById('final-score').innerText = `${percentage}%`;
+                
+                const msgElem = document.getElementById('final-msg');
+                if (percentage >= 75) {
+                    msgElem.innerText = "Good job!";
+                    msgElem.style.color = "var(--success)";
+                } else if (percentage >= 40) {
+                    msgElem.innerText = "Review this chapter and try again";
+                    msgElem.style.color = "#d97706";
+                } else {
+                    msgElem.innerText = "Let’s practise more";
+                    msgElem.style.color = "var(--error)";
+                }
+            }
+        }
+
+        const gameEngine = new GameEngine(questionsDatabase);
+        window.onload = () => gameEngine.init();
+    </script>
+</body>
+</html>
