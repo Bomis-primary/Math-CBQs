@@ -86,6 +86,14 @@
             border-bottom: 2px solid #edf2f7;
             font-weight: 600;
             font-size: 0.95rem;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .controls-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
         .timer-box {
@@ -95,6 +103,16 @@
             display: flex;
             align-items: center;
             gap: 5px;
+        }
+
+        .mute-btn {
+            background: #e2e8f0;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.85rem;
         }
 
         .timer-low {
@@ -255,7 +273,7 @@
         <div id="intro-screen">
             <h2 class="screen-title">Maths Chapter 2: Addition</h2>
             <p style="text-align: center; margin-bottom: 25px; line-height: 1.6; color: #4a5568;">
-                Welcome! Answer the following competency-based questions carefully. You have 60 seconds per question and 2 attempts for each[cite: 84, 87].
+                Welcome! Answer the following competency-based questions carefully. You have 60 seconds per question and 2 attempts for each.
             </p>
             <button class="btn" onclick="startQuiz()">Start Challenge</button>
         </div>
@@ -264,7 +282,10 @@
             <div class="header-meta">
                 <span id="question-number">Question 1/12</span>
                 <span id="score-tracker">Score: 0</span>
-                <div id="timer-display" class="timer-box">⏱️ <span id="timer-count">60</span>s</div>
+                <div class="controls-right">
+                    <button id="mute-toggle" class="mute-btn" onclick="toggleMute()">🔊 Sound</button>
+                    <div id="timer-display" class="timer-box">⏱️ <span id="timer-count">60</span>s</div>
+                </div>
             </div>
 
             <div class="progress-bar-container">
@@ -302,28 +323,28 @@
                 ],
                 answer: 2, 
                 hint: "Find out how many stickers Riya has in total by adding 125 and 23 first.",
-                explanation: "Riya ends up with 125 + 23 = 148 stickers. Since 148 is less than 150, she does not reach her goal[cite: 98]."
+                explanation: "Riya ends up with 125 + 23 = 148 stickers. Since 148 is less than 150, she does not reach her goal."
             },
             {
                 text: "A teacher has 132 books. She buys some more and now has 150 books. How many books did she buy?",
                 options: ["12", "18", "20", "28"],
                 answer: 1,
                 hint: "Think about what number added to 132 makes 150, or count forward from 132 to 150.",
-                explanation: "The teacher bought 18 books because 132 + 18 = 150[cite: 100]."
+                explanation: "The teacher bought 18 books because 132 + 18 = 150."
             },
             {
                 text: "A shop sold 210 notebooks in the morning. By afternoon, total sales became 255. How many notebooks were sold in the afternoon?",
                 options: ["35", "40", "45", "50"],
                 answer: 2,
                 hint: "Find the difference between the total sales (255) and the morning sales (210).",
-                explanation: "Subtract morning sales from total sales: 255 - 210 = 45 notebooks were sold in the afternoon[cite: 101]."
+                explanation: "Subtract morning sales from total sales: 255 - 210 = 45 notebooks were sold in the afternoon."
             },
             {
                 text: "A shop sold 120 pens and 80 pencils. How many more pens than pencils were sold?",
                 options: ["20", "30", "40", "50"],
                 answer: 2,
                 hint: "Compare the total number of pens and pencils by checking how much bigger 120 is than 80.",
-                explanation: "120 pens minus 80 pencils equals 40 more pens sold[cite: 102]."
+                explanation: "120 pens minus 80 pencils equals 40 more pens sold."
             },
             {
                 text: "Class A collected 145 books and Class B collected 155 books. Which statement is correct?",
@@ -335,7 +356,7 @@
                 ],
                 answer: 1,
                 hint: "Find the difference between 155 and 145 to see who collected more and by how much.",
-                explanation: "Class B collected 155 and Class A collected 145. 155 - 145 = 10, meaning Class B collected 10 more books[cite: 104]."
+                explanation: "Class B collected 155 and Class A collected 145. 155 - 145 = 10, meaning Class B collected 10 more books."
             },
             {
                 text: "Aarav solved: 120 + 25 = 135. What mistake did he make?",
@@ -347,7 +368,7 @@
                 ],
                 answer: 1,
                 hint: "Look closely at the tens place values: 2 tens plus 2 tens should equal how many tens?",
-                explanation: "Aarav added tens incorrectly. 120 + 25 should equal 145, because 20 + 20 = 40 in the tens column[cite: 105]."
+                explanation: "Aarav added tens incorrectly. 120 + 25 should equal 145, because 20 + 20 = 40 in the tens column."
             },
             {
                 text: "Meera solved: 145 + 32 = 167. Which is correct?",
@@ -359,7 +380,7 @@
                 ],
                 answer: 2,
                 hint: "Add the ones column (5 + 2) and the tens column (4 + 3) to verify her math.",
-                explanation: "5 + 2 = 7 and 4 + 3 = 7, so the sum is 177. She forgot to process the missing tens or write down the correct tens digit (she wrote 6 instead of 7)[cite: 106]."
+                explanation: "5 + 2 = 7 and 4 + 3 = 7, so the sum is 177. She forgot to process the missing tens or write down the correct tens digit (she wrote 6 instead of 7)."
             },
             {
                 text: "Rohan solved: 230 + 40 = 240. Why is this wrong?",
@@ -371,7 +392,7 @@
                 ],
                 answer: 0,
                 hint: "Check the tens position. What do you get when you add 3 tens and 4 tens?",
-                explanation: "Tens were not added correctly. 3 tens + 4 tens = 7 tens, so 230 + 40 should be 270[cite: 107]."
+                explanation: "Tens were not added correctly. 3 tens + 4 tens = 7 tens, so 230 + 40 should be 270."
             },
             {
                 text: "Assertion: 40 + 30 = 70. Reason: We add tens to tens.",
@@ -383,7 +404,7 @@
                 ],
                 answer: 0,
                 hint: "Is 40 + 30 equal to 70? When adding these multiples of ten, do we group the tens together?",
-                explanation: "Both statements are correct. 40 and 30 are combinations of tens, and we achieve 70 by combining their values[cite: 108]."
+                explanation: "Both statements are correct. 40 and 30 are combinations of tens, and we achieve 70 by combining their values."
             },
             {
                 text: "Assertion: 125 + 25 = 150. Reason: Adding 25 increases the number by 25.",
@@ -395,7 +416,7 @@
                 ],
                 answer: 0,
                 hint: "Check if the sum is accurate, and recall what addition does to an initial count.",
-                explanation: "Both are true. Adding any value increases the original number by exactly that amount[cite: 109]."
+                explanation: "Both are true. Adding any value increases the original number by exactly that amount."
             },
             {
                 text: "A school needs 300 books for its library. They collected 145 books on Day 1 and 155 books on Day 2. They decide to donate 20 books to another school. Will they still have enough books?",
@@ -407,14 +428,14 @@
                 ],
                 answer: 2,
                 hint: "Add Day 1 and Day 2 counts together, then deduct the 20 donated books.",
-                explanation: "They collected 145 + 155 = 300 books. After donating 20 books, they only have 280 left, which is less than the 300 needed[cite: 111]."
+                explanation: "They collected 145 + 155 = 300 books. After donating 20 books, they only have 280 left, which is less than the 300 needed."
             },
             {
                 text: "Riya collected 135 books and Ameya collected 145 books. There were already 120 books in the library. The school plans to arrange the books in groups of 100. How many full groups can they make?",
                 options: ["3", "4", "5", "6"],
                 answer: 1,
                 hint: "Calculate the total number of books first by adding 135, 145, and 120 together.",
-                explanation: "The total number of books is 135 + 145 + 120 = 400. In groups of 100, they can make exactly 4 full groups[cite: 113]."
+                explanation: "The total number of books is 135 + 145 + 120 = 400. In groups of 100, they can make exactly 4 full groups."
             }
         ];
 
@@ -423,6 +444,7 @@
         let attempts = 0;
         let timerInterval;
         let timeLeft = 60;
+        let isMuted = false;
 
         // Auto-clear splash screen after 5 seconds
         window.addEventListener('DOMContentLoaded', () => {
@@ -437,6 +459,11 @@
             document.getElementById('intro-screen').classList.add('hidden');
             document.getElementById('quiz-screen').classList.remove('hidden');
             loadQuestion();
+        }
+
+        function toggleMute() {
+            isMuted = !isMuted;
+            document.getElementById('mute-toggle').textContent = isMuted ? "🔇 Muted" : "🔊 Sound";
         }
 
         function loadQuestion() {
@@ -570,9 +597,9 @@
             const percentage = (score / questions.length) * 100;
             let msg = "";
 
-            if (percentage >= 75) msg = "Good job!"; [cite: 123]
-            else if (percentage >= 40) msg = "Review this chapter and try again"; [cite: 124]
-            else msg = "Let’s practise more"; [cite: 125]
+            if (percentage >= 75) msg = "Good job!";
+            else if (percentage >= 40) msg = "Review this chapter and try again";
+            else msg = "Let’s practise more";
 
             document.getElementById('result-message').textContent = msg;
             document.getElementById('final-score').textContent = `You scored ${score} out of ${questions.length} (${percentage.toFixed(0)}%)`;
@@ -588,6 +615,7 @@
         }
 
         function playSound(type) {
+            if (isMuted) return;
             const sound = document.getElementById(`audio-${type}`);
             if (sound) {
                 sound.currentTime = 0;
