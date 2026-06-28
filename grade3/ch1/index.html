@@ -10,6 +10,7 @@
             --primary-hover: #1d4ed8;
             --success: #10b981;
             --danger: #ef4444;
+            --warning: #ecc94b;
             --background: #f8fafc;
             --surface: #ffffff;
             --text: #1e293b;
@@ -22,6 +23,7 @@
             margin: 0;
             padding: 0;
             font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
@@ -29,14 +31,20 @@
             color: var(--text);
             line-height: 1.5;
             padding: 2rem 1rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
         }
 
         .container {
+            width: 100%;
             max-width: 800px;
             margin: 0 auto;
+            position: relative;
         }
 
-        /* Branding Overlay Styles */
+        /* Branding Overlay Styles (Enforced 5 Seconds Lock) */
         #branding-overlay {
             position: fixed;
             top: 0;
@@ -45,6 +53,7 @@
             height: 100%;
             background-color: #ffffff;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
             z-index: 9999;
@@ -53,6 +62,19 @@
         #branding-overlay img {
             max-width: 250px;
             height: auto;
+            margin-bottom: 20px;
+        }
+        .loader {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #e2e8f0;
+            border-top: 4px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
 
         header {
@@ -80,6 +102,25 @@
             margin-left: 1.25rem;
         }
 
+        /* Utility HUD row */
+        .controls-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            margin-bottom: 1rem;
+        }
+
+        .mute-btn {
+            background: #e2e8f0;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
         /* Top HUD Styles */
         .hud-bar {
             display: flex;
@@ -103,7 +144,7 @@
             box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
             margin-bottom: 1.5rem;
             border: 1px solid var(--border);
-            display: none; /* Controlled by JS flow */
+            display: none;
         }
         .quiz-card.active {
             display: block;
@@ -158,16 +199,11 @@
             background-color: #eff6ff;
         }
 
-        .option-btn.selected {
-            border-color: var(--primary);
-            background-color: #dbeafe;
-            color: #1e40af;
-        }
-
         .option-btn.correct {
             border-color: var(--success) !important;
             background-color: #d1fae5 !important;
             color: #065f46 !important;
+            font-weight: bold;
         }
 
         .option-btn.incorrect {
@@ -176,28 +212,26 @@
             color: #991b1b !important;
         }
 
+        /* Interactive Feedback Boxes */
         .feedback-box {
             margin-top: 1.25rem;
             padding: 1rem;
             border-radius: 8px;
             font-size: 0.95rem;
             display: none;
+            line-height: 1.4;
         }
 
-        .feedback-box.show {
-            display: block;
+        .feedback-box.hint {
+            background-color: #feebc8;
+            border-left: 4px solid var(--warning);
+            color: #744210;
         }
 
-        .feedback-box.correct-bg {
-            background-color: #f0fdf4;
-            border: 1px solid #bbf7d0;
-            color: #166534;
-        }
-
-        .feedback-box.incorrect-bg {
-            background-color: #fef2f2;
-            border: 1px solid #fecaca;
-            color: #991b1b;
+        .feedback-box.explanation {
+            background-color: #edf2f7;
+            border-left: 4px solid var(--primary);
+            color: var(--text);
         }
 
         .submit-container {
@@ -221,11 +255,6 @@
         .action-btn:hover:not(:disabled) {
             background-color: var(--primary-hover);
         }
-        .action-btn:disabled {
-            background-color: var(--border);
-            cursor: not-allowed;
-            box-shadow: none;
-        }
 
         #results-card {
             background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
@@ -242,278 +271,509 @@
             color: var(--primary);
             margin: 1rem 0;
         }
+
+        #confetti-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 99;
+        }
     </style>
 </head>
 <body>
 
 <div id="branding-overlay">
-    <img src="assets/innovine-logo.png" alt="Innovine Logo" onerror="this.src='https://via.placeholder.com/250x100?text=Innovine+Logo'">
+    <img src="grade-3/maths/chapter-1/assets/logo.png" alt="Innovine Logo" onerror="this.src='https://via.placeholder.com/250x100?text=Innovine+Logo'">
+    <div class="loader"></div>
 </div>
 
 <div class="container" id="main-content" style="display: none;">
-    <header>
+    <canvas id="confetti-canvas"></canvas>
+
+    <div class="controls-header">
+        <div></div>
+        <button class="mute-btn" id="mute-toggle" onclick="toggleMute()">🔊 Sound On</button>
+    </div>
+
+    <header id="quiz-header">
         <h1>Grade 3 – Chapter 1: Number System up to 9999</h1>
         <div class="meta-info">
             <strong>Learning Outcomes Covered:</strong>
             <ul>
                 <li>Count and represent values using concrete block models.</li>
                 <li>Locate, read, and place values on open number lines.</li>
-                <li>Partition values to identify structural structural notation errors.</li>
-                <li>Compare and rank arrays using relational logic.</li>
+                <li>Partition values to identify structural notation errors.</li>
+                <li>Compare and rank blocks using relational logic and real scenarios.</li>
             </ul>
         </div>
     </header>
 
-    <div class="hud-bar">
-        <div>Score: <span id="hud-score">0</span> / 13</div>
-        <div class="timer-badge">Time Left: <span id="hud-timer">60</span>s</div>
+    <div id="game-container" style="display: none;">
+        <div class="hud-bar">
+            <div>Score: <span id="hud-score">0</span> / 13</div>
+            <div class="timer-badge">Time Left: <span id="hud-timer">60</span>s</div>
+        </div>
+
+        <div id="quiz-flow-container">
+            <div id="active-question-wrapper"></div>
+            
+            <div id="hint-feedback" class="feedback-box hint"></div>
+            <div id="explain-feedback" class="feedback-box explanation"></div>
+        </div>
+
+        <div class="submit-container">
+            <button type="button" id="next-action-btn" class="action-btn" style="display: none;" onclick="handleNextButton()">Next Question</button>
+        </div>
     </div>
 
-    <div id="quiz-form">
-        <div class="quiz-card active" id="q1-card">
-            <div class="question-number">Question 1</div>
-            <div class="question-text">1. Which number is shown?</div>
-            <div class="svg-container">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 280" width="100%">
-                  <rect width="800" height="280" fill="#f8fafc" rx="12" stroke="#cbd5e1" stroke-width="2"/>
-                  <defs>
-                    <g id="cube-q1">
-                      <polygon points="0,10 10,10 10,0 0,0" fill="#38bdf8" stroke="#0369a1" stroke-width="0.8"/>
-                      <polygon points="10,10 14,5 14,0 10,0" fill="#0284c7" stroke="#0369a1" stroke-width="0.8"/>
-                      <polygon points="0,0 10,0 14,5 4,5" fill="#7dd3fc" stroke="#0369a1" stroke-width="0.8"/>
-                    </g>
-                    <g id="rod-q1">
-                      <g transform="translate(0,90)"><use href="#cube-q1"/></g>
-                      <g transform="translate(0,80)"><use href="#cube-q1"/></g>
-                      <g transform="translate(0,70)"><use href="#cube-q1"/></g>
-                      <g transform="translate(0,60)"><use href="#cube-q1"/></g>
-                      <g transform="translate(0,50)"><use href="#cube-q1"/></g>
-                      <g transform="translate(0,40)"><use href="#cube-q1"/></g>
-                      <g transform="translate(0,30)"><use href="#cube-q1"/></g>
-                      <g transform="translate(0,20)"><use href="#cube-q1"/></g>
-                      <g transform="translate(0,10)"><use href="#cube-q1"/></g>
-                      <g transform="translate(0,0)"><use href="#cube-q1"/></g>
-                    </g>
-                    <g id="flat-q1">
-                      <g transform="translate(0,0)"><use href="#rod-q1"/></g>
-                      <g transform="translate(10,0)"><use href="#rod-q1"/></g>
-                      <g transform="translate(20,0)"><use href="#rod-q1"/></g>
-                      <g transform="translate(30,0)"><use href="#rod-q1"/></g>
-                      <g transform="translate(40,0)"><use href="#rod-q1"/></g>
-                      <g transform="translate(50,0)"><use href="#rod-q1"/></g>
-                      <g transform="translate(60,0)"><use href="#rod-q1"/></g>
-                      <g transform="translate(72,0)"><use href="#rod-q1"/></g>
-                      <g transform="translate(82,0)"><use href="#rod-q1"/></g>
-                      <g transform="translate(92,0)"><use href="#rod-q1"/></g>
-                    </g>
-                  </defs>
-                  <g transform="translate(40, 40)">
-                    <rect width="210" height="180" fill="#ffffff" rx="8" stroke="#e2e8f0" stroke-width="1"/>
-                    <text x="105" y="30" font-family="system-ui, sans-serif" font-size="16" font-weight="600" fill="#475569" text-anchor="middle">Hundreds</text>
-                    <g transform="translate(35, 60)"><use href="#flat-q1"/></g>
-                    <g transform="translate(55, 75)"><use href="#flat-q1"/></g>
-                    <g transform="translate(75, 90)"><use href="#flat-q1"/></g>
-                  </g>
-                  <g transform="translate(295, 40)">
-                    <rect width="210" height="180" fill="#ffffff" rx="8" stroke="#e2e8f0" stroke-width="1"/>
-                    <text x="105" y="30" font-family="system-ui, sans-serif" font-size="16" font-weight="600" fill="#475569" text-anchor="middle">Tens</text>
-                    <g transform="translate(35, 50)"><use href="#rod-q1"/></g>
-                    <g transform="translate(75, 50)"><use href="#rod-q1"/></g>
-                    <g transform="translate(115, 50)"><use href="#rod-q1"/></g>
-                    <g transform="translate(155, 50)"><use href="#rod-q1"/></g>
-                  </g>
-                  <g transform="translate(550, 40)">
-                    <rect width="210" height="180" fill="#ffffff" rx="8" stroke="#e2e8f0" stroke-width="1"/>
-                    <text x="105" y="30" font-family="system-ui, sans-serif" font-size="16" font-weight="600" fill="#475569" text-anchor="middle">Ones</text>
-                    <g transform="translate(45, 60)"><use href="#cube-q1"/></g>
-                    <g transform="translate(45, 100)"><use href="#cube-q1"/></g>
-                    <g transform="translate(45, 140)"><use href="#cube-q1"/></g>
-                    <g transform="translate(135, 60)"><use href="#cube-q1"/></g>
-                    <g transform="translate(135, 100)"><use href="#cube-q1"/></g>
-                    <g transform="translate(135, 140)"><use href="#cube-q1"/></g>
-                  </g>
-                </svg>
-            </div>
-            <div class="options-grid">
-                <button type="button" class="option-btn" data-opt="a">a) 346</button>
-                <button type="button" class="option-btn" data-opt="b">b) 436</button>
-                <button type="button" class="option-btn" data-opt="c">c) 364</button>
-                <button type="button" class="option-btn" data-opt="d">d) 306</button>
-            </div>
-            <div class="feedback-box"></div>
-        </div>
+    <div id="intro-card" style="background: var(--surface); padding: 2rem; border-radius: 12px; border: 1px solid var(--border); text-align: center;">
+        <h2 style="color: var(--primary); margin-bottom: 1rem;">Ready to begin your number system adventure?</h2>
+        <p style="margin-bottom: 2rem; color: var(--text-secondary);">You'll have 60 seconds per question with 2 attempts allowed for each task.</p>
+        <button class="action-btn" onclick="startQuizFlow()">Start Assessment</button>
+    </div>
 
-        <div class="quiz-card" id="q2-card">
-            <div class="question-number">Question 2</div>
-            <div class="question-text">2. Which number is marked?</div>
-            <div class="svg-container">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 180" width="100%">
-                  <rect width="800" height="180" fill="#f8fafc" rx="12" stroke="#cbd5e1" stroke-width="2"/>
-                  <line x1="100" y1="100" x2="700" y2="100" stroke="#334155" stroke-width="3" stroke-linecap="round"/>
-                  <polygon points="90,100 105,92 105,108" fill="#334155"/>
-                  <polygon points="710,100 695,92 695,108" fill="#334155"/>
-                  <line x1="150" y1="85" x2="150" y2="115" stroke="#334155" stroke-width="3"/>
-                  <text x="150" y="145" font-family="system-ui, sans-serif" font-size="18" font-weight="bold" fill="#1e293b" text-anchor="middle">200</text>
-                  <line x1="650" y1="85" x2="650" y2="115" stroke="#334155" stroke-width="3"/>
-                  <text x="650" y="145" font-family="system-ui, sans-serif" font-size="18" font-weight="bold" fill="#1e293b" text-anchor="middle">300</text>
-                  <line x1="400" y1="85" x2="400" y2="115" stroke="#0284c7" stroke-width="3"/>
-                  <circle cx="400" cy="100" r="10" fill="#0ea5e9" stroke="#0284c7" stroke-width="2"/>
-                  <text x="400" y="65" font-family="system-ui, sans-serif" font-size="20" font-weight="900" fill="#0369a1" text-anchor="middle">?</text>
-                </svg>
-            </div>
-            <div class="options-grid">
-                <button type="button" class="option-btn" data-opt="a">a) 240</button>
-                <button type="button" class="option-btn" data-opt="b">b) 250</button>
-                <button type="button" class="option-btn" data-opt="c">c) 260</button>
-                <button type="button" class="option-btn" data-opt="d">d) 270</button>
-            </div>
-            <div class="feedback-box"></div>
-        </div>
+    <div id="results-card">
+        <h2>Assessment Complete!</h2>
+        <div class="score-display"><span id="final-score">0</span> / 13</div>
+        <p id="result-message" style="font-size: 1.2rem; color: var(--text-secondary); margin-bottom: 2rem;"></p>
+        <button class="action-btn" onclick="restartQuizFlow()">Try Again</button>
+    </div>
+</div>
 
-        <div class="quiz-card" id="q3-card">
-            <div class="question-number">Question 3</div>
-            <div class="question-text">3. Which statement is correct?</div>
-            <div class="svg-container">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 220" width="100%">
-                  <rect width="800" height="220" fill="#f8fafc" rx="12" stroke="#cbd5e1" stroke-width="2"/>
-                  <defs>
-                    <g id="coin-q3">
-                      <ellipse cx="40" cy="6" rx="40" ry="6" fill="#f59e0b" stroke="#b45309" stroke-width="1"/>
-                      <rect x="0" y="6" width="80" height="5" fill="#d97706" stroke="#b45309" stroke-width="1"/>
-                      <ellipse cx="40" cy="11" rx="40" ry="6" fill="#d97706" stroke="#b45309" stroke-width="1"/>
-                    </g>
-                  </defs>
-                  <g transform="translate(180, 25)">
-                    <text x="40" y="170" font-family="system-ui, sans-serif" font-size="16" font-weight="bold" fill="#475569" text-anchor="middle">Stack A</text>
-                    <g transform="translate(0,110)"><use href="#coin-q3"/></g>
-                    <g transform="translate(0,100)"><use href="#coin-q3"/></g>
-                    <g transform="translate(0,90)"><use href="#coin-q3"/></g>
-                    <g transform="translate(0,80)"><use href="#coin-q3"/></g>
-                    <g transform="translate(0,70)"><use href="#coin-q3"/></g>
-                    <g transform="translate(0,60)"><use href="#coin-q3"/></g>
-                    <g transform="translate(0,50)"><use href="#coin-q3"/></g>
-                    <g transform="translate(0,40)"><use href="#coin-q3"/></g>
-                  </g>
-                  <g transform="translate(500, 25)">
-                    <text x="40" y="170" font-family="system-ui, sans-serif" font-size="16" font-weight="bold" fill="#475569" text-anchor="middle">Stack B</text>
-                    <g transform="translate(0,110)"><use href="#coin-q3"/></g>
-                    <g transform="translate(0,100)"><use href="#coin-q3"/></g>
-                    <g transform="translate(0,90)"><use href="#coin-q3"/></g>
-                    <g transform="translate(0,80)"><use href="#coin-q3"/></g>
-                    <g transform="translate(0,70)"><use href="#coin-q3"/></g>
-                    <g transform="translate(0,60)"><use href="#coin-q3"/></g>
-                  </g>
-                </svg>
-            </div>
-            <div class="options-grid">
-                <button type="button" class="option-btn" data-opt="a">a) Both equal</button>
-                <button type="button" class="option-btn" data-opt="b">b) First stack has more</button>
-                <button type="button" class="option-btn" data-opt="c">c) Second stack has more</button>
-                <button type="button" class="option-btn" data-opt="d">d) Both have less than 20</button>
-            </div>
-            <div class="feedback-box"></div>
-        </div>
+<audio id="audio-correct" src="grade-3/maths/chapter-1/assets/claps.mp3" preload="auto"></audio>
+<audio id="audio-wrong" src="grade-3/maths/chapter-1/assets/wrong.mp3" preload="auto"></audio>
 
-        <div class="quiz-card" id="q4-card">
-            <div class="question-number">Question 4</div>
-            <div class="question-text">4. Which is the expanded form?</div>
-            <div class="svg-container">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 240" width="100%">
-                  <rect width="800" height="240" fill="#f8fafc" rx="12" stroke="#cbd5e1" stroke-width="2"/>
-                  <defs>
-                    <g id="cube-q4">
-                      <polygon points="0,8 8,8 8,0 0,0" fill="#a855f7" stroke="#6b21a8" stroke-width="0.8"/>
-                      <polygon points="8,8 11,4 11,0 8,0" fill="#9333ea" stroke="#6b21a8" stroke-width="0.8"/>
-                      <polygon points="0,0 8,0 11,4 3,4" fill="#c084fc" stroke="#6b21a8" stroke-width="0.8"/>
-                    </g>
-                    <g id="rod-q4">
-                      <g transform="translate(0,72)"><use href="#cube-q4"/></g>
-                      <g transform="translate(0,64)"><use href="#cube-q4"/></g>
-                      <g transform="translate(0,56)"><use href="#cube-q4"/></g>
-                      <g transform="translate(0,48)"><use href="#cube-q4"/></g>
-                      <g transform="translate(0,40)"><use href="#cube-q4"/></g>
-                      <g transform="translate(0,32)"><use href="#cube-q4"/></g>
-                      <g transform="translate(0,24)"><use href="#cube-q4"/></g>
-                      <g transform="translate(0,16)"><use href="#cube-q4"/></g>
-                      <g transform="translate(0,8)"><use href="#cube-q4"/></g>
-                      <g transform="translate(0,0)"><use href="#cube-q4"/></g>
-                    </g>
-                    <g id="flat-q4">
-                      <g transform="translate(0,0)"><use href="#rod-q4"/></g>
-                      <g transform="translate(8,0)"><use href="#rod-q4"/></g>
-                      <g transform="translate(16,0)"><use href="#rod-q4"/></g>
-                      <g transform="translate(24,0)"><use href="#rod-q4"/></g>
-                      <g transform="translate(32,0)"><use href="#rod-q4"/></g>
-                      <g transform="translate(40,0)"><use href="#rod-q4"/></g>
-                      <g transform="translate(48,0)"><use href="#rod-q4"/></g>
-                      <g transform="translate(56,0)"><use href="#rod-q4"/></g>
-                      <g transform="translate(64,0)"><use href="#rod-q4"/></g>
-                      <g transform="translate(72,0)"><use href="#rod-q4"/></g>
-                    </g>
-                  </defs>
-                  <g transform="translate(40, 50)">
-                    <g transform="translate(0,0)"><use href="#flat-q4"/></g>
-                    <g transform="translate(20,15)"><use href="#flat-q4"/></g>
-                    <g transform="translate(40,30)"><use href="#flat-q4"/></g>
-                    <g transform="translate(60,45)"><use href="#flat-q4"/></g>
-                  </g>
-                  <g transform="translate(320, 60)">
-                    <g transform="translate(0,10)"><use href="#rod-q4"/></g>
-                    <g transform="translate(22,10)"><use href="#rod-q4"/></g>
-                    <g transform="translate(44,10)"><use href="#rod-q4"/></g>
-                    <g transform="translate(66,10)"><use href="#rod-q4"/></g>
-                    <g transform="translate(88,10)"><use href="#rod-q4"/></g>
-                    <g transform="translate(110,10)"><use href="#rod-q4"/></g>
-                    <g transform="translate(132,10)"><use href="#rod-q4"/></g>
-                    <g transform="translate(154,10)"><use href="#rod-q4"/></g>
-                  </g>
-                  <g transform="translate(640, 100)">
-                    <g transform="translate(0,0)"><use href="#cube-q4"/></g>
-                    <g transform="translate(25,15)"><use href="#cube-q4"/></g>
-                  </g>
-                </svg>
-            </div>
-            <div class="options-grid">
-                <button type="button" class="option-btn" data-opt="a">a) 400 + 80 + 2</button>
-                <button type="button" class="option-btn" data-opt="b">b) 40 + 80 + 2</button>
-                <button type="button" class="option-btn" data-opt="c">c) 400 + 8 + 2</button>
-                <button type="button" class="option-btn" data-opt="d">d) 480 + 2 + 2</button>
-            </div>
-            <div class="feedback-box"></div>
-        </div>
+<script>
+    // 13 Highly Structured CBSE Competency Based Questions matching requirements
+    const questionsData = [
+        {
+            text: "Which number is shown below in Base-10 blocks?",
+            hasSvg: true,
+            svgType: "blocks-346",
+            options: ["346", "436", "364", "306"],
+            answer: 0,
+            hint: "Count how many hundred flats, ten rods, and unit cubes there are altogether.",
+            explanation: "There are 3 flats (300), 4 rods (40), and 6 cubes (6), which combines to form 346."
+        },
+        {
+            text: "Which number is marked by the blue question mark point on this open number line?",
+            hasSvg: true,
+            svgType: "timeline-250",
+            options: ["240", "250", "260", "270"],
+            answer: 1,
+            hint: "The point sits exactly halfway between the markings for 200 and 300.",
+            explanation: "The midpoint between 200 and 300 is found by calculating 200 + 50, which equals 250."
+        },
+        {
+            text: "Which comparative statement below describes Stack A and Stack B accurately?",
+            hasSvg: true,
+            svgType: "stacks-coins",
+            options: ["Both stacks are equal", "First stack (A) has more coins", "Second stack (B) has more coins", "Both have less than 5 coins"],
+            answer: 1,
+            hint: "Count the physical layer items on Stack A and compare them carefully against Stack B.",
+            explanation: "Stack A contains 8 coins while Stack B has 6 coins, meaning Stack A has more."
+        },
+        {
+            text: "Which mathematical expression below represents the expanded partition form of this collection?",
+            hasSvg: true,
+            svgType: "expanded-482",
+            options: ["400 + 80 + 2", "40 + 80 + 2", "400 + 8 + 2", "480 + 2 + 2"],
+            answer: 0,
+            hint: "Write down the values separate: check hundreds blocks (400), rods (80), and single units (2).",
+            explanation: "4 hundreds flats = 400. 8 tens rods = 80. 2 units = 2. Combined expanded notation is 400 + 80 + 2."
+        },
+        {
+            text: "Which card below sits exactly in the middle position when arranged in increasing order (smallest to largest)?",
+            hasSvg: true,
+            svgType: "cards-order",
+            options: ["235", "245", "254", "225"],
+            answer: 1,
+            hint: "Sort the values 235, 245, and 254 from the smallest value to the highest value first.",
+            explanation: "The increasing sequence is 235, 245, 254. The middle number is 245."
+        },
+        {
+            text: "Rohan token number at the counter has 5 hundreds, 0 tens, and 8 ones. What is his exact token number?",
+            hasSvg: false,
+            options: ["580", "508", "58", "805"],
+            answer: 1,
+            hint: "Set up your place value columns: H T O. Put 5 in Hundreds, 0 in Tens, and 8 in Ones.",
+            explanation: "5 hundreds (500) + 0 tens (0) + 8 ones (8) produces the structural value 508."
+        },
+        {
+            text: "A postman needs to deliver an item to a house labeled 'Seven thousand forty'. What digit sequence does he look for?",
+            hasSvg: false,
+            options: ["7400", "7040", "7004", "740"],
+            answer: 1,
+            hint: "Listen to placeholders. There are no spoken hundreds or ones, so place zeros there.",
+            explanation: "Seven thousand forty is written as 7040. 7400 would be seven thousand four hundred."
+        },
+        {
+            text: "Meera is collecting stamps. She has 999 stamps. Her father gives her 1 more stamp. How many stamps does she have now?",
+            hasSvg: false,
+            options: ["100 stamps", "1000 stamps", "9991 stamps", "9100 stamps"],
+            answer: 1,
+            hint: "What number comes immediately next when you add one single unit to 999?",
+            explanation: "Adding 1 to 999 completes the ten, hundred, and thousand place transitions to make 1000."
+        },
+        {
+            text: "Sana expanded the number 732 as: 70 + 30 + 2. What structural error did she make?",
+            hasSvg: false,
+            options: ["Wrong ones value", "She wrote 70 instead of 700 for Hundreds", "Wrong tens position value", "No mistake made"],
+            answer: 1,
+            hint: "Look at the digit 7. It stands in the hundreds slot column, not the tens slot.",
+            explanation: "7 is in the hundreds column, meaning its placeholder value must be 700, not 70."
+        },
+        {
+            text: "Karan writes the value 652. If he interchanges the digits in the hundreds place and the ones place, what new number is formed?",
+            hasSvg: false,
+            options: ["256", "562", "265", "625"],
+            answer: 0,
+            hint: "Swap the position of the digit 6 and the digit 2 completely, leaving the middle number 5 untouched.",
+            explanation: "Moving 2 to the front and 6 to the back creates the value 256."
+        },
+        {
+            text: "Anu sorts four boxes from smallest to largest: 345, 398, 376, 410. Which box breaks the sequence order?",
+            hasSvg: false,
+            options: ["345", "398", "376", "410"],
+            answer: 2,
+            hint: "Every value in an increasing order must be greater than the number before it. Is 376 larger than 398?",
+            explanation: "376 is smaller than 398, so it is out of place. The right order is 345, 376, 398, 410."
+        },
+        {
+            text: "Assertion (A): The number 840 is greater than 480. \nReason (R): 8 hundreds is greater than 4 hundreds.",
+            hasSvg: false,
+            options: ["Both A and R are true, and R correctly explains A", "Both true but R does not explain A", "A is true, R is false", "Both statements are false"],
+            answer: 0,
+            hint: "Check if 840 is greater than 480, and see if comparing hundreds proves it.",
+            explanation: "When evaluating 3-digit numbers, we check hundreds columns first. Since 8 > 4, the logic matches perfectly."
+        },
+        {
+            text: "Riya has three number cards: 4, 9, and 1. She wants to form the smallest possible 3-digit number using each card once. What is it?",
+            hasSvg: false,
+            options: ["941", "149", "194", "419"],
+            answer: 1,
+            hint: "To build the smallest possible value, write your digits down from the smallest up to the largest.",
+            explanation: "Arranging digits 1, 4, and 9 in increasing sequence yields 149."
+        }
+    ];
 
-        <div class="quiz-card" id="q5-card">
-            <div class="question-number">Question 5</div>
-            <div class="question-text">5. Which is in the middle when ordered?</div>
-            <div class="svg-container">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 160" width="100%">
-                  <rect width="800" height="160" fill="#f8fafc" rx="12" stroke="#cbd5e1" stroke-width="2"/>
-                  <g transform="translate(100, 35)">
-                    <rect width="140" height="90" fill="#10b981" rx="8" stroke="#047857" stroke-width="1.5"/>
-                    <text x="70" y="55" font-family="system-ui, sans-serif" font-size="28" font-weight="bold" fill="#ffffff" text-anchor="middle" dominant-baseline="middle">245</text>
-                  </g>
-                  <g transform="translate(330, 35)">
-                    <rect width="140" height="90" fill="#ef4444" rx="8" stroke="#b91c1c" stroke-width="1.5"/>
-                    <text x="70" y="55" font-family="system-ui, sans-serif" font-size="28" font-weight="bold" fill="#ffffff" text-anchor="middle" dominant-baseline="middle">254</text>
-                  </g>
-                  <g transform="translate(560, 35)">
-                    <rect width="140" height="90" fill="#3b82f6" rx="8" stroke="#1d4ed8" stroke-width="1.5"/>
-                    <text x="70" y="55" font-family="system-ui, sans-serif" font-size="28" font-weight="bold" fill="#ffffff" text-anchor="middle" dominant-baseline="middle">235</text>
-                  </g>
-                </svg>
-            </div>
-            <div class="options-grid">
-                <button type="button" class="option-btn" data-opt="a">a) 235</button>
-                <button type="button" class="option-btn" data-opt="b">b) 245</button>
-                <button type="button" class="option-btn" data-opt="c">c) 254</button>
-                <button type="button" class="option-btn" data-opt="d">d) 225</button>
-            </div>
-            <div class="feedback-box"></div>
-        </div>
+    let currentIdx = 0;
+    let totalScore = 0;
+    let timerId = null;
+    let secondsLeft = 60;
+    let currentQuestionAttempts = 0;
+    let soundMuted = false;
 
-        <div class="quiz-card" id="q6-card">
-            <div class="question-number">Question 6</div>
-            <div class="question-text">6. Which number is shown?</div>
-            <div class="svg-container">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 260" width="100%">
-                  <rect width="800" height="260" fill="#f
+    // Enforced 5-second initial lock duration
+    window.addEventListener('DOMContentLoaded', () => {
+        setTimeout(() => {
+            const overlay = document.getElementById('branding-overlay');
+            overlay.style.opacity = '0';
+            setTimeout(() => {
+                overlay.style.display = 'none';
+                document.getElementById('main-content').style.display = 'block';
+            }, 500);
+        }, 5000);
+    });
+
+    function toggleMute() {
+        soundMuted = !soundMuted;
+        document.getElementById('mute-toggle').textContent = soundMuted ? "🔇 Muted" : "🔊 Sound On";
+    }
+
+    function triggerAudioEffect(status) {
+        if (soundMuted) return;
+        const player = document.getElementById(status === 'win' ? 'audio-correct' : 'audio-wrong');
+        if (player) {
+            player.currentTime = 0;
+            player.play().catch(() => {});
+        }
+    }
+
+    function startQuizFlow() {
+        document.getElementById('intro-card').style.display = 'none';
+        document.getElementById('quiz-header').style.display = 'none';
+        document.getElementById('game-container').style.display = 'block';
+        currentIdx = 0;
+        totalScore = 0;
+        renderQuestionBlock();
+    }
+
+    function renderQuestionBlock() {
+        currentQuestionAttempts = 0;
+        secondsLeft = 60;
+        document.getElementById('hud-timer').textContent = secondsLeft;
+        document.getElementById('hud-score').textContent = totalScore;
+        document.getElementById('hint-feedback').style.display = 'none';
+        document.getElementById('explain-feedback').style.display = 'none';
+        document.getElementById('next-action-btn').style.display = 'none';
+
+        const q = questionsData[currentIdx];
+        let svgMarkup = "";
+
+        if (q.hasSvg) {
+            if (q.svgType === 'blocks-346') {
+                svgMarkup = `
+                <svg viewBox="0 0 800 240" width="100%">
+                    <rect width="800" height="240" fill="#f8fafc" rx="12" stroke="#cbd5e1" stroke-width="2"/>
+                    <defs>
+                        <g id="cube-u"><rect width="10" height="10" fill="#38bdf8" stroke="#0284c7"/></g>
+                        <g id="rod-t">
+                            ${Array.from({length:10}, (_,i)=>`<g transform="translate(0,${i*11})"><use href="#cube-u"/></g>`).join('')}
+                        </g>
+                        <g id="flat-h">
+                            ${Array.from({length:10}, (_,i)=>`<g transform="translate(${i*11},0)"><use href="#rod-t"/></g>`).join('')}
+                        </g>
+                    </defs>
+                    <g transform="translate(30, 40)">
+                        <text x="50" y="-10" font-size="14" font-weight="bold" fill="#475569">Hundreds (3)</text>
+                        <g transform="translate(0,0)"><use href="#flat-h"/></g>
+                        <g transform="translate(20,15)"><use href="#flat-h"/></g>
+                        <g transform="translate(40,30)"><use href="#flat-h"/></g>
+                    </g>
+                    <g transform="translate(360, 40)">
+                        <text x="40" y="-10" font-size="14" font-weight="bold" fill="#475569">Tens (4)</text>
+                        <g transform="translate(0,0)"><use href="#rod-t"/></g>
+                        <g transform="translate(20,0)"><use href="#rod-t"/></g>
+                        <g transform="translate(40,0)"><use href="#rod-t"/></g>
+                        <g transform="translate(60,0)"><use href="#rod-t"/></g>
+                    </g>
+                    <g transform="translate(580, 40)">
+                        <text x="30" y="-10" font-size="14" font-weight="bold" fill="#475569">Ones (6)</text>
+                        <g transform="translate(0,0)"><use href="#cube-u"/></g>
+                        <g transform="translate(20,20)"><use href="#cube-u"/></g>
+                        <g transform="translate(40,40)"><use href="#cube-u"/></g>
+                        <g transform="translate(0,60)"><use href="#cube-u"/></g>
+                        <g transform="translate(20,80)"><use href="#cube-u"/></g>
+                        <g transform="translate(40,100)"><use href="#cube-u"/></g>
+                    </g>
+                </svg>`;
+            } else if (q.svgType === 'timeline-250') {
+                svgMarkup = `
+                <svg viewBox="0 0 800 180" width="100%">
+                    <rect width="800" height="180" fill="#f8fafc" rx="12" stroke="#cbd5e1" stroke-width="2"/>
+                    <line x1="100" y1="100" x2="700" y2="100" stroke="#334155" stroke-width="3"/>
+                    <line x1="150" y1="85" x2="150" y2="115" stroke="#334155" stroke-width="3"/>
+                    <text x="150" y="145" font-size="18" font-weight="bold" text-anchor="middle">200</text>
+                    <line x1="650" y1="85" x2="650" y2="115" stroke="#334155" stroke-width="3"/>
+                    <text x="650" y="145" font-size="18" font-weight="bold" text-anchor="middle">300</text>
+                    <circle cx="400" cy="100" r="10" fill="#0ea5e9" stroke="#0284c7" stroke-width="2"/>
+                    <text x="400" y="70" font-size="24" font-weight="900" fill="#0369a1" text-anchor="middle">?</text>
+                </svg>`;
+            } else if (q.svgType === 'stacks-coins') {
+                svgMarkup = `
+                <svg viewBox="0 0 800 200" width="100%">
+                    <rect width="800" height="200" fill="#f8fafc" rx="12" stroke="#cbd5e1" stroke-width="2"/>
+                    <g transform="translate(200, 20)">
+                        <text x="50" y="150" font-size="16" font-weight="bold" text-anchor="middle">Stack A</text>
+                        ${Array.from({length:8}, (_,i)=>`<rect x="10" y="${110 - i*12}" width="80" height="10" fill="#f59e0b" stroke="#b45309" rx="2"/>`).join('')}
+                    </g>
+                    <g transform="translate(480, 20)">
+                        <text x="50" y="150" font-size="16" font-weight="bold" text-anchor="middle">Stack B</text>
+                        ${Array.from({length:6}, (_,i)=>`<rect x="10" y="${110 - i*12}" width="80" height="10" fill="#f59e0b" stroke="#b45309" rx="2"/>`).join('')}
+                    </g>
+                </svg>`;
+            } else if (q.svgType === 'expanded-482') {
+                svgMarkup = `
+                <svg viewBox="0 0 800 220" width="100%">
+                    <rect width="800" height="220" fill="#f8fafc" rx="12" stroke="#cbd5e1" stroke-width="2"/>
+                    <g transform="translate(40,40)">
+                        <text x="0" y="-10" font-weight="bold">4 Flats</text>
+                        <rect width="80" height="80" fill="#c084fc" opacity="0.7"/>
+                        <rect x="15" y="15" width="80" height="80" fill="#c084fc" opacity="0.8"/>
+                        <rect x="30" y="30" width="80" height="80" fill="#c084fc" opacity="0.9"/>
+                        <rect x="45" y="45" width="80" height="80" fill="#a855f7"/>
+                    </g>
+                    <g transform="translate(340,40)">
+                        <text x="0" y="-10" font-weight="bold">8 Rods</text>
+                        ${Array.from({length:8}, (_,i)=>`<rect x="${i*15}" y="20" width="10" height="100" fill="#e9d5ff" stroke="#a855f7"/>`).join('')}
+                    </g>
+                    <g transform="translate(620,40)">
+                        <text x="0" y="-10" font-weight="bold">2 Units</text>
+                        <rect x="10" y="40" width="20" height="20" fill="#c084fc"/>
+                        <rect x="40" y="40" width="20" height="20" fill="#c084fc"/>
+                    </g>
+                </svg>`;
+            } else if (q.svgType === 'cards-order') {
+                svgMarkup = `
+                <svg viewBox="0 0 800 150" width="100%">
+                    <rect width="800" height="150" fill="#f8fafc" rx="12" stroke="#cbd5e1" stroke-width="2"/>
+                    <g transform="translate(100, 30)">
+                        <rect width="120" height="80" fill="#10b981" rx="8"/>
+                        <text x="60" y="48" font-size="24" fill="white" font-weight="bold" text-anchor="middle">245</text>
+                    </g>
+                    <g transform="translate(340, 30)">
+                        <rect width="120" height="80" fill="#ef4444" rx="8"/>
+                        <text x="60" y="48" font-size="24" fill="white" font-weight="bold" text-anchor="middle">254</text>
+                    </g>
+                    <g transform="translate(580, 30)">
+                        <rect width="120" height="80" fill="#3b82f6" rx="8"/>
+                        <text x="60" y="48" font-size="24" fill="white" font-weight="bold" text-anchor="middle">235</text>
+                    </g>
+                </svg>`;
+            }
+        }
+
+        const wrapper = document.getElementById('active-question-wrapper');
+        wrapper.innerHTML = `
+            <div class="quiz-card active">
+                <div class="question-number">Question ${currentIdx + 1} of ${questionsData.length}</div>
+                <div class="question-text">${q.text}</div>
+                ${q.hasSvg ? `<div class="svg-container">${svgMarkup}</div>` : ''}
+                <div class="options-grid" id="options-block">
+                    ${q.options.map((opt, i) => `
+                        <button type="button" class="option-btn" onclick="verifyChoice(${i}, this)">${opt}</button>
+                    `).join('')}
+                </div>
+            </div>
+        `;
+
+        startTimerInterval();
+    }
+
+    function startTimerInterval() {
+        clearInterval(timerId);
+        timerId = setInterval(() => {
+            secondsLeft--;
+            document.getElementById('hud-timer').textContent = secondsLeft;
+            if (secondsLeft <= 0) {
+                clearInterval(timerId);
+                lockAndExposeCorrectChoice();
+            }
+        }, 1000);
+    }
+
+    function verifyChoice(chosenIdx, element) {
+        const q = questionsData[currentIdx];
+        const buttons = document.getElementsByClassName('option-btn');
+
+        if (chosenIdx === q.answer) {
+            clearInterval(timerId);
+            element.classList.add('correct');
+            triggerAudioEffect('win');
+            triggerSparklersAnimation();
+            totalScore++;
+            document.getElementById('hud-score').textContent = totalScore;
+            terminateOptionsInput();
+            exposeExplanationBox();
+        } else {
+            currentQuestionAttempts++;
+            element.classList.add('incorrect');
+            element.disabled = true;
+            triggerAudioEffect('lose');
+
+            if (currentQuestionAttempts === 1) {
+                const hintEl = document.getElementById('hint-feedback');
+                hintEl.textContent = `Hint: ${q.hint}`;
+                hintEl.style.display = 'block';
+            } else {
+                clearInterval(timerId);
+                terminateOptionsInput();
+                buttons[q.answer].classList.add('correct');
+                exposeExplanationBox();
+            }
+        }
+    }
+
+    function lockAndExposeCorrectChoice() {
+        terminateOptionsInput();
+        const q = questionsData[currentIdx];
+        const buttons = document.getElementsByClassName('option-btn');
+        buttons[q.answer].classList.add('correct');
+        exposeExplanationBox();
+    }
+
+    function terminateOptionsInput() {
+        const buttons = document.getElementsByClassName('option-btn');
+        for (let btn of buttons) {
+            btn.disabled = true;
+        }
+    }
+
+    function exposeExplanationBox() {
+        const q = questionsData[currentIdx];
+        document.getElementById('hint-feedback').style.display = 'none';
+        const expEl = document.getElementById('explain-feedback');
+        expEl.textContent = `Explanation: ${q.explanation}`;
+        expEl.style.display = 'block';
+        document.getElementById('next-action-btn').style.display = 'inline-block';
+    }
+
+    function handleNextButton() {
+        currentIdx++;
+        if (currentIdx < questionsData.length) {
+            renderQuestionBlock();
+        } else {
+            concludeQuizFlow();
+        }
+    }
+
+    function concludeQuizFlow() {
+        document.getElementById('game-container').style.display = 'none';
+        document.getElementById('results-card').style.display = 'block';
+        
+        const scorePct = Math.round((totalScore / questionsData.length) * 100);
+        document.getElementById('final-score').textContent = totalScore;
+        
+        let msg = "";
+        if (scorePct >= 75) {
+            msg = "Good job! You have mastered the number system fundamentals.";
+            triggerSparklersAnimation();
+        } else if (scorePct >= 40) {
+            msg = "Review this chapter and try again to improve your score.";
+        } else {
+            msg = "Let’s practise more. Numbers are fun once you discover their patterns!";
+        }
+        document.getElementById('result-message').textContent = msg;
+    }
+
+    function restartQuizFlow() {
+        document.getElementById('results-card').style.display = 'none';
+        startQuizFlow();
+    }
+
+    function triggerSparklersAnimation() {
+        const canvas = document.getElementById('confetti-canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = canvas.parentElement.offsetWidth;
+        canvas.height = canvas.parentElement.offsetHeight;
+
+        let items = [];
+        for (let i = 0; i < 45; i++) {
+            items.push({
+                x: canvas.width / 2,
+                y: canvas.height / 2,
+                dx: (Math.random() - 0.5) * 7,
+                dy: (Math.random() - 0.5) * 7,
+                radius: Math.random() * 5 + 3,
+                color: `hsl(${Math.random() * 360}, 90%, 60%)`,
+                opacity: 1
+            });
+        }
+
+        function play() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            let continuing = false;
+            items.forEach(p => {
+                p.x += p.dx;
+                p.y += p.dy;
+                p.opacity -= 0.02;
+                if (p.opacity > 0) {
+                    continuing = true;
+                    ctx.globalAlpha = p.opacity;
+                    ctx.fillStyle = p.color;
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            });
+            if (continuing) requestAnimationFrame(play);
+        }
+        play();
+    }
+</script>
+</body>
+</html>
