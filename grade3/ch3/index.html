@@ -1,1 +1,738 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grade 3 Math - Competency Based Interactive</title>
+    <style>
+        :root {
+            --primary-color: #2b6cb0;
+            --primary-hover: #1a528d;
+            --bg-color: #f7fafc;
+            --card-bg: #ffffff;
+            --text-color: #2d3748;
+            --border-color: #e2e8f0;
+            --success-color: #48bb78;
+            --error-color: #f56565;
+            --hint-color: #ed8936;
+        }
 
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            padding: 15px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            line-height: 1.5;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 700px;
+            background: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Splash Screen */
+        #splash-screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: white;
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.5s ease-in-out;
+            padding: 20px;
+            text-align: center;
+        }
+
+        #splash-screen img {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 25px;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #edf2f7;
+            border-top: 4px solid var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 15px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Top Header Utilities */
+        .quiz-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            background: #edf2f7;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .tracker-text {
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .timer-badge {
+            background: var(--text-color);
+            color: white;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            min-width: 55px;
+            text-align: center;
+            transition: background 0.3s;
+        }
+
+        .timer-low {
+            background: var(--error-color);
+            animation: pulse 1s infinite alternate;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            100% { opacity: 0.7; }
+        }
+
+        .progress-bar-container {
+            width: 100%;
+            height: 6px;
+            background: #e2e8f0;
+        }
+
+        #progress-indicator {
+            width: 0%;
+            height: 100%;
+            background: var(--primary-color);
+            transition: width 0.4s ease;
+        }
+
+        /* Question Workspace UI */
+        .workspace-body {
+            padding: 25px 20px;
+        }
+
+        h2.q-title {
+            font-size: 1.15rem;
+            margin-bottom: 15px;
+            color: #4a5568;
+        }
+
+        .question-text {
+            font-size: 1.1rem;
+            font-weight: 500;
+            margin-bottom: 20px;
+            color: var(--text-color);
+        }
+
+        /* Inline SVG Diagram Box */
+        .svg-container {
+            background: #f8fafc;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .svg-container svg {
+            max-width: 100%;
+            height: auto;
+        }
+
+        /* Large Tappable Options Grid */
+        .options-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .option-btn {
+            background: white;
+            border: 2px solid var(--border-color);
+            padding: 14px 18px;
+            border-radius: 8px;
+            text-align: left;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            width: 100%;
+            font-weight: 500;
+        }
+
+        .option-btn:hover:not(:disabled) {
+            border-color: var(--primary-color);
+            background-color: #f7fafc;
+        }
+
+        .option-btn:disabled {
+            cursor: not-allowed;
+        }
+
+        .selected-correct {
+            border-color: var(--success-color) !important;
+            background-color: #f0fdf4 !important;
+            color: #166534 !important;
+        }
+
+        .selected-wrong {
+            border-color: var(--error-color) !important;
+            background-color: #fef2f2 !important;
+            color: #991b1b !important;
+        }
+
+        /* Contextual Feedback Displays */
+        .feedback-box {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+            font-size: 0.95rem;
+        }
+
+        .feedback-box.show {
+            display: block;
+        }
+
+        .hint-bg {
+            background: #fef3c7;
+            border-left: 4px solid var(--hint-color);
+            color: #92400e;
+        }
+
+        .correct-bg {
+            background: #dcfce7;
+            border-left: 4px solid var(--success-color);
+            color: #166534;
+        }
+
+        .incorrect-bg {
+            background: #fef2f2;
+            border-left: 4px solid var(--error-color);
+            color: #991b1b;
+        }
+
+        .explanation-text {
+            margin-top: 6px;
+            font-size: 0.9rem;
+            opacity: 0.95;
+        }
+
+        /* Action Buttons Area */
+        .action-container {
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .primary-btn {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .primary-btn:hover {
+            background-color: var(--primary-hover);
+        }
+
+        /* Results Display Card */
+        #results-card {
+            padding: 35px 25px;
+            text-align: center;
+            display: none;
+        }
+
+        .score-circle {
+            width: 130px;
+            height: 130px;
+            border-radius: 50%;
+            background: #edf2f7;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            margin: 0 auto 20px auto;
+            border: 4px solid var(--primary-color);
+        }
+
+        #final-score-text {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        #final-percentage-text {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .desc-text {
+            font-size: 1rem;
+            color: #4a5568;
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div id="splash-screen">
+        <img id="splash-logo" src="assets/logo.png" alt="Innovine Logo">
+        <div class="spinner"></div>
+        <p style="color:#718096; font-size:0.95rem; font-weight:500;">Loading Interactive Challenge...</p>
+    </div>
+
+    <div id="quiz-workspace">
+        <div class="quiz-header">
+            <div class="tracker-text">Question <span id="current-q-label">1</span> of 12</div>
+            <div id="timer-display" class="timer-badge">60s</div>
+        </div>
+        <div class="progress-bar-container">
+            <div id="progress-indicator"></div>
+        </div>
+
+        <div class="workspace-body">
+            <h2 class="q-title" id="q-number-hdr">Question 1</h2>
+            <div class="question-text" id="q-text-container">Loading question content...</div>
+            
+            <div id="q-svg-container" class="svg-container hidden"></div>
+
+            <div class="options-grid" id="q-options-grid"></div>
+
+            <div class="feedback-box" id="q-feedback-box"></div>
+
+            <div class="action-container hidden" id="q-action-container">
+                <button type="button" class="primary-btn" onclick="quizEngine.advanceQuestion()">Next Question ➔</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="results-card">
+        <h2 style="font-size: 1.6rem; margin-bottom: 15px;">Assessment Complete!</h2>
+        <div class="score-circle">
+            <div id="final-score-text">0 / 12</div>
+        </div>
+        <div id="final-percentage-text">Overall Score: 0%</div>
+        <p class="desc-text" id="performance-descriptor"></p>
+        <button type="button" class="primary-btn" onclick="window.location.reload()">Restart Challenge ↺</button>
+    </div>
+</div>
+
+<audio id="audio-correct" preload="auto" src="assets/claps.mp3"></audio>
+<audio id="audio-wrong" preload="auto" src="assets/wrong.mp3"></audio>
+
+<script>
+    // 12 High-Quality, Grade 3 Competency-Based Real-Life Word Problems
+    const assessmentDataset = [
+        {
+            type: "text",
+            lo: "Addition Logic",
+            question: "Riya has 125 stickers. She wants to collect 150 stickers in total. Her brother gives her 23 more stickers. Does she reach her targeted goal?",
+            options: [
+                "a) Yes, she has more than 150 stickers",
+                "b) Yes, she has exactly 150 stickers",
+                "c) No, she has less than 150 stickers",
+                "d) The total cannot be calculated from the values"
+            ],
+            answer: 2,
+            hint: "Find out how many total stickers Riya has now by adding 125 and 23. Then check if that total is smaller than 150.",
+            explanation: "Adding the stickers yields 125 + 23 = 148. Since 148 is less than 150, she has not reached her target goal yet."
+        },
+        {
+            type: "text",
+            lo: "Addition Logic",
+            question: "A class teacher has 132 books on her reading shelf. She buys a bundle of new books and now she has 150 books in total. How many books were inside the new bundle?",
+            options: ["a) 12 books", "b) 18 books", "c) 20 books", "d) 28 books"],
+            answer: 1,
+            hint: "Find the structural mathematical gap between 132 and 150 by executing a column subtraction: 150 - 132.",
+            explanation: "Subtracting the starting amount from the final count (150 - 132) reveals that she purchased exactly 18 books."
+        },
+        {
+            type: "text",
+            lo: "Addition Logic",
+            question: "A gift shop sold 210 custom notebooks during the morning shift. By the end of the afternoon shift, total notebook sales reached 255. How many notebooks were sold specifically during the afternoon?",
+            options: ["a) 35 notebooks", "b) 40 notebooks", "c) 45 notebooks", "d) 50 notebooks"],
+            answer: 2,
+            hint: "The morning sales plus afternoon sales equal 255. Subtract the morning sales (210) from the total sales (255).",
+            explanation: "255 total sales minus 210 morning sales equals 45 notebooks sold during the afternoon shift."
+        },
+        {
+            type: "text",
+            lo: "Subtraction Logic",
+            question: "A school store sold 120 blue ink pens and 80 graphite pencils. How many more pens than pencils were sold by the school store?",
+            options: ["a) 20 more pens", "b) 30 more pens", "c) 40 more pens", "d) 50 more pens"],
+            answer: 2,
+            hint: "To compare how much larger one inventory group is than another, calculate the direct difference: 120 - 80.",
+            explanation: "120 pens minus 80 pencils leaves a net total difference of 40 more pens sold."
+        },
+        {
+            type: "text",
+            lo: "Addition Logic",
+            question: "Class A collected 145 books for a donation drive, and Class B collected 155 books. Which comparison statement is entirely correct?",
+            options: [
+                "a) Class A collected more books than Class B",
+                "b) Class B collected exactly 10 more books than Class A",
+                "c) Both classes collected equal quantities of books",
+                "d) Class B collected exactly 20 more books than Class A"
+            ],
+            answer: 1,
+            hint: "Compare the two values (155 and 145) or subtract 145 from 155 to discover the difference between the two classes.",
+            explanation: "Class B's count minus Class A's count is 155 - 145 = 10. Therefore, Class B collected 10 more books."
+        },
+        {
+            type: "visual",
+            lo: "Error Detection",
+            question: "Aarav solved an column addition task as shown below. What specific positional mistake did Aarav make?",
+            svg: `<svg viewBox="0 0 200 90" width="180" height="90"><text x="30" y="25" font-family="monospace" font-size="16" fill="#2d3748">  1 2 0</text><text x="30" y="45" font-family="monospace" font-size="16" fill="#2d3748">+   2 5</text><line x1="25" y1="55" x2="110" y2="55" stroke="#2d3748" stroke-width="2"/><text x="30" y="75" font-family="monospace" font-size="16" fill="#e53e3e">  1 3 5</text></svg>`,
+            options: [
+                "a) He added the ones column numbers incorrectly.",
+                "b) He added the tens column numbers incorrectly.",
+                "c) He ignored the hundreds place digit completely.",
+                "d) He solved it perfectly; there is no arithmetic mistake."
+            ],
+            answer: 1,
+            hint: "Look closely at the middle column (the tens place value). Aarav added 2 tens + 2 tens and wrote down 3 tens.",
+            explanation: "In the tens column, 2 + 2 should be 4, but Aarav wrote 3. He made an error adding the tens column digits."
+        },
+        {
+            type: "visual",
+            lo: "Error Detection",
+            question: "Meera solved the mathematical column sum shown in the image box. Which analytical statement below fits her answer?",
+            svg: `<svg viewBox="0 0 200 90" width="180" height="90"><text x="30" y="25" font-family="monospace" font-size="16" fill="#2d3748">  1 4 5</text><text x="30" y="45" font-family="monospace" font-size="16" fill="#2d3748">+   3 2</text><line x1="25" y1="55" x2="110" y2="55" stroke="#2d3748" stroke-width="2"/><text x="30" y="75" font-family="monospace" font-size="16" fill="#38a169">  1 7 7</text></svg>`,
+            options: [
+                "a) The ones column digits were added incorrectly.",
+                "b) The tens column digits were added incorrectly.",
+                "c) A regrouping carry digit was forgotten.",
+                "d) The columns are added correctly, and the total is right."
+            ],
+            answer: 3,
+            hint: "Check the calculation column by column: Ones (5 + 2 = 7), Tens (4 + 3 = 7), and Hundreds (1 + 0 = 1).",
+            explanation: "Each place value column follows correct addition without needing a carry step. The total of 177 is fully correct."
+        },
+        {
+            type: "text",
+            lo: "Error Detection",
+            question: "Rohan calculates a solution on his notepad: 230 + 40 = 240. Why is this calculation incorrect?",
+            options: [
+                "a) The tens column values were not combined correctly",
+                "b) The ones place column digits were added wrongly",
+                "c) The hundreds value digit was added twice",
+                "d) The answer is correct; there is no arithmetic mistake"
+            ],
+            answer: 0,
+            hint: "Look at the tens digits: 3 tens + 4 tens equals 7 tens. Rohan's answer shows a 4 in the tens column.",
+            explanation: "3 tens + 4 tens should equal 7 tens, resulting in 270. Rohan added incorrectly within the tens column place value."
+        },
+        {
+            type: "text",
+            lo: "Assertion & Reason",
+            question: "Assertion: 40 + 30 = 70. Reason: We add place value tens digits directly to tens digits. Choose the best evaluation statement:",
+            options: [
+                "a) Both Assertion and Reason are true, and the Reason correctly explains the Assertion.",
+                "b) Both Assertion and Reason are true, but the Reason does not explain the Assertion.",
+                "c) The Assertion is correct, but the Reason is entirely false.",
+                "d) Both the Assertion and the Reason are false statements."
+            ],
+            answer: 0,
+            hint: "Think about column addition. 40 is 4 tens and 30 is 3 tens. Does adding tens to tens explain why 4 tens + 3 tens equals 7 tens?",
+            explanation: "Both statements are correct. The operation groups identical place values together (4 tens + 3 tens = 7 tens, which equals 70)."
+        },
+        {
+            type: "text",
+            lo: "Assertion & Reason",
+            question: "Assertion: 125 + 25 = 150. Reason: Adding 25 always increases any starting base number by exactly 25. Choose the best evaluation statement:",
+            options: [
+                "a) Both Assertion and Reason are true, and the Reason correctly explains the Assertion.",
+                "b) Both Assertion and Reason are true, but the Reason does not explain the Assertion.",
+                "c) The Assertion is correct, but the Reason is entirely false.",
+                "d) Both the Assertion and the Reason are false statements."
+            ],
+            answer: 0,
+            hint: "Check if 125 + 25 equals 150. Then think if adding 25 to a value increases that value by exactly 25 units.",
+            explanation: "The addition fact is correct (125+25=150), and the reason explains that adding a number increases the value by that amount."
+        },
+        {
+            type: "text",
+            lo: "Problem-Solving",
+            question: "A school library needs 300 books. They collect 145 books on Day 1 and 155 books on Day 2. Then, they donate 20 books to another local community workspace. Do they still have enough books left for their library?",
+            options: [
+                "a) Yes, they have exactly enough books",
+                "b) Yes, they have more than enough books",
+                "c) No, they have less than the needed quantity",
+                "d) The final status cannot be found from the text details"
+            ],
+            answer: 2,
+            hint: "First add the books collected on Day 1 and Day 2 (145 + 155). Then subtract the 20 donated books. Compare that final number with 300.",
+            explanation: "Total books collected = 145 + 155 = 300. After donating 20 books, they have 300 - 20 = 280 books left. This is less than the 300 books they need."
+        },
+        {
+            type: "text",
+            lo: "Problem-Solving",
+            question: "Riya brings 135 books and Ameya brings 145 books to the storage shelves. The library room already had 120 books resting inside. If the teacher arranges all books into full balanced groups of 100, how many complete groups of 100 can she make?",
+            options: ["a) 3 full groups", "b) 4 full groups", "c) 5 full groups", "d) 6 full groups"],
+            answer: 1,
+            hint: "Calculate the total book inventory by adding all three groups together: 135 + 145 + 120. Find how many hundreds are in that total.",
+            explanation: "The total number of books is 135 + 145 + 120 = 400 books. 400 books can be divided into exactly 4 full groups of 100."
+        }
+    ];
+
+    class InteractiveQuizEngine {
+        constructor(dataset) {
+            this.dataset = dataset;
+            this.currentIndex = 0;
+            this.score = 0;
+            this.attemptsCount = 0;
+            this.timerInterval = null;
+            this.secondsLeft = 60;
+
+            // DOM Element Caching
+            this.splashScreen = document.getElementById('splash-screen');
+            this.currentQLabel = document.getElementById('current-q-label');
+            this.timerDisplay = document.getElementById('timer-display');
+            this.progressIndicator = document.getElementById('progress-indicator');
+            this.qNumberHdr = document.getElementById('q-number-hdr');
+            this.qTextContainer = document.getElementById('q-text-container');
+            this.qSvgContainer = document.getElementById('q-svg-container');
+            this.qOptionsGrid = document.getElementById('q-options-grid');
+            this.qFeedbackBox = document.getElementById('q-feedback-box');
+            this.qActionContainer = document.getElementById('q-action-container');
+            this.quizWorkspace = document.getElementById('quiz-workspace');
+            this.resultsCard = document.getElementById('results-card');
+            this.finalScoreText = document.getElementById('final-score-text');
+            this.finalPercentageText = document.getElementById('final-percentage-text');
+            this.performanceDescriptor = document.getElementById('performance-descriptor');
+            this.audioCorrect = document.getElementById('audio-correct');
+            this.audioWrong = document.getElementById('audio-wrong');
+        }
+
+        init() {
+            // Mandatory 5-Second Splash Loader Guardrail Screen Loop Delay
+            setTimeout(() => {
+                this.splashScreen.style.opacity = '0';
+                setTimeout(() => this.splashScreen.classList.add('hidden'), 500);
+            }, 5000);
+
+            this.loadQuestionState();
+        }
+
+        loadQuestionState() {
+            this.clearTimer();
+            this.attemptsCount = 0;
+            this.secondsLeft = 60;
+            this.timerDisplay.textContent = "60s";
+            this.timerDisplay.className = "timer-badge";
+            
+            this.qFeedbackBox.className = "feedback-box";
+            this.qFeedbackBox.innerHTML = "";
+            this.qActionContainer.classList.add('hidden');
+
+            const activeData = this.dataset[this.currentIndex];
+            
+            this.currentQLabel.textContent = this.currentIndex + 1;
+            this.qNumberHdr.textContent = `Question ${this.currentIndex + 1} (${activeData.lo})`;
+            this.qTextContainer.textContent = activeData.question;
+            
+            const progressPct = (this.currentIndex / this.dataset.length) * 100;
+            this.progressIndicator.style.width = `${progressPct}%`;
+
+            // Evaluate item rendering layout types
+            if (activeData.type === "visual" && activeData.svg) {
+                this.qSvgContainer.innerHTML = activeData.svg;
+                this.qSvgContainer.classList.remove('hidden');
+            } else {
+                this.qSvgContainer.classList.add('hidden');
+                this.qSvgContainer.innerHTML = "";
+            }
+
+            this.qOptionsGrid.innerHTML = "";
+            activeData.options.forEach((optText, optIdx) => {
+                const btn = document.createElement('button');
+                btn.type = "button";
+                btn.className = "option-btn";
+                btn.textContent = optText;
+                btn.onclick = () => this.evaluateOptionChoice(optIdx, btn);
+                this.qOptionsGrid.appendChild(btn);
+            });
+
+            this.startCountdownTimer();
+        }
+
+        startCountdownTimer() {
+            this.timerInterval = setInterval(() => {
+                this.secondsLeft--;
+                this.timerDisplay.textContent = `${this.secondsLeft}s`;
+
+                if (this.secondsLeft <= 10) {
+                    this.timerDisplay.classList.add('timer-low');
+                }
+
+                if (this.secondsLeft <= 0) {
+                    this.clearTimer();
+                    this.triggerAutoFailureTimeout();
+                }
+            }, 1000);
+        }
+
+        clearTimer() {
+            if (this.timerInterval) {
+                clearInterval(this.timerInterval);
+                this.timerInterval = null;
+            }
+        }
+
+        evaluateOptionChoice(selectedIdx, clickedBtn) {
+            const activeData = this.dataset[this.currentIndex];
+            this.attemptsCount++;
+
+            if (selectedIdx === activeData.answer) {
+                this.clearTimer();
+                clickedBtn.classList.add('selected-correct');
+                this.playAudioFX('correct');
+                this.lockOptionGridInput();
+
+                if (this.attemptsCount === 1) {
+                    this.score++;
+                }
+
+                this.qFeedbackBox.className = "feedback-box show correct-bg";
+                this.qFeedbackBox.innerHTML = `<strong>Correct! Excellent work.</strong><div class="explanation-text">${activeData.explanation}</div>`;
+                this.qActionContainer.classList.remove('hidden');
+            } else {
+                this.playAudioFX('wrong');
+                clickedBtn.classList.add('selected-wrong');
+                clickedBtn.disabled = true;
+
+                if (this.attemptsCount === 1) {
+                    // Give user 1 adaptive retry attempt with hint context
+                    this.qFeedbackBox.className = "feedback-box show hint-bg";
+                    this.qFeedbackBox.innerHTML = `<strong>Incorrect. Let's try again!</strong><br>💡 <em>Hint: ${activeData.hint}</em>`;
+                } else {
+                    // Maximum of 2 attempts reached, reveal solution details
+                    this.clearTimer();
+                    this.lockOptionGridInput();
+                    this.highlightCorrectAnswerIndex(activeData.answer);
+                    
+                    this.qFeedbackBox.className = "feedback-box show incorrect-bg";
+                    this.qFeedbackBox.innerHTML = `<strong>Incorrect on Attempt 2. Let's look at the solution framework.</strong><div class="explanation-text">${activeData.explanation}</div>`;
+                    this.qActionContainer.classList.remove('hidden');
+                }
+            }
+        }
+
+        triggerAutoFailureTimeout() {
+            this.lockOptionGridInput();
+            const activeData = this.dataset[this.currentIndex];
+            this.highlightCorrectAnswerIndex(activeData.answer);
+
+            this.qFeedbackBox.className = "feedback-box show incorrect-bg";
+            this.qFeedbackBox.innerHTML = `<strong>⏱️ Time Expired!</strong><div class="explanation-text">${activeData.explanation}</div>`;
+            this.qActionContainer.classList.remove('hidden');
+        }
+
+        highlightCorrectAnswerIndex(index) {
+            const buttons = this.qOptionsGrid.getElementsByClassName('option-btn');
+            if (buttons[index]) {
+                buttons[index].classList.add('selected-correct');
+            }
+        }
+
+        lockOptionGridInput() {
+            const buttons = this.qOptionsGrid.getElementsByClassName('option-btn');
+            for (let b of buttons) {
+                b.disabled = true;
+            }
+        }
+
+        playAudioFX(type) {
+            try {
+                if (type === 'correct' && this.audioCorrect) {
+                    this.audioCorrect.currentTime = 0;
+                    this.audioCorrect.play().catch(() => {});
+                } else if (type === 'wrong' && this.audioWrong) {
+                    this.audioWrong.currentTime = 0;
+                    this.audioWrong.play().catch(() => {});
+                }
+            } catch(e) {
+                console.log("Audio clip interaction blocked until user initiates a DOM click gesture.");
+            }
+        }
+
+        advanceQuestion() {
+            this.currentIndex++;
+            if (this.currentIndex < this.dataset.length) {
+                this.loadQuestionState();
+            } else {
+                this.renderFinalAssessmentSummary();
+            }
+        }
+
+        renderFinalAssessmentSummary() {
+            this.quizWorkspace.classList.add('hidden');
+            this.progressIndicator.style.width = "100%";
+            this.resultsCard.style.display = "block";
+
+            this.finalScoreText.textContent = `${this.score} / ${this.dataset.length}`;
+            const finalPct = Math.round((this.score / this.dataset.length) * 100);
+            this.finalPercentageText.textContent = `Overall Score: ${finalPct}%`;
+
+            let feedbackDesc = "";
+            if (finalPct >= 75) {
+                feedbackDesc = "🎉 Good job! You have fully mastered multi-digit arithmetic values, word structures, and place value processing matrices.";
+            } else if (finalPct >= 40) {
+                feedbackDesc = "👍 Review this chapter and try again! Practice your place-value column additions to improve your calculations.";
+            } else {
+                feedbackDesc = "📚 Let’s practise more! Review the chapter exercises, work on smaller numbers, and try the interactive challenge again.";
+            }
+            this.performanceDescriptor.textContent = feedbackDesc;
+        }
+    }
+
+    let quizEngine;
+    document.addEventListener("DOMContentLoaded", () => {
+        quizEngine = new InteractiveQuizEngine(assessmentDataset);
+        quizEngine.init();
+    });
+</script>
+</body>
+</html>
