@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grade 3 – Chapter 1: Number System up to 9999 Assessment</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --success: #10b981;
+            --danger: #ef4444;
+            --background: #f8fafc;
+            --surface: #ffffff;
+            --text: #1e293b;
+            --text-secondary: #475569;
+            --border: #cbd5e1;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+
+        body {
+            background-color: var(--background);
+            color: var(--text);
+            line-height: 1.5;
+            padding: 2rem 1rem;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        /* Branding Overlay Styles */
+        #branding-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease;
+        }
+        #branding-overlay img {
+            max-width: 250px;
+            height: auto;
+        }
+
+        header {
+            background: var(--surface);
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            margin-bottom: 2rem;
+            border: 1px solid var(--border);
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .meta-info {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        .meta-info ul {
+            margin-top: 0.5rem;
+            margin-left: 1.25rem;
+        }
+
+        /* Top HUD Styles */
+        .hud-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--surface);
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            border: 1px solid var(--border);
+            font-weight: bold;
+        }
+        .timer-badge {
+            color: var(--danger);
+        }
+
+        .quiz-card {
+            background: var(--surface);
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            margin-bottom: 1.5rem;
+            border: 1px solid var(--border);
+            display: none; /* Controlled by JS flow */
+        }
+        .quiz-card.active {
+            display: block;
+        }
+
+        .question-number {
+            font-weight: 700;
+            color: var(--primary);
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.5rem;
+        }
+
+        .question-text {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 1.25rem;
+        }
+
+        .svg-container {
+            margin-bottom: 1.5rem;
+            width: 100%;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 0.75rem;
+        }
+
+        @media (min-width: 640px) {
+            .options-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .option-btn {
+            background: var(--surface);
+            border: 2px solid var(--border);
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: left;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-weight: 500;
+        }
+
+        .option-btn:hover:not(:disabled) {
+            border-color: var(--primary);
+            background-color: #eff6ff;
+        }
+
+        .option-btn.selected {
+            border-color: var(--primary);
+            background-color: #dbeafe;
+            color: #1e40af;
+        }
+
+        .option-btn.correct {
+            border-color: var(--success) !important;
+            background-color: #d1fae5 !important;
+            color: #065f46 !important;
+        }
+
+        .option-btn.incorrect {
+            border-color: var(--danger) !important;
+            background-color: #fee2e2 !important;
+            color: #991b1b !important;
+        }
+
+        .feedback-box {
+            margin-top: 1.25rem;
+            padding: 1rem;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            display: none;
+        }
+
+        .feedback-box.show {
+            display: block;
+        }
+
+        .feedback-box.correct-bg {
+            background-color: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            color: #166534;
+        }
+
+        .feedback-box.incorrect-bg {
+            background-color: #fef2f2;
+            border: 1px solid #fecaca;
+            color: #991b1b;
+        }
+
+        .submit-container {
+            text-align: center;
+            margin: 2.5rem 0;
+        }
+
+        .action-btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 1rem 2.5rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            box-shadow: 0 4px 6px -1px rgb(37 99 235 / 0.2);
+            transition: background-color 0.2s ease;
+        }
+
+        .action-btn:hover:not(:disabled) {
+            background-color: var(--primary-hover);
+        }
+        .action-btn:disabled {
+            background-color: var(--border);
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        #results-card {
+            background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+            border: 2px solid #bfdbfe;
+            text-align: center;
+            padding: 3rem 2rem;
+            border-radius: 12px;
+            display: none;
+        }
+
+        .score-display {
+            font-size: 3.5rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin: 1rem 0;
+        }
+    </style>
+</head>
+<body>
+
+<div id="branding-overlay">
+    <img src="assets/innovine-logo.png" alt="Innovine Logo" onerror="this.src='https://via.placeholder.com/250x100?text=Innovine+Logo'">
+</div>
+
+<div class="container" id="main-content" style="display: none;">
+    <header>
+        <h1>Grade 3 – Chapter 1: Number System up to 9999</h1>
+        <div class="meta-info">
+            <strong>Learning Outcomes Covered:</strong>
+            <ul>
+                <li>Count and represent values using concrete block models.</li>
+                <li>Locate, read, and place values on open number lines.</li>
+                <li>Partition values to identify structural structural notation errors.</li>
+                <li>Compare and rank arrays using relational logic.</li>
+            </ul>
+        </div>
+    </header>
+
+    <div class="hud-bar">
+        <div>Score: <span id="hud-score">0</span> / 13</div>
+        <div class="timer-badge">Time Left: <span id="hud-timer">60</span>s</div>
+    </div>
+
+    <div id="quiz-form">
+        <div class="quiz-card active" id="q1-card">
+            <div class="question-number">Question 1</div>
+            <div class="question-text">1. Which number is shown?</div>
+            <div class="svg-container">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 280" width="100%">
+                  <rect width="800" height="280" fill="#f8fafc" rx="12" stroke="#cbd5e1" stroke-width="2"/>
+                  <defs>
+                    <g id="cube-q1">
+                      <polygon points="0,10 10,10 10,0 0,0" fill="#38bdf8" stroke="#0369a1" stroke-width="0.8"/>
+                      <polygon points="10,10 14,5 14,0 10,0" fill="#0284c7" stroke="#0369a1" stroke-width="0.8"/>
+                      <polygon points="0,0 10,0 14,5 4,5" fill="#7dd3fc" stroke="#0369a1" stroke-width="0.8"/>
+                    </g>
+                    <g id="rod-q1">
+                      <g transform="translate(0,90)"><use href="#cube-q1"/></g>
+                      <g transform="translate(0,80)"><use href="#cube-q1"/></g>
+                      <g transform="translate(0,70)"><use href="#cube-q1"/></g>
+                      <g transform="translate(0,60)"><use href="#cube-q1"/></g>
+                      <g transform="translate(0,50)"><use href="#cube-q1"/></g>
+                      <g transform="translate(0,40)"><use href="#cube-q1"/></g>
+                      <g transform="translate(0,30)"><use href="#cube-q1"/></g>
+                      <g transform="translate(0,20)"><use href="#cube-q1"/></g>
+                      <g transform="translate(0,10)"><use href="#cube-q1"/></g>
+                      <g transform="translate(0,0)"><use href="#cube-q1"/></g>
+                    </g>
+                    <g id="flat-q1">
+                      <g transform="translate(0,0)"><use href="#rod-q1"/></g>
+                      <g transform="translate(10,0)"><use href="#rod-q1"/></g>
+                      <g transform="translate(20,0)"><use href="#rod-q1"/></g>
+                      <g transform="translate(30,0)"><use href="#rod-q1"/></g>
+                      <g transform="translate(40,0)"><use href="#rod-q1"/></g>
+                      <g transform="translate(50,0)"><use href="#rod-q1"/></g>
+                      <g transform="translate(60,0)"><use href="#rod-q1"/></g>
+                      <g transform="translate(72,0)"><use href="#rod-q1"/></g>
+                      <g transform="translate(82,0)"><use href="#rod-q1"/></g>
+                      <g transform="translate(92,0)"><use href="#rod-q1"/></g>
+                    </g>
+                  </defs>
+                  <g transform="translate(40, 40)">
+                    <rect width="210" height="180" fill="#ffffff" rx="8" stroke="#e2e8f0" stroke-width="1"/>
+                    <text x="105" y="30" font-family="system-ui, sans-serif" font-size="16" font-weight="600" fill="#475569" text-anchor="middle">Hundreds</text>
+                    <g transform="translate(35, 60)"><use href="#flat-q1"/></g>
+                    <g transform="translate(55, 75)"><use href="#flat-q1"/></g>
+                    <g transform="translate(75, 90)"><use href="#flat-q1"/></g>
+                  </g>
+                  <g transform="translate(295, 40)">
+                    <rect width="210" height="180" fill="#ffffff" rx="8" stroke="#e2e8f0" stroke-width="1"/>
+                    <text x="105" y="30" font-family="system-ui, sans-serif" font-size="16" font-weight="600" fill="#475569" text-anchor="middle">Tens</text>
+                    <g transform="translate(35, 50)"><use href="#rod-q1"/></g>
+                    <g transform="translate(75, 50)"><use href="#rod-q1"/></g>
+                    <g transform="translate(115, 50)"><use href="#rod-q1"/></g>
+                    <g transform="translate(155, 50)"><use href="#rod-q1"/></g>
+                  </g>
+                  <g transform="translate(550, 40)">
+                    <rect width="210" height="180" fill="#ffffff" rx="8" stroke="#e2e8f0" stroke-width="1"/>
+                    <text x="105" y="30" font-family="system-ui, sans-serif" font-size="16" font-weight="600" fill="#475569" text-anchor="middle">Ones</text>
+                    <g transform="translate(45, 60)"><use href="#cube-q1"/></g>
+                    <g transform="translate(45, 100)"><use href="#cube-q1"/></g>
+                    <g transform="translate(45, 140)"><use href="#cube-q1"/></g>
+                    <g transform="translate(135, 60)"><use href="#cube-q1"/></g>
+                    <g transform="translate(135, 100)"><use href="#cube-q1"/></g>
+                    <g transform="translate(135, 140)"><use href="#cube-q1"/></g>
+                  </g>
+                </svg>
+            </div>
+            <div class="options-grid">
+                <button type="button" class="option-btn" data-opt="a">a) 346</button>
+                <button type="button" class="option-btn" data-opt="b">b) 436</button>
+                <button type="button" class="option-btn" data-opt="c">c) 364</button>
+                <button type="button" class="option-btn" data-opt="d">d) 306</button>
+            </div>
+            <div class="feedback-box"></div>
+        </div>
+
+        <div class="quiz-card" id="q2-card">
+            <div class="question-number">Question 2</div>
+            <div class="question-text">2. Which number is marked?</div>
+            <div class="svg-container">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 180" width="100%">
+                  <rect width="800" height="180" fill="#f8fafc" rx="12" stroke="#cbd5e1" stroke-width="2"/>
+                  <line x1="100" y1="100" x2="700" y2="100" stroke="#334155" stroke-width="3" stroke-linecap="round"/>
+                  <polygon points="90,100 105,92 105,108" fill="#334155"/>
+                  <polygon points="710,100 695,92 695,108" fill="#334155"/>
+                  <line x1="150" y1="85" x2="150" y2="115" stroke="#334155" stroke-width="3"/>
+                  <text x="150" y="145" font-family="system-ui, sans-serif" font-size="18" font-weight="bold" fill="#1e293b" text-anchor="middle">200</text>
+                  <line x1="650" y1="85" x2="650" y2="115" stroke="#334155" stroke-width="3"/>
+                  <text x="650" y="145" font-family="system-ui, sans-serif" font-size="18" font-weight="bold" fill="#1e293b" text-anchor="middle">300</text>
+                  <line x1="400" y1="85" x2="400" y2="115" stroke="#0284c7" stroke-width="3"/>
+                  <circle cx="400" cy="100" r="10" fill="#0ea5e9" stroke="#0284c7" stroke-width="2"/>
+                  <text x="400" y="65" font-family="system-ui, sans-serif" font-size="20" font-weight="900" fill="#0369a1" text-anchor="middle">?</text>
+                </svg>
+            </div>
+            <div class="options-grid">
+                <button type="button" class="option-btn" data-opt="a">a) 240</button>
+                <button type="button" class="option-btn" data-opt="b">b) 250</button>
+                <button type="button" class="option-btn" data-opt="c">c) 260</button>
+                <button type="button" class="option-btn" data-opt="d">d) 270</button>
+            </div>
+            <div class="feedback-box"></div>
+        </div>
+
+        <div class="quiz-card" id="q3-card">
+            <div class="question-number">Question 3</div>
+            <div class="question-text">3. Which statement is correct?</div>
+            <div class="svg-container">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 220" width="100%">
+                  <rect width="800" height="220" fill="#f8fafc" rx="12" stroke="#cbd5e1" stroke-width="2"/>
+                  <defs>
+                    <g id="coin-q3">
+                      <ellipse cx="40" cy="6" rx="40" ry="6" fill="#f59e0b" stroke="#b45309" stroke-width="1"/>
+                      <rect x="0" y="6" width="80" height="5" fill="#d97706" stroke="#b45309" stroke-width="1"/>
+                      <ellipse cx="40" cy="11" rx="40" ry="6" fill="#d97706" stroke="#b45309" stroke-width="1"/>
+                    </g>
+                  </defs>
+                  <g transform="translate(180, 25)">
+                    <text x="40" y="170" font-family="system-ui, sans-serif" font-size="16" font-weight="bold" fill="#475569" text-anchor="middle">Stack A</text>
+                    <g transform="translate(0,110)"><use href="#coin-q3"/></g>
+                    <g transform="translate(0,100)"><use href="#coin-q3"/></g>
+                    <g transform="translate(0,90)"><use href="#coin-q3"/></g>
+                    <g transform="translate(0,80)"><use href="#coin-q3"/></g>
+                    <g transform="translate(0,70)"><use href="#coin-q3"/></g>
+                    <g transform="translate(0,60)"><use href="#coin-q3"/></g>
+                    <g transform="translate(0,50)"><use href="#coin-q3"/></g>
+                    <g transform="translate(0,40)"><use href="#coin-q3"/></g>
+                  </g>
+                  <g transform="translate(500, 25)">
+                    <text x="40" y="170" font-family="system-ui, sans-serif" font-size="16" font-weight="bold" fill="#475569" text-anchor="middle">Stack B</text>
+                    <g transform="translate(0,110)"><use href="#coin-q3"/></g>
+                    <g transform="translate(0,100)"><use href="#coin-q3"/></g>
+                    <g transform="translate(0,90)"><use href="#coin-q3"/></g>
+                    <g transform="translate(0,80)"><use href="#coin-q3"/></g>
+                    <g transform="translate(0,70)"><use href="#coin-q3"/></g>
+                    <g transform="translate(0,60)"><use href="#coin-q3"/></g>
+                  </g>
+                </svg>
+            </div>
+            <div class="options-grid">
+                <button type="button" class="option-btn" data-opt="a">a) Both equal</button>
+                <button type="button" class="option-btn" data-opt="b">b) First stack has more</button>
+                <button type="button" class="option-btn" data-opt="c">c) Second stack has more</button>
+                <button type="button" class="option-btn" data-opt="d">d) Both have less than 20</button>
+            </div>
+            <div class="feedback-box"></div>
+        </div>
+
+        <div class="quiz-card" id="q4-card">
+            <div class="question-number">Question 4</div>
+            <div class="question-text">4. Which is the expanded form?</div>
+            <div class="svg-container">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 240" width="100%">
+                  <rect width="800" height="240" fill="#f8fafc" rx="12" stroke="#cbd5e1" stroke-width="2"/>
+                  <defs>
+                    <g id="cube-q4">
+                      <polygon points="0,8 8,8 8,0 0,0" fill="#a855f7" stroke="#6b21a8" stroke-width="0.8"/>
+                      <polygon points="8,8 11,4 11,0 8,0" fill="#9333ea" stroke="#6b21a8" stroke-width="0.8"/>
+                      <polygon points="0,0 8,0 11,4 3,4" fill="#c084fc" stroke="#6b21a8" stroke-width="0.8"/>
+                    </g>
+                    <g id="rod-q4">
+                      <g transform="translate(0,72)"><use href="#cube-q4"/></g>
+                      <g transform="translate(0,64)"><use href="#cube-q4"/></g>
+                      <g transform="translate(0,56)"><use href="#cube-q4"/></g>
+                      <g transform="translate(0,48)"><use href="#cube-q4"/></g>
+                      <g transform="translate(0,40)"><use href="#cube-q4"/></g>
+                      <g transform="translate(0,32)"><use href="#cube-q4"/></g>
+                      <g transform="translate(0,24)"><use href="#cube-q4"/></g>
+                      <g transform="translate(0,16)"><use href="#cube-q4"/></g>
+                      <g transform="translate(0,8)"><use href="#cube-q4"/></g>
+                      <g transform="translate(0,0)"><use href="#cube-q4"/></g>
+                    </g>
+                    <g id="flat-q4">
+                      <g transform="translate(0,0)"><use href="#rod-q4"/></g>
+                      <g transform="translate(8,0)"><use href="#rod-q4"/></g>
+                      <g transform="translate(16,0)"><use href="#rod-q4"/></g>
+                      <g transform="translate(24,0)"><use href="#rod-q4"/></g>
+                      <g transform="translate(32,0)"><use href="#rod-q4"/></g>
+                      <g transform="translate(40,0)"><use href="#rod-q4"/></g>
+                      <g transform="translate(48,0)"><use href="#rod-q4"/></g>
+                      <g transform="translate(56,0)"><use href="#rod-q4"/></g>
+                      <g transform="translate(64,0)"><use href="#rod-q4"/></g>
+                      <g transform="translate(72,0)"><use href="#rod-q4"/></g>
+                    </g>
+                  </defs>
+                  <g transform="translate(40, 50)">
+                    <g transform="translate(0,0)"><use href="#flat-q4"/></g>
+                    <g transform="translate(20,15)"><use href="#flat-q4"/></g>
+                    <g transform="translate(40,30)"><use href="#flat-q4"/></g>
+                    <g transform="translate(60,45)"><use href="#flat-q4"/></g>
+                  </g>
+                  <g transform="translate(320, 60)">
+                    <g transform="translate(0,10)"><use href="#rod-q4"/></g>
+                    <g transform="translate(22,10)"><use href="#rod-q4"/></g>
+                    <g transform="translate(44,10)"><use href="#rod-q4"/></g>
+                    <g transform="translate(66,10)"><use href="#rod-q4"/></g>
+                    <g transform="translate(88,10)"><use href="#rod-q4"/></g>
+                    <g transform="translate(110,10)"><use href="#rod-q4"/></g>
+                    <g transform="translate(132,10)"><use href="#rod-q4"/></g>
+                    <g transform="translate(154,10)"><use href="#rod-q4"/></g>
+                  </g>
+                  <g transform="translate(640, 100)">
+                    <g transform="translate(0,0)"><use href="#cube-q4"/></g>
+                    <g transform="translate(25,15)"><use href="#cube-q4"/></g>
+                  </g>
+                </svg>
+            </div>
+            <div class="options-grid">
+                <button type="button" class="option-btn" data-opt="a">a) 400 + 80 + 2</button>
+                <button type="button" class="option-btn" data-opt="b">b) 40 + 80 + 2</button>
+                <button type="button" class="option-btn" data-opt="c">c) 400 + 8 + 2</button>
+                <button type="button" class="option-btn" data-opt="d">d) 480 + 2 + 2</button>
+            </div>
+            <div class="feedback-box"></div>
+        </div>
+
+        <div class="quiz-card" id="q5-card">
+            <div class="question-number">Question 5</div>
+            <div class="question-text">5. Which is in the middle when ordered?</div>
+            <div class="svg-container">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 160" width="100%">
+                  <rect width="800" height="160" fill="#f8fafc" rx="12" stroke="#cbd5e1" stroke-width="2"/>
+                  <g transform="translate(100, 35)">
+                    <rect width="140" height="90" fill="#10b981" rx="8" stroke="#047857" stroke-width="1.5"/>
+                    <text x="70" y="55" font-family="system-ui, sans-serif" font-size="28" font-weight="bold" fill="#ffffff" text-anchor="middle" dominant-baseline="middle">245</text>
+                  </g>
+                  <g transform="translate(330, 35)">
+                    <rect width="140" height="90" fill="#ef4444" rx="8" stroke="#b91c1c" stroke-width="1.5"/>
+                    <text x="70" y="55" font-family="system-ui, sans-serif" font-size="28" font-weight="bold" fill="#ffffff" text-anchor="middle" dominant-baseline="middle">254</text>
+                  </g>
+                  <g transform="translate(560, 35)">
+                    <rect width="140" height="90" fill="#3b82f6" rx="8" stroke="#1d4ed8" stroke-width="1.5"/>
+                    <text x="70" y="55" font-family="system-ui, sans-serif" font-size="28" font-weight="bold" fill="#ffffff" text-anchor="middle" dominant-baseline="middle">235</text>
+                  </g>
+                </svg>
+            </div>
+            <div class="options-grid">
+                <button type="button" class="option-btn" data-opt="a">a) 235</button>
+                <button type="button" class="option-btn" data-opt="b">b) 245</button>
+                <button type="button" class="option-btn" data-opt="c">c) 254</button>
+                <button type="button" class="option-btn" data-opt="d">d) 225</button>
+            </div>
+            <div class="feedback-box"></div>
+        </div>
+
+        <div class="quiz-card" id="q6-card">
+            <div class="question-number">Question 6</div>
+            <div class="question-text">6. Which number is shown?</div>
+            <div class="svg-container">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 260" width="100%">
+                  <rect width="800" height="260" fill="#f
