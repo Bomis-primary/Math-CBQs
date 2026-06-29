@@ -454,6 +454,7 @@
             this.currentIndex = 0;
             this.scoreWithoutHint = 0; // Tracks questions solved purely on 1st attempt
             this.attempts = 0;
+            this.currentCorrectText = ""; // Track current question's correct string answer
             
             this.audioCorrect = document.getElementById("audio-correct");
             this.audioWrong = document.getElementById("audio-wrong");
@@ -470,6 +471,9 @@
         renderQuestion() {
             this.attempts = 0;
             const currentQ = this.questions[this.currentIndex];
+            
+            // Remember the text of the correct answer before modifying order
+            this.currentCorrectText = currentQ.options[currentQ.answer];
             
             document.getElementById("current-q-label").innerText = this.currentIndex + 1;
             document.getElementById("live-score").innerText = this.scoreWithoutHint;
@@ -494,24 +498,27 @@
             
             document.getElementById("q-action-container").classList.add("hidden");
 
+            // Shuffle option arrays dynamically for this view
+            const shuffledOptions = [...currentQ.options].sort(() => Math.random() - 0.5);
+
             const optionsGrid = document.getElementById("q-options-grid");
             optionsGrid.innerHTML = "";
-            currentQ.options.forEach((optText, index) => {
+            shuffledOptions.forEach((optText) => {
                 const btn = document.createElement("button");
                 btn.type = "button";
                 btn.className = "option-btn";
                 btn.innerText = optText;
-                btn.onclick = () => this.evaluateAnswer(index, btn);
+                btn.onclick = () => this.evaluateAnswer(optText, btn);
                 optionsGrid.appendChild(btn);
             });
         }
 
-        evaluateAnswer(selectedIndex, clickedBtn) {
+        evaluateAnswer(selectedText, clickedBtn) {
             const currentQ = this.questions[this.currentIndex];
             const feedbackBox = document.getElementById("q-feedback-box");
             const allOptionBtns = document.querySelectorAll(".options-grid .option-btn");
 
-            if (selectedIndex === currentQ.answer) {
+            if (selectedText === this.currentCorrectText) {
                 this.audioCorrect.currentTime = 0;
                 this.audioCorrect.play().catch(e => console.log("Audio play deferred"));
                 
@@ -541,7 +548,14 @@
                 } else {
                     feedbackBox.className = "feedback-box show incorrect-bg";
                     feedbackBox.innerHTML = `<strong>Not quite!</strong> ${currentQ.explanation}`;
-                    allOptionBtns[currentQ.answer].classList.add("selected-correct");
+                    
+                    // Highlight the correct button among the shuffled layout
+                    allOptionBtns.forEach(btn => {
+                        if (btn.innerText === this.currentCorrectText) {
+                            btn.classList.add("selected-correct");
+                        }
+                    });
+                    
                     this.lockOptions(allOptionBtns);
                     document.getElementById("q-action-container").classList.remove("hidden");
                 }
@@ -564,7 +578,7 @@
         showResultsSummary() {
             document.getElementById("quiz-workspace").classList.add("hidden");
             const resultsCard = document.getElementById("results-card");
-            resultsCard.style.display = "block"; // Fixed: Override 'display: none' directly so the card displays perfectly!
+            resultsCard.style.display = "block";
             
             // Calculate real grade based on answers without hints
             const perfectScore = this.scoreWithoutHint;
