@@ -69,7 +69,6 @@
             margin-left: 1.25rem;
         }
 
-        /* Utility HUD row */
         .controls-header {
             display: flex;
             justify-content: space-between;
@@ -88,7 +87,6 @@
             font-size: 14px;
         }
 
-        /* Top HUD Styles */
         .hud-bar {
             display: flex;
             justify-content: space-between;
@@ -111,10 +109,6 @@
             box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
             margin-bottom: 1.5rem;
             border: 1px solid var(--border);
-            display: none;
-        }
-        .quiz-card.active {
-            display: block;
         }
 
         .question-number {
@@ -179,7 +173,6 @@
             color: #991b1b !important;
         }
 
-        /* Interactive Feedback Boxes */
         .feedback-box {
             margin-top: 1.25rem;
             padding: 1rem;
@@ -248,11 +241,36 @@
             pointer-events: none;
             z-index: 99;
         }
+
+        /* Branding Splash Screen Styles */
+        #brand-splash {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: var(--surface);
+            z-index: 9999;
+        }
+        #brand-splash img {
+            max-width: 250px;
+            height: auto;
+            margin-bottom: 1rem;
+        }
     </style>
 </head>
 <body>
 
-<div class="container" id="main-content">
+<div id="brand-splash">
+    <img src="assets/logo.png" alt="Innovine Logo">
+    <p style="color: var(--text-secondary); font-weight: 500;">Loading Adventure...</p>
+</div>
+
+<div class="container" id="main-content" style="display: none;">
     <canvas id="confetti-canvas"></canvas>
 
     <div class="controls-header">
@@ -305,8 +323,8 @@
     </div>
 </div>
 
-<audio id="audio-correct" src="grade-3/maths/chapter-1/assets/claps.mp3" preload="auto"></audio>
-<audio id="audio-wrong" src="grade-3/maths/chapter-1/assets/wrong.mp3" preload="auto"></audio>
+<audio id="audio-correct" src="assets/claps.mp3" preload="auto"></audio>
+<audio id="audio-wrong" src="assets/wrong.mp3" preload="auto"></audio>
 
 <script>
     // 13 Highly Structured CBSE Competency Based Questions matching requirements
@@ -429,6 +447,14 @@
     let currentQuestionAttempts = 0;
     let soundMuted = false;
 
+    // Handle branding splash window rules
+    window.addEventListener('DOMContentLoaded', () => {
+        setTimeout(() => {
+            document.getElementById('brand-splash').style.display = 'none';
+            document.getElementById('main-content').style.display = 'block';
+        }, 5000); // 5 seconds exact splash screen
+    });
+
     function toggleMute() {
         soundMuted = !soundMuted;
         document.getElementById('mute-toggle').textContent = soundMuted ? "🔇 Muted" : "🔊 Sound On";
@@ -452,6 +478,18 @@
         renderQuestionBlock();
     }
 
+    function startTimer() {
+        clearInterval(timerId);
+        timerId = setInterval(() => {
+            secondsLeft--;
+            document.getElementById('hud-timer').textContent = secondsLeft;
+            if(secondsLeft <= 0) {
+                clearInterval(timerId);
+                revealCorrectAnswerAutomatically();
+            }
+        }, 1000);
+    }
+
     function renderQuestionBlock() {
         currentQuestionAttempts = 0;
         secondsLeft = 60;
@@ -464,11 +502,12 @@
         const q = questionsData[currentIdx];
         let svgMarkup = "";
 
+        // Fixed SVG backgrounds to ensure transparency compliance
         if (q.hasSvg) {
             if (q.svgType === 'blocks-346') {
                 svgMarkup = `
                 <svg viewBox="0 0 800 240" width="100%">
-                    <rect width="800" height="240" fill="#f8fafc" rx="12" stroke="#cbd5e1" stroke-width="2"/>
+                    <rect width="800" height="240" fill="none" rx="12" stroke="#cbd5e1" stroke-width="2"/>
                     <defs>
                         <g id="cube-u"><rect width="10" height="10" fill="#38bdf8" stroke="#0284c7"/></g>
                         <g id="rod-t">
@@ -497,3 +536,164 @@
                         <g transform="translate(20,20)"><use href="#cube-u"/></g>
                         <g transform="translate(40,40)"><use href="#cube-u"/></g>
                         <g transform="translate(0,60)"><use href="#cube-u"/></g>
+                    </g>
+                </svg>`;
+            } else if (q.svgType === 'timeline-250') {
+                svgMarkup = `
+                <svg viewBox="0 0 800 120" width="100%">
+                    <rect width="800" height="120" fill="none" rx="12" stroke="#cbd5e1" stroke-width="2"/>
+                    <line x1="100" y1="60" x2="700" y2="60" stroke="#1e293b" stroke-width="3"/>
+                    <line x1="100" y1="50" x2="100" y2="70" stroke="#1e293b" stroke-width="3"/>
+                    <text x="90" y="95" font-weight="bold" fill="#475569">200</text>
+                    <line x1="400" y1="50" x2="400" y2="70" stroke="#2563eb" stroke-width="3"/>
+                    <text x="395" y="40" font-weight="bold" fill="#2563eb" font-size="20">?</text>
+                    <line x1="700" y1="50" x2="700" y2="70" stroke="#1e293b" stroke-width="3"/>
+                    <text x="690" y="95" font-weight="bold" fill="#475569">300</text>
+                </svg>`;
+            } else if (q.svgType === 'stacks-coins') {
+                svgMarkup = `
+                <svg viewBox="0 0 800 160" width="100%">
+                    <rect width="800" height="160" fill="none" rx="12" stroke="#cbd5e1" stroke-width="2"/>
+                    <g transform="translate(250, 20)">
+                        <text x="10" y="110" font-weight="bold">Stack A</text>
+                        ${Array.from({length:8}, (_,i)=>`<ellipse cx="40" cy="${90 - i*10}" rx="25" ry="8" fill="#f59e0b" stroke="#b45309"/>`).join('')}
+                    </g>
+                    <g transform="translate(450, 20)">
+                        <text x="10" y="110" font-weight="bold">Stack B</text>
+                        ${Array.from({length:6}, (_,i)=>`<ellipse cx="40" cy="${90 - i*10}" rx="25" ry="8" fill="#34d399" stroke="#047857"/>`).join('')}
+                    </g>
+                </svg>`;
+            } else if (q.svgType === 'expanded-482') {
+                svgMarkup = `
+                <svg viewBox="0 0 800 100" width="100%">
+                    <rect width="800" height="100" fill="none" rx="12" stroke="#cbd5e1" stroke-width="2"/>
+                    <text x="400" y="60" font-size="28" font-weight="bold" fill="#1e293b" text-anchor="middle">482</text>
+                </svg>`;
+            } else if (q.svgType === 'cards-order') {
+                svgMarkup = `
+                <svg viewBox="0 0 800 120" width="100%">
+                    <rect width="800" height="120" fill="none" rx="12" stroke="#cbd5e1" stroke-width="2"/>
+                    <g transform="translate(180, 25)">
+                        <rect width="100" height="70" rx="8" fill="#3b82f6" stroke="#1d4ed8"/>
+                        <text x="50" y="45" fill="white" font-weight="bold" font-size="20" text-anchor="middle">235</text>
+                    </g>
+                    <g transform="translate(350, 25)">
+                        <rect width="100" height="70" rx="8" fill="#10b981" stroke="#047857"/>
+                        <text x="50" y="45" fill="white" font-weight="bold" font-size="20" text-anchor="middle">254</text>
+                    </g>
+                    <g transform="translate(520, 25)">
+                        <rect width="100" height="70" rx="8" fill="#f59e0b" stroke="#b45309"/>
+                        <text x="50" y="45" fill="white" font-weight="bold" font-size="20" text-anchor="middle">245</text>
+                    </g>
+                </svg>`;
+            }
+        }
+
+        const container = document.getElementById('active-question-wrapper');
+        container.innerHTML = `
+            <div class="quiz-card active">
+                <div class="question-number">Question ${currentIdx + 1} of ${questionsData.length}</div>
+                <div class="question-text">${q.text.replace('\n', '<br>')}</div>
+                ${q.hasSvg ? `<div class="svg-container">${svgMarkup}</div>` : ''}
+                <div class="options-grid">
+                    ${q.options.map((opt, i) => `
+                        <button type="button" class="option-btn" data-index="${i}" onclick="submitOptionAnswer(${i}, this)">${opt}</button>
+                    `).join('')}
+                </div>
+            </div>
+        `;
+        startTimer();
+    }
+
+    function submitOptionAnswer(selectedIdx, element) {
+        const q = questionsData[currentIdx];
+        const buttons = document.querySelectorAll('.option-btn');
+
+        if (selectedIdx === q.answer) {
+            clearInterval(timerId);
+            element.classList.add('correct');
+            triggerAudioEffect('win');
+            buttons.forEach(btn => btn.disabled = true);
+            
+            if (currentQuestionAttempts === 0) {
+                totalScore++;
+            }
+            
+            showExplanationBox();
+        } else {
+            currentQuestionAttempts++;
+            element.classList.add('incorrect');
+            element.disabled = true;
+            triggerAudioEffect('fail');
+
+            if (currentQuestionAttempts === 1) {
+                const hintBox = document.getElementById('hint-feedback');
+                hintBox.textContent = "Hint: " + q.hint;
+                hintBox.style.display = 'block';
+            } else if (currentQuestionAttempts >= 2) {
+                clearInterval(timerId);
+                buttons.forEach(btn => {
+                    btn.disabled = true;
+                    if (parseInt(btn.getAttribute('data-index')) === q.answer) {
+                        btn.classList.add('correct');
+                    }
+                });
+                showExplanationBox();
+            }
+        }
+    }
+
+    function revealCorrectAnswerAutomatically() {
+        const q = questionsData[currentIdx];
+        const buttons = document.querySelectorAll('.option-btn');
+        buttons.forEach(btn => {
+            btn.disabled = true;
+            if (parseInt(btn.getAttribute('data-index')) === q.answer) {
+                btn.classList.add('correct');
+            }
+        });
+        showExplanationBox();
+    }
+
+    function showExplanationBox() {
+        const expBox = document.getElementById('explain-feedback');
+        expBox.textContent = "Explanation: " + questionsData[currentIdx].explanation;
+        expBox.style.display = 'block';
+        document.getElementById('next-action-btn').style.display = 'inline-block';
+    }
+
+    function handleNextButton() {
+        currentIdx++;
+        if (currentIdx < questionsData.length) {
+            renderQuestionBlock();
+        } else {
+            showFinalResultsSummary();
+        }
+    }
+
+    function showFinalResultsSummary() {
+        clearInterval(timerId);
+        document.getElementById('game-container').style.display = 'none';
+        
+        const resultsCard = document.getElementById('results-card');
+        document.getElementById('final-score').textContent = totalScore;
+        
+        const msgElement = document.getElementById('result-message');
+        if (totalScore === questionsData.length) {
+            msgElement.textContent = "Perfect score! Outstanding mathematical skills!";
+        } else if (totalScore >= 9) {
+            msgElement.textContent = "Great job! You have a solid grasp of the 4-digit number system.";
+        } else {
+            msgElement.textContent = "Good try! Review the place value rules and clear the challenge again.";
+        }
+        
+        resultsCard.style.display = 'block';
+    }
+
+    function restartQuizFlow() {
+        document.getElementById('results-card').style.display = 'none';
+        startQuizFlow();
+    }
+</script>
+</body>
+</html>
