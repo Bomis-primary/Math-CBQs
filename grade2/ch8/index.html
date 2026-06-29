@@ -66,7 +66,7 @@
         .screen {
             display: none;
             padding: 25px;
-            flex-flex-direction: column;
+            flex-direction: column;
             flex: 1;
         }
 
@@ -286,7 +286,7 @@
     <audio id="sound-wrong" src="grade2/ch8/assets/wrong.mp3" preload="auto"></audio>
 
     <script>
-        // Core Repository Question Bank Data Blueprint Map
+        // Question bank mapped precisely with localized folder file definitions (.jpg)
         const questionBank = [
             {
                 type: "scenario",
@@ -302,7 +302,7 @@
                 type: "picture",
                 context: "The school bell rings for dispersal at the time shown on the clock face.",
                 question: "At what time does the school day end?",
-                image: "grade2/ch8/assets/clock-430.png",
+                image: "grade2/ch8/assets/clock-430.jpg",
                 options: ["4 o'clock", "Half past 4", "5 o'clock", "Half past 5"],
                 answer: 1,
                 hint: "The long minute hand is at 6, which means 'half past'. The short hour hand has moved past 4.",
@@ -372,7 +372,7 @@
                 type: "case-based",
                 context: "Final Challenge Case: Mini’s school winter vacation starts on the last Monday of December and lasts for exactly one week (7 days).",
                 question: "If December ends on a Wednesday, and the last Monday was December 29th, on what date does Mini's vacation end?",
-                image: "grade2/ch8/assets/calendar-case.png",
+                image: "grade2/ch8/assets/calendar-case.jpg",
                 options: ["January 1st", "January 4th", "January 5th", "December 31st"],
                 answer: 1,
                 hint: "Count forward 7 full days starting from Monday, December 29th.",
@@ -382,7 +382,7 @@
                 type: "case-based",
                 context: "Final Challenge Case: Mini’s school winter vacation ended on January 4th. Her birthday falls exactly 3 days after her vacation ends.",
                 question: "Based on this timeline, what is the exact date of Mini's birthday?",
-                image: "grade2/ch8/assets/calendar-case.png",
+                image: "grade2/ch8/assets/calendar-case.jpg",
                 options: ["January 1st", "January 7th", "January 6th", "January 5th"],
                 answer: 1,
                 hint: "Her birthday is '3 days after' her vacation ends. Add 3 days to January 4th!",
@@ -390,7 +390,6 @@
             }
         ];
 
-        // State Machine Engines
         let currentQ = 0;
         let score = 0;
         let attempts = 0;
@@ -398,7 +397,6 @@
         let timeLeft = 60;
         let isMuted = false;
 
-        // Auto Boot Flow hook
         window.addEventListener('DOMContentLoaded', () => {
             setTimeout(() => {
                 const splash = document.getElementById('splash-screen');
@@ -407,7 +405,7 @@
                     splash.style.display = 'none';
                     switchScreen('screen-intro');
                 }, 500);
-            }, 5000); // Strict 5 second countdown rule
+            }, 5000); 
         });
 
         function switchScreen(id) {
@@ -430,16 +428,13 @@
             
             const qData = questionBank[currentQ];
             
-            // HUD Render updates
             document.getElementById('hud-qnum').innerText = `Question: ${currentQ + 1}/${questionBank.length}`;
             document.getElementById('hud-score').innerText = `Score: ${score}`;
             document.getElementById('timer').innerText = `⏱️ ${timeLeft}s`;
 
-            // Text Context bindings
             document.getElementById('context').innerText = qData.context;
             document.getElementById('question').innerText = qData.question;
 
-            // Visual Assets handler
             const imgEl = document.getElementById('question-img');
             if(qData.image) {
                 imgEl.src = qData.image;
@@ -448,18 +443,17 @@
                 imgEl.style.display = 'none';
             }
 
-            // Options Construction
             const optGrid = document.getElementById('options');
             optGrid.innerHTML = '';
             qData.options.forEach((opt, idx) => {
                 const btn = document.createElement('button');
                 btn.className = 'btn-opt';
                 btn.innerText = opt;
+                btn.dataset.idx = idx; // Correct mapping applied to track indexes programmatically
                 btn.onclick = () => verifyAnswer(idx, btn);
                 optGrid.appendChild(btn);
             });
 
-            // Refresh Clock Timer ticker
             clearInterval(timerInt);
             timerInt = setInterval(() => {
                 timeLeft--;
@@ -476,7 +470,6 @@
             const optButtons = document.querySelectorAll('.btn-opt');
 
             if(selectedIndex === qData.answer) {
-                // SUCCESS STATE
                 clearInterval(timerInt);
                 selectedBtn.classList.add('correct');
                 optButtons.forEach(b => b.disabled = true);
@@ -484,7 +477,6 @@
                 document.getElementById('hud-score').innerText = `Score: ${score}`;
                 playSound('correct');
                 
-                // Trigger dynamic inline mini sparks context
                 if(currentQ === questionBank.length - 1 || currentQ >= 8) {
                     triggerConfetti();
                 }
@@ -492,7 +484,6 @@
                 showFeedback('explanation', `✨ Correct! ${qData.explanation}`);
                 showNextControl();
             } else {
-                // FAIL LOOP HANDLER
                 attempts++;
                 playSound('wrong');
                 selectedBtn.classList.add('wrong');
@@ -501,7 +492,6 @@
                 if(attempts === 1) {
                     showFeedback('hint', `💡 Hint: ${qData.hint}`);
                 } else {
-                    // TERMINATE QUESTION ATTEMPTS
                     clearInterval(timerInt);
                     optButtons.forEach(b => {
                         b.disabled = true;
@@ -509,8 +499,6 @@
                             b.classList.add('correct');
                         }
                     });
-                    // Highlight correct answer visually across options
-                    optButtons[qData.answer].classList.add('correct');
                     showFeedback('explanation', `Answer: ${qData.options[qData.answer]}. ${qData.explanation}`);
                     showNextControl();
                 }
@@ -579,7 +567,6 @@
             snd.play().catch(e => console.log("Audio play blocked"));
         }
 
-        // Lightweight programmatic confetti canvas generation algorithm 
         function triggerConfetti() {
             const canvas = document.getElementById('confetti-canvas');
             const ctx = canvas.getContext('2d');
