@@ -218,8 +218,17 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            gap: 20px;
+            gap: 15px;
             flex: 1;
+        }
+
+        .feedback-card {
+            background: #F8F9FA;
+            border-radius: 12px;
+            padding: 15px;
+            margin-top: 10px;
+            max-width: 90%;
+            border: 1px dashed #CBD5E1;
         }
 
         .mute-toggle {
@@ -275,9 +284,14 @@
         <div id="screen-result" class="screen">
             <div class="center-content">
                 <h2 id="result-title">Quiz Completed!</h2>
-                <h1 id="result-score" style="font-size: 3.5rem; color: var(--primary);">0/10</h1>
-                <p id="result-message" style="font-weight: 600; font-size: 1.2rem;"></p>
-                <button class="btn-action" onclick="resetQuiz()">Try Chapter Again 🔄</button>
+                <h1 id="result-score" style="font-size: 3.2rem; color: var(--primary);">0/10</h1>
+                
+                <div class="feedback-card">
+                    <h3 id="feedback-headline" style="margin-bottom: 8px;">Performance Review</h3>
+                    <p id="result-message" style="color: #475569; font-size: 1rem; line-height: 1.4;"></p>
+                </div>
+
+                <button class="btn-action" style="margin-top: 10px;" onclick="resetQuiz()">Try Chapter Again 🔄</button>
             </div>
         </div>
     </div>
@@ -392,6 +406,7 @@
         let activeQuizSet = [];
         let currentQ = 0;
         let score = 0;
+        let firstAttemptCorrectCount = 0; // Tracks master performance metric
         let attempts = 0;
         let timerInt = null;
         let timeLeft = 60;
@@ -425,6 +440,7 @@
         function startGame() {
             currentQ = 0;
             score = 0;
+            firstAttemptCorrectCount = 0;
             
             activeQuizSet = JSON.parse(JSON.stringify(questionBankMaster));
             shuffleArray(activeQuizSet);
@@ -439,7 +455,6 @@
             document.getElementById('btn-next').style.display = 'none';
             document.getElementById('feedback').style.display = 'none';
             
-            // Clean dynamic confetti residue if any remains
             const canvas = document.getElementById('confetti-canvas');
             const ctx = canvas.getContext('2d');
             if(animationFrameId) cancelAnimationFrame(animationFrameId);
@@ -471,4 +486,190 @@
                 const btn = document.createElement('button');
                 btn.className = 'btn-opt';
                 btn.innerText = optText;
-                btn.onclick = () => verifyAnswer(opt
+                btn.onclick = () => verifyAnswer(optText, btn);
+                optGrid.appendChild(btn);
+            });
+
+            clearInterval(timerInt);
+            timerInt = setInterval(() => {
+                timeLeft--;
+                document.getElementById('timer').innerText = `⏱️ ${timeLeft}s`;
+                if(timeLeft <= 0) {
+                    clearInterval(timerInt);
+                    forceTimeout();
+                }
+            }, 1000);
+        }
+
+        function verifyAnswer(selectedText, selectedBtn) {
+            const qData = activeQuizSet[currentQ];
+            const optButtons = document.querySelectorAll('.btn-opt');
+
+            if(selectedText === qData.correctText) {
+                clearInterval(timerInt);
+                selectedBtn.classList.add('correct');
+                optButtons.forEach(b => b.disabled = true);
+                score++;
+                
+                // Evaluate if this was solved instantly without hitting a hint cycle
+                if(attempts === 0) {
+                    firstAttemptCorrectCount++;
+                }
+
+                document.getElementById('hud-score').innerText = `Score: ${score}`;
+                playSound('correct');
+                
+                if(currentQ === activeQuizSet.length - 1) {
+                    if((firstAttemptCorrectCount / activeQuizSet.length) >= 0.7) {
+                        triggerConfetti();
+                    }
+                }
+
+                showFeedback('explanation', `✨ Correct! ${qData.explanation}`);
+                showNextControl();
+            } else {
+                attempts++;
+                playSound('wrong');
+                selectedBtn.classList.add('wrong');
+                selectedBtn.disabled = true;
+
+                if(attempts === 1) {
+                    showFeedback('hint', `💡 Hint: ${qData.hint}`);
+                } else {
+                    clearInterval(timerInt);
+                    optButtons.forEach(b => b.disabled = true);
+                    showFeedback('explanation', `Incorrect. The correct answer is: ${qData.correctText}. ${qData.explanation}`);
+                    showNextControl();
+                }
+            }
+        }
+
+        function forceTimeout() {
+            document.querySelectorAll('.btn-opt').forEach(b => b.disabled = true);
+            const qData = activeQuizSet[currentQ];
+            showFeedback('explanation', `⏰ Time's up! The correct answer is: ${qData.correctText}. ${qData.explanation}`);
+            showNextControl();
+        }
+
+        function showFeedback(type, text) {
+            const fb = document.getElementById('feedback');
+            fb.className = `feedback-box ${type}`;
+            fb.innerText = text;
+            fb.style.display = 'block';
+        }
+
+        function showNextControl() {
+            document.getElementById('btn-next').style.display = 'block';
+        }
+
+        function nextQuestion() {
+            currentQ++;
+            if(currentQ < activeQuizSet.length) {
+                loadQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        function showResults() {
+            switchScreen('screen-result');
+            clearInterval(timerInt);
+            
+            document.getElementById('result-score').innerText = `${score}/${activeQuizSet.length}`;
+            
+            const headlineEl = document.getElementById('feedback-headline');
+            const msgEl = document.getElementById('result-message');
+            
+            // Tier-based honest performance criteria depending purely on first-attempt accuracy
+            if(firstAttemptCorrectCount === 10) {
+                headlineEl.innerText = "🏆 Perfect Mastery!";
+                headlineEl.style.color = "var(--success)";
+                msgEl.innerText = "Exceptional! You answered every single question correctly on your very first try. You completely understand calendars, timekeeping, and chronological problem solving.";
+                triggerConfetti();
+            } else if(firstAttemptCorrectCount >= 8) {
+                headlineEl.innerText = "🌟 Fantastic Effort!";
+                headlineEl.style.color = "#27AE60";
+                msgEl.innerText = `You secured ${firstAttemptCorrectCount} questions cleanly on your first attempt. You have a very solid command over reading clocks and months. Just a tiny bit more focus will make you a master!`;
+                triggerConfetti();
+            } else if(firstAttemptCorrectCount >= 5) {
+                headlineEl.innerText = "👍 Good Progress";
+                headlineEl.style.color = "var(--primary)";
+                msgEl.innerText = `You got ${firstAttemptCorrectCount} out of 10 right on your first try. While you know the basics, you frequently relied on hints or second chances for complex day and calendar sequences. Let's try once more to boost your accuracy!`;
+            } else {
+                headlineEl.innerText = "📚 Let's Practise More";
+                headlineEl.style.color = "var(--danger)";
+                msgEl.innerText = `You only got ${firstAttemptCorrectCount} questions correct on the first attempt. Reading clock-hands and calculating date intervals can be tricky! Rewatch your classroom examples, use the hints wisely, and try again.`;
+            }
+        }
+
+        function resetQuiz() {
+            startGame();
+        }
+
+        function toggleMute() {
+            isMuted = !isMuted;
+            document.querySelector('.mute-toggle').innerText = isMuted ? "🔇" : "🔊";
+        }
+
+        function playSound(type) {
+            if(isMuted) return;
+            const snd = document.getElementById(type === 'correct' ? 'sound-correct' : 'sound-wrong');
+            snd.currentTime = 0;
+            snd.play().catch(e => console.log("Audio play blocked"));
+        }
+
+        function triggerConfetti() {
+            const canvas = document.getElementById('confetti-canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = canvas.parentElement.clientWidth;
+            canvas.height = canvas.parentElement.clientHeight;
+
+            let particles = [];
+            for (let i = 0; i < 75; i++) {
+                particles.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * -60 - 20,
+                    r: Math.random() * 5 + 4,
+                    d: Math.random() * canvas.height,
+                    color: `rgba(${Math.floor(Math.random()*255)}, ${Math.floor(Math.random()*255)}, ${Math.floor(Math.random()*255)}, 0.8)`,
+                    tilt: Math.random() * 10 - 5,
+                    tiltAngleIncremental: Math.random() * 0.04 + 0.02,
+                    tiltAngle: 0
+                });
+            }
+
+            if(animationFrameId) cancelAnimationFrame(animationFrameId);
+
+            function draw() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                let stillFalling = false;
+                
+                particles.forEach((p, idx) => {
+                    p.tiltAngle += p.tiltAngleIncremental;
+                    p.y += (Math.cos(p.d) + 3.5 + p.r / 3) / 2;
+                    p.x += Math.sin(p.tiltAngle) * 0.5;
+                    p.tilt = Math.sin(p.tiltAngle - idx / 3) * 12;
+
+                    if(p.y < canvas.height + 20) {
+                        stillFalling = true;
+                    }
+
+                    ctx.beginPath();
+                    ctx.lineWidth = p.r;
+                    ctx.strokeStyle = p.color;
+                    ctx.moveTo(p.x + p.tilt + p.r / 2, p.y);
+                    ctx.lineTo(p.x + p.tilt, p.y + p.tilt + p.r / 2);
+                    ctx.stroke();
+                });
+
+                if(stillFalling) {
+                    animationFrameId = requestAnimationFrame(draw);
+                } else {
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                }
+            }
+            draw();
+        }
+    </script>
+</body>
+</html>
