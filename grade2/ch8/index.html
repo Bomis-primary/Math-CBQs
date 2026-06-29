@@ -1,1 +1,637 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grade 2 Maths - Chapter 8: Time Interactive</title>
+    <style>
+        :root {
+            --primary: #4A90E2;
+            --success: #2ECC71;
+            --danger: #E74C3C;
+            --warning: #F1C40F;
+            --dark: #2C3E50;
+            --light: #F8F9FA;
+        }
 
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: #EBF2FA;
+            color: var(--dark);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 15px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 650px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+            overflow: hidden;
+            position: relative;
+            min-height: 480px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Splash Screen styling */
+        #splash-screen {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            transition: opacity 0.5s ease;
+        }
+
+        #splash-screen img {
+            max-width: 220px;
+            height: auto;
+        }
+
+        /* Screens Flow Setup */
+        .screen {
+            display: none;
+            padding: 25px;
+            flex-flex-direction: column;
+            flex: 1;
+        }
+
+        .screen.active {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        /* Header UI Components */
+        .game-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 2px solid var(--light);
+            padding-bottom: 12px;
+        }
+
+        .hud-item {
+            font-weight: bold;
+            font-size: 0.95rem;
+            background: var(--light);
+            padding: 6px 12px;
+            border-radius: 20px;
+        }
+
+        #timer {
+            color: var(--danger);
+        }
+
+        /* Content Render Elements */
+        .instruction-text {
+            font-size: 1.15rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            line-height: 1.4;
+        }
+
+        .context-box {
+            background-color: #F0F4F8;
+            border-left: 4px solid var(--primary);
+            padding: 12px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+            font-size: 0.95rem;
+            line-height: 1.4;
+        }
+
+        .visual-asset {
+            width: 100%;
+            max-height: 160px;
+            object-fit: contain;
+            margin: 0 auto 15px auto;
+            display: block;
+            border-radius: 8px;
+        }
+
+        /* Interactive Choice Blocks */
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+
+        .btn-opt {
+            background: white;
+            border: 2px solid #E2E8F0;
+            border-radius: 10px;
+            padding: 14px 18px;
+            text-align: left;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            width: 100%;
+        }
+
+        .btn-opt:hover:not(:disabled) {
+            background: var(--light);
+            border-color: #CBD5E1;
+        }
+
+        .btn-opt.correct {
+            background: #E8F8F0;
+            border-color: var(--success);
+            color: #1E7E34;
+        }
+
+        .btn-opt.wrong {
+            background: #FCE8E6;
+            border-color: var(--danger);
+            color: #BD2130;
+        }
+
+        /* Core Action Controls */
+        .btn-action {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            transition: background 0.2s ease;
+        }
+
+        .btn-action:hover {
+            background: #357ABD;
+        }
+
+        /* Feedback overlays */
+        .feedback-box {
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            display: none;
+            line-height: 1.4;
+        }
+
+        .feedback-box.hint {
+            background-color: #FFF9E6;
+            border: 1px solid var(--warning);
+            color: #856404;
+        }
+
+        .feedback-box.explanation {
+            background-color: #E3F2FD;
+            border: 1px solid var(--primary);
+            color: #0D47A1;
+        }
+
+        /* Confetti Canvas Container */
+        #confetti-canvas {
+            position: absolute;
+            top:0; left:0; width:100%; height:100%;
+            pointer-events: none;
+            z-index: 99;
+        }
+
+        .center-content {
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            flex: 1;
+        }
+
+        .mute-toggle {
+            cursor: pointer;
+            background: none;
+            border: none;
+            font-size: 1.4rem;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <canvas id="confetti-canvas"></canvas>
+
+        <div id="splash-screen">
+            <img src="grade2/ch8/assets/logo.png" alt="Innovine Logo">
+        </div>
+
+        <div id="screen-intro" class="screen">
+            <div class="center-content">
+                <h2>⏰ Fun with Time Challenge!</h2>
+                <p style="color: #64748B; font-size: 1.05rem; line-height: 1.5; max-width: 85%;">
+                    Welcome! Let's explore clocks, days of the week, months, and seasons through some real-life puzzles.
+                </p>
+                <button class="btn-action" onclick="startGame()">Start Chapter Quiz</button>
+            </div>
+        </div>
+
+        <div id="screen-quiz" class="screen">
+            <div>
+                <div class="game-header">
+                    <span id="hud-qnum" class="hud-item">Question: 1/10</span>
+                    <span id="timer" class="hud-item">⏱️ 60s</span>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <button class="mute-toggle" onclick="toggleMute()">🔊</button>
+                        <span id="hud-score" class="hud-item">Score: 0</span>
+                    </div>
+                </div>
+
+                <div id="context" class="context-box"></div>
+                <div id="question" class="instruction-text"></div>
+                
+                <img id="question-img" class="visual-asset" src="" alt="Question Visual Graphic">
+
+                <div id="options" class="options-grid"></div>
+                <div id="feedback" class="feedback-box"></div>
+            </div>
+
+            <button id="btn-next" class="btn-action" style="display: none;" onclick="nextQuestion()">Next Question ➡️</button>
+        </div>
+
+        <div id="screen-result" class="screen">
+            <div class="center-content">
+                <h2 id="result-title">Quiz Completed!</h2>
+                <h1 id="result-score" style="font-size: 3.5rem; color: var(--primary);">0/10</h1>
+                <p id="result-message" style="font-weight: 600; font-size: 1.2rem;"></p>
+                <button class="btn-action" onclick="resetQuiz()">Try Chapter Again 🔄</button>
+            </div>
+        </div>
+    </div>
+
+    <audio id="sound-correct" src="grade2/ch8/assets/claps.mp3" preload="auto"></audio>
+    <audio id="sound-wrong" src="grade2/ch8/assets/wrong.mp3" preload="auto"></audio>
+
+    <script>
+        // Core Repository Question Bank Data Blueprint Map
+        const questionBank = [
+            {
+                type: "scenario",
+                context: "Kabir starts his homework exactly when the minute hand points to 12 and the hour hand points to 3.",
+                question: "What time does Kabir start his homework?",
+                image: "grade2/ch8/assets/clock-3.png",
+                options: ["Half past 3", "12 o'clock", "3 o'clock", "Half past 12"],
+                answer: 2,
+                hint: "When the long minute hand points to 12, it is an 'o'clock' time. Look closely at where the short hour hand points!",
+                explanation: "The short hand points at 3 and the long hand is at 12, marking exactly 3 o'clock."
+            },
+            {
+                type: "picture",
+                context: "The school bell rings for dispersal at the time shown on the clock face.",
+                question: "At what time does the school day end?",
+                image: "grade2/ch8/assets/clock-430.png",
+                options: ["4 o'clock", "Half past 4", "5 o'clock", "Half past 5"],
+                answer: 1,
+                hint: "The long minute hand is at 6, which means 'half past'. The short hour hand has moved past 4.",
+                explanation: "When the minute hand points to 6, it indicates 'half past'. Since it is between 4 and 5, it is half past 4."
+            },
+            {
+                type: "error-detection",
+                context: "Sana was asked to draw 'half past 8' on a blank clock face. She drew the long minute hand pointing at 12 and the short hour hand pointing at 8.",
+                question: "What mistake did Sana make?",
+                image: "",
+                options: ["She drew the hands correctly.", "For 'half past', the minute hand should point to 6, not 12.", "For 'half past', the hour hand must point to 12.", "She swapped the hands completely."],
+                answer: 1,
+                hint: "Think about what 'half past' means for the long minute hand. Does it point to 12 or 6?",
+                explanation: "To show half past, the minute hand must point down to 6. Pointing to 12 shows 8 o'clock."
+            },
+            {
+                type: "problem-solving",
+                context: "Today is Thursday and Rohan is preparing for his school art competition which takes place tomorrow.",
+                question: "On which day is Rohan's art competition?",
+                image: "",
+                options: ["Wednesday", "Friday", "Saturday", "Thursday"],
+                answer: 1,
+                hint: "'Tomorrow' means the day right after today. What day comes right after Thursday?",
+                explanation: "Friday is the day that comes directly after Thursday."
+            },
+            {
+                type: "data-based",
+                context: "A library schedule shows: Storytelling on Tuesday, Book Return on Wednesday, and a fun Quiz on the day before Storytelling.",
+                question: "On which day is the school library quiz?",
+                image: "",
+                options: ["Monday", "Thursday", "Friday", "Sunday"],
+                answer: 0,
+                hint: "Find Tuesday in your mind. Move back by exactly one day ('the day before').",
+                explanation: "Monday comes immediately before Tuesday, making it the quiz day."
+            },
+            {
+                type: "assertion-reason",
+                context: "Rehan notices his home calendar shows February has 29 days this year.",
+                question: "Assertion: This is a leap year. \nReason: A leap year occurs every four years and adds an extra day to February.",
+                image: "",
+                options: ["Both are correct and reason explains assertion", "Both are correct but reason does not explain", "Assertion is correct, reason is wrong", "Both are wrong"],
+                answer: 0,
+                hint: "How many days does February normally have? Why does it sometimes get 29 days?",
+                explanation: "Both statements are correct. A leap year adds a 29th day to February every 4 years."
+            },
+            {
+                type: "odd-one-out",
+                context: "Simran is grouping months based on whether they have exactly 30 days or 31 days.",
+                question: "Which month does NOT belong in a group of 31-day months?",
+                image: "",
+                options: ["January", "March", "June", "July"],
+                answer: 2,
+                hint: "Use the knuckle rule! Three of these months have 31 days, but one has exactly 30 days.",
+                explanation: "June has 30 days, while January, March, and July all have 31 days."
+            },
+            {
+                type: "scenario",
+                context: "It is hot and sunny. Priya's family is eating mangoes and turning on the fans. The next season in sequence will bring heavy rains.",
+                question: "Which season is Priya experiencing right now?",
+                image: "",
+                options: ["Winter", "Summer", "Autumn", "Spring"],
+                answer: 1,
+                hint: "Mangoes, fans, and hot sunny days are special features of which warm season?",
+                explanation: "Sunny weather and eating mangoes happen in Summer, which is followed by the monsoon rainy season."
+            },
+            {
+                type: "case-based",
+                context: "Final Challenge Case: Mini’s school winter vacation starts on the last Monday of December and lasts for exactly one week (7 days).",
+                question: "If December ends on a Wednesday, and the last Monday was December 29th, on what date does Mini's vacation end?",
+                image: "grade2/ch8/assets/calendar-case.png",
+                options: ["January 1st", "January 4th", "January 5th", "December 31st"],
+                answer: 1,
+                hint: "Count forward 7 full days starting from Monday, December 29th.",
+                explanation: "Counting 7 days from Dec 29 (29, 30, 31, Jan 1, 2, 3, 4) brings us to January 4th."
+            },
+            {
+                type: "case-based",
+                context: "Final Challenge Case: Mini’s school winter vacation ended on January 4th. Her birthday falls exactly 3 days after her vacation ends.",
+                question: "Based on this timeline, what is the exact date of Mini's birthday?",
+                image: "grade2/ch8/assets/calendar-case.png",
+                options: ["January 1st", "January 7th", "January 6th", "January 5th"],
+                answer: 1,
+                hint: "Her birthday is '3 days after' her vacation ends. Add 3 days to January 4th!",
+                explanation: "Adding 3 days to January 4th (4 + 3) gives January 7th."
+            }
+        ];
+
+        // State Machine Engines
+        let currentQ = 0;
+        let score = 0;
+        let attempts = 0;
+        let timerInt = null;
+        let timeLeft = 60;
+        let isMuted = false;
+
+        // Auto Boot Flow hook
+        window.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                const splash = document.getElementById('splash-screen');
+                splash.style.opacity = '0';
+                setTimeout(() => {
+                    splash.style.display = 'none';
+                    switchScreen('screen-intro');
+                }, 500);
+            }, 5000); // Strict 5 second countdown rule
+        });
+
+        function switchScreen(id) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+        }
+
+        function startGame() {
+            currentQ = 0;
+            score = 0;
+            switchScreen('screen-quiz');
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            attempts = 0;
+            timeLeft = 60;
+            document.getElementById('btn-next').style.display = 'none';
+            document.getElementById('feedback').style.display = 'none';
+            
+            const qData = questionBank[currentQ];
+            
+            // HUD Render updates
+            document.getElementById('hud-qnum').innerText = `Question: ${currentQ + 1}/${questionBank.length}`;
+            document.getElementById('hud-score').innerText = `Score: ${score}`;
+            document.getElementById('timer').innerText = `⏱️ ${timeLeft}s`;
+
+            // Text Context bindings
+            document.getElementById('context').innerText = qData.context;
+            document.getElementById('question').innerText = qData.question;
+
+            // Visual Assets handler
+            const imgEl = document.getElementById('question-img');
+            if(qData.image) {
+                imgEl.src = qData.image;
+                imgEl.style.display = 'block';
+            } else {
+                imgEl.style.display = 'none';
+            }
+
+            // Options Construction
+            const optGrid = document.getElementById('options');
+            optGrid.innerHTML = '';
+            qData.options.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.className = 'btn-opt';
+                btn.innerText = opt;
+                btn.onclick = () => verifyAnswer(idx, btn);
+                optGrid.appendChild(btn);
+            });
+
+            // Refresh Clock Timer ticker
+            clearInterval(timerInt);
+            timerInt = setInterval(() => {
+                timeLeft--;
+                document.getElementById('timer').innerText = `⏱️ ${timeLeft}s`;
+                if(timeLeft <= 0) {
+                    clearInterval(timerInt);
+                    forceTimeout();
+                }
+            }, 1000);
+        }
+
+        function verifyAnswer(selectedIndex, selectedBtn) {
+            const qData = questionBank[currentQ];
+            const optButtons = document.querySelectorAll('.btn-opt');
+
+            if(selectedIndex === qData.answer) {
+                // SUCCESS STATE
+                clearInterval(timerInt);
+                selectedBtn.classList.add('correct');
+                optButtons.forEach(b => b.disabled = true);
+                score++;
+                document.getElementById('hud-score').innerText = `Score: ${score}`;
+                playSound('correct');
+                
+                // Trigger dynamic inline mini sparks context
+                if(currentQ === questionBank.length - 1 || currentQ >= 8) {
+                    triggerConfetti();
+                }
+
+                showFeedback('explanation', `✨ Correct! ${qData.explanation}`);
+                showNextControl();
+            } else {
+                // FAIL LOOP HANDLER
+                attempts++;
+                playSound('wrong');
+                selectedBtn.classList.add('wrong');
+                selectedBtn.disabled = true;
+
+                if(attempts === 1) {
+                    showFeedback('hint', `💡 Hint: ${qData.hint}`);
+                } else {
+                    // TERMINATE QUESTION ATTEMPTS
+                    clearInterval(timerInt);
+                    optButtons.forEach(b => {
+                        b.disabled = true;
+                        if(parseInt(b.dataset.idx) === qData.answer) {
+                            b.classList.add('correct');
+                        }
+                    });
+                    // Highlight correct answer visually across options
+                    optButtons[qData.answer].classList.add('correct');
+                    showFeedback('explanation', `Answer: ${qData.options[qData.answer]}. ${qData.explanation}`);
+                    showNextControl();
+                }
+            }
+        }
+
+        function forceTimeout() {
+            document.querySelectorAll('.btn-opt').forEach(b => b.disabled = true);
+            const qData = questionBank[currentQ];
+            document.querySelectorAll('.btn-opt')[qData.answer].classList.add('correct');
+            showFeedback('explanation', `⏰ Time's up! Correct Answer: ${qData.options[qData.answer]}. ${qData.explanation}`);
+            showNextControl();
+        }
+
+        function showFeedback(type, text) {
+            const fb = document.getElementById('feedback');
+            fb.className = `feedback-box ${type}`;
+            fb.innerText = text;
+            fb.style.display = 'block';
+        }
+
+        function showNextControl() {
+            document.getElementById('btn-next').style.display = 'block';
+        }
+
+        function nextQuestion() {
+            currentQ++;
+            if(currentQ < questionBank.length) {
+                loadQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        function showResults() {
+            switchScreen('screen-result');
+            clearInterval(timerInt);
+            
+            const pct = (score / questionBank.length) * 100;
+            document.getElementById('result-score').innerText = `${score}/${questionBank.length}`;
+            
+            const msgEl = document.getElementById('result-message');
+            if(pct >= 75) {
+                msgEl.innerText = "Good job! 🎉";
+                triggerConfetti();
+            } else if(pct >= 40) {
+                msgEl.innerText = "Review this chapter and try again. 📚";
+            } else {
+                msgEl.innerText = "Let’s practise more. 💪";
+            }
+        }
+
+        function resetQuiz() {
+            startGame();
+        }
+
+        function toggleMute() {
+            isMuted = !isMuted;
+            document.querySelector('.mute-toggle').innerText = isMuted ? "🔇" : "🔊";
+        }
+
+        function playSound(type) {
+            if(isMuted) return;
+            const snd = document.getElementById(type === 'correct' ? 'sound-correct' : 'sound-wrong');
+            snd.currentTime = 0;
+            snd.play().catch(e => console.log("Audio play blocked"));
+        }
+
+        // Lightweight programmatic confetti canvas generation algorithm 
+        function triggerConfetti() {
+            const canvas = document.getElementById('confetti-canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = canvas.parentElement.clientWidth;
+            canvas.height = canvas.parentElement.clientHeight;
+
+            let particles = [];
+            for (let i = 0; i < 60; i++) {
+                particles.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height - canvas.height,
+                    r: Math.random() * 6 + 4,
+                    d: Math.random() * canvas.height,
+                    color: `rgba(${Math.floor(Math.random()*255)}, ${Math.floor(Math.random()*255)}, ${Math.floor(Math.random()*255)}, 0.8)`,
+                    tilt: Math.random() * 10 - 5,
+                    tiltAngleIncremental: Math.random() * 0.07 + 0.02,
+                    tiltAngle: 0
+                });
+            }
+
+            let animationFrameId;
+            function draw() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                let processing = false;
+                
+                particles.forEach((p, idx) => {
+                    p.tiltAngle += p.tiltAngleIncremental;
+                    p.y += (Math.cos(p.d) + 3 + p.r / 2) / 2;
+                    p.x += Math.sin(p.tiltAngle);
+                    p.tilt = Math.sin(p.tiltAngle - idx / 3) * 15;
+
+                    if(p.y < canvas.height) {
+                        processing = true;
+                    }
+
+                    ctx.beginPath();
+                    ctx.lineWidth = p.r;
+                    ctx.strokeStyle = p.color;
+                    ctx.moveTo(p.x + p.tilt + p.r / 2, p.y);
+                    ctx.lineTo(p.x + p.tilt, p.y + p.tilt + p.r / 2);
+                    ctx.stroke();
+                });
+
+                if(processing) {
+                    animationFrameId = requestAnimationFrame(draw);
+                } else {
+                    ctx.clearRect(0,0,canvas.width,canvas.height);
+                }
+            }
+            draw();
+            setTimeout(() => cancelAnimationFrame(animationFrameId), 4000);
+        }
+    </script>
+</body>
+</html>
