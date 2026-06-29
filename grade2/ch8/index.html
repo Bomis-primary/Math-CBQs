@@ -236,7 +236,7 @@
         <canvas id="confetti-canvas"></canvas>
 
         <div id="splash-screen">
-            <img src="grade2/ch8/assets/logo.png" alt="Innovine Logo">
+            <img src="assets/logo.png" alt="Innovine Logo">
         </div>
 
         <div id="screen-intro" class="screen">
@@ -282,17 +282,17 @@
         </div>
     </div>
 
-    <audio id="sound-correct" src="grade2/ch8/assets/claps.mp3" preload="auto"></audio>
-    <audio id="sound-wrong" src="grade2/ch8/assets/wrong.mp3" preload="auto"></audio>
+    <audio id="sound-correct" src="assets/claps.mp3" preload="auto"></audio>
+    <audio id="sound-wrong" src="assets/wrong.mp3" preload="auto"></audio>
 
     <script>
-        // Question bank mapped precisely with localized folder file definitions (.jpg)
+        // 🛠️ Mapped cleanly to your exact assets folder names and extensions
         const questionBank = [
             {
                 type: "scenario",
                 context: "Kabir starts his homework exactly when the minute hand points to 12 and the hour hand points to 3.",
                 question: "What time does Kabir start his homework?",
-                image: "grade2/ch8/assets/clock-3.png",
+                image: "assets/clock-3.png",
                 options: ["Half past 3", "12 o'clock", "3 o'clock", "Half past 12"],
                 answer: 2,
                 hint: "When the long minute hand points to 12, it is an 'o'clock' time. Look closely at where the short hour hand points!",
@@ -302,7 +302,7 @@
                 type: "picture",
                 context: "The school bell rings for dispersal at the time shown on the clock face.",
                 question: "At what time does the school day end?",
-                image: "grade2/ch8/assets/clock-430.jpg",
+                image: "assets/clock-430.jpg",
                 options: ["4 o'clock", "Half past 4", "5 o'clock", "Half past 5"],
                 answer: 1,
                 hint: "The long minute hand is at 6, which means 'half past'. The short hour hand has moved past 4.",
@@ -372,7 +372,7 @@
                 type: "case-based",
                 context: "Final Challenge Case: Mini’s school winter vacation starts on the last Monday of December and lasts for exactly one week (7 days).",
                 question: "If December ends on a Wednesday, and the last Monday was December 29th, on what date does Mini's vacation end?",
-                image: "grade2/ch8/assets/calendar-case.jpg",
+                image: "assets/calendar-case.jpg",
                 options: ["January 1st", "January 4th", "January 5th", "December 31st"],
                 answer: 1,
                 hint: "Count forward 7 full days starting from Monday, December 29th.",
@@ -382,7 +382,7 @@
                 type: "case-based",
                 context: "Final Challenge Case: Mini’s school winter vacation ended on January 4th. Her birthday falls exactly 3 days after her vacation ends.",
                 question: "Based on this timeline, what is the exact date of Mini's birthday?",
-                image: "grade2/ch8/assets/calendar-case.jpg",
+                image: "assets/calendar-case.jpg",
                 options: ["January 1st", "January 7th", "January 6th", "January 5th"],
                 answer: 1,
                 hint: "Her birthday is '3 days after' her vacation ends. Add 3 days to January 4th!",
@@ -449,7 +449,7 @@
                 const btn = document.createElement('button');
                 btn.className = 'btn-opt';
                 btn.innerText = opt;
-                btn.dataset.idx = idx; // Correct mapping applied to track indexes programmatically
+                btn.dataset.idx = idx; 
                 btn.onclick = () => verifyAnswer(idx, btn);
                 optGrid.appendChild(btn);
             });
