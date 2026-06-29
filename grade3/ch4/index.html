@@ -1,1 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grade 3 Math: Fun with Multiplication!</title>
+    <style>
+        :root {
+            --primary: #0284c7;
+            --primary-hover: #0369a1;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --background: #f0f9ff;
+            --surface: #ffffff;
+            --text: #1e293b;
+            --text-secondary: #475569;
+            --border: #cbd5e1;
+        }
 
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+
+        body {
+            background-color: var(--background);
+            color: var(--text);
+            line-height: 1.5;
+            padding: 2rem 1rem;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        /* 5-Second Mandatory Splash Screen */
+        #splash-screen {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: #ffffff;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.5s ease-out;
+        }
+
+        .logo-img {
+            max-width: 250px;
+            height: auto;
+            margin-bottom: 20px;
+        }
+
+        .splash-loader {
+            width: 48px;
+            height: 48px;
+            border: 5px solid #e2e8f0;
+            border-bottom-color: var(--primary);
+            border-radius: 50%;
+            animation: rotation 1s linear infinite;
+        }
+
+        @keyframes rotation {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        header {
+            background: var(--surface);
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            margin-bottom: 2rem;
+            border: 1px solid var(--border);
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .instructions {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            font-weight: 500;
+            background: #f8fafc;
+            padding: 1rem;
+            border-radius: 8px;
+            border-left: 4px solid var(--primary);
+            text-align: left;
+            margin-top: 1rem;
+        }
+
+        .header-meta-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            background: #ffffff;
+            padding: 0.75rem 1.2rem;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            font-weight: 700;
+        }
+
+        .progress-container {
+            background: #e2e8f0;
+            height: 12px;
+            border-radius: 6px;
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            background: var(--success);
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .quiz-card {
+            background: var(--surface);
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            margin-bottom: 1.5rem;
+            border: 1px solid var(--border);
+        }
+
+        .question-number {
+            font-weight: 700;
+            color: var(--primary);
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.5rem;
+        }
+
+        .question-text {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1.25rem;
+        }
+
+        .svg-container {
+            margin-bottom: 1.5rem;
+            width: 100%;
+            background: #f8fafc;
+            border-radius: 8px;
+            border: 1px dashed var(--border);
+            padding: 10px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 0.75rem;
+        }
+
+        @media (min-width: 640px) {
+            .options-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .option-btn {
+            background: var(--surface);
+            border: 2px solid var(--border);
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: left;
+            font-size: 1.05rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-weight: 500;
+            width: 100%;
+        }
+
+        .option-btn:hover:not(:disabled) {
+            border-color: var(--primary);
+            background-color: #f0f9ff;
+        }
+
+        .option-btn.selected-correct {
+            border-color: var(--success) !important;
+            background-color: #d1fae5 !important;
+            color: #065f46 !important;
+            font-weight: 700;
+        }
+
+        .option-btn.selected-wrong {
+            border-color: var(--danger) !important;
+            background-color: #fee2e2 !important;
+            color: #991b1b !important;
+        }
+
+        .feedback-box {
+            margin-top: 1.25rem;
+            padding: 1rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            display: none;
+        }
+
+        .feedback-box.show {
+            display: block;
+        }
+
+        .feedback-box.hint-bg {
+            background-color: #eff6ff;
+            border: 1px solid #bfdbfe;
+            color: #1e40af;
+        }
+
+        .feedback-box.correct-bg {
+            background-color: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            color: #166534;
+        }
+
+        .feedback-box.incorrect-bg {
+            background-color: #fef2f2;
+            border: 1px solid #fecaca;
+            color: #991b1b;
+        }
+
+        .action-container {
+            text-align: center;
+            margin-top: 1.5rem;
+        }
+
+        .action-btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.9rem 2.5rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            width: 100%;
+        }
+
+        .action-btn:hover {
+            background-color: var(--primary-hover);
+        }
+
+        #results-card {
+            background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%);
+            border: 2px solid #7dd3fc;
+            text-align: center;
+            padding: 3rem 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            margin-bottom: 1.5rem;
+            display: none;
+        }
+
+        .score-display {
+            font-size: 4rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin: 1rem 0;
+        }
+
+        .hidden {
+            display: none !important;
+            
+        }
+    </style>
+</head>
+<body>
+
+<div id="splash-screen">
+    <img src="assets/logo.png" alt="Innovine Logo" class="logo-img">
+    <div class="splash-loader"></div>
+    <p style="margin-top: 15px; color: var(--text-secondary); font-weight: 600;">Loading Your Math Adventure...</p>
+</div>
+
+<audio id="audio-correct" src="assets/claps.mp3" preload="auto"></audio>
+<audio id="audio-wrong" src="assets/wrong.mp3" preload="auto"></audio>
+
+<div class="container">
+    <header id="main-header" class="hidden">
+        <h1>Grade 3: Fun Multiplication Challenge!</h1>
+        <div class="instructions">
+            <strong>How to Play:</strong> Read each word problem carefully. Look at the picture models to help you find the correct matching multiplication sentence! You have 2 attempts per question.
+        </div>
+    </header>
+
+    <div id="quiz-workspace" class="hidden">
+        <div class="header-meta-row">
+            <div>Question: <span id="current-q-label">1</span> / 15</div>
+            <div>Score: <span id="live-score">0</span></div>
+        </div>
+        <div class="progress-container">
+            <div id="progress-indicator" class="progress-bar"></div>
+        </div>
+
+        <div class="quiz-card">
+            <div class="question-number" id="q-number-hdr">Question 1</div>
+            <div class="question-text" id="q-text-container">Loading your quest...</div>
+            
+            <div class="svg-container hidden" id="q-svg-container"></div>
+
+            <div class="options-grid" id="q-options-grid"></div>
+            
+            <div class="feedback-box" id="q-feedback-box"></div>
+            
+            <div class="action-container hidden" id="q-action-container">
+                <button type="button" class="action-btn" id="next-btn" onclick="quizEngine.advanceQuestion()">Next Question ➡️</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="results-card">
+        <h2>🎉 Awesome Job! You Finished! 🎉</h2>
+        <div class="score-display" id="final-score-text">0 / 15</div>
+        <p id="final-percentage-text" style="font-size: 1.3rem; font-weight: 600; color: var(--text-secondary);"></p>
+        <p id="performance-descriptor" style="margin-top: 1rem; font-size: 1.1rem; font-weight: bold; color: #0369a1;"></p>
+        <button type="button" class="action-btn" style="margin-top: 1.5rem;" onclick="window.location.reload()">Play Again 🔄</button>
+    </div>
+</div>
+
+<script>
+    const assessmentDataset = [
+        {
+            type: "visual",
+            question: "Look at the boxes below. Which math phrase shows the total number of dots without counting them one by one?",
+            svg: `<svg viewBox="0 0 600 130" width="100%"><g transform="translate(20,20)"><rect width="110" height="90" fill="none" stroke="#0284c7" stroke-width="3" rx="6"/><circle cx="30" cy="30" r="10" fill="#f43f5e"/><circle cx="55" cy="30" r="10" fill="#f43f5e"/><circle cx="80" cy="30" r="10" fill="#f43f5e"/><circle cx="30" cy="65" r="10" fill="#f43f5e"/><circle cx="55" cy="65" r="10" fill="#f43f5e"/><circle cx="80" cy="65" r="10" fill="#f43f5e"/></g><g transform="translate(160,20)"><rect width="110" height="90" fill="none" stroke="#0284c7" stroke-width="3" rx="6"/><circle cx="30" cy="30" r="10" fill="#f43f5e"/><circle cx="55" cy="30" r="10" fill="#f43f5e"/><circle cx="80" cy="30" r="10" fill="#f43f5e"/><circle cx="30" cy="65" r="10" fill="#f43f5e"/><circle cx="55" cy="65" r="10" fill="#f43f5e"/><circle cx="80" cy="65" r="10" fill="#f43f5e"/></g><g transform="translate(300,20)"><rect width="110" height="90" fill="none" stroke="#0284c7" stroke-width="3" rx="6"/><circle cx="30" cy="30" r="10" fill="#f43f5e"/><circle cx="55" cy="30" r="10" fill="#f43f5e"/><circle cx="80" cy="30" r="10" fill="#f43f5e"/><circle cx="30" cy="65" r="10" fill="#f43f5e"/><circle cx="55" cy="65" r="10" fill="#f43f5e"/><circle cx="80" cy="65" r="10" fill="#f43f5e"/></g><g transform="translate(440,20)"><rect width="110" height="90" fill="none" stroke="#0284c7" stroke-width="3" rx="6"/><circle cx="30" cy="30" r="10" fill="#f43f5e"/><circle cx="55" cy="30" r="10" fill="#f43f5e"/><circle cx="80" cy="30" r="10" fill="#f43f5e"/><circle cx="30" cy="65" r="10" fill="#f43f5e"/><circle cx="55" cy="65" r="10" fill="#f43f5e"/><circle cx="80" cy="65" r="10" fill="#f43f5e"/></g></svg>`,
+            options: ["4 + 6", "6 + 6 + 6 + 6 + 6 + 6", "4 × 6", "4 × 4 × 4 × 4"],
+            answer: 2,
+            hint: "Count how many blue boxes there are altogether, then count how many red dots are inside one box.",
+            explanation: "There are 4 groups with 6 items inside each group. We write this as 4 × 6."
+        },
+        {
+            type: "visual",
+            question: "A machine arranges candy trays into this grid pattern. What math sentence helps find the total number of candies?",
+            svg: `<svg viewBox="0 0 400 160" width="100%"><g transform="translate(60, 25)"><circle cx="30" cy="20" r="12" fill="#10b981"/><circle cx="80" cy="20" r="12" fill="#10b981"/><circle cx="130" cy="20" r="12" fill="#10b981"/><circle cx="180" cy="20" r="12" fill="#10b981"/><circle cx="230" cy="20" r="12" fill="#10b981"/><circle cx="30" cy="60" r="12" fill="#10b981"/><circle cx="80" cy="60" r="12" fill="#10b981"/><circle cx="130" cy="60" r="12" fill="#10b981"/><circle cx="180" cy="60" r="12" fill="#10b981"/><circle cx="230" cy="60" r="12" fill="#10b981"/><circle cx="30" cy="100" r="12" fill="#10b981"/><circle cx="80" cy="100" r="12" fill="#10b981"/><circle cx="130" cy="100" r="12" fill="#10b981"/><circle cx="180" cy="100" r="12" fill="#10b981"/><circle cx="230" cy="100" r="12" fill="#10b981"/></g></svg>`,
+            options: ["3 + 5", "3 × 5", "5 + 5 + 5 + 5 + 5", "3 × 3 × 3"],
+            answer: 1,
+            hint: "Count the horizontal rows going down, then multiply by the number of objects in each row.",
+            explanation: "Grids are structured as (Rows) × (Columns). This layout shows 3 rows with 5 dots in each row, making 3 × 5."
+        },
+        {
+            type: "visual",
+            question: "Look at the frames below. Which multiplication expression describes this structure?",
+            svg: `<svg viewBox="0 0 550 120" width="100%"><g fill="#f59e0b"><circle cx="40" cy="40" r="10"/><circle cx="70" cy="40" r="10"/><circle cx="40" cy="80" r="10"/><circle cx="70" cy="80" r="10"/><path d="M20,15 H90 V105 H20 Z" fill="none" stroke="#64748b" stroke-width="2"/><circle cx="150" cy="40" r="10"/><circle cx="180" cy="40" r="10"/><circle cx="150" cy="80" r="10"/><circle cx="180" cy="80" r="10"/><path d="M130,15 H200 V105 H130 Z" fill="none" stroke="#64748b" stroke-width="2"/><circle cx="260" cy="40" r="10"/><circle cx="290" cy="40" r="10"/><circle cx="260" cy="80" r="10"/><circle cx="290" cy="80" r="10"/><path d="M240,15 H310 V105 H240 Z" fill="none" stroke="#64748b" stroke-width="2"/><circle cx="370" cy="40" r="10"/><circle cx="400" cy="40" r="10"/><circle cx="370" cy="80" r="10"/><circle cx="400" cy="80" r="10"/><path d="M350,15 H420 V105 H350 Z" fill="none" stroke="#64748b" stroke-width="2"/><circle cx="480" cy="40" r="10"/><circle cx="510" cy="40" r="10"/><circle cx="480" cy="80" r="10"/><circle cx="510" cy="80" r="10"/><path d="M460,15 H530 V105 H460 Z" fill="none" stroke="#64748b" stroke-width="2"/></g></svg>`,
+            options: ["5 + 4", "5 × 4", "4 × 4 × 4 × 4 × 4", "5 × 5 × 5 × 5"],
+            answer: 1,
+            hint: "Count how many boxes there are in total, then look inside one box to see how many dots it holds.",
+            explanation: "There are 5 separate bounding containers with 4 dots in each box. This equals 5 groups of 4, written as 5 × 4."
+        },
+        {
+            type: "text",
+            question: "A computer running game script executes the command 4 × 3. Which addition line solves this the exact same way?",
+            options: ["3 + 3 + 3 + 3", "4 + 3", "4 + 4 + 4 + 4", "3 + 4 + 3"],
+            answer: 0,
+            hint: "The expression 4 × 3 means you are adding the number 3 together four times.",
+            explanation: "4 × 3 means 4 groups of 3, which expands into: 3 + 3 + 3 + 3."
+        },
+        {
+            type: "text",
+            question: "You are checking a scoring sheet for mistakes. Which multiplication facts listed below is fully correct?",
+            options: ["6 × 4 = 20", "5 × 3 = 15", "7 × 2 = 18", "4 × 4 = 12"],
+            answer: 1,
+            hint: "Try skip counting by 5 three times: 5, 10... what comes next?",
+            explanation: "5 × 3 = 15 is correct. The others are false because 6×4=24, 7×2=14, and 4×4=16."
+        },
+        {
+            type: "text",
+            question: "Box A has 4 × 5 marbles inside. Box B has 3 × 6 marbles inside. Which choice correctly describes them?",
+            options: ["Box A has more marbles than Box B.", "Box B has more marbles than Box A.", "Both boxes hold the exact same amount.", "Box A holds fewer marbles than Box B."],
+            answer: 0,
+            hint: "Solve both first: what is 4 × 5? Now, what is 3 × 6? Which product is bigger?",
+            explanation: "Box A = 4 × 5 = 20 marbles. Box B = 3 × 6 = 18 marbles. Since 20 is greater than 18, Box A has more."
+        },
+        {
+            type: "text",
+            question: "A shiny solar grid layout has 5 horizontal rows. Each row contains 4 active electricity cells. What is the total count?",
+            options: ["20 cells", "25 cells", "15 cells", "10 cells"],
+            answer: 0,
+            hint: "Multiply the 5 rows by the 4 cells in each row to get your answer.",
+            explanation: "The grid layout can be modeled as 5 rows × 4 cells per row. 5 × 4 = 20 total cells."
+        },
+        {
+            type: "text",
+            question: "An engineer has 6 bags of loose gears. Each bag contains exactly 5 items. They need more than 25 gears for a project. Do they have enough?",
+            options: ["Yes, they have 30 gears total, which is more than 25.", "No, they have exactly 24 gears total.", "No, they have exactly 25 gears.", "Yes, because any 6 bags will pass the test."],
+            answer: 0,
+            hint: "Find out what 6 bags × 5 gears equals first, then see if it passes 25.",
+            explanation: "6 bags × 5 items per bag = 30 gears. Since 30 is bigger than 25, they have plenty of gears!"
+        },
+        {
+            type: "text",
+            question: "A factory shipping box holds 4 large packages. Each package has 8 toy cars inside. To complete a shipping order, they need to deliver more than 30 cars. Does this box match their order?",
+            options: ["Yes, because 4 × 8 = 32, which is more than 30.", "No, because 4 × 8 = 28, which is less than 30.", "No, because the batch contains exactly 30 cars.", "Yes, because 4 packages always works."],
+            answer: 0,
+            hint: "Multiply 4 packages by the 8 cars inside to find the sum, then check if it beats 30.",
+            explanation: "4 packages × 8 cars = 32 cars total. Since 32 is higher than 30, it meets the requirement perfectly."
+        },
+        {
+            type: "text",
+            question: "A missing number space fits into the puzzle equation: [Box] × 5 = 25. What number belongs inside the empty box?",
+            options: ["5", "4", "6", "3"],
+            answer: 0,
+            hint: "Think about skip counting by 5s. How many times do you count 5 to land right on 25?",
+            explanation: "Using division properties, 25 ÷ 5 = 5. That means 5 × 5 = 25."
+        }
+    ];
+
+    class QuizEngine {
+        constructor(dataset) {
+            this.rawDataset = dataset;
+            this.questions = [];
+            this.currentIndex = 0;
+            this.score = 0;
+            this.attempts = 0;
+            
+            this.audioCorrect = document.getElementById("audio-correct");
+            this.audioWrong = document.getElementById("audio-wrong");
+        }
+
+        init() {
+            // Randomize and truncate to match QA target (10-20 items -> choosing 10)
+            this.questions = [...this.rawDataset].sort(() => Math.random() - 0.5).slice(0, 10);
+            this.currentIndex = 0;
+            this.score = 0;
+            this.renderQuestion();
+        }
+
+        renderQuestion() {
+            this.attempts = 0;
+            const currentQ = this.questions[this.currentIndex];
+            
+            // Dom tracking updates
+            document.getElementById("current-q-label").innerText = this.currentIndex + 1;
+            document.getElementById("live-score").innerText = this.score;
+            document.getElementById("q-number-hdr").innerText = `Question ${this.currentIndex + 1}`;
+            document.getElementById("q-text-container").innerText = currentQ.question;
+            
+            // Progress Bar Update
+            const progressPercent = (this.currentIndex / this.questions.length) * 100;
+            document.getElementById("progress-indicator").style.width = `${progressPercent}%`;
+
+            // Reset dynamic containers
+            const svgBox = document.getElementById("q-svg-container");
+            if (currentQ.type === "visual" && currentQ.svg) {
+                svgBox.innerHTML = currentQ.svg;
+                svgBox.classList.remove("hidden");
+            } else {
+                svgBox.classList.add("hidden");
+                svgBox.innerHTML = "";
+            }
+
+            const feedbackBox = document.getElementById("
