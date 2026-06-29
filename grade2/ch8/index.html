@@ -286,14 +286,15 @@
     <audio id="sound-wrong" src="assets/wrong.mp3" preload="auto"></audio>
 
     <script>
-        const questionBank = [
+        // Master Question Data definition
+        const questionBankMaster = [
             {
                 type: "scenario",
                 context: "Kabir starts his homework exactly when the minute hand points to 12 and the hour hand points to 3.",
                 question: "What time does Kabir start his homework?",
                 image: "assets/clock-3.png",
                 options: ["Half past 3", "12 o'clock", "3 o'clock", "Half past 12"],
-                answer: 2,
+                correctText: "3 o'clock",
                 hint: "When the long minute hand points to 12, it is an 'o'clock' time. Look closely at where the short hour hand points!",
                 explanation: "The short hand points at 3 and the long hand is at 12, marking exactly 3 o'clock."
             },
@@ -303,7 +304,7 @@
                 question: "At what time does the school day end?",
                 image: "assets/clock-430.jpg",
                 options: ["4 o'clock", "Half past 4", "5 o'clock", "Half past 5"],
-                answer: 1,
+                correctText: "Half past 4",
                 hint: "The long minute hand is at 6, which means 'half past'. The short hour hand has moved past 4.",
                 explanation: "When the minute hand points to 6, it indicates 'half past'. Since it is between 4 and 5, it is half past 4."
             },
@@ -313,7 +314,7 @@
                 question: "What mistake did Sana make?",
                 image: "assets/clock-8.jpg",
                 options: ["She drew the hands correctly.", "For 'half past', the minute hand should point to 6, not 12.", "For 'half past', the hour hand must point to 12.", "She swapped the hands completely."],
-                answer: 1,
+                correctText: "For 'half past', the minute hand should point to 6, not 12.",
                 hint: "Think about what 'half past' means for the long minute hand. Does it point to 12 or 6?",
                 explanation: "To show half past, the minute hand must point down to 6. Pointing to 12 shows 8 o'clock."
             },
@@ -323,7 +324,7 @@
                 question: "On which day is Rohan's art competition?",
                 image: "",
                 options: ["Wednesday", "Friday", "Saturday", "Thursday"],
-                answer: 1,
+                correctText: "Friday",
                 hint: "'Tomorrow' means the day right after today. What day comes right after Thursday?",
                 explanation: "Friday is the day that comes directly after Thursday."
             },
@@ -333,7 +334,7 @@
                 question: "On which day is the school library quiz?",
                 image: "",
                 options: ["Monday", "Thursday", "Friday", "Sunday"],
-                answer: 0,
+                correctText: "Monday",
                 hint: "Find Tuesday in your mind. Move back by exactly one day ('the day before').",
                 explanation: "Monday comes immediately before Tuesday, making it the quiz day."
             },
@@ -343,7 +344,7 @@
                 question: "Assertion: This is a leap year. \nReason: A leap year occurs every four years and adds an extra day to February.",
                 image: "",
                 options: ["Both are correct and reason explains assertion", "Both are correct but reason does not explain", "Assertion is correct, reason is wrong", "Both are wrong"],
-                answer: 0,
+                correctText: "Both are correct and reason explains assertion",
                 hint: "How many days does February normally have? Why does it sometimes get 29 days?",
                 explanation: "Both statements are correct. A leap year adds a 29th day to February every 4 years."
             },
@@ -353,7 +354,7 @@
                 question: "Which month does NOT belong in a group of 31-day months?",
                 image: "",
                 options: ["January", "March", "June", "July"],
-                answer: 2,
+                correctText: "June",
                 hint: "Use the knuckle rule! Three of these months have 31 days, but one has exactly 30 days.",
                 explanation: "June has 30 days, while January, March, and July all have 31 days."
             },
@@ -363,7 +364,7 @@
                 question: "Which season is Priya experiencing right now?",
                 image: "",
                 options: ["Winter", "Summer", "Autumn", "Spring"],
-                answer: 1,
+                correctText: "Summer",
                 hint: "Mangoes, fans, and hot sunny days are special features of which warm season?",
                 explanation: "Sunny weather and eating mangoes happen in Summer, which is followed by the monsoon rainy season."
             },
@@ -373,7 +374,7 @@
                 question: "If December has 31 days, on what date does Mini's vacation end?",
                 image: "",
                 options: ["January 1st", "January 4th", "January 5th", "December 31st"],
-                answer: 1,
+                correctText: "January 4th",
                 hint: "Count 7 days starting from December 29th. Remember that after December 31st, the next day is January 1st!",
                 explanation: "Counting 7 days from Dec 29 gives: Dec 29, Dec 30, Dec 31, Jan 1, Jan 2, Jan 3, and finally Jan 4."
             },
@@ -383,18 +384,28 @@
                 question: "What is the date of Mini's birthday?",
                 image: "",
                 options: ["January 1st", "January 7th", "January 6th", "January 5th"],
-                answer: 1,
+                correctText: "January 7th",
                 hint: "Her birthday is 3 days after January 4th. Simply add 3 days to 4!",
                 explanation: "Adding 3 days to January 4th (4 + 3) gives January 7th."
             }
         ];
 
+        let activeQuizSet = [];
         let currentQ = 0;
         let score = 0;
         let attempts = 0;
         let timerInt = null;
         let timeLeft = 60;
         let isMuted = false;
+
+        // Helper function to shuffle array collections
+        function shuffleArray(arr) {
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
 
         window.addEventListener('DOMContentLoaded', () => {
             setTimeout(() => {
@@ -415,6 +426,11 @@
         function startGame() {
             currentQ = 0;
             score = 0;
+            
+            // Randomize whole question set on start
+            activeQuizSet = JSON.parse(JSON.stringify(questionBankMaster));
+            shuffleArray(activeQuizSet);
+            
             switchScreen('screen-quiz');
             loadQuestion();
         }
@@ -425,9 +441,9 @@
             document.getElementById('btn-next').style.display = 'none';
             document.getElementById('feedback').style.display = 'none';
             
-            const qData = questionBank[currentQ];
+            const qData = activeQuizSet[currentQ];
             
-            document.getElementById('hud-qnum').innerText = `Question: ${currentQ + 1}/${questionBank.length}`;
+            document.getElementById('hud-qnum').innerText = `Question: ${currentQ + 1}/${activeQuizSet.length}`;
             document.getElementById('hud-score').innerText = `Score: ${score}`;
             document.getElementById('timer').innerText = `⏱️ ${timeLeft}s`;
 
@@ -442,14 +458,17 @@
                 imgEl.style.display = 'none';
             }
 
+            // Shuffle choice grid randomly for this load instance
+            const dynamicChoices = [...qData.options];
+            shuffleArray(dynamicChoices);
+
             const optGrid = document.getElementById('options');
             optGrid.innerHTML = '';
-            qData.options.forEach((opt, idx) => {
+            dynamicChoices.forEach((optText) => {
                 const btn = document.createElement('button');
                 btn.className = 'btn-opt';
-                btn.innerText = opt;
-                btn.dataset.idx = idx; 
-                btn.onclick = () => verifyAnswer(idx, btn);
+                btn.innerText = optText;
+                btn.onclick = () => verifyAnswer(optText, btn);
                 optGrid.appendChild(btn);
             });
 
@@ -464,11 +483,11 @@
             }, 1000);
         }
 
-        function verifyAnswer(selectedIndex, selectedBtn) {
-            const qData = questionBank[currentQ];
+        function verifyAnswer(selectedText, selectedBtn) {
+            const qData = activeQuizSet[currentQ];
             const optButtons = document.querySelectorAll('.btn-opt');
 
-            if(selectedIndex === qData.answer) {
+            if(selectedText === qData.correctText) {
                 clearInterval(timerInt);
                 selectedBtn.classList.add('correct');
                 optButtons.forEach(b => b.disabled = true);
@@ -476,7 +495,7 @@
                 document.getElementById('hud-score').innerText = `Score: ${score}`;
                 playSound('correct');
                 
-                if(currentQ === questionBank.length - 1 || currentQ >= 8) {
+                if(currentQ === activeQuizSet.length - 1 || score >= 8) {
                     triggerConfetti();
                 }
 
@@ -493,7 +512,7 @@
                 } else {
                     clearInterval(timerInt);
                     optButtons.forEach(b => b.disabled = true);
-                    showFeedback('explanation', `Incorrect. The correct answer is: ${qData.options[qData.answer]}. ${qData.explanation}`);
+                    showFeedback('explanation', `Incorrect. The correct answer is: ${qData.correctText}. ${qData.explanation}`);
                     showNextControl();
                 }
             }
@@ -501,8 +520,8 @@
 
         function forceTimeout() {
             document.querySelectorAll('.btn-opt').forEach(b => b.disabled = true);
-            const qData = questionBank[currentQ];
-            showFeedback('explanation', `⏰ Time's up! The correct answer is: ${qData.options[qData.answer]}. ${qData.explanation}`);
+            const qData = activeQuizSet[currentQ];
+            showFeedback('explanation', `⏰ Time's up! The correct answer is: ${qData.correctText}. ${qData.explanation}`);
             showNextControl();
         }
 
@@ -519,7 +538,7 @@
 
         function nextQuestion() {
             currentQ++;
-            if(currentQ < questionBank.length) {
+            if(currentQ < activeQuizSet.length) {
                 loadQuestion();
             } else {
                 showResults();
@@ -530,8 +549,8 @@
             switchScreen('screen-result');
             clearInterval(timerInt);
             
-            const pct = (score / questionBank.length) * 100;
-            document.getElementById('result-score').innerText = `${score}/${questionBank.length}`;
+            const pct = (score / activeQuizSet.length) * 100;
+            document.getElementById('result-score').innerText = `${score}/${activeQuizSet.length}`;
             
             const msgEl = document.getElementById('result-message');
             if(pct >= 75) {
