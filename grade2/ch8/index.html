@@ -286,7 +286,6 @@
     <audio id="sound-wrong" src="assets/wrong.mp3" preload="auto"></audio>
 
     <script>
-        // 🛠️ Mapped cleanly to your exact assets folder names and extensions
         const questionBank = [
             {
                 type: "scenario",
@@ -312,7 +311,7 @@
                 type: "error-detection",
                 context: "Sana was asked to draw 'half past 8' on a blank clock face. She drew the long minute hand pointing at 12 and the short hour hand pointing at 8.",
                 question: "What mistake did Sana make?",
-                image: "",
+                image: "assets/clock-8.jpeg", // ✨ Added image path here
                 options: ["She drew the hands correctly.", "For 'half past', the minute hand should point to 6, not 12.", "For 'half past', the hour hand must point to 12.", "She swapped the hands completely."],
                 answer: 1,
                 hint: "Think about what 'half past' means for the long minute hand. Does it point to 12 or 6?",
