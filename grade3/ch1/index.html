@@ -525,16 +525,17 @@
                     <text x="690" y="95" font-weight="bold" fill="#475569">300</text>
                 </svg>`;
             } else if (q.svgType === 'stacks-coins') {
+                // Label coordinates realigned cleanly beneath the matching stack columns
                 svgMarkup = `
-                <svg viewBox="0 0 800 160" width="100%">
-                    <rect width="800" height="160" fill="none" rx="12" stroke="#cbd5e1" stroke-width="2"/>
-                    <g transform="translate(250, 20)">
-                        <text x="10" y="110" font-weight="bold">Stack A</text>
-                        ${Array.from({length:8}, (_,i)=>`<ellipse cx="40" cy="${90 - i*10}" rx="25" ry="8" fill="#f59e0b" stroke="#b45309"/>`).join('')}
+                <svg viewBox="0 0 800 170" width="100%">
+                    <rect width="800" height="170" fill="none" rx="12" stroke="#cbd5e1" stroke-width="2"/>
+                    <g transform="translate(280, 20)">
+                        ${Array.from({length:8}, (_,i)=>`<ellipse cx="40" cy="${100 - i*11}" rx="25" ry="8" fill="#f59e0b" stroke="#b45309"/>`).join('')}
+                        <text x="40" y="130" font-weight="bold" fill="#1e293b" text-anchor="middle" font-size="14">Stack A</text>
                     </g>
-                    <g transform="translate(450, 20)">
-                        <text x="10" y="110" font-weight="bold">Stack B</text>
-                        ${Array.from({length:6}, (_,i)=>`<ellipse cx="40" cy="${90 - i*10}" rx="25" ry="8" fill="#34d399" stroke="#047857"/>`).join('')}
+                    <g transform="translate(460, 20)">
+                        ${Array.from({length:6}, (_,i)=>`<ellipse cx="40" cy="${100 - i*11}" rx="25" ry="8" fill="#34d399" stroke="#047857"/>`).join('')}
+                        <text x="40" y="130" font-weight="bold" fill="#1e293b" text-anchor="middle" font-size="14">Stack B</text>
                     </g>
                 </svg>`;
             } else if (q.svgType === 'expanded-482') {
@@ -648,7 +649,7 @@
     function showFinalResultsSummary() {
         clearInterval(timerId);
         document.getElementById('game-container').style.display = 'none';
-        document.getElementById('quiz-header').style.display = 'block'; // re-show header on results screen if required
+        document.getElementById('quiz-header').style.display = 'block';
         
         const resultsCard = document.getElementById('results-card');
         document.getElementById('final-score').textContent = totalScore;
