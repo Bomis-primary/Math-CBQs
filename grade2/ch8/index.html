@@ -311,7 +311,7 @@
                 type: "error-detection",
                 context: "Sana was asked to draw 'half past 8' on a blank clock face. She drew the long minute hand pointing at 12 and the short hour hand pointing at 8.",
                 question: "What mistake did Sana make?",
-                image: "assets/clock-8.jpg", // 🛠️ Updated directly to your exact image layout name and extension!
+                image: "assets/clock-8.jpg",
                 options: ["She drew the hands correctly.", "For 'half past', the minute hand should point to 6, not 12.", "For 'half past', the hour hand must point to 12.", "She swapped the hands completely."],
                 answer: 1,
                 hint: "Think about what 'half past' means for the long minute hand. Does it point to 12 or 6?",
@@ -369,22 +369,22 @@
             },
             {
                 type: "case-based",
-                context: "Final Challenge Case: Mini’s school winter vacation starts on the last Monday of December and lasts for exactly one week (7 days).",
-                question: "If December ends on a Wednesday, and the last Monday was December 29th, on what date does Mini's vacation end?",
-                image: "assets/calendar-case.jpg",
+                context: "Mini’s school winter vacation starts on December 29th and lasts for exactly one week (7 days).",
+                question: "If December has 31 days, on what date does Mini's vacation end?",
+                image: "",
                 options: ["January 1st", "January 4th", "January 5th", "December 31st"],
                 answer: 1,
-                hint: "Count forward 7 full days starting from Monday, December 29th.",
-                explanation: "Counting 7 days from Dec 29 (29, 30, 31, Jan 1, 2, 3, 4) brings us to January 4th."
+                hint: "Count 7 days starting from December 29th. Remember that after December 31st, the next day is January 1st!",
+                explanation: "Counting 7 days from Dec 29 gives: Dec 29, Dec 30, Dec 31, Jan 1, Jan 2, Jan 3, and finally Jan 4."
             },
             {
                 type: "case-based",
-                context: "Final Challenge Case: Mini’s school winter vacation ended on January 4th. Her birthday falls exactly 3 days after her vacation ends.",
-                question: "Based on this timeline, what is the exact date of Mini's birthday?",
-                image: "assets/calendar-case.jpg",
+                context: "Mini’s school winter vacation ends on January 4th. Her birthday falls exactly 3 days after her vacation ends.",
+                question: "What is the date of Mini's birthday?",
+                image: "",
                 options: ["January 1st", "January 7th", "January 6th", "January 5th"],
                 answer: 1,
-                hint: "Her birthday is '3 days after' her vacation ends. Add 3 days to January 4th!",
+                hint: "Her birthday is 3 days after January 4th. Simply add 3 days to 4!",
                 explanation: "Adding 3 days to January 4th (4 + 3) gives January 7th."
             }
         ];
@@ -492,13 +492,8 @@
                     showFeedback('hint', `💡 Hint: ${qData.hint}`);
                 } else {
                     clearInterval(timerInt);
-                    optButtons.forEach(b => {
-                        b.disabled = true;
-                        if(parseInt(b.dataset.idx) === qData.answer) {
-                            b.classList.add('correct');
-                        }
-                    });
-                    showFeedback('explanation', `Answer: ${qData.options[qData.answer]}. ${qData.explanation}`);
+                    optButtons.forEach(b => b.disabled = true);
+                    showFeedback('explanation', `Incorrect. The correct answer is: ${qData.options[qData.answer]}. ${qData.explanation}`);
                     showNextControl();
                 }
             }
@@ -507,8 +502,7 @@
         function forceTimeout() {
             document.querySelectorAll('.btn-opt').forEach(b => b.disabled = true);
             const qData = questionBank[currentQ];
-            document.querySelectorAll('.btn-opt')[qData.answer].classList.add('correct');
-            showFeedback('explanation', `⏰ Time's up! Correct Answer: ${qData.options[qData.answer]}. ${qData.explanation}`);
+            showFeedback('explanation', `⏰ Time's up! The correct answer is: ${qData.options[qData.answer]}. ${qData.explanation}`);
             showNextControl();
         }
 
