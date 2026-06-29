@@ -439,7 +439,6 @@
         }
 
         init() {
-            // Randomize and select questions
             this.questions = [...this.rawDataset].sort(() => Math.random() - 0.5).slice(0, 10);
             this.currentIndex = 0;
             this.score = 0;
@@ -531,3 +530,50 @@
             if (this.currentIndex < this.questions.length) {
                 this.renderQuestion();
             } else {
+                this.showResultsSummary();
+            }
+        }
+
+        showResultsSummary() {
+            document.getElementById("quiz-workspace").classList.add("hidden");
+            const resultsCard = document.getElementById("results-card");
+            resultsCard.classList.remove("hidden");
+            
+            const pct = Math.round((this.score / this.questions.length) * 100);
+            document.getElementById("final-score-text").innerText = `${this.score} / ${this.questions.length}`;
+            document.getElementById("final-percentage-text").innerText = `Total Score: ${pct}%`;
+            
+            let message = "";
+            if (pct === 100) message = "Perfect Score! You are a Multiplication Superstar! 🌟";
+            else if (pct >= 80) message = "Great job! You have amazing math skills! 🚀";
+            else if (pct >= 50) message = "Good effort! Keep practicing and you'll get even better! 👍";
+            else message = "Let's try again! Practice makes perfect! 📚";
+            
+            document.getElementById("performance-descriptor").innerText = message;
+        }
+    }
+
+    const quizEngine = new QuizEngine(assessmentDataset);
+
+    // Transition triggered when clicking "Start Challenge"
+    function startQuizSession() {
+        document.getElementById("title-screen").classList.add("hidden");
+        document.getElementById("quiz-workspace").classList.remove("hidden");
+        quizEngine.init();
+    }
+
+    // Fixed Trigger Component: Fades splash screen out after exactly 5 seconds
+    window.addEventListener("DOMContentLoaded", () => {
+        setTimeout(() => {
+            const splash = document.getElementById("splash-screen");
+            splash.style.opacity = "0";
+            setTimeout(() => {
+                splash.classList.add("hidden");
+                document.getElementById("title-screen").classList.remove("hidden");
+            }, 500); // Wait for transition opacity decay animation to finish
+        }, 5000); // 5-Second display lock
+    });
+</script>
+
+</body>
+</html>
