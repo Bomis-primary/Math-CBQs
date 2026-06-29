@@ -75,32 +75,34 @@
             100% { transform: rotate(360deg); }
         }
 
-        header {
+        /* Dedicated Title Screen Panel Card Layout */
+        #title-screen {
             background: var(--surface);
-            padding: 1.5rem;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
-            margin-bottom: 2rem;
+            padding: 2.5rem;
+            border-radius: 16px;
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.05), 0 4px 6px -4px rgb(0 0 0 / 0.05);
             border: 1px solid var(--border);
             text-align: center;
+            margin-top: 2rem;
         }
 
         h1 {
-            font-size: 1.8rem;
+            font-size: 2rem;
             color: var(--primary);
-            margin-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
         }
 
         .instructions {
             color: var(--text-secondary);
-            font-size: 1rem;
+            font-size: 1.1rem;
             font-weight: 500;
             background: #f8fafc;
-            padding: 1rem;
-            border-radius: 8px;
-            border-left: 4px solid var(--primary);
+            padding: 1.5rem;
+            border-radius: 12px;
+            border-left: 5px solid var(--primary);
             text-align: left;
-            margin-top: 1rem;
+            margin-bottom: 2rem;
+            box-shadow: inset 0 2px 4px 0 rgb(0 0 0 / 0.02);
         }
 
         .header-meta-row {
@@ -294,12 +296,14 @@
 <audio id="audio-wrong" src="assets/wrong.mp3" preload="auto"></audio>
 
 <div class="container">
-    <header id="main-header" class="hidden">
+    
+    <div id="title-screen" class="hidden">
         <h1>Grade 3: Fun Multiplication Challenge!</h1>
         <div class="instructions">
             <strong>How to Play:</strong> Read each word problem carefully. Look at the picture models to help you find the correct matching multiplication sentence! You have 2 attempts per question.
         </div>
-    </header>
+        <button type="button" class="action-btn" style="max-width: 320px; margin: 0 auto;" onclick="startQuizSession()">Start Challenge 🚀</button>
+    </div>
 
     <div id="quiz-workspace" class="hidden">
         <div class="header-meta-row">
@@ -435,7 +439,7 @@
         }
 
         init() {
-            // Randomize and select questions to fit QA Guidelines (10-20 system entries)
+            // Randomize and select questions
             this.questions = [...this.rawDataset].sort(() => Math.random() - 0.5).slice(0, 10);
             this.currentIndex = 0;
             this.score = 0;
@@ -488,7 +492,7 @@
 
             if (selectedIndex === currentQ.answer) {
                 this.audioCorrect.currentTime = 0;
-                this.audioCorrect.play().catch(e => console.log("Audio skipped"));
+                this.audioCorrect.play().catch(e => console.log("Audio play skipped"));
                 
                 clickedBtn.classList.add("selected-correct");
                 feedbackBox.className = "feedback-box show correct-bg";
@@ -500,7 +504,7 @@
             } else {
                 this.attempts++;
                 this.audioWrong.currentTime = 0;
-                this.audioWrong.play().catch(e => console.log("Audio skipped"));
+                this.audioWrong.play().catch(e => console.log("Audio play skipped"));
                 
                 clickedBtn.classList.add("selected-wrong");
                 clickedBtn.disabled = true;
@@ -527,45 +531,3 @@
             if (this.currentIndex < this.questions.length) {
                 this.renderQuestion();
             } else {
-                this.showResultsSummary();
-            }
-        }
-
-        showResultsSummary() {
-            document.getElementById("quiz-workspace").classList.add("hidden");
-            const resultsCard = document.getElementById("results-card");
-            resultsCard.classList.remove("hidden");
-            
-            const pct = Math.round((this.score / this.questions.length) * 100);
-            document.getElementById("final-score-text").innerText = `${this.score} / ${this.questions.length}`;
-            document.getElementById("final-percentage-text").innerText = `Total Score: ${pct}%`;
-            
-            let message = "";
-            if (pct === 100) message = "Perfect Score! You are a Multiplication Superstar! 🌟";
-            else if (pct >= 80) message = "Great job! You have amazing math skills! 🚀";
-            else if (pct >= 50) message = "Good effort! Keep practicing and you'll get even better! 👍";
-            else message = "Let's try again! Practice makes perfect! 📚";
-            
-            document.getElementById("performance-descriptor").innerText = message;
-        }
-    }
-
-    const quizEngine = new QuizEngine(assessmentDataset);
-
-    // Mandatory Branding Script: Display content after exactly 5 seconds
-    window.addEventListener("DOMContentLoaded", () => {
-        setTimeout(() => {
-            const splash = document.getElementById("splash-screen");
-            splash.style.opacity = "0";
-            setTimeout(() => {
-                splash.classList.add("hidden");
-                document.getElementById("main-header").classList.remove("hidden");
-                document.getElementById("quiz-workspace").classList.remove("hidden");
-                quizEngine.init();
-            }, 500);
-        }, 5000); 
-    });
-</script>
-
-</body>
-</html>
