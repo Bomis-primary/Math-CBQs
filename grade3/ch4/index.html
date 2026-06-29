@@ -42,7 +42,7 @@
             position: relative;
         }
 
-        /* 5-Second Mandatory Splash Screen */
+        /* 5-Second Mandatory Splash Screen Setup */
         #splash-screen {
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
@@ -56,14 +56,14 @@
         }
 
         .logo-img {
-            max-width: 250px;
+            max-width: 280px;
             height: auto;
-            margin-bottom: 20px;
+            margin-bottom: 30px;
         }
 
         .splash-loader {
-            width: 48px;
-            height: 48px;
+            width: 50px;
+            height: 50px;
             border: 5px solid #e2e8f0;
             border-bottom-color: var(--primary);
             border-radius: 50%;
@@ -280,16 +280,14 @@
 
         .hidden {
             display: none !important;
-            
         }
     </style>
 </head>
 <body>
 
 <div id="splash-screen">
-    <img src="assets/logo.png" alt="Innovine Logo" class="logo-img">
+    <img src="assets/logo.png" alt="Innovine Solutions Logo" class="logo-img">
     <div class="splash-loader"></div>
-    <p style="margin-top: 15px; color: var(--text-secondary); font-weight: 600;">Loading Your Math Adventure...</p>
 </div>
 
 <audio id="audio-correct" src="assets/claps.mp3" preload="auto"></audio>
@@ -305,7 +303,7 @@
 
     <div id="quiz-workspace" class="hidden">
         <div class="header-meta-row">
-            <div>Question: <span id="current-q-label">1</span> / 15</div>
+            <div>Question: <span id="current-q-label">1</span> / 10</div>
             <div>Score: <span id="live-score">0</span></div>
         </div>
         <div class="progress-container">
@@ -330,7 +328,7 @@
 
     <div id="results-card">
         <h2>🎉 Awesome Job! You Finished! 🎉</h2>
-        <div class="score-display" id="final-score-text">0 / 15</div>
+        <div class="score-display" id="final-score-text">0 / 10</div>
         <p id="final-percentage-text" style="font-size: 1.3rem; font-weight: 600; color: var(--text-secondary);"></p>
         <p id="performance-descriptor" style="margin-top: 1rem; font-size: 1.1rem; font-weight: bold; color: #0369a1;"></p>
         <button type="button" class="action-btn" style="margin-top: 1.5rem;" onclick="window.location.reload()">Play Again 🔄</button>
@@ -341,7 +339,7 @@
     const assessmentDataset = [
         {
             type: "visual",
-            question: "Look at the boxes below. Which math phrase shows the total number of dots without counting them one by one?",
+            question: "Look at the boxes below. Which math statement shows the total number of dots without counting them one by one?",
             svg: `<svg viewBox="0 0 600 130" width="100%"><g transform="translate(20,20)"><rect width="110" height="90" fill="none" stroke="#0284c7" stroke-width="3" rx="6"/><circle cx="30" cy="30" r="10" fill="#f43f5e"/><circle cx="55" cy="30" r="10" fill="#f43f5e"/><circle cx="80" cy="30" r="10" fill="#f43f5e"/><circle cx="30" cy="65" r="10" fill="#f43f5e"/><circle cx="55" cy="65" r="10" fill="#f43f5e"/><circle cx="80" cy="65" r="10" fill="#f43f5e"/></g><g transform="translate(160,20)"><rect width="110" height="90" fill="none" stroke="#0284c7" stroke-width="3" rx="6"/><circle cx="30" cy="30" r="10" fill="#f43f5e"/><circle cx="55" cy="30" r="10" fill="#f43f5e"/><circle cx="80" cy="30" r="10" fill="#f43f5e"/><circle cx="30" cy="65" r="10" fill="#f43f5e"/><circle cx="55" cy="65" r="10" fill="#f43f5e"/><circle cx="80" cy="65" r="10" fill="#f43f5e"/></g><g transform="translate(300,20)"><rect width="110" height="90" fill="none" stroke="#0284c7" stroke-width="3" rx="6"/><circle cx="30" cy="30" r="10" fill="#f43f5e"/><circle cx="55" cy="30" r="10" fill="#f43f5e"/><circle cx="80" cy="30" r="10" fill="#f43f5e"/><circle cx="30" cy="65" r="10" fill="#f43f5e"/><circle cx="55" cy="65" r="10" fill="#f43f5e"/><circle cx="80" cy="65" r="10" fill="#f43f5e"/></g><g transform="translate(440,20)"><rect width="110" height="90" fill="none" stroke="#0284c7" stroke-width="3" rx="6"/><circle cx="30" cy="30" r="10" fill="#f43f5e"/><circle cx="55" cy="30" r="10" fill="#f43f5e"/><circle cx="80" cy="30" r="10" fill="#f43f5e"/><circle cx="30" cy="65" r="10" fill="#f43f5e"/><circle cx="55" cy="65" r="10" fill="#f43f5e"/><circle cx="80" cy="65" r="10" fill="#f43f5e"/></g></svg>`,
             options: ["4 + 6", "6 + 6 + 6 + 6 + 6 + 6", "4 × 6", "4 × 4 × 4 × 4"],
             answer: 2,
@@ -364,7 +362,7 @@
             options: ["5 + 4", "5 × 4", "4 × 4 × 4 × 4 × 4", "5 × 5 × 5 × 5"],
             answer: 1,
             hint: "Count how many boxes there are in total, then look inside one box to see how many dots it holds.",
-            explanation: "There are 5 separate bounding containers with 4 dots in each box. This equals 5 groups of 4, written as 5 × 4."
+            explanation: "There are 5 separate containers with 4 dots in each box. This equals 5 groups of 4, written as 5 × 4."
         },
         {
             type: "text",
@@ -376,7 +374,7 @@
         },
         {
             type: "text",
-            question: "You are checking a scoring sheet for mistakes. Which multiplication facts listed below is fully correct?",
+            question: "You are checking a math worksheet for mistakes. Which multiplication line listed below is fully correct?",
             options: ["6 × 4 = 20", "5 × 3 = 15", "7 × 2 = 18", "4 × 4 = 12"],
             answer: 1,
             hint: "Try skip counting by 5 three times: 5, 10... what comes next?",
@@ -392,7 +390,7 @@
         },
         {
             type: "text",
-            question: "A shiny solar grid layout has 5 horizontal rows. Each row contains 4 active electricity cells. What is the total count?",
+            question: "A solar layout has 5 horizontal rows. Each row contains 4 active energy cells. What is the total count?",
             options: ["20 cells", "25 cells", "15 cells", "10 cells"],
             answer: 0,
             hint: "Multiply the 5 rows by the 4 cells in each row to get your answer.",
@@ -437,7 +435,7 @@
         }
 
         init() {
-            // Randomize and truncate to match QA target (10-20 items -> choosing 10)
+            // Randomize and select questions to fit QA Guidelines (10-20 system entries)
             this.questions = [...this.rawDataset].sort(() => Math.random() - 0.5).slice(0, 10);
             this.currentIndex = 0;
             this.score = 0;
@@ -448,17 +446,14 @@
             this.attempts = 0;
             const currentQ = this.questions[this.currentIndex];
             
-            // Dom tracking updates
             document.getElementById("current-q-label").innerText = this.currentIndex + 1;
             document.getElementById("live-score").innerText = this.score;
             document.getElementById("q-number-hdr").innerText = `Question ${this.currentIndex + 1}`;
             document.getElementById("q-text-container").innerText = currentQ.question;
             
-            // Progress Bar Update
             const progressPercent = (this.currentIndex / this.questions.length) * 100;
             document.getElementById("progress-indicator").style.width = `${progressPercent}%`;
 
-            // Reset dynamic containers
             const svgBox = document.getElementById("q-svg-container");
             if (currentQ.type === "visual" && currentQ.svg) {
                 svgBox.innerHTML = currentQ.svg;
@@ -468,4 +463,109 @@
                 svgBox.innerHTML = "";
             }
 
-            const feedbackBox = document.getElementById("
+            const feedbackBox = document.getElementById("q-feedback-box");
+            feedbackBox.className = "feedback-box";
+            feedbackBox.innerText = "";
+            
+            document.getElementById("q-action-container").classList.add("hidden");
+
+            const optionsGrid = document.getElementById("q-options-grid");
+            optionsGrid.innerHTML = "";
+            currentQ.options.forEach((optText, index) => {
+                const btn = document.createElement("button");
+                btn.type = "button";
+                btn.className = "option-btn";
+                btn.innerText = optText;
+                btn.onclick = () => this.evaluateAnswer(index, btn);
+                optionsGrid.appendChild(btn);
+            });
+        }
+
+        evaluateAnswer(selectedIndex, clickedBtn) {
+            const currentQ = this.questions[this.currentIndex];
+            const feedbackBox = document.getElementById("q-feedback-box");
+            const allOptionBtns = document.querySelectorAll(".options-grid .option-btn");
+
+            if (selectedIndex === currentQ.answer) {
+                this.audioCorrect.currentTime = 0;
+                this.audioCorrect.play().catch(e => console.log("Audio skipped"));
+                
+                clickedBtn.classList.add("selected-correct");
+                feedbackBox.className = "feedback-box show correct-bg";
+                feedbackBox.innerHTML = `<strong>🎉 Correct!</strong> ${currentQ.explanation}`;
+                
+                if (this.attempts === 0) this.score++;
+                this.lockOptions(allOptionBtns);
+                document.getElementById("q-action-container").classList.remove("hidden");
+            } else {
+                this.attempts++;
+                this.audioWrong.currentTime = 0;
+                this.audioWrong.play().catch(e => console.log("Audio skipped"));
+                
+                clickedBtn.classList.add("selected-wrong");
+                clickedBtn.disabled = true;
+
+                if (this.attempts === 1) {
+                    feedbackBox.className = "feedback-box show hint-bg";
+                    feedbackBox.innerHTML = `<strong>Oops! Try again. Hint:</strong> ${currentQ.hint}`;
+                } else {
+                    feedbackBox.className = "feedback-box show incorrect-bg";
+                    feedbackBox.innerHTML = `<strong>Not quite!</strong> ${currentQ.explanation}`;
+                    allOptionBtns[currentQ.answer].classList.add("selected-correct");
+                    this.lockOptions(allOptionBtns);
+                    document.getElementById("q-action-container").classList.remove("hidden");
+                }
+            }
+        }
+
+        lockOptions(buttonsList) {
+            buttonsList.forEach(btn => btn.disabled = true);
+        }
+
+        advanceQuestion() {
+            this.currentIndex++;
+            if (this.currentIndex < this.questions.length) {
+                this.renderQuestion();
+            } else {
+                this.showResultsSummary();
+            }
+        }
+
+        showResultsSummary() {
+            document.getElementById("quiz-workspace").classList.add("hidden");
+            const resultsCard = document.getElementById("results-card");
+            resultsCard.classList.remove("hidden");
+            
+            const pct = Math.round((this.score / this.questions.length) * 100);
+            document.getElementById("final-score-text").innerText = `${this.score} / ${this.questions.length}`;
+            document.getElementById("final-percentage-text").innerText = `Total Score: ${pct}%`;
+            
+            let message = "";
+            if (pct === 100) message = "Perfect Score! You are a Multiplication Superstar! 🌟";
+            else if (pct >= 80) message = "Great job! You have amazing math skills! 🚀";
+            else if (pct >= 50) message = "Good effort! Keep practicing and you'll get even better! 👍";
+            else message = "Let's try again! Practice makes perfect! 📚";
+            
+            document.getElementById("performance-descriptor").innerText = message;
+        }
+    }
+
+    const quizEngine = new QuizEngine(assessmentDataset);
+
+    // Mandatory Branding Script: Display content after exactly 5 seconds
+    window.addEventListener("DOMContentLoaded", () => {
+        setTimeout(() => {
+            const splash = document.getElementById("splash-screen");
+            splash.style.opacity = "0";
+            setTimeout(() => {
+                splash.classList.add("hidden");
+                document.getElementById("main-header").classList.remove("hidden");
+                document.getElementById("quiz-workspace").classList.remove("hidden");
+                quizEngine.init();
+            }, 500);
+        }, 5000); 
+    });
+</script>
+
+</body>
+</html>
