@@ -564,7 +564,7 @@
         showResultsSummary() {
             document.getElementById("quiz-workspace").classList.add("hidden");
             const resultsCard = document.getElementById("results-card");
-            resultsCard.classList.remove("hidden");
+            resultsCard.style.display = "block"; // Fixed: Override 'display: none' directly so the card displays perfectly!
             
             // Calculate real grade based on answers without hints
             const perfectScore = this.scoreWithoutHint;
