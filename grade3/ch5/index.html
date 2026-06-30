@@ -1,1 +1,807 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grade 3 – Chapter 5: Geometry Competency Assessment</title>
+    <style>
+        :root {
+            --primary: #0f766e;
+            --primary-hover: #115e59;
+            --success: #16a34a;
+            --danger: #dc2626;
+            --warning: #ca8a04;
+            --background: #f0fdfa;
+            --surface: #ffffff;
+            --text: #0f172a;
+            --text-secondary: #475569;
+            --border: #94a3b8;
+        }
 
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+
+        body {
+            background-color: var(--background);
+            color: var(--text);
+            line-height: 1.5;
+            padding: 2rem 1rem;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        #splash-screen {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: #ffffff;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.5s ease-out;
+        }
+
+        .splash-loader {
+            width: 48px;
+            height: 48px;
+            border: 5px solid #ccfbf1;
+            border-bottom-color: var(--primary);
+            border-radius: 50%;
+            animation: rotation 1s linear infinite;
+        }
+
+        @keyframes rotation {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        header {
+            background: var(--surface);
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            margin-bottom: 2rem;
+            border: 1px solid var(--border);
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .meta-info {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        .meta-info ul {
+            margin-top: 0.5rem;
+            margin-left: 1.25rem;
+        }
+
+        .header-meta-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            background: #e2e8f0;
+            padding: 0.75rem 1.2rem;
+            border-radius: 8px;
+            font-weight: 700;
+        }
+
+        .timer-badge {
+            background: #fef9c3;
+            color: #854d0e;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+        }
+
+        .timer-low {
+            background: #fee2e2;
+            color: var(--danger);
+            animation: pulse 1s infinite alternate;
+        }
+
+        @keyframes pulse {
+            from { opacity: 1; } to { opacity: 0.7; }
+        }
+
+        .progress-container {
+            background: #cbd5e1;
+            height: 8px;
+            border-radius: 4px;
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            background: var(--primary);
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .quiz-card {
+            background: var(--surface);
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            margin-bottom: 1.5rem;
+            border: 1px solid var(--border);
+        }
+
+        .question-number {
+            font-weight: 700;
+            color: var(--primary);
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.5rem;
+        }
+
+        .question-text {
+            font-size: 1.15rem;
+            font-weight: 600;
+            margin-bottom: 1.25rem;
+        }
+
+        .svg-container {
+            margin-bottom: 1.5rem;
+            width: 100%;
+            background: #f8fafc;
+            border-radius: 8px;
+            border: 1px dashed var(--border);
+            padding: 15px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 0.75rem;
+        }
+
+        @media (min-width: 640px) {
+            .options-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .option-btn {
+            background: var(--surface);
+            border: 2px solid var(--border);
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: left;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            width: 100%;
+        }
+
+        .option-btn:hover:not(:disabled) {
+            border-color: var(--primary);
+            background-color: #f0fdfa;
+        }
+
+        .option-btn.selected-correct {
+            border-color: var(--success) !important;
+            background-color: #dcfce7 !important;
+            color: #14532d !important;
+            font-weight: 700;
+        }
+
+        .option-btn.selected-wrong {
+            border-color: var(--danger) !important;
+            background-color: #fee2e2 !important;
+            color: #991b1b !important;
+        }
+
+        .feedback-box {
+            margin-top: 1.25rem;
+            padding: 1rem;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            display: none;
+        }
+
+        .feedback-box.show {
+            display: block;
+        }
+
+        .feedback-box.hint-bg {
+            background-color: #f0fdfa;
+            border: 1px solid #99f6e4;
+            color: #115e59;
+        }
+
+        .feedback-box.correct-bg {
+            background-color: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            color: #166534;
+        }
+
+        .feedback-box.incorrect-bg {
+            background-color: #fef2f2;
+            border: 1px solid #fecaca;
+            color: #991b1b;
+        }
+
+        .explanation-text {
+            margin-top: 0.25rem;
+            font-weight: 500;
+        }
+
+        .action-container {
+            text-align: center;
+            margin-top: 1.5rem;
+        }
+
+        .action-btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.9rem 2.5rem;
+            font-size: 1.05rem;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            box-shadow: 0 4px 6px -1px rgb(15 118 110 / 0.2);
+            transition: background-color 0.2s ease;
+            width: 100%;
+        }
+
+        .action-btn:hover {
+            background-color: var(--primary-hover);
+        }
+
+        #results-card, #instructions-card {
+            background: linear-gradient(135deg, #e6fffa 0%, #ccfbf1 100%);
+            border: 2px solid #99f6e4;
+            padding: 3rem 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            margin-bottom: 1.5rem;
+            display: none;
+        }
+
+        #instructions-card {
+            text-align: left;
+        }
+
+        #instructions-card h2 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        #instructions-card ol {
+            margin: 1.5rem 0 2rem 1.5rem;
+            color: var(--text-secondary);
+            font-size: 1.05rem;
+        }
+
+        #instructions-card li {
+            margin-bottom: 0.75rem;
+        }
+
+        .score-display {
+            font-size: 3.5rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin: 1rem 0;
+            text-align: center;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            background: var(--surface);
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            border: 1px solid var(--border);
+            margin-top: 2rem;
+            padding: 1.5rem;
+        }
+
+        .table-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--text-secondary);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 0.9rem;
+        }
+
+        th, td {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        th {
+            background-color: #f1f5f9;
+            color: var(--text-secondary);
+            font-weight: 600;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+
+<div id="splash-screen">
+    <h1 style="margin-bottom: 10px; color: var(--primary);">Innovine Assessment Engine</h1>
+    <div class="splash-loader"></div>
+    <p style="margin-top: 15px; color: var(--text-secondary); font-weight: 500;">Loading Chapter 5: Geometric Foundations...</p>
+</div>
+
+<audio id="audio-correct" src="assets/correct.mp3" preload="auto"></audio>
+<audio id="audio-wrong" src="assets/wrong.mp3" preload="auto"></audio>
+
+<div class="container">
+    <header>
+        <h1>Grade 3 – Chapter 5: Geometry</h1>
+        <div class="meta-info">
+            <strong>What we are learning today:</strong>
+            <ul>
+                <li>Finding endpoints to understand lines, line segments, and rays.</li>
+                <li>Looking closely at shapes to find flat, straight, and tilted lines.</li>
+                <li>Finding exactly where paths cross or meet one another.</li>
+                <li>Breaking apart and building shapes out of classic puzzle pieces.</li>
+            </ul>
+        </div>
+    </header>
+
+    <div id="instructions-card">
+        <h2>Welcome to the Quiz!</h2>
+        <p>Before beginning, read through these short rules carefully:</p>
+        <ol>
+            <li>You will explore 20 fun geometry questions.</li>
+            <li>Each question gives you <strong>60 seconds</strong> to pick the best match.</li>
+            <li>Look closely at the pictures and hints to help find your answer.</li>
+        </ol>
+        <button type="button" class="action-btn" onclick="quizEngine.startQuiz()">Let's Start the Quiz!</button>
+    </div>
+
+    <div id="quiz-workspace" class="hidden">
+        <div class="header-meta-row">
+            <div>Question Tracker: <span id="current-q-label">1</span> / 20</div>
+            <div id="timer-display" class="timer-badge">60s</div>
+        </div>
+        <div class="progress-container">
+            <div id="progress-indicator" class="progress-bar"></div>
+        </div>
+
+        <div class="quiz-card">
+            <div class="question-number" id="q-number-hdr">Question 1</div>
+            <div class="question-text" id="q-text-container">Loading question text...</div>
+            
+            <div class="svg-container hidden" id="q-svg-container"></div>
+
+            <div class="options-grid" id="q-options-grid"></div>
+            
+            <div class="feedback-box" id="q-feedback-box"></div>
+            
+            <div class="action-container hidden" id="q-action-container">
+                <button type="button" class="action-btn" id="next-btn" onclick="quizEngine.advanceQuestion()">Lock Answer & Go Next</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="results-card">
+        <h2 style="text-align: center;">Geometry Challenge Completed!</h2>
+        <div class="score-display" id="final-score-text">0 / 20</div>
+        <p id="final-percentage-text" style="font-size: 1.2rem; font-weight: 600; color: var(--text-secondary); text-align: center;"></p>
+        <p id="performance-descriptor" style="margin-top: 1rem; font-weight: 500; text-align: center;"></p>
+    </div>
+
+    <div class="table-container">
+        <div class="table-title">Quality Mapping Matrix Verification Table</div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Q No.</th>
+                    <th>LO Covered</th>
+                    <th>Question Type</th>
+                    <th>Competency Strategy Tested</th>
+                    <th>Difficulty</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td>Q1</td><td>LO 1: Boundaries</td><td>Visual Map</td><td>Differentiating ray direction from static line segments</td><td>Simple Visual</td></tr>
+                <tr><td>Q2</td><td>LO 2: Orientation</td><td>Visual Map</td><td>Parsing a complex wireframe for horizontal and vertical lines</td><td>Simple Visual</td></tr>
+                <tr><td>Q3</td><td>LO 3: Intersections</td><td>Visual Map</td><td>Locating precise intersections within a mixed line network</td><td>Simple Visual</td></tr>
+                <tr><td>Q4</td><td>LO 4: 2D Elements</td><td>Visual Map</td><td>Identifying diagonal line elements embedded in a polygon grid</td><td>Simple Visual</td></tr>
+                <tr><td>Q5</td><td>LO 4: Curved Paths</td><td>Visual Map</td><td>Counting non-linear boundaries in a composite layout</td><td>Simple Visual</td></tr>
+                <tr><td>Q6</td><td>LO 5: Composition</td><td>Visual Map</td><td>Analyzing shape combinations within a tangram frame</td><td>Simple Visual</td></tr>
+                <tr><td>Q7</td><td>LO 1: Path Analysis</td><td>Analytical</td><td>Tracking endpoints across combined line segments</td><td>Reasoning</td></tr>
+                <tr><td>Q8</td><td>LO 2: Classification</td><td>Comparative</td><td>Verifying line orientation claims in real-world structures</td><td>Reasoning</td></tr>
+                <tr><td>Q9</td><td>LO 3: Junction Analysis</td><td>Interpretation</td><td>Counting intersection points generated by a lattice grid</td><td>Reasoning</td></tr>
+                <tr><td>Q10</td><td>LO 4: Shape Properties</td><td>Error Audit</td><td>Evaluating property claims for triangles and rectangles</td><td>Reasoning</td></tr>
+                <tr><td>Q11</td><td>LO 4: Perimeter Invariants</td><td>Lattice Check</td><td>Tracking hidden inner edges in compound geometric shapes</td><td>Reasoning</td></tr>
+                <tr><td>Q12</td><td>LO 4: Invariant Corners</td><td>Comparison</td><td>Comparing total corners across different types of quadrilaterals</td><td>Reasoning</td></tr>
+                <tr><td>Q13</td><td>LO 1: Ray Extensions</td><td>Property Proof</td><td>Predicting ray path behaviors based on endpoint rules</td><td>Reasoning</td></tr>
+                <tr><td>Q14</td><td>LO 5: Decomposition</td><td>Visual Reasoning</td><td>Identifying component shapes inside a composite pattern</td><td>Reasoning</td></tr>
+                <tr><td>Q15</td><td>LO 4: Spatial Overlap</td><td>Multi-Step Math</td><td>Calculating total corners when shapes overlap</td><td>Challenge</td></tr>
+                <tr><td>Q16</td><td>LO 3: Grid Intersections</td><td>Multi-Step Path</td><td>Finding shared intersections on a coordinate grid map</td><td>Challenge</td></tr>
+                <tr><td>Q17</td><td>LO 2: Network Alignment</td><td>Structural Audit</td><td>Counting specific line types in a complex wireframe network</td><td>Challenge</td></tr>
+                <tr><td>Q18</td><td>LO 1: Structural Proofs</td><td>Logical Matrix</td><td>Evaluating true/false claims for geometric elements</td><td>Challenge</td></tr>
+                <tr><td>Q19</td><td>LO 5: Tangram Transformation</td><td>Spatial Logic</td><td>Tracking remaining elements after a tangram transformation</td><td>Challenge</td></tr>
+                <tr><td>Q20</td><td>LO 4: Symmetry Invariants</td><td>Dimension Scale</td><td>Predicting side counts when shapes are divided by cut-lines</td><td>Challenge</td></tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    const assessmentDataset = [
+        {
+            type: "visual",
+            lo: "LO 1: Structural Boundaries",
+            question: "[Picture: A geometric figure showing a ray starting at point A passing through B, and a line segment CD]. Look at the paths below. Which statement correctly identifies these geometric elements?",
+            svg: `<svg viewBox="0 0 500 140" width="100%"><rect width="500" height="140" fill="#f8fafc" rx="8" stroke="#cbd5e1"/><g stroke="#0f766e" stroke-width="2.5" fill="#0f766e"><circle cx="40" cy="50" r="4"/><line x1="40" y1="50" x2="220" y2="50"/><polygon points="225,50 215,45 215,55"/><circle cx="120" cy="50" r="4"/><text x="40" y="35" font-size="12" font-weight="bold">A</text><text x="120" y="35" font-size="12" font-weight="bold">B</text><circle cx="300" cy="90" r="4"/><line x1="300" y1="90" x2="450" y2="90"/><circle cx="450" cy="90" r="4"/><text x="300" y="110" font-size="12" font-weight="bold">C</text><text x="450" y="110" font-size="12" font-weight="bold">D</text></g></svg>`,
+            options: ["a) AB is a ray because it has one endpoint; CD is a line segment because it has two endpoints.", "b) AB is a line segment because it has an arrow; CD is a ray.", "c) Both AB and CD can be extended endlessly in both directions.", "d) AB has two endpoints and CD has zero endpoints."],
+            answer: 0,
+            hint: "Check which path starts at a solid dot and passes through an arrow tip, and which path is locked between two solid dots.",
+            explanation: "Path AB has exactly one fixed starting point (A) and extends endlessly through point B (indicated by the arrow), making it a ray. Path CD is locked between two distinct endpoints (C and D), making it a line segment."
+        },
+        {
+            type: "visual",
+            lo: "LO 2: Orientation Breakdown",
+            question: "[Picture: A house diagram made of lines]. Count the lines in this diagram. How many horizontal lines and vertical lines are used to build this frame?",
+            svg: `<svg viewBox="0 0 400 160" width="100%"><rect width="400" height="160" fill="#f8fafc" rx="8" stroke="#cbd5e1"/><g stroke="#0f766e" stroke-width="3" fill="none"><line x1="100" y1="130" x2="300" y2="130"/><line x1="100" y1="70" x2="300" y2="70"/><line x1="100" y1="70" x2="100" y2="130"/><line x1="300" y1="70" x2="300" y2="130"/><line x1="200" y1="20" x2="100" y2="70"/><line x1="200" y1="20" x2="300" y2="70"/><line x1="150" y1="70" x2="150" y2="130"/></g></svg>`,
+            options: ["a) 2 horizontal, 3 vertical, 2 slanting", "b) 3 horizontal, 2 vertical, 2 slanting", "c) 2 horizontal, 2 vertical, 3 slanting", "d) 4 horizontal, 4 vertical, 0 slanting"],
+            answer: 0,
+            hint: "Horizontal lines run flat from left to right. Vertical lines stand completely straight up and down. Slanting lines are tilted.",
+            explanation: "There are 2 horizontal lines (the base and the ceiling row), 3 vertical lines (left edge, right edge, and inner room divider), and 2 slanting lines forming the roof structure."
+        },
+        {
+            type: "visual",
+            lo: "LO 3: Intersecting Point Locations",
+            question: "[Picture: Three lines crossing each other, labeled with crossing letters]. Analyze this network of paths. At which letter point do line WX and line YZ cross each other?",
+            svg: `<svg viewBox="0 0 400 150" width="100%"><rect width="400" height="150" fill="#f8fafc" rx="8" stroke="#cbd5e1"/><g stroke="#475569" stroke-width="2"><line x1="50" y1="30" x2="350" y2="120"/><line x1="50" y1="120" x2="350" y2="30"/><line x1="200" y1="15" x2="200" y2="135"/></g><circle cx="200" cy="75" r="5" fill="#dc2626"/><text x="215" y="70" font-weight="bold" fill="#dc2626" font-size="14">P</text><text x="40" y="25" font-size="12">W</text><text x="360" y="130" font-size="12">X</text><text x="40" y="130" font-size="12">Y</text><text x="360" y="25" font-size="12">Z</text></svg>`,
+            options: ["a) Point P", "b) Point W", "c) Point X", "d) No intersection point exists"],
+            answer: 0,
+            hint: "Look for the exact spot where the slanting path from W to X crosses over the slanting path from Y to Z. It is marked with a red dot.",
+            explanation: "The exact location where two lines cross or meet is called the point of intersection. Here, lines WX and YZ intersect at Point P."
+        },
+        {
+            type: "visual",
+            lo: "LO 4: 2D Corner Elements",
+            question: "[Picture: A rectangle ABCD with a diagonal line from A to C]. Look at the guide lines inside this rectangle. What component does line AC represent?",
+            svg: `<svg viewBox="0 0 400 150" width="100%"><rect width="400" height="150" fill="#f8fafc" rx="8" stroke="#cbd5e1"/><g stroke="#0f766e" stroke-width="2" fill="none"><rect x="100" y="25" width="200" height="100"/><line x1="100" y1="25" x2="300" y2="125" stroke="#dc2626" stroke-dasharray="4"/></g><text x="85" y="30" font-weight="bold">A</text><text x="310" y="30" font-weight="bold">B</text><text x="310" y="135" font-weight="bold">C</text><text x="85" y="135" font-weight="bold">D</text></svg>`,
+            options: ["a) A straight outer side", "b) A diagonal line connecting opposite corners", "c) A vertical line of symmetry", "d) A curved outer edge boundary"],
+            answer: 1,
+            hint: "The red dashed line goes straight across the inside of the shape, connecting one corner directly to the opposite corner.",
+            explanation: "A straight line that connects two opposite corners inside a flat four-sided shape is called a diagonal."
+        },
+        {
+            type: "visual",
+            lo: "LO 4: Edge Categorization",
+            question: "[Picture: Shape containing a semi-circle sitting on a rectangle base]. Look at the outer tracks of this token design. How many straight sides and how many curved edges form this complete boundary?",
+            svg: `<svg viewBox="0 0 400 160" width="100%"><rect width="400" height="160" fill="#f8fafc" rx="8" stroke="#cbd5e1"/><path d="M 150 130 L 150 80 A 50 50 0 0 1 250 80 L 250 130 Z" fill="#ccfbf1" stroke="#0f766e" stroke-width="3"/></svg>`,
+            options: ["a) 3 straight sides, 1 curved edge", "b) 4 straight sides, 0 curved edges", "c) 2 straight sides, 2 curved edges", "d) 0 straight sides, 4 curved edges"],
+            answer: 0,
+            hint: "Count the flat, straight lines forming the bottom and sides, then check the rounded arch at the top.",
+            explanation: "This composite shape features 3 straight sides (the left vertical wall, the flat bottom floor, and the right vertical wall) and 1 rounded curved edge along the top arch."
+        },
+        {
+            type: "visual",
+            lo: "LO 5: Tangram Logic Assembly",
+            question: "[Picture: A large square split into two big triangles]. If you assemble these two matching triangular tangram pieces along their longest flat sides, what single shape do they form?",
+            svg: `<svg viewBox="0 0 400 160" width="100%"><rect width="400" height="160" fill="#f8fafc" rx="8" stroke="#cbd5e1"/><g stroke="#0f766e" stroke-width="2"><polygon points="120,30 220,30 120,130" fill="#2dd4bf"/><polygon points="220,30 220,130 120,130" fill="#0d9488"/></g></svg>`,
+            options: ["a) A square", "b) A circle", "c) A pentagon", "d) A hexagon"],
+            answer: 0,
+            hint: "Imagine pushing the two triangles together along the middle slanting line. Look at the outer shape they make together.",
+            explanation: "When two identical right-angled triangles are joined along their slanting sides (hypotenuse), their straight sides align perfectly to form a square."
+        },
+        {
+            type: "text",
+            lo: "LO 1: Path Analysis Models",
+            question: "A designer makes a path that starts at point P, runs through point Q, and continues forever in that same direction. Which geometric asset must they create?",
+            options: ["a) A line segment PQ", "b) A ray PQ", "c) A straight line PQ", "d) A point PQ"],
+            answer: 1,
+            hint: "Think about which geometric shape has one fixed starting endpoint and goes on forever in one direction.",
+            explanation: "A path that has one fixed starting endpoint and extends endlessly in one direction is called a ray."
+        },
+        {
+            type: "text",
+            lo: "LO 2: Classification Rules",
+            question: "A construction crew aligns a support beam so that it runs flat from left to right along the level horizon. How should this beam line be classified?",
+            options: ["a) Vertical straight line", "b) Horizontal straight line", "c) Slanting straight line", "d) Intersecting curved line"],
+            answer: 1,
+            hint: "Lines that follow the flat ground from left to right are named after the horizon.",
+            explanation: "A straight line that runs completely flat from left to right is classified as a horizontal line."
+        },
+        {
+            type: "text",
+            lo: "LO 3: Junction Quantification",
+            question: "Two distinct straight lines cross each other on a drawing sheet. What is the highest number of intersection points these two straight lines can form?",
+            options: ["a) Exactly 1 point", "b) 2 separate points", "c) Infinite crossing points", "d) Zero points"],
+            answer: 0,
+            hint: "Try imagining or drawing two completely straight lines crossing over each other. How many times can they meet?",
+            explanation: "Two unique straight lines can cross each other at most once, which means they can form exactly 1 point of intersection."
+        },
+        {
+            type: "text",
+            lo: "LO 4: Structural Shape Claims",
+            question: "You are looking at a shape properties chart. Which statement about basic geometric shapes is completely true?",
+            options: ["a) A triangle has 3 corners and 3 straight sides.", "b) A square has 4 straight sides of completely different lengths.", "c) A circle has 4 corners and 1 flat edge.", "d) A rectangle has 3 corners and 4 straight sides."],
+            answer: 0,
+            hint: "Think about the shape of a standard triangle, like a slice of pizza. Count its straight sides and sharp corners.",
+            explanation: "By definition, a triangle is a closed plane figure that has exactly 3 straight sides and 3 corners."
+        },
+        {
+            type: "text",
+            lo: "LO 4: Boundary Logic Check",
+            question: "A closed flat shape is formed using 4 straight sides that are all exactly equal in length. Which shape property must always be true for this figure?",
+            options: ["a) It must have exactly 3 corners.", "b) It is a square or a rhombus with 4 corners.", "c) It is a circle with zero corners.", "d) It has 2 curved edges and 2 straight walls."],
+            answer: 1,
+            hint: "Think of a shape like a standard square box where all four sides are equal. How many sharp corners does it have?",
+            explanation: "A closed flat figure with 4 equal straight sides is a quadrilateral (like a square) and must have exactly 4 corners."
+        },
+        {
+            type: "text",
+            lo: "LO 4: Invariant Corner Properties",
+            question: "If you compare a standard flat rectangle with a standard flat square, which measurement is exactly the same for both shapes?",
+            options: ["a) The total number of sides and corners.", "b) The length of all four individual sides.", "c) One shape has corners while the other has zero corners.", "d) One shape is closed while the other is open."],
+            answer: 0,
+            hint: "Count the sides and corners of a sheet of paper (rectangle), then do the same for a square sticky note.",
+            explanation: "Both rectangles and squares belong to the four-sided shape family (quadrilaterals). They both have exactly 4 straight sides and 4 corners."
+        },
+        {
+            type: "text",
+            lo: "LO 1: Ray Extension Rules",
+            question: "A laser device projects a light ray. If you want to draw this ray on a chart, what drawing rules must you follow?",
+            options: ["a) Mark solid dot endpoints at both ends.", "b) Draw arrows at both ends to show it extends forever both ways.", "c) Use a solid dot at the start and an arrow head at the other end.", "d) Draw a wavy, looping line with no straight parts."],
+            answer: 2,
+            hint: "A ray starts at one fixed spot and shoots out forever in one direction. Pick the symbol that matches this description.",
+            explanation: "To correctly draw a ray, place a solid dot at its single starting endpoint and an arrow at the other end to show it continues infinitely."
+        },
+        {
+            type: "text",
+            lo: "LO 5: Tangram Decomposition",
+            question: "A classic puzzle shape is broken down into smaller pieces. You find 1 small square, 1 parallelogram, and 5 triangles. What puzzle kit do these pieces belong to?",
+            options: ["a) A standard 7-piece tangram set", "b) A 4-piece circle matrix set", "c) A 3-piece metric ruler kit", "d) A solid 3D building block pyramid"],
+            answer: 0,
+            hint: "Think about the traditional Chinese geometric puzzle chapter in your textbook. Count how many total pieces are in that shape puzzle.",
+            explanation: "A standard flat tangram puzzle set contains exactly 7 geometric pieces: 5 triangles, 1 square, and 1 parallelogram."
+        },
+        {
+            type: "text",
+            lo: "LO 4: Overlapping Corner Calculations",
+            question: "A design workspace features two separate shapes: 1 flat triangle and 1 flat rectangle. If the triangle is placed so it sits entirely separate from the rectangle, what is the combined total number of corners?",
+            options: ["a) 7 corners", "b) 6 corners", "c) 5 corners", "d) 8 corners"],
+            answer: 0,
+            hint: "Find the number of corners on a single triangle, find the number of corners on a rectangle, and add them together.",
+            explanation: "A triangle has 3 corners and a rectangle has 4 corners. When placed separately, their combined total is $3 + 4 = 7$ corners."
+        },
+        {
+            type: "text",
+            lo: "LO 3: Network Track Intersections",
+            question: "Two straight railway lines run completely parallel next to each other like horizontal lines, and a third straight line runs crosswise slanting over both of them. How many total intersection points are created by this layout?",
+            options: ["a) Exactly 2 intersection points", "b) 1 single intersection point", "c) 3 separate intersection points", "d) 0 intersection points"],
+            answer: 0,
+            hint: "Picture two flat parallel lines. If you draw a single slanting line straight through both of them, how many times does it cross a line?",
+            explanation: "The slanting line will cross the first parallel line once, and then cross the second parallel line once. This creates exactly 2 distinct intersection points."
+        },
+        {
+            type: "text",
+            lo: "LO 2: Complex Line Auditing",
+            question: "A digital drawing displays the capital letter 'H'. How many horizontal line segments and how many vertical line segments form this letter structure?",
+            options: ["a) 1 horizontal segment and 2 vertical segments", "b) 2 horizontal segments and 1 vertical segment", "c) 0 horizontal segments and 3 vertical segments", "d) 1 horizontal segment and 1 vertical segment"],
+            answer: 0,
+            hint: "Look at the letter 'H'. Count the upright vertical poles, then count the flat crossbar line that connects them in the middle.",
+            explanation: "The letter 'H' is built from 2 upright vertical line segments on the sides and 1 flat horizontal line segment linking them across the middle."
+        },
+        {
+            type: "text",
+            lo: "LO 1: Structural Property Proofs",
+            question: "A class is debating geometric definitions. Which statement should be logged as a non-negotiable fact?",
+            options: ["a) A line segment has a fixed length that can be measured accurately.", "b) A ray can be measured easily with a standard short ruler.", "c) A straight line has two endpoints that lock its size.", "d) A point has a measurable width and depth."],
+            answer: 0,
+            hint: "Think about which geometric object has two fixed endpoints, meaning its length is fixed and completely measurable.",
+            explanation: "A line segment has two distinct endpoints, giving it a definite, unchangeable length that can be measured precisely."
+        },
+        {
+            type: "text",
+            lo: "LO 5: Tangram Transformation",
+            question: "A standard 7-piece tangram square is laid out on a table. If you remove both of the large triangles from the set, how many geometric pieces are left behind to form other shapes?",
+            options: ["a) 5 pieces", "b) 4 pieces", "c) 2 pieces", "d) 7 pieces"],
+            answer: 0,
+            hint: "Subtract the 2 large triangles from the total number of pieces in a complete tangram set.",
+            explanation: "A full tangram set consists of 7 pieces. Removing the 2 large triangles leaves behind $7 - 2 = 5$ pieces (1 medium triangle, 2 small triangles, 1 square, and 1 parallelogram)."
+        },
+        {
+            type: "text",
+            lo: "LO 4: Symmetry Invariants",
+            question: "A flat sheet of paper in the shape of a perfect rectangle is cut straight down the middle along a single straight line from the top edge to the bottom edge. What two new shapes are created?",
+            options: ["a) Two smaller rectangles", "b) Two triangles", "c) Two circles", "d) One triangle and one square"],
+            answer: 0,
+            hint: "Imagine cutting a standard sheet of paper right down the center. Look at the sides and corners of the two pieces you get.",
+            explanation: "Cutting a rectangle straight from top to bottom divides it into two separate four-sided shapes, which form two smaller individual rectangles."
+        }
+    ];
+
+    const quizEngine = {
+        currentQuestionIndex: 0,
+        score: 0,
+        timer: null,
+        timeLeft: 60,
+        userSelected: null,
+
+        init() {
+            setTimeout(() => {
+                const splash = document.getElementById('splash-screen');
+                splash.style.opacity = '0';
+                setTimeout(() => {
+                    splash.classList.add('hidden');
+                    document.getElementById('instructions-card').style.display = 'block';
+                }, 500);
+            }, 5000); // 5 Seconds Splash Screen Lock
+        },
+
+        startQuiz() {
+            document.getElementById('instructions-card').style.display = 'none';
+            document.getElementById('quiz-workspace').classList.remove('hidden');
+            this.loadQuestion();
+        },
+
+        loadQuestion() {
+            this.userSelected = null;
+            clearInterval(this.timer);
+            this.timeLeft = 60;
+            
+            const currentQ = assessmentDataset[this.currentQuestionIndex];
+            
+            document.getElementById('current-q-label').innerText = this.currentQuestionIndex + 1;
+            document.getElementById('q-number-hdr').innerText = `Question ${this.currentQuestionIndex + 1}`;
+            document.getElementById('q-text-container').innerText = currentQ.question;
+            
+            const progressPct = (this.currentQuestionIndex / assessmentDataset.length) * 100;
+            document.getElementById('progress-indicator').style.width = `${progressPct}%`;
+
+            const svgContainer = document.getElementById('q-svg-container');
+            if (currentQ.type === 'visual' && currentQ.svg) {
+                svgContainer.innerHTML = currentQ.svg;
+                svgContainer.classList.remove('hidden');
+            } else {
+                svgContainer.classList.add('hidden');
+                svgContainer.innerHTML = '';
+            }
+
+            const optionsGrid = document.getElementById('q-options-grid');
+            optionsGrid.innerHTML = '';
+            currentQ.options.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'option-btn';
+                btn.innerText = opt;
+                btn.onclick = () => this.selectOption(idx);
+                optionsGrid.appendChild(btn);
+            });
+
+            document.getElementById('q-feedback-box').className = 'feedback-box';
+            document.getElementById('q-feedback-box').innerHTML = '';
+            document.getElementById('q-action-container').classList.add('hidden');
+
+            this.startTimer();
+        },
+
+        startTimer() {
+            const timerDisplay = document.getElementById('timer-display');
+            timerDisplay.className = 'timer-badge';
+            timerDisplay.innerText = `${this.timeLeft}s`;
+
+            this.timer = setInterval(() => {
+                this.timeLeft--;
+                timerDisplay.innerText = `${this.timeLeft}s`;
+
+                if (this.timeLeft <= 15) {
+                    timerDisplay.classList.add('timer-low');
+                }
+
+                if (this.timeLeft <= 0) {
+                    clearInterval(this.timer);
+                    this.revealAnswer(-1);
+                }
+            }, 1000);
+        },
+
+        selectOption(index) {
+            if (this.userSelected !== null) return;
+            clearInterval(this.timer);
+            this.userSelected = index;
+            this.revealAnswer(index);
+        },
+
+        revealAnswer(selectedIndex) {
+            const currentQ = assessmentDataset[this.currentQuestionIndex];
+            const correctIndex = currentQ.answer;
+            const optionsGrid = document.getElementById('q-options-grid');
+            const buttons = optionsGrid.getElementsByClassName('option-btn');
+            const feedbackBox = document.getElementById('q-feedback-box');
+
+            for (let btn of buttons) {
+                btn.disabled = true;
+            }
+
+            let isCorrect = selectedIndex === correctIndex;
+
+            if (isCorrect) {
+                this.score++;
+                if (selectedIndex >= 0) buttons[selectedIndex].classList.add('selected-correct');
+                feedbackBox.className = 'feedback-box show correct-bg';
+                feedbackBox.innerHTML = `<strong>Great Job! Correct Answer.</strong><div class="explanation-text">${currentQ.explanation}</div>`;
+                try { document.getElementById('audio-correct').play(); } catch (e) {}
+            } else {
+                if (selectedIndex >= 0) {
+                    buttons[selectedIndex].classList.add('selected-wrong');
+                }
+                buttons[correctIndex].classList.add('selected-correct');
+                feedbackBox.className = 'feedback-box show incorrect-bg';
+                feedbackBox.innerHTML = `<strong>Not Quite right!</strong><br><em>Hint:</em> ${currentQ.hint}<div class="explanation-text">${currentQ.explanation}</div>`;
+                try { document.getElementById('audio-wrong').play(); } catch (e) {}
+            }
+
+            document.getElementById('q-action-container').classList.remove('hidden');
+        },
+
+        advanceQuestion() {
+            this.currentQuestionIndex++;
+            if (this.currentQuestionIndex < assessmentDataset.length) {
+                this.loadQuestion();
+            } else {
+                this.displayResults();
+            }
+        },
+
+        displayResults() {
+            document.getElementById('quiz-workspace').classList.add('hidden');
+            document.getElementById('progress-indicator').style.width = '100%';
+            
+            const resultsCard = document.getElementById('results-card');
+            resultsCard.style.display = 'block';
+            
+            document.getElementById('final-score-text').innerText = `${this.score} / ${assessmentDataset.length}`;
+            const pct = Math.round((this.score / assessmentDataset.length) * 100);
+            document.getElementById('final-percentage-text').innerText = `Your Score: ${pct}%`;
+            
+            let descriptor = "";
+            if (pct >= 90) descriptor = "Geometry Superstar! You completely understand your shapes and paths.";
+            else if (pct >= 70) descriptor = "Nice Job! You have a great grasp of geometry fundamentals.";
+            else descriptor = "Keep Practicing! Review your shapes and endpoints to build extra strength.";
+            
+            document.getElementById('performance-descriptor').innerText = descriptor;
+        }
+    };
+
+    window.onload = () => quizEngine.init();
+</script>
+</body>
+</html>
