@@ -54,6 +54,12 @@
             transition: opacity 0.5s ease-out;
         }
 
+        .brand-logo {
+            max-width: 240px;
+            height: auto;
+            margin-bottom: 20px;
+        }
+
         .splash-loader {
             width: 48px;
             height: 48px;
@@ -229,9 +235,9 @@
         }
 
         .feedback-box.hint-bg {
-            background-color: #f0fdfa;
-            border: 1px solid #99f6e4;
-            color: #115e59;
+            background-color: #fffbeb;
+            border: 1px solid #fde68a;
+            color: #78350f;
         }
 
         .feedback-box.correct-bg {
@@ -355,12 +361,12 @@
 <body>
 
 <div id="splash-screen">
-    <h1 style="margin-bottom: 10px; color: var(--primary);">Innovine Assessment Engine</h1>
+    <img src="assets/logo.png" alt="Innovine Logo" class="brand-logo" onerror="this.style.display='none';">
     <div class="splash-loader"></div>
     <p style="margin-top: 15px; color: var(--text-secondary); font-weight: 500;">Loading Chapter 5: Geometric Foundations...</p>
 </div>
 
-<audio id="audio-correct" src="assets/correct.mp3" preload="auto"></audio>
+<audio id="audio-correct" src="assets/claps.mp3" preload="auto"></audio>
 <audio id="audio-wrong" src="assets/wrong.mp3" preload="auto"></audio>
 
 <div class="container">
@@ -383,6 +389,7 @@
         <ol>
             <li>You will explore 20 fun geometry questions.</li>
             <li>Each question gives you <strong>60 seconds</strong> to pick the best match.</li>
+            <li>You have up to <strong>2 attempts</strong> per question if you miss the first try!</li>
             <li>Look closely at the pictures and hints to help find your answer.</li>
         </ol>
         <button type="button" class="action-btn" onclick="quizEngine.startQuiz()">Let's Start the Quiz!</button>
@@ -654,6 +661,7 @@
         timer: null,
         timeLeft: 60,
         userSelected: null,
+        attemptsCount: 0,
 
         init() {
             setTimeout(() => {
@@ -663,7 +671,7 @@
                     splash.classList.add('hidden');
                     document.getElementById('instructions-card').style.display = 'block';
                 }, 500);
-            }, 5000); // 5 Seconds Splash Screen Lock
+            }, 5000);
         },
 
         startQuiz() {
@@ -674,6 +682,7 @@
 
         loadQuestion() {
             this.userSelected = null;
+            this.attemptsCount = 0;
             clearInterval(this.timer);
             this.timeLeft = 60;
             
@@ -728,19 +737,43 @@
 
                 if (this.timeLeft <= 0) {
                     clearInterval(this.timer);
-                    this.revealAnswer(-1);
+                    this.revealAnswer(-1, false);
                 }
             }, 1000);
         },
 
         selectOption(index) {
             if (this.userSelected !== null) return;
-            clearInterval(this.timer);
-            this.userSelected = index;
-            this.revealAnswer(index);
+            
+            this.attemptsCount++;
+            const currentQ = assessmentDataset[this.currentQuestionIndex];
+            const correctIndex = currentQ.answer;
+            const optionsGrid = document.getElementById('q-options-grid');
+            const buttons = optionsGrid.getElementsByClassName('option-btn');
+            const feedbackBox = document.getElementById('q-feedback-box');
+
+            if (index === correctIndex) {
+                clearInterval(this.timer);
+                this.userSelected = index;
+                this.score++;
+                buttons[index].classList.add('selected-correct');
+                this.revealAnswer(index, true);
+            } else {
+                if (this.attemptsCount === 1) {
+                    buttons[index].classList.add('selected-wrong');
+                    buttons[index].disabled = true;
+                    feedbackBox.className = 'feedback-box show hint-bg';
+                    feedbackBox.innerHTML = `<strong>Try again!</strong><br><em>Hint:</em> ${currentQ.hint}`;
+                    try { document.getElementById('audio-wrong').play(); } catch (e) {}
+                } else {
+                    clearInterval(this.timer);
+                    this.userSelected = index;
+                    this.revealAnswer(index, false);
+                }
+            }
         },
 
-        revealAnswer(selectedIndex) {
+        revealAnswer(selectedIndex, isCorrect) {
             const currentQ = assessmentDataset[this.currentQuestionIndex];
             const correctIndex = currentQ.answer;
             const optionsGrid = document.getElementById('q-options-grid');
@@ -751,11 +784,7 @@
                 btn.disabled = true;
             }
 
-            let isCorrect = selectedIndex === correctIndex;
-
             if (isCorrect) {
-                this.score++;
-                if (selectedIndex >= 0) buttons[selectedIndex].classList.add('selected-correct');
                 feedbackBox.className = 'feedback-box show correct-bg';
                 feedbackBox.innerHTML = `<strong>Great Job! Correct Answer.</strong><div class="explanation-text">${currentQ.explanation}</div>`;
                 try { document.getElementById('audio-correct').play(); } catch (e) {}
@@ -765,7 +794,7 @@
                 }
                 buttons[correctIndex].classList.add('selected-correct');
                 feedbackBox.className = 'feedback-box show incorrect-bg';
-                feedbackBox.innerHTML = `<strong>Not Quite right!</strong><br><em>Hint:</em> ${currentQ.hint}<div class="explanation-text">${currentQ.explanation}</div>`;
+                feedbackBox.innerHTML = `<strong>Let's check the solution!</strong><div class="explanation-text">${currentQ.explanation}</div>`;
                 try { document.getElementById('audio-wrong').play(); } catch (e) {}
             }
 
