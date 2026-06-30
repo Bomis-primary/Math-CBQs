@@ -387,7 +387,7 @@
         {
             type: "visual",
             lo: "LO 2: Orientation Breakdown",
-            question: "Count the lines in this diagram. How many horizontal lines and vertical lines are used to build this frame?",
+            question: "Count the lines in this diagram. How many horizontal lines, slanting and vertical lines are used to build this frame?",
             svg: `<svg viewBox="0 0 400 160" width="100%"><rect width="400" height="160" fill="#f8fafc" rx="8" stroke="#cbd5e1"/><g stroke="#0f766e" stroke-width="3" fill="none"><line x1="100" y1="130" x2="300" y2="130"/><line x1="100" y1="70" x2="300" y2="70"/><line x1="100" y1="70" x2="100" y2="130"/><line x1="300" y1="70" x2="300" y2="130"/><line x1="200" y1="20" x2="100" y2="70"/><line x1="200" y1="20" x2="300" y2="70"/><line x1="150" y1="70" x2="150" y2="130"/></g></svg>`,
             options: ["a) 2 horizontal, 3 vertical, 2 slanting", "b) 3 horizontal, 2 vertical, 2 slanting", "c) 2 horizontal, 2 vertical, 3 slanting", "d) 4 horizontal, 4 vertical, 0 slanting"],
             answer: 0,
@@ -538,7 +538,6 @@
             lo: "LO 1: Structural Property Proofs",
             question: "A class is debating geometric definitions. Which statement should be logged as a non-negotiable fact?",
             options: ["a) A line segment has a fixed length that can be measured accurately.", "b) A ray can be measured easily with a standard short ruler.", "c) A straight line has two endpoints that lock its size.", "d) A point has a measurable width and depth."],
-            options: ["a) A line segment has a fixed length that can be measured accurately.", "b) A ray can be measured easily with a standard short ruler.", "c) A straight line has two endpoints that lock its size.", "d) A point has a measurable width and depth."],
             answer: 0,
             hint: "Think about which geometric object has two fixed endpoints, meaning its length is fixed and completely measurable.",
             explanation: "A line segment has two distinct endpoints, giving it a definite, unchangeable length that can be measured precisely."
@@ -572,7 +571,6 @@
         attemptsCount: 0,
 
         init() {
-            // Reduced delay from 5000ms to 1500ms so it transitions quickly
             setTimeout(() => {
                 const splash = document.getElementById('splash-screen');
                 splash.style.opacity = '0';
