@@ -86,17 +86,6 @@
         h1 {
             font-size: 1.8rem;
             color: var(--primary);
-            margin-bottom: 0.5rem;
-        }
-
-        .meta-info {
-            color: var(--text-secondary);
-            font-size: 0.95rem;
-        }
-
-        .meta-info ul {
-            margin-top: 0.5rem;
-            margin-left: 1.25rem;
         }
 
         .header-meta-row {
@@ -363,7 +352,6 @@
 <div id="splash-screen">
     <img src="assets/logo.png" alt="Innovine Logo" class="brand-logo" onerror="this.style.display='none';">
     <div class="splash-loader"></div>
-    <p style="margin-top: 15px; color: var(--text-secondary); font-weight: 500;">Loading Chapter 5: Geometric Foundations...</p>
 </div>
 
 <audio id="audio-correct" src="assets/claps.mp3" preload="auto"></audio>
@@ -372,15 +360,6 @@
 <div class="container">
     <header>
         <h1>Grade 3 – Chapter 5: Geometry</h1>
-        <div class="meta-info">
-            <strong>What we are learning today:</strong>
-            <ul>
-                <li>Finding endpoints to understand lines, line segments, and rays.</li>
-                <li>Looking closely at shapes to find flat, straight, and tilted lines.</li>
-                <li>Finding exactly where paths cross or meet one another.</li>
-                <li>Breaking apart and building shapes out of classic puzzle pieces.</li>
-            </ul>
-        </div>
     </header>
 
     <div id="instructions-card">
@@ -501,7 +480,7 @@
             type: "visual",
             lo: "LO 4: 2D Corner Elements",
             question: "[Picture: A rectangle ABCD with a diagonal line from A to C]. Look at the guide lines inside this rectangle. What component does line AC represent?",
-            svg: `<svg viewBox="0 0 400 150" width="100%"><rect width="400" height="150" fill="#f8fafc" rx="8" stroke="#cbd5e1"/><g stroke="#0f766e" stroke-width="2" fill="none"><rect x="100" y="25" width="200" height="100"/><line x1="100" y1="25" x2="300" y2="125" stroke="#dc2626" stroke-dasharray="4"/></g><text x="85" y="30" font-weight="bold">A</text><text x="310" y="30" font-weight="bold">B</text><text x="310" y="135" font-weight="bold">C</text><text x="85" y="135" font-weight="bold">D</text></svg>`,
+            svg: `<svg viewBox="0 0 400 150" width="100%"><rect width="400" height="150" fill="#f8fafc" rx="8" stroke="#cbd5e1"/><g stroke="#0f766e" stroke-width="2" fill="none"><rect x="100" y="25" width="200" height="100"/><line x1="100" y1="25" x2="300" y2="125" stroke="#dc2626" stroke-dasharray="4"/></g><text x="85" y="30" font-weight="bold">A</text><text x="310" y="30" font-weight="bold">B</text><text x="310" y="135" font-weight="bold">C</text><text x="85" y="135" font-weight="bold">D</text></g></svg>`,
             options: ["a) A straight outer side", "b) A diagonal line connecting opposite corners", "c) A vertical line of symmetry", "d) A curved outer edge boundary"],
             answer: 1,
             hint: "The red dashed line goes straight across the inside of the shape, connecting one corner directly to the opposite corner.",
