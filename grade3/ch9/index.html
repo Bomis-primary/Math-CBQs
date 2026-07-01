@@ -238,7 +238,7 @@
     <canvas id="particle-canvas"></canvas>
 
     <div id="splash-screen">
-        <img src="../assets/logo.png" alt="Innovine Logo" class="logo-placeholder" onerror="this.style.display='none'; document.getElementById('logo-text').style.display='block';">
+        <img src="../assets/logo.png" alt="Innovine Logo" class="logo-placeholder" id="main-logo">
         <h2 id="logo-text" style="display:none; color: var(--primary);">Innovine</h2>
     </div>
 
@@ -666,6 +666,17 @@
             });
 
             animationId = requestAnimationFrame(renderParticles);
+        }
+
+        // Safe logo image fallback asset validation layer
+        const logoImg = document.getElementById('main-logo');
+        const logoText = document.getElementById('logo-text');
+
+        if (logoImg) {
+            logoImg.addEventListener('error', function() {
+                this.style.display = 'none';
+                if (logoText) logoText.style.display = 'block';
+            });
         }
     </script>
 </body>
