@@ -254,7 +254,7 @@
 
         <div id="game-screen" class="screen">
             <div class="hud">
-                <div id="progress-text">Question: 1/12</div>
+                <div id="progress-text">Question: 1/11</div>
                 <div id="score-text">Score: 0</div>
                 <div class="timer-box">⏱️ <span id="timer-counter">60</span>s</div>
             </div>
@@ -272,7 +272,7 @@
 
         <div id="result-screen" class="screen">
             <h2>Challenge Complete!</h2>
-            <div class="score-circle" id="final-score-value">0/12</div>
+            <div class="score-circle" id="final-score-value">0/11</div>
             <p class="description" id="final-status-msg">Loading summary...</p>
             <button class="action-btn" onclick="resetInteractive()">Try Again</button>
         </div>
@@ -387,20 +387,17 @@
                 explanation: "Both statements are correct. 5 × 50p = 250p. Converting 250p by dividing by 100 gives ₹2.50, which matches both points perfectly."
             },
             {
-                type: "Multi-Step Case Story (Part 1)",
-                question: "Vivaan goes to a stationery shop with one ₹50 note, two ₹20 notes, and one ₹10 note. He picks up a sketch pen pack for ₹45.00 and a drawing book for ₹32.50. How much is the total bill of his items?",
-                options: ["₹75.50", "₹77.00", "₹87.50", "₹77.50"],
-                correctText: "₹77.50",
-                hint: "Add the price of the sketch pens (45.00) to the price of the drawing book (32.50).",
-                explanation: "Total item bill calculation: 45.00 + 32.50 = 77.50. The items cost ₹77.50."
-            },
-            {
-                type: "Multi-Step Case Story (Part 2)",
-                question: "Vivaan buys stationery items that cost a total bill of ₹77.50. He hands over all his notes (one ₹50 note, two ₹20 notes, and one ₹10 note) to the shopkeeper. How much change should the shopkeeper return to Vivaan?",
-                options: ["₹22.50", "₹23.50", "₹32.50", "₹22.00"],
-                correctText: "₹22.50",
-                hint: "First find his total money paid: 50 + 20 + 20 + 10 = ₹100. Then subtract his total bill (77.50) from that amount.",
-                explanation: "Vivaan pays with 50 + 20 + 20 + 10 = ₹100 in total. Change computation: 100.00 - 77.50 = 22.50. The shopkeeper must return ₹22.50."
+                type: "Competency Story Problem",
+                question: "Vivaan visits a local stationery shop to buy supplies for his school art project. He picks out a pack of vibrant sketch pens priced at ₹45.00 and a premium drawing sketchbook priced at ₹32.50.\n\nWhen it is time to pay, Vivaan pulls out his wallet and finds that he only carries the following specific denominations:\n• One ₹50 note\n• Two ₹20 notes\n• One ₹10 note\n\nImagine you are the shopkeeper assisting Vivaan. Based on the rules of Indian currency exchange, which of the following statements completely and accurately describes this transaction?",
+                options: [
+                    "Vivaan's total bill comes to ₹77.00, meaning he can pay using just his ₹50 note and one ₹20 note.",
+                    "Vivaan's total bill comes to ₹77.50. He should hand over all of his notes to pay, and you must return exactly ₹22.50 to him as change.",
+                    "Vivaan does not have enough money in his wallet to purchase both items because his total cash value is only ₹75.00.",
+                    "Vivaan's total bill comes to ₹87.50. He is short of money and needs to put back the drawing sketchbook."
+                ],
+                correctText: "Vivaan's total bill comes to ₹77.50. He should hand over all of his notes to pay, and you must return exactly ₹22.50 to him as change.",
+                hint: "Calculate his wallet total first: 50 + 20 + 20 + 10 = ₹100. Then add up his items: 45.00 + 32.50 = ₹77.50.",
+                explanation: "Vivaan's total bill is ₹77.50. Since he pays using his full wallet containing ₹100, the change returned must be 100.00 - 77.50 = ₹22.50."
             }
         ];
 
@@ -589,11 +586,11 @@
             
             let statusText = "";
 
-            if (runningScore === 12) {
+            if (runningScore === activeQuestionPool.length) {
                 statusText = "Perfect score! Outstanding work!";
-            } else if (runningScore >= 9 && runningScore < 12) {
+            } else if (runningScore >= 8) {
                 statusText = "Good job! You have a great understanding of currency values.";
-            } else if (runningScore >= 5 && runningScore < 9) {
+            } else if (runningScore >= 5) {
                 statusText = "Review this chapter and try again.";
             } else {
                 statusText = "Let’s practise more together.";
