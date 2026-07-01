@@ -284,7 +284,6 @@
         const questionBank = [
             {
                 type: "Denomination Identification",
-                // Rewritten to be a competency-based scenario question
                 question: "Meera wants to buy a science board game that costs exactly ₹145. She looks inside her wallet and finds one note of ₹100, two notes of ₹20, and one coin of ₹5. Which statement is mathematically true about her situation?",
                 options: [
                     "She is short of money by exactly ₹20.",
@@ -306,11 +305,11 @@
             },
             {
                 type: "Rupees to Paise Conversion",
-                question: "Rahul has a crisp ₹9 note. He wants to know how much this value is if it is converted entirely into paise (p). Help him find the answer.",
+                question: "Rahul looks inside his piggy bank and finds one ₹5 note and two ₹2 notes. He wants to know how much this total value is if it is converted entirely into paise (p). Help him find the answer.",
                 options: ["90 paise", "900 paise", "9000 paise", "9 paise"],
                 correctText: "900 paise",
-                hint: "Since ₹1 equals 100 paise, multiply the number of rupees by 100.",
-                explanation: "Conversion logic: 9 × 100 = 900. Hence, ₹9 is equivalent to 900 paise."
+                hint: "First, add his money together: 5 + 2 + 2 = ₹9. Since ₹1 equals 100 paise, multiply the total rupees by 100.",
+                explanation: "Rahul has 5 + 2 + 2 = ₹9 in total. Conversion logic: 9 × 100 = 900. Hence, his money is equivalent to 900 paise."
             },
             {
                 type: "Paise to Rupees Conversion",
@@ -345,12 +344,17 @@
                 explanation: "Using basic multiplication: 15 × 5 = 75. Therefore, the total spending is ₹75.00."
             },
             {
-                type: "Division Operation",
-                question: "Four friends share a large snack box that costs ₹36.40. If they decide to divide the bill equally among themselves, how much should each friend contribute?",
-                options: ["₹9.10", "₹8.10", "₹9.40", "₹9.00"],
-                correctText: "₹9.10",
-                hint: "Divide the entire amount by 4. 36 ÷ 4 = 9 and 40 ÷ 4 = 10.",
-                explanation: "Dividing ₹36 by 4 gives ₹9. Dividing 40 paise by 4 gives 10 paise. Thus, each friend pays ₹9.10."
+                type: "Division Competency Challenge",
+                question: "Four friends are buying treats. They see a large shared snack box for ₹36.40. Alternatively, individual mini-packs cost ₹9.50 per friend. If they decide to choose the shared snack box and split the bill equally, which statement is true?",
+                options: [
+                    "Each friend pays ₹9.10, saving ₹0.40 compared to a mini-pack.",
+                    "Each friend pays ₹8.10, saving ₹1.40 compared to a mini-pack.",
+                    "Each friend pays ₹9.10, but it is more expensive than a mini-pack.",
+                    "Each friend pays ₹9.40, saving ₹0.10 compared to a mini-pack."
+                ],
+                correctText: "Each friend pays ₹9.10, saving ₹0.40 compared to a mini-pack.",
+                hint: "First divide the box price by 4 (₹36.40 ÷ 4). Then find the difference between ₹9.50 and that share.",
+                explanation: "Dividing ₹36.40 by 4 gives ₹9.10 per person. Compared to individual packs costing ₹9.50, each friend saves exactly ₹0.40 (9.50 - 9.10)."
             },
             {
                 type: "Error Detection Challenge",
