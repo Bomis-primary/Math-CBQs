@@ -271,31 +271,30 @@
     <script>
         const questionBank = [
             {
-                type: "Scenario-Based MCQ",
                 question: "Rohan looks at the classroom wall clock. The short hour hand is slightly past 4, and the long minute hand points directly at the number 2. What exact time is it?",
+                hasImage: "clock-4-10",
                 options: ["4:02", "4:10", "2:20", "5:10"],
                 answer: 1,
                 hint: "Each large number on an analog clock face represents a count of 5 minutes.",
                 explanation: "When the minute hand points at 2, you multiply $2 \\times 5 = 10$ minutes. Since the hour hand is past 4, the time is exactly 4:10."
             },
             {
-                type: "Scenario-Based MCQ",
                 question: "Sia's mother told her that lunch will be ready at 'quarter past 1'. Which digital display matches what her mother said?",
+                hasImage: "clock-1-15",
                 options: ["1:45", "1:15", "1:30", "12:45"],
                 answer: 1,
                 hint: "An hour is split into 4 quarters of 15 minutes each. 'Quarter past' means 1 quarter of an hour has passed.",
                 explanation: "A quarter of an hour is 15 minutes ($60 \\div 4 = 15$). Therefore, 'quarter past 1' means 15 minutes have passed after 1 o'clock, which is 1:15."
             },
             {
-                type: "Scenario-Based MCQ",
                 question: "Karan's swimming class starts at 5:00. He checks his watch and notices that it is exactly 'quarter to 5'. How many minutes does he have left before class starts?",
+                hasImage: "clock-4-45",
                 options: ["45 minutes", "30 minutes", "15 minutes", "5 minutes"],
                 answer: 2,
                 hint: "'Quarter to 5' means there is exactly one quarter of an hour remaining until the clock strikes 5:00.",
                 explanation: "'Quarter to 5' represents the time 4:45. From 4:45 to 5:00, there are exactly 15 minutes left."
             },
             {
-                type: "Estimation MCQ",
                 question: "Aditya wants to check his time-estimation skills. He estimates that brushing his teeth thoroughly takes about 20 minutes. He uses a stopwatch and finds it actually takes 3 minutes. What can we say about his estimate?",
                 options: [
                     "His estimate was very accurate.",
@@ -308,7 +307,6 @@
                 explanation: "Aditya's estimate of 20 minutes was much higher than the actual measured time of 3 minutes. Brushing teeth normally takes a few minutes, not close to half an hour."
             },
             {
-                type: "Calendar Sequencing MCQ",
                 question: "If today is Tuesday, what day of the week will it be tomorrow?",
                 options: ["Monday", "Wednesday", "Thursday", "Sunday"],
                 answer: 1,
@@ -316,7 +314,6 @@
                 explanation: "The day that comes immediately after Tuesday is Wednesday."
             },
             {
-                type: "Calendar Sequencing MCQ",
                 question: "Riya's school project is due 'the day after tomorrow'. If today is Thursday, on which day must she submit her project?",
                 options: ["Friday", "Saturday", "Sunday", "Wednesday"],
                 answer: 1,
@@ -324,7 +321,6 @@
                 explanation: "Counting two days forward from Thursday (1 day is Friday, 2 days is Saturday) brings us to Saturday."
             },
             {
-                type: "Calendar Sequencing MCQ",
                 question: "The current year is 2026. Aman was asked to write down the date of an event that happened in the 'previous year'. What year should he write?",
                 options: ["2027", "2025", "2024", "2028"],
                 answer: 1,
@@ -332,7 +328,6 @@
                 explanation: "The year immediately preceding 2026 is 2025."
             },
             {
-                type: "Calendar Sequencing MCQ",
                 question: "Ananya is currently studying in Grade 3 in the year 2026. Her brother tells her she will join high school 'two years from now'. What calendar year will that be?",
                 options: ["2027", "2028", "2024", "2029"],
                 answer: 1,
@@ -340,7 +335,6 @@
                 explanation: "Two years from now is calculated by adding 2 to the current year: $2026 + 2 = 2028$."
             },
             {
-                type: "Error Detection MCQ",
                 question: "Anik logs these temporal facts in a diary entry. Which statement contains an incorrect definition or time calculation error?",
                 options: [
                     "Half past 6 is written digitally as 6:30.",
@@ -353,7 +347,6 @@
                 explanation: "The statement is incorrect. Quarter past 3 means it is 3:15 (15 minutes past 3). There are 45 minutes left until 4:00, but that time phrase itself is called 'quarter to 4', not quarter past 3."
             },
             {
-                type: "Assertion-Reason MCQ",
                 question: "Assertion: An analog clock face has 60 small tick marks around its circular edge.\nReason: The long hand takes exactly 1 hour to visit all 60 ticks because 1 hour equals 60 minutes.",
                 options: [
                     "Both Assertion and Reason are correct, and the Reason perfectly explains the Assertion.",
@@ -366,16 +359,16 @@
                 explanation: "Both statements are correct. There are 60 markings because an hour contains 60 minutes, and the minute hand travels across one tick mark every single minute."
             },
             {
-                type: "Final Challenge (Timeline Case)",
                 question: "Case Story Part 1: Kabir is creating a historical timeline for his family history. He discovers that his grandfather bought their house in 2010, his parents got married 5 years later, and Kabir was born 4 years after his parents' marriage. In what year was Kabir born?",
+                hasImage: "timeline-family",
                 options: ["2015", "2019", "2020", "2014"],
                 answer: 1,
                 hint: "Start at 2010, add 5 years for the marriage, then add 4 more years for Kabir's birth.",
                 explanation: "Parents married: $2010 + 5 = 2015$. Kabir born: $2015 + 4 = 2019$."
             },
             {
-                type: "Final Challenge (Timeline Case)",
                 question: "Case Story Part 2: Look at Kabir's completed family timeline sequence below:\nEvent A: Grandfather buys house (2010)\nEvent B: Parents get married (2015)\nEvent C: Kabir is born (2019)\nWhich of the following describes the correct chronological order of these events from earliest to latest?",
+                hasImage: "timeline-family",
                 options: [
                     "Event B → Event C → Event A",
                     "Event A → Event B → Event C",
@@ -408,6 +401,43 @@
             displayQuestion();
         }
 
+        function generateClockSVG(hour, minute) {
+            const hrAngle = (hour * 30) + (minute * 0.5);
+            const minAngle = minute * 6;
+            return `
+            <div style="display:flex; justify-content:center; margin: 15px 0;">
+                <svg width="160" height="160" viewBox="0 0 100 100" style="background:transparent;">
+                    <circle cx="50" cy="50" r="45" stroke="#1e3a8a" stroke-width="3" fill="#ffffff"/>
+                    <line x1="50" y1="50" x2="50" y2="28" stroke="#1f2937" stroke-width="3.5" stroke-linecap="round" transform="rotate(${hrAngle} 50 50)"/>
+                    <line x1="50" y1="50" x2="50" y2="18" stroke="#3b82f6" stroke-width="2.5" stroke-linecap="round" transform="rotate(${minAngle} 50 50)"/>
+                    <circle cx="50" cy="50" r="3" fill="#1e3a8a"/>
+                    <text x="50" y="14" font-size="8" font-weight="bold" text-anchor="middle" fill="#1f2937">12</text>
+                    <text x="88" y="53" font-size="8" font-weight="bold" text-anchor="middle" fill="#1f2937">3</text>
+                    <text x="50" y="92" font-size="8" font-weight="bold" text-anchor="middle" fill="#1f2937">6</text>
+                    <text x="12" y="53" font-size="8" font-weight="bold" text-anchor="middle" fill="#1f2937">9</text>
+                </svg>
+            </div>`;
+        }
+
+        function generateTimelineSVG() {
+            return `
+            <div style="display:flex; justify-content:center; margin: 15px 0; width:100%;">
+                <svg width="100%" height="70" viewBox="0 0 300 70" style="background:transparent;">
+                    <line x1="20" y1="35" x2="280" y2="35" stroke="#1e3a8a" stroke-width="3" stroke-linecap="round"/>
+                    <polygon points="280,30 290,35 280,40" fill="#1e3a8a"/>
+                    <circle cx="50" cy="35" r="5" fill="#3b82f6"/>
+                    <text x="50" y="22" font-size="7" font-weight="bold" text-anchor="middle" fill="#1f2937">2010</text>
+                    <text x="50" y="52" font-size="6" text-anchor="middle" fill="#4b5563">House Bought</text>
+                    <circle cx="150" cy="35" r="5" fill="#3b82f6"/>
+                    <text x="150" y="22" font-size="7" font-weight="bold" text-anchor="middle" fill="#1f2937">2015</text>
+                    <text x="150" y="52" font-size="6" text-anchor="middle" fill="#4b5563">Marriage</text>
+                    <circle cx="240" cy="35" r="5" fill="#3b82f6"/>
+                    <text x="240" y="22" font-size="7" font-weight="bold" text-anchor="middle" fill="#1f2937">2019</text>
+                    <text x="240" y="52" font-size="6" text-anchor="middle" fill="#4b5563">Kabir Born</text>
+                </svg>
+            </div>`;
+        }
+
         function displayQuestion() {
             clearInterval(countdownTimer);
             activeSeconds = 60; 
@@ -420,7 +450,22 @@
 
             let qData = questionBank[currentIndex];
             document.getElementById('progress-text').innerText = `Question: ${currentIndex + 1}/${questionBank.length}`;
-            document.getElementById('target-question').innerText = `[${qData.type}]\n${qData.question}`;
+            
+            let displayContent = qData.question;
+            
+            if (qData.hasImage) {
+                if (qData.hasImage === "clock-4-10") {
+                    displayContent += generateClockSVG(4, 10);
+                } else if (qData.hasImage === "clock-1-15") {
+                    displayContent += generateClockSVG(1, 15);
+                } else if (qData.hasImage === "clock-4-45") {
+                    displayContent += generateClockSVG(4, 45);
+                } else if (qData.hasImage === "timeline-family") {
+                    displayContent += generateTimelineSVG();
+                }
+            }
+
+            document.getElementById('target-question').innerHTML = displayContent;
             
             const optionsBox = document.getElementById('target-options');
             optionsBox.innerHTML = '';
@@ -517,7 +562,7 @@
             const audio = document.getElementById(`audio-${type}`);
             if (audio) {
                 audio.currentTime = 0;
-                audio.play().catch(e => console.log("Audio playback waiting for gesture."));
+                audio.play().catch(e => console.log("Audio waiting for user gesture."));
             }
         }
 
@@ -533,7 +578,6 @@
         function showFinalResults() {
             document.getElementById('game-screen').classList.remove('active');
             document.getElementById('result-screen').classList.add('active');
-            
             document.getElementById('final-score-value').innerText = `${runningScore}/${questionBank.length}`;
             
             let finalPercentage = (runningScore / questionBank.length) * 100;
@@ -558,7 +602,6 @@
             document.getElementById('welcome-screen').classList.add('active');
         }
 
-        // Particle System Engine (Sparkles animation)
         const canvas = document.getElementById('particle-canvas');
         const ctx = canvas.getContext('2d');
         let particles = [];
