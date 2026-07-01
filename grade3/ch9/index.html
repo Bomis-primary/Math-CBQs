@@ -461,6 +461,7 @@
             const optionsBox = document.getElementById('target-options');
             optionsBox.innerHTML = '';
 
+            // Shuffle option buttons array completely on every display call
             const shuffledOptions = shuffleArray(qData.options);
 
             shuffledOptions.forEach((optText) => {
