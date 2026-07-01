@@ -328,12 +328,17 @@
                 explanation: "Adding the columns: 50p + 25p = 75p, and ₹42 + ₹12 = ₹54. Combining them gives ₹54.75."
             },
             {
-                type: "Basic Subtraction Operation",
-                question: "Sanya had ₹80.00 in her pocket. She bought an ice cream cone for ₹35.50. How much money does she have left over?",
-                options: ["₹45.50", "₹44.50", "₹54.50", "₹45.00"],
-                correctText: "₹44.50",
-                hint: "Subtract ₹35.50 from ₹80.00. You will need to borrow from the rupees place to subtract the paise columns.",
-                explanation: "Subtracting: ₹80.00 - ₹35.50 = ₹44.50. She has exactly ₹44.50 left."
+                type: "Competency Cash Subtraction",
+                question: "Sanya has a total of ₹80.00 in her wallet. She buys an ice cream cone for ₹35.50. The shopkeeper returns her change using common notes and coins. Which configuration represents the exact correct change she should receive?",
+                options: [
+                    "Two ₹20 notes, two ₹2 coins, and one 50-paise coin",
+                    "Three ₹10 notes, two ₹5 coins, and one 50-paise coin",
+                    "Four ₹10 notes, one ₹2 coin, and two 25-paise coins",
+                    "Two ₹20 notes, one ₹5 coin, and one 50-paise coin"
+                ],
+                correctText: "Two ₹20 notes, two ₹2 coins, and one 50-paise coin",
+                hint: "First find the exact abstract total: ₹80.00 - ₹35.50 = ₹44.50. Now look for the options that add up to exactly forty-four rupees and fifty paise.",
+                explanation: "Subtracting the bill yields ₹44.50 left over. Two ₹20 notes equals ₹40, two ₹2 coins equals ₹4, and a 50p coin perfectly totals ₹44.50."
             },
             {
                 type: "Multiplication Operation",
@@ -461,7 +466,6 @@
             const optionsBox = document.getElementById('target-options');
             optionsBox.innerHTML = '';
 
-            // Shuffle option buttons array completely on every display call
             const shuffledOptions = shuffleArray(qData.options);
 
             shuffledOptions.forEach((optText) => {
@@ -602,81 +606,4 @@
             if (countdownTimer) clearInterval(countdownTimer);
             
             document.getElementById('score-text').innerText = `Score: 0`;
-            document.getElementById('result-screen').classList.remove('active');
-            document.getElementById('welcome-screen').classList.add('active');
-        }
-
-        // Particle Canvas Implementation
-        const canvas = document.getElementById('particle-canvas');
-        const ctx = canvas.getContext('2d');
-        let particles = [];
-        let animationId = null;
-
-        function resizeCanvas() {
-            if(canvas && canvas.parentElement) {
-                canvas.width = canvas.parentElement.clientWidth;
-                canvas.height = canvas.parentElement.clientHeight;
-            }
-        }
-        window.addEventListener('resize', resizeCanvas);
-        resizeCanvas();
-
-        function triggerSparkles() {
-            resizeCanvas();
-            for (let i = 0; i < 40; i++) {
-                particles.push({
-                    x: canvas.width / 2,
-                    y: canvas.height / 2,
-                    radius: Math.random() * 4 + 2,
-                    color: `hsl(${Math.random() * 40 + 120}, 85%, 60%)`,
-                    speedX: (Math.random() - 0.5) * 8,
-                    speedY: (Math.random() - 0.5) * 8,
-                    alpha: 1
-                });
-            }
-            if (!animationId) renderParticles();
-        }
-
-        function renderParticles() {
-            if (particles.length === 0) {
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                animationId = null;
-                return;
-            }
-            
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            
-            particles = particles.filter(p => {
-                p.x += p.speedX;
-                p.y += p.speedY;
-                p.alpha -= 0.02;
-                
-                if (p.alpha <= 0) return false;
-                
-                ctx.save();
-                ctx.globalAlpha = p.alpha;
-                ctx.beginPath();
-                ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-                ctx.fillStyle = p.color;
-                ctx.fill();
-                ctx.restore();
-                
-                return true;
-            });
-
-            animationId = requestAnimationFrame(renderParticles);
-        }
-
-        // Active Error Fallback Layer
-        const logoImg = document.getElementById('main-logo');
-        const logoText = document.getElementById('logo-text');
-
-        if (logoImg) {
-            logoImg.addEventListener('error', function() {
-                this.style.display = 'none';
-                if (logoText) logoText.style.display = 'block';
-            });
-        }
-    </script>
-</body>
-</html>
+            document.getElementById('result-screen').classList.
