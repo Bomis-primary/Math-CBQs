@@ -59,7 +59,8 @@
         }
 
         .logo-placeholder {
-            max-width: 220px;
+            max-width: 100%;
+            width: clamp(150px, 40vw, 220px);
             height: auto;
             margin-bottom: 20px;
         }
@@ -68,13 +69,23 @@
         .screen { display: none; }
         .screen.active { display: block; }
 
-        h1, h2 {
+        /* Fluid Typography Rule Implementation */
+        h1 {
+            font-size: clamp(1.8rem, 5vw, 2.5rem);
+            color: var(--primary);
+            text-align: center;
+            margin-bottom: 16px;
+        }
+
+        h2 {
+            font-size: clamp(1.5rem, 4vw, 2rem);
             color: var(--primary);
             text-align: center;
             margin-bottom: 16px;
         }
 
         p.description {
+            font-size: clamp(0.95rem, 2.5vw, 1.1rem);
             text-align: center;
             color: #475569;
             margin-bottom: 24px;
@@ -91,7 +102,7 @@
             border-radius: 12px;
             margin-bottom: 20px;
             font-weight: 600;
-            font-size: 0.95rem;
+            font-size: clamp(0.85rem, 2vw, 0.95rem);
         }
 
         .timer-box {
@@ -103,14 +114,14 @@
 
         /* Question Layout */
         .question-text {
-            font-size: 1.15rem;
+            font-size: clamp(1.05rem, 3vw, 1.25rem);
             font-weight: 600;
             line-height: 1.5;
             margin-bottom: 20px;
             white-space: pre-line;
         }
 
-        /* Option Buttons */
+        /* Option Buttons & Touch Target Safety */
         .options-container {
             display: flex;
             flex-direction: column;
@@ -124,11 +135,12 @@
             border-radius: 12px;
             padding: 16px;
             text-align: left;
-            font-size: 1rem;
+            font-size: clamp(0.9rem, 2.5vw, 1rem);
             cursor: pointer;
             transition: all 0.2s ease;
             font-weight: 500;
             width: 100%;
+            min-height: 48px; /* Touch Target Safety Guarantee */
         }
 
         .option-btn:hover:not(:disabled) {
@@ -156,6 +168,7 @@
             font-weight: 500;
             display: none;
             line-height: 1.4;
+            font-size: clamp(0.9rem, 2.5vw, 1rem);
         }
 
         .feedback-box.hint {
@@ -179,28 +192,29 @@
             border: none;
             border-radius: 12px;
             padding: 16px;
-            font-size: 1.1rem;
+            font-size: clamp(1rem, 2.5vw, 1.1rem);
             font-weight: 600;
             cursor: pointer;
             text-align: center;
             margin-top: 20px;
             box-shadow: 0 4px 6px rgba(6, 95, 70, 0.15);
+            min-height: 48px;
         }
 
         .action-btn:hover {
             background: #044e39;
         }
 
-        /* Score Display circle */
+        /* Score Display Circle */
         .score-circle {
-            width: 130px;
-            height: 130px;
+            width: clamp(110px, 25vw, 130px);
+            height: clamp(110px, 25vw, 130px);
             border-radius: 50%;
             background: #f1f5f9;
             display: flex;
             justify-content: center;
             align-items: center;
-            font-size: 2rem;
+            font-size: clamp(1.5rem, 5vw, 2rem);
             font-weight: bold;
             margin: 20px auto;
             color: var(--primary);
@@ -216,8 +230,6 @@
 
         @media (max-width: 480px) {
             .container { padding: 16px; }
-            .question-text { font-size: 1.05rem; }
-            .option-btn { padding: 14px; font-size: 0.95rem; }
         }
     </style>
 </head>
@@ -226,12 +238,12 @@
     <canvas id="particle-canvas"></canvas>
 
     <div id="splash-screen">
-        <img src="grade3/ch9/assets/logo.png" alt="Innovine Logo" class="logo-placeholder" onerror="this.style.display='none'; document.getElementById('logo-text').style.display='block';">
+        <img src="../assets/logo.png" alt="Innovine Logo" class="logo-placeholder" onerror="this.style.display='none'; document.getElementById('logo-text').style.display='block';">
         <h2 id="logo-text" style="display:none; color: var(--primary);">Innovine</h2>
     </div>
 
-    <audio id="audio-correct" src="grade3/ch9/assets/claps.mp3" preload="auto"></audio>
-    <audio id="audio-wrong" src="grade3/ch9/assets/wrong.mp3" preload="auto"></audio>
+    <audio id="audio-correct" src="../assets/claps.mp3" preload="auto"></audio>
+    <audio id="audio-wrong" src="../assets/wrong.mp3" preload="auto"></audio>
 
     <div class="container">
         
@@ -250,8 +262,7 @@
 
             <div id="question-box">
                 <div class="question-text" id="target-question">Loading question...</div>
-                <div class="options-container" id="target-options">
-                    </div>
+                <div class="options-container" id="target-options"></div>
             </div>
 
             <div id="hint-feedback" class="feedback-box hint"></div>
@@ -270,12 +281,13 @@
     </div>
 
     <script>
+        // Master Bank remains strictly immutable
         const questionBank = [
             {
                 type: "Denomination Identification",
                 question: "Meera opens her piggy bank and finds one currency note of ₹100, two notes of ₹20, and one coin of ₹5. What is the total denomination amount she found?",
                 options: ["₹125", "₹145", "₹140", "₹105"],
-                answer: 1,
+                correctText: "₹145",
                 hint: "Add up all components: One 100, two 20s (20 + 20 = 40), and one 5.",
                 explanation: "Total calculation: 100 + 20 + 20 + 5 = 145. So, the total amount is ₹145."
             },
@@ -283,7 +295,7 @@
                 type: "Decimal Notation Formatting",
                 question: "Which of the following correctly writes 'seventy-five rupees and five paise' using the decimal format and currency symbol?",
                 options: ["₹75.5", "₹75.50", "₹75.05", "75.05p"],
-                answer: 2,
+                correctText: "₹75.05",
                 hint: "Paise must always occupy two digits after the decimal point. Five paise is written as zero-five.",
                 explanation: "To write paise as a decimal, we use two digits. 5 paise is equal to ₹0.05. Combined with 75 rupees, it is properly written as ₹75.05."
             },
@@ -291,7 +303,7 @@
                 type: "Rupees to Paise Conversion",
                 question: "Rahul has a crisp ₹9 note. He wants to know how much this value is if it is converted entirely into paise (p). Help him find the answer.",
                 options: ["90 paise", "900 paise", "9000 paise", "9 paise"],
-                answer: 1,
+                correctText: "900 paise",
                 hint: "Since ₹1 equals 100 paise, multiply the number of rupees by 100.",
                 explanation: "Conversion logic: 9 × 100 = 900. Hence, ₹9 is equivalent to 900 paise."
             },
@@ -299,7 +311,7 @@
                 type: "Paise to Rupees Conversion",
                 question: "An old jar contains 450 paise in total coins. If you convert this amount into rupees and paise using a dot, how will you write it?",
                 options: ["₹45.0", "₹4.50", "₹450.00", "₹0.45"],
-                answer: 1,
+                correctText: "₹4.50",
                 hint: "Divide 450 by 100, or count two places from the right side to put your decimal dot.",
                 explanation: "Since 100 paise makes 1 rupee, 400 paise makes 4 rupees, leaving 50 paise over. This is represented cleanly as ₹4.50."
             },
@@ -307,7 +319,7 @@
                 type: "Basic Addition Operation",
                 question: "Aarav spends ₹42.50 on a notebook and ₹12.25 on a fancy eraser. What is the total amount of money Aarav pays the shopkeeper?",
                 options: ["₹54.75", "₹54.50", "₹55.75", "₹54.25"],
-                answer: 0,
+                correctText: "₹54.75",
                 hint: "Align the decimal points perfectly and add the paise part first, then add the rupees part.",
                 explanation: "Adding the columns: 50p + 25p = 75p, and ₹42 + ₹12 = ₹54. Combining them gives ₹54.75."
             },
@@ -315,7 +327,7 @@
                 type: "Basic Subtraction Operation",
                 question: "Sanya had ₹80.00 in her pocket. She bought an ice cream cone for ₹35.50. How much money does she have left over?",
                 options: ["₹45.50", "₹44.50", "₹54.50", "₹45.00"],
-                answer: 1,
+                correctText: "₹44.50",
                 hint: "Subtract ₹35.50 from ₹80.00. You will need to borrow from the rupees place to subtract the paise columns.",
                 explanation: "Subtracting: ₹80.00 - ₹35.50 = ₹44.50. She has exactly ₹44.50 left."
             },
@@ -323,7 +335,7 @@
                 type: "Multiplication Operation",
                 question: "One chocolate bar costs exactly ₹15.00. If Kabir buys a pack of 5 such identical chocolate bars, how much will he spend in total?",
                 options: ["₹60.00", "₹75.00", "₹85.00", "₹70.00"],
-                answer: 1,
+                correctText: "₹75.00",
                 hint: "Multiply the rate of one item (15) by the total number of items bought (5).",
                 explanation: "Using basic multiplication: 15 × 5 = 75. Therefore, the total spending is ₹75.00."
             },
@@ -331,7 +343,7 @@
                 type: "Division Operation",
                 question: "Four friends share a large snack box that costs ₹36.40. If they decide to divide the bill equally among themselves, how much should each friend contribute?",
                 options: ["₹9.10", "₹8.10", "₹9.40", "₹9.00"],
-                answer: 0,
+                correctText: "₹9.10",
                 hint: "Divide the entire amount by 4. 36 ÷ 4 = 9 and 40 ÷ 4 = 10.",
                 explanation: "Dividing ₹36 by 4 gives ₹9. Dividing 40 paise by 4 gives 10 paise. Thus, each friend pays ₹9.10."
             },
@@ -344,7 +356,7 @@
                     "To convert rupees into paise, we multiply the amount by 100.",
                     "₹2.50 plus ₹1.50 equals exactly ₹4.00."
                 ],
-                answer: 1,
+                correctText: "An amount of 700 paise is equal to ₹70.00.",
                 hint: "Look closely at the 700 paise conversion. Divide 700 by 100. Does it really equal seventy rupees?",
                 explanation: "The second statement is incorrect because 700 ÷ 100 = 7. So 700 paise equals ₹7.00, not ₹70.00."
             },
@@ -357,7 +369,7 @@
                     "The Assertion is true, but the Reason is completely false.",
                     "The Assertion is false, but the Reason is true."
                 ],
-                answer: 0,
+                correctText: "Both Assertion and Reason are correct, and the Reason perfectly explains the Assertion.",
                 hint: "Calculate the total paise (5 × 50) and test if the conversion explanation matches perfectly.",
                 explanation: "Both statements are correct. 5 × 50p = 250p. Converting 250p by dividing by 100 gives ₹2.50, which matches both points perfectly."
             },
@@ -365,7 +377,7 @@
                 type: "Multi-Step Case Story (Part 1)",
                 question: "Case Story Part 1: Vivaan goes to a stationery shop with a ₹100 note. He picks up a sketch pen pack for ₹45.00 and a drawing book for ₹32.50. How much is the total bill of his items?",
                 options: ["₹77.00", "₹77.50", "₹87.50", "₹75.50"],
-                answer: 1,
+                correctText: "₹77.50",
                 hint: "Add the price of the sketch pens (45.00) to the price of the drawing book (32.50).",
                 explanation: "Total item bill calculation: 45.00 + 32.50 = 77.50. The items cost ₹77.50."
             },
@@ -373,17 +385,28 @@
                 type: "Multi-Step Case Story (Part 2)",
                 question: "Case Story Part 2: Continuing from Vivaan's trip, he hands his ₹100 note to the shopkeeper to pay his total bill of ₹77.50. How much change should the shopkeeper return to Vivaan?",
                 options: ["₹22.50", "₹23.50", "₹32.50", "₹22.00"],
-                answer: 0,
+                correctText: "₹22.50",
                 hint: "Subtract the total bill calculated in Part 1 (77.50) from the initial note value (100.00).",
                 explanation: "Change computation: 100.00 - 77.50 = 22.50. The shopkeeper must return ₹22.50."
             }
         ];
 
+        let activeQuestionPool = [];
         let currentIndex = 0;
         let runningScore = 0;
         let attemptTracker = 0; 
         let countdownTimer = null;
         let activeSeconds = 60;
+
+        // Shuffle utility preserving immutability 
+        function shuffleArray(array) {
+            const arrCopy = [...array];
+            for (let i = arrCopy.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arrCopy[i], arrCopy[j]] = [arrCopy[j], arrCopy[i]];
+            }
+            return arrCopy;
+        }
 
         window.addEventListener('DOMContentLoaded', () => {
             setTimeout(() => {
@@ -402,33 +425,45 @@
                 if(a) { a.play().then(() => { a.pause(); a.currentTime = 0; }).catch(() => {}); }
             });
 
+            // Run pool setup on initiation
+            setupQuestionPool();
+
             document.getElementById('welcome-screen').classList.remove('active');
             document.getElementById('game-screen').classList.add('active');
             displayQuestion();
         }
 
+        function setupQuestionPool() {
+            // Immutable selection tracking rule applied here
+            activeQuestionPool = shuffleArray(questionBank);
+        }
+
         function displayQuestion() {
             if (countdownTimer) clearInterval(countdownTimer);
             activeSeconds = 60; 
-            attemptTracker = 0;
+            attemptTracker = 0; // Clear first-attempt tracking flags
             
             document.getElementById('timer-counter').innerText = activeSeconds;
             document.getElementById('hint-feedback').style.display = 'none';
             document.getElementById('explain-feedback').style.display = 'none';
             document.getElementById('next-btn').style.display = 'none';
 
-            let qData = questionBank[currentIndex];
-            document.getElementById('progress-text').innerText = `Question: ${currentIndex + 1}/${questionBank.length}`;
+            let qData = activeQuestionPool[currentIndex];
+            document.getElementById('progress-text').innerText = `Question: ${currentIndex + 1}/${activeQuestionPool.length}`;
             document.getElementById('target-question').innerText = `[${qData.type}]\n${qData.question}`;
             
             const optionsBox = document.getElementById('target-options');
             optionsBox.innerHTML = '';
 
-            qData.options.forEach((optText, index) => {
+            // Decoupled option building: Shuffling choices inside an isolated pool instance
+            const shuffledOptions = shuffleArray(qData.options);
+
+            shuffledOptions.forEach((optText) => {
                 let btn = document.createElement('button');
                 btn.className = 'option-btn';
                 btn.innerText = optText;
-                btn.setAttribute('onclick', `evaluateSelection(this, ${index})`);
+                // Interaction targets decoupled completely from primitive indices
+                btn.addEventListener('click', () => evaluateSelection(btn, optText, qData));
                 optionsBox.appendChild(btn);
             });
 
@@ -447,8 +482,12 @@
         }
 
         function lockButtonsOnTimeout() {
-            let qData = questionBank[currentIndex];
+            // Strict penalty enforcement triggers a tracking failure on run-outs
+            attemptTracker = -1; 
+            let qData = activeQuestionPool[currentIndex];
             disableAllOptions();
+            highlightCorrectAnswer(qData.correctText);
+            
             const explBox = document.getElementById('explain-feedback');
             explBox.innerHTML = `<strong>Time's Up!</strong> ${qData.explanation}`;
             explBox.style.display = 'block';
@@ -456,14 +495,14 @@
             document.getElementById('next-btn').style.display = 'block';
         }
 
-        function evaluateSelection(selectedBtn, chosenIdx) {
-            let qData = questionBank[currentIndex];
-            
-            if (chosenIdx === qData.answer) {
+        function evaluateSelection(selectedBtn, chosenText, qData) {
+            // Strict evaluation via safe string content verification
+            if (chosenText === qData.correctText) {
                 if (countdownTimer) clearInterval(countdownTimer);
                 selectedBtn.classList.add('correct');
                 disableAllOptions();
                 
+                // Score updates only register on clean, flawless first attempts
                 if (attemptTracker === 0) {
                     runningScore++;
                     document.getElementById('score-text').innerText = `Score: ${runningScore}`;
@@ -478,6 +517,7 @@
                 document.getElementById('next-btn').style.display = 'block';
 
             } else {
+                // Tracking immediately penalizes first-try flags on errors
                 attemptTracker++;
                 selectedBtn.classList.add('wrong');
                 selectedBtn.disabled = true;
@@ -490,17 +530,22 @@
                 } else {
                     if (countdownTimer) clearInterval(countdownTimer);
                     disableAllOptions();
-                    
-                    const optionsList = document.getElementById('target-options').children;
-                    if(optionsList[qData.answer]) {
-                        optionsList[qData.answer].classList.add('correct');
-                    }
+                    highlightCorrectAnswer(qData.correctText);
 
                     document.getElementById('hint-feedback').style.display = 'none';
                     const explBox = document.getElementById('explain-feedback');
                     explBox.innerHTML = `<strong>Not quite!</strong> ${qData.explanation}`;
                     explBox.style.display = 'block';
                     document.getElementById('next-btn').style.display = 'block';
+                }
+            }
+        }
+
+        function highlightCorrectAnswer(correctText) {
+            const optionsList = document.getElementById('target-options').children;
+            for (let btn of optionsList) {
+                if (btn.innerText === correctText) {
+                    btn.classList.add('correct');
                 }
             }
         }
@@ -516,13 +561,13 @@
             const audio = document.getElementById(`audio-${type}`);
             if (audio) {
                 audio.currentTime = 0;
-                audio.play().catch(e => console.log("Audio trigger ready."));
+                audio.play().catch(e => console.log("Audio presentation active."));
             }
         }
 
         function advanceQuestion() {
             currentIndex++;
-            if (currentIndex < questionBank.length) {
+            if (currentIndex < activeQuestionPool.length) {
                 displayQuestion();
             } else {
                 showFinalResults();
@@ -532,25 +577,31 @@
         function showFinalResults() {
             document.getElementById('game-screen').classList.remove('active');
             document.getElementById('result-screen').classList.add('active');
-            document.getElementById('final-score-value').innerText = `${runningScore}/${questionBank.length}`;
+            document.getElementById('final-score-value').innerText = `${runningScore}/${activeQuestionPool.length}`;
             
-            let finalPercentage = (runningScore / questionBank.length) * 100;
             let statusText = "";
 
-            if (finalPercentage >= 75) {
-                statusText = "Good job!";
-            } else if (finalPercentage >= 40) {
+            // Honest Tier Conditions matching requested exclusive brackets perfectly
+            if (runningScore === 12) {
+                statusText = "Perfect score! Outstanding work!";
+            } else if (runningScore >= 9 && runningScore < 12) {
+                statusText = "Good job! You have a great understanding of currency values.";
+            } else if (runningScore >= 5 && runningScore < 9) {
                 statusText = "Review this chapter and try again.";
             } else {
-                statusText = "Let’s practise more.";
+                statusText = "Let’s practise more together.";
             }
             
             document.getElementById('final-status-msg').innerText = statusText;
         }
 
         function resetInteractive() {
+            // Full Reset Sequence implementation
             currentIndex = 0;
             runningScore = 0;
+            attemptTracker = 0;
+            if (countdownTimer) clearInterval(countdownTimer);
+            
             document.getElementById('score-text').innerText = `Score: 0`;
             document.getElementById('result-screen').classList.remove('active');
             document.getElementById('welcome-screen').classList.add('active');
@@ -596,7 +647,6 @@
             
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             
-            // Clean filtering to prevent mutation skipping bugs
             particles = particles.filter(p => {
                 p.x += p.speedX;
                 p.y += p.speedY;
