@@ -3,255 +3,96 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Grade 3 Maths: Interactive Fractions Quest</title>
+    <title>Grade 3 Maths: Fractions Quest</title>
     <style>
-        :root {
-            --primary: #6d28d9;
-            --secondary: #a78bfa;
-            --success: #059669;
-            --danger: #e11d48;
-            --warning: #d97706;
-            --background: #f5f3ff;
-            --surface: #ffffff;
-            --text: #1e1b4b;
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        body {
-            background-color: var(--background);
-            color: var(--text);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            padding: 15px;
-        }
-
-        .container {
-            width: 100%;
-            max-width: 650px;
-            background: var(--surface);
-            border-radius: 20px;
-            box-shadow: 0 12px 36px rgba(109, 40, 217, 0.08);
-            padding: 24px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        #splash-screen {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: #ffffff;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
-            transition: opacity 0.5s ease;
-        }
-
-        .logo-placeholder {
-            max-width: 220px;
-            height: auto;
-            margin-bottom: 20px;
-        }
-
-        .screen { display: none; }
-        .screen.active { display: block; }
-
-        h1, h2 { color: var(--primary); text-align: center; margin-bottom: 16px; }
-        p.description { text-align: center; color: #4b5563; margin-bottom: 24px; line-height: 1.6; }
-
-        .hud {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: #f3f4f6;
-            padding: 12px 16px;
-            border-radius: 12px;
-            margin-bottom: 20px;
-            font-weight: 600;
-            font-size: 0.95rem;
-        }
-
-        .timer-box { color: var(--danger); display: flex; align-items: center; gap: 4px; }
-        .question-text { font-size: 1.15rem; font-weight: 600; line-height: 1.5; margin-bottom: 20px; }
-        .options-container { display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; }
-
-        .option-btn {
-            background: var(--surface);
-            border: 2px solid #e5e7eb;
-            border-radius: 12px;
-            padding: 16px;
-            text-align: left;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            font-weight: 500;
-            width: 100%;
-        }
-
-        .option-btn:hover:not(:disabled) { border-color: var(--secondary); background: #fbfbfe; }
-        .option-btn.correct { background-color: #ecfdf5 !important; border-color: var(--success) !important; color: #064e3b; }
-        .option-btn.wrong { background-color: #fef2f2 !important; border-color: var(--danger) !important; color: #7f1d1d; }
-
-        .feedback-box { border-radius: 12px; padding: 16px; margin-top: 15px; font-weight: 500; display: none; line-height: 1.5; }
-        .feedback-box.hint { background-color: #fffbeb; border-left: 5px solid var(--warning); color: #92400e; }
-        .feedback-box.explanation { background-color: #eff6ff; border-left: 5px solid #3b82f6; color: #1e40af; }
-
-        .action-btn {
-            display: block; width: 100%; background: var(--primary); color: #fff; border: none;
-            border-radius: 12px; padding: 16px; font-size: 1.1rem; font-weight: 600; cursor: pointer;
-            text-align: center; margin-top: 20px; box-shadow: 0 4px 12px rgba(109, 40, 217, 0.2);
-        }
-
-        .score-circle {
-            width: 130px; height: 130px; border-radius: 50%; background: #f3f4f6;
-            display: flex; justify-content: center; align-items: center; font-size: 2rem;
-            font-weight: bold; margin: 20px auto; color: var(--primary); border: 4px solid var(--secondary);
-        }
+        :root { --primary: #6d28d9; --secondary: #a78bfa; --success: #059669; --danger: #e11d48; --warning: #d97706; --background: #f5f3ff; --surface: #ffffff; --text: #1e1b4b; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: sans-serif; }
+        body { background-color: var(--background); display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 15px; }
+        .container { width: 100%; max-width: 650px; background: var(--surface); border-radius: 20px; padding: 24px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        #splash-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #ffffff; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 9999; }
+        .screen { display: none; } .screen.active { display: block; }
+        .option-btn { display: block; width: 100%; padding: 15px; margin: 10px 0; border: 2px solid #e5e7eb; border-radius: 10px; background: white; cursor: pointer; text-align: left; }
+        .action-btn { width: 100%; padding: 15px; background: var(--primary); color: white; border: none; border-radius: 10px; cursor: pointer; font-weight: bold; }
+        .feedback-box { padding: 15px; margin: 10px 0; border-radius: 10px; display: none; }
+        .hint { background: #fffbeb; border-left: 5px solid var(--warning); }
+        .explanation { background: #eff6ff; border-left: 5px solid #3b82f6; }
     </style>
 </head>
 <body>
 
     <div id="splash-screen">
-        <img src="assets/logo.png" alt="Innovine Logo" class="logo-placeholder" onerror="this.style.display='none'; document.getElementById('logo-text').style.display='block';">
-        <h2 id="logo-text" style="display:none; color: var(--primary);">Innovine</h2>
+        <img src="grade3/ch10/assets/logo.png" alt="Logo" style="max-width: 200px;">
+        <h2 style="color: var(--primary);">Loading...</h2>
     </div>
 
-    <audio id="audio-correct" src="assets/claps.mp3" preload="auto"></audio>
-    <audio id="audio-wrong" src="assets/wrong.mp3" preload="auto"></audio>
+    <audio id="audio-correct" src="grade3/ch10/assets/claps.mp3"></audio>
+    <audio id="audio-wrong" src="grade3/ch10/assets/wrong.mp3"></audio>
 
     <div class="container">
         <div id="welcome-screen" class="screen active">
             <h1>Fractions Masterclass</h1>
-            <p class="description">Master numerators, denominators, and fraction logic!</p>
             <button class="action-btn" onclick="startInteractive()">Start Quest</button>
         </div>
 
         <div id="game-screen" class="screen">
-            <div class="hud">
-                <div id="progress-text">Question: 1/12</div>
-                <div id="score-text">Score: 0</div>
-                <div class="timer-box">⏱️ <span id="timer-counter">60</span>s</div>
-            </div>
-            <div id="target-question" class="question-text"></div>
-            <div id="target-options" class="options-container"></div>
+            <h3 id="progress-text">Question 1/12</h3>
+            <p id="target-question" style="margin: 20px 0; font-size: 1.2rem;"></p>
+            <div id="target-options"></div>
             <div id="hint-feedback" class="feedback-box hint"></div>
             <div id="explain-feedback" class="feedback-box explanation"></div>
-            <button id="next-btn" class="action-btn" style="display: none;" onclick="advanceQuestion()">Next Question</button>
+            <button id="next-btn" class="action-btn" style="display: none; margin-top: 20px;" onclick="advanceQuestion()">Next</button>
         </div>
 
         <div id="result-screen" class="screen">
             <h2>Quest Complete!</h2>
-            <div class="score-circle" id="final-score-value">0/12</div>
-            <p class="description" id="final-status-msg"></p>
-            <button class="action-btn" onclick="resetInteractive()">Play Again</button>
+            <button class="action-btn" onclick="location.reload()">Play Again</button>
         </div>
     </div>
 
     <script>
+        // Force hide splash screen after 3 seconds just in case
+        window.addEventListener('load', () => setTimeout(() => document.getElementById('splash-screen').style.display = 'none', 3000));
+
         const questionBank = [
-            { question: "Pooja cuts a pizza into 4 equal slices. She eats 3 of those slices. What fraction of the pizza did she eat?", options: ["1/2", "1/4", "3/4", "4/3"], answer: 2, hint: "Count the eaten slices out of the total.", explanation: "She ate 3 out of 4 slices, which is 3/4." },
-            { question: "If a rectangle is divided into 2 equal parts and 1 part is shaded, what fraction is shaded?", options: ["1/4", "1/2", "2/2", "3/4"], answer: 1, hint: "1 out of 2 is a half.", explanation: "1 out of 2 is 1/2." },
-            { question: "In the fraction 2/4, what is the number '4' called?", options: ["Numerator", "Whole Number", "Denominator", "Like Fraction"], answer: 2, hint: "It is the bottom number.", explanation: "The bottom number is the denominator." },
-            { question: "Half of 8 marbles is how many?", options: ["2", "4", "6", "8"], answer: 1, hint: "Divide 8 by 2.", explanation: "8 ÷ 2 = 4." },
-            { question: "Fractions with the same denominator are called what?", options: ["Unlike", "Equal", "Like", "Whole"], answer: 2, hint: "They are 'alike'.", explanation: "They are called Like fractions." },
-            { question: "Which is larger, 1/3 or 1/4?", options: ["1/3", "1/4", "They are equal", "Cannot tell"], answer: 0, hint: "Sharing among 3 people gives bigger pieces.", explanation: "1/3 is larger than 1/4." },
-            { question: "Which is smaller, 2/7 or 5/7?", options: ["2/7 is equal to 5/7", "2/7 is greater", "2/7 is smaller", "None"], answer: 2, hint: "Compare 2 and 5.", explanation: "2 is less than 5, so 2/7 is smaller." },
-            { question: "How many fourths make a half?", options: ["1", "2", "3", "4"], answer: 1, hint: "Think of 2/4.", explanation: "2/4 equals 1/2." },
-            { question: "Where is the numerator located in a fraction?", options: ["Top", "Bottom", "Middle", "Side"], answer: 0, hint: "The 'nu' stands for north/top.", explanation: "The numerator is the top number." },
-            { question: "Why is 1/5 smaller than 1/2?", options: ["1 is smaller than 1", "5 is bigger than 2", "More parts mean smaller pieces", "They are equal"], answer: 2, hint: "Division.", explanation: "Dividing into more parts makes each piece smaller." },
-            { question: "Kabir uses 1/4 of his 12 apples for a pie. How many apples did he use?", options: ["2", "3", "4", "6"], answer: 1, hint: "12 divided by 4.", explanation: "12 ÷ 4 = 3." },
-            { question: "Kabir used 3 apples from 12. What fraction of apples is left?", options: ["1/4", "2/4", "3/4", "4/4"], answer: 2, hint: "9 apples are left out of 12.", explanation: "9/12 simplifies to 3/4." }
+            { question: "Pooja cuts a pizza into 4 equal slices. She eats 3 of those slices. What fraction of the pizza did she eat?", options: ["1/2", "1/4", "3/4", "4/3"], answer: 2, explanation: "She ate 3 out of 4 slices, which is 3/4." },
+            { question: "If a rectangle is divided into 2 equal parts and 1 part is shaded, what fraction is shaded?", options: ["1/4", "1/2", "2/2", "3/4"], answer: 1, explanation: "1 out of 2 is 1/2." },
+            { question: "In the fraction 2/4, what is the number '4' called?", options: ["Numerator", "Whole Number", "Denominator", "Like Fraction"], answer: 2, explanation: "The bottom number is the denominator." },
+            { question: "Half of 8 marbles is how many?", options: ["2", "4", "6", "8"], answer: 1, explanation: "8 ÷ 2 = 4." },
+            { question: "Fractions with the same denominator are called what?", options: ["Unlike", "Equal", "Like", "Whole"], answer: 2, explanation: "They are called Like fractions." },
+            { question: "Which is larger, 1/3 or 1/4?", options: ["1/3", "1/4", "Equal", "Cannot tell"], answer: 0, explanation: "1/3 is larger than 1/4." },
+            { question: "Which is smaller, 2/7 or 5/7?", options: ["2/7 is equal", "2/7 is greater", "2/7 is smaller", "None"], answer: 2, explanation: "2 is less than 5, so 2/7 is smaller." },
+            { question: "How many fourths make a half?", options: ["1", "2", "3", "4"], answer: 1, explanation: "2/4 equals 1/2." },
+            { question: "Where is the numerator located?", options: ["Top", "Bottom", "Middle", "Side"], answer: 0, explanation: "The numerator is the top number." },
+            { question: "Why is 1/5 smaller than 1/2?", options: ["1 is smaller", "5 is bigger", "More parts mean smaller pieces", "They are equal"], answer: 2, explanation: "More parts mean smaller pieces." },
+            { question: "Kabir uses 1/4 of his 12 apples. How many did he use?", options: ["2", "3", "4", "6"], answer: 1, explanation: "12 ÷ 4 = 3." },
+            { question: "Kabir used 3 apples from 12. What fraction is left?", options: ["1/4", "2/4", "3/4", "4/4"], answer: 2, explanation: "9 left out of 12 is 3/4." }
         ];
 
-        let currentIndex = 0, runningScore = 0, attemptTracker = 0, countdownTimer, activeSeconds = 60;
-
-        function startInteractive() {
-            document.getElementById('welcome-screen').classList.remove('active');
-            document.getElementById('game-screen').classList.add('active');
-            displayQuestion();
-        }
-
+        let currentIndex = 0;
+        function startInteractive() { document.getElementById('welcome-screen').classList.remove('active'); document.getElementById('game-screen').classList.add('active'); displayQuestion(); }
+        
         function displayQuestion() {
-            clearInterval(countdownTimer);
-            activeSeconds = 60; attemptTracker = 0;
-            document.getElementById('timer-counter').innerText = activeSeconds;
-            document.getElementById('hint-feedback').style.display = 'none';
+            let q = questionBank[currentIndex];
+            document.getElementById('progress-text').innerText = `Question ${currentIndex + 1}/12`;
+            document.getElementById('target-question').innerText = q.question;
+            document.getElementById('target-options').innerHTML = '';
             document.getElementById('explain-feedback').style.display = 'none';
             document.getElementById('next-btn').style.display = 'none';
-            let qData = questionBank[currentIndex];
-            document.getElementById('progress-text').innerText = `Question: ${currentIndex + 1}/${questionBank.length}`;
-            document.getElementById('target-question').innerText = qData.question;
-            const optionsBox = document.getElementById('target-options');
-            optionsBox.innerHTML = '';
-            qData.options.forEach((optText, index) => {
+            q.options.forEach((opt, i) => {
                 let btn = document.createElement('button');
                 btn.className = 'option-btn';
-                btn.innerText = optText;
-                btn.onclick = () => evaluateSelection(btn, index);
-                optionsBox.appendChild(btn);
-            });
-            countdownTimer = setInterval(() => {
-                activeSeconds--;
-                document.getElementById('timer-counter').innerText = activeSeconds;
-                if(activeSeconds <= 0) { clearInterval(countdownTimer); lockButtonsOnTimeout(); }
-            }, 1000);
-        }
-
-        function lockButtonsOnTimeout() {
-            disableAllOptions();
-            document.getElementById('explain-feedback').innerHTML = `<strong>Time's Up!</strong> ${questionBank[currentIndex].explanation}`;
-            document.getElementById('explain-feedback').style.display = 'block';
-            document.getElementById('next-btn').style.display = 'block';
-            playSound('wrong');
-        }
-
-        function evaluateSelection(btn, idx) {
-            let q = questionBank[currentIndex];
-            disableAllOptions();
-            if (idx === q.answer) {
-                clearInterval(countdownTimer);
-                btn.classList.add('correct');
-                if (attemptTracker === 0) { runningScore++; document.getElementById('score-text').innerText = `Score: ${runningScore}`; }
-                document.getElementById('explain-feedback').innerHTML = `<strong>Correct!</strong> ${q.explanation}`;
-                document.getElementById('explain-feedback').style.display = 'block';
-                playSound('correct');
-            } else {
-                attemptTracker++;
-                btn.classList.add('wrong');
-                if (attemptTracker === 1) {
-                    document.getElementById('hint-feedback').innerHTML = `<strong>Hint:</strong> ${q.hint}`;
-                    document.getElementById('hint-feedback').style.display = 'block';
-                    for(let b of document.querySelectorAll('.option-btn')) b.disabled = false;
-                } else {
-                    clearInterval(countdownTimer);
-                    document.querySelectorAll('.option-btn')[q.answer].classList.add('correct');
-                    document.getElementById('explain-feedback').innerHTML = `<strong>Not quite!</strong> ${q.explanation}`;
+                btn.innerText = opt;
+                btn.onclick = () => {
+                    document.getElementById('explain-feedback').innerText = q.explanation;
                     document.getElementById('explain-feedback').style.display = 'block';
-                    playSound('wrong');
-                }
-            }
-            if (attemptTracker !== 1) document.getElementById('next-btn').style.display = 'block';
+                    document.getElementById('next-btn').style.display = 'block';
+                    if(i === q.answer) { document.getElementById('audio-correct').play(); } else { document.getElementById('audio-wrong').play(); }
+                };
+                document.getElementById('target-options').appendChild(btn);
+            });
         }
-
-        function disableAllOptions() { for(let b of document.querySelectorAll('.option-btn')) b.disabled = true; }
-        function playSound(type) { document.getElementById(type === 'correct' ? 'audio-correct' : 'audio-wrong').play().catch(()=>{}); }
-        function advanceQuestion() { currentIndex++; currentIndex < questionBank.length ? displayQuestion() : showFinalResults(); }
-        function showFinalResults() {
-            document.getElementById('game-screen').classList.remove('active');
-            document.getElementById('result-screen').classList.add('active');
-            document.getElementById('final-score-value').innerText = `${runningScore}/${questionBank.length}`;
-        }
-        function resetInteractive() { location.reload(); }
+        
+        function advanceQuestion() { currentIndex++; currentIndex < 12 ? displayQuestion() : (document.getElementById('game-screen').style.display = 'none', document.getElementById('result-screen').classList.add('active')); }
     </script>
 </body>
 </html>
