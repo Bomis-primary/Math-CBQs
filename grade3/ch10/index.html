@@ -269,7 +269,6 @@
     <script>
         const questionBank = [
             {
-                type: "Conceptual Parts of Whole",
                 question: "Pooja cuts a complete circular pizza into 4 identical, equal-sized slices. She eats 3 of those slices with her friends. What numerical fraction of the pizza did they eat?",
                 options: [
                     "One-half (1/2)",
@@ -282,7 +281,6 @@
                 explanation: "The pizza is divided into 4 equal slices (denominator). They ate 3 slices (numerator). This is written as 3/4, which means three-fourths."
             },
             {
-                type: "Visual 2D Shapes Interpretation",
                 question: "Imagine a perfect rectangle divided into 2 completely equal vertical strips. If exactly 1 of these strips is shaded blue, what fraction represents the shaded region?",
                 options: [
                     "1/4",
@@ -295,7 +293,6 @@
                 explanation: "When 1 part out of 2 equal divisions is shaded, it represents exactly half of the complete figure, written mathematically as 1/2."
             },
             {
-                type: "Vocabulary & Properties",
                 question: "In the fraction 2/4, what is the specific mathematical term used for the bottom number '4'?",
                 options: [
                     "Numerator",
@@ -308,7 +305,6 @@
                 explanation: "The bottom number in a fraction is called the denominator. It tells us the total number of equal parts the whole is divided into."
             },
             {
-                type: "Real-Life Application",
                 question: "Rohan has a pack of 8 identical marbles. He gives exactly half of his total marbles to his sister Maya. How many marbles does Maya receive?",
                 options: [
                     "2 marbles",
@@ -321,7 +317,6 @@
                 explanation: "To find a half (1/2) of 8, divide 8 by 2. 8 ÷ 2 = 4. Maya gets 4 marbles."
             },
             {
-                type: "Like vs Unlike Classification",
                 question: "Look closely at this group of fractions: 1/5, 3/5, and 4/5. Because they all share the exact same denominator, what specific name are they given?",
                 options: [
                     "Unlike fractions",
@@ -334,7 +329,6 @@
                 explanation: "Fractions that have the same denominator are called 'Like fractions'. They are easy to add, subtract, and compare."
             },
             {
-                type: "Fraction Wall Comparison",
                 question: "Using a fraction wall model, compare 1/3 and 1/4. If you have two bars of identical length, one split into 3 parts and the other into 4 parts, which part is larger?",
                 options: [
                     "1/3 is larger than 1/4",
@@ -347,7 +341,6 @@
                 explanation: "When denominators are different but numerators are equal to 1, the fraction with the smaller denominator is larger. Thus, 1/3 > 1/4."
             },
             {
-                type: "Same Denominator Reasoning",
                 question: "Compare the two like fractions 2/7 and 5/7. Which statement correctly identifies the relationship?",
                 options: [
                     "2/7 is equal to 5/7",
@@ -360,7 +353,6 @@
                 explanation: "Since both fractions have the same denominator (7), we compare the numerators. 2 is less than 5, so 2/7 is smaller than 5/7."
             },
             {
-                type: "Equivalent Fraction Discovery",
                 question: "You have a rectangular strip with 1/2 shaded. Another identical strip is divided into 4 equal blocks. How many blocks must you shade to cover the exact same area as 1/2?",
                 options: [
                     "1 block",
@@ -373,7 +365,6 @@
                 explanation: "Two-fourths (2/4) is equal in size to one-half (1/2). Therefore, you need to shade exactly 2 blocks."
             },
             {
-                type: "Error Detection Challenge",
                 question: "Anu is writing down mathematical statements about fractions. Which statement written below is completely INCORRECT?",
                 options: [
                     "1/2 of an object is one of two equal parts.",
@@ -386,7 +377,6 @@
                 explanation: "The incorrect statement is that the numerator is written on the bottom. The numerator is always the top number; the denominator is on the bottom."
             },
             {
-                type: "Assertion & Reason Logic",
                 question: "Assertion: 1/5 is smaller than 1/2.\nReason: When dividing a whole into more parts, each individual part becomes smaller in size.",
                 options: [
                     "Both Assertion and Reason are true, and the Reason explains the Assertion perfectly.",
@@ -399,7 +389,6 @@
                 explanation: "Both statements are correct. Dividing a whole into 5 pieces makes each piece much smaller than dividing it into just 2 pieces. Hence, 1/5 < 1/2."
             },
             {
-                type: "Multi-Step Story Problem (Part 1)",
                 question: "Case Story Part 1: Kabir has a basket containing 12 fresh apples. He uses exactly one-fourth (1/4) of the apples to bake a small pie. How many apples did he take out for the pie?",
                 options: [
                     "2 apples",
@@ -412,7 +401,6 @@
                 explanation: "One-fourth (1/4) of 12 apples is found by calculating 12 ÷ 4 = 3. Kabir uses 3 apples."
             },
             {
-                type: "Multi-Step Story Problem (Part 2)",
                 question: "Case Story Part 2: Kabir started with 12 apples and used 3 of them to make the pie in Part 1. What fraction of the original 12 apples does he have left inside the basket?",
                 options: [
                     "1/4",
@@ -458,7 +446,7 @@
 
             let qData = questionBank[currentIndex];
             document.getElementById('progress-text').innerText = `Question: ${currentIndex + 1}/${questionBank.length}`;
-            document.getElementById('target-question').innerText = `[${qData.type}]\n${qData.question}`;
+            document.getElementById('target-question').innerText = qData.question;
             
             const optionsBox = document.getElementById('target-options');
             optionsBox.innerHTML = '';
