@@ -40,7 +40,7 @@
             background: var(--surface);
             border-radius: 16px;
             box-shadow: 0 8px 24px rgba(0,0,0,0.06);
-            padding: 32px;
+            padding: clamp(16px, 4vw, 32px);
             position: relative;
             overflow: hidden;
         }
@@ -69,14 +69,14 @@
         .screen.active { display: block; }
 
         h1 {
-            font-size: 2.2rem;
+            font-size: clamp(1.6rem, 5vw, 2.2rem);
             color: var(--primary);
             text-align: center;
             margin-bottom: 20px;
         }
 
         h2 {
-            font-size: 1.8rem;
+            font-size: clamp(1.4rem, 4vw, 1.8rem);
             color: var(--primary);
             text-align: center;
             margin-bottom: 16px;
@@ -87,7 +87,7 @@
             color: #4b5563;
             margin-bottom: 24px;
             line-height: 1.6;
-            font-size: 1.2rem;
+            font-size: clamp(1rem, 3vw, 1.2rem);
         }
 
         /* HUD layout */
@@ -96,11 +96,12 @@
             justify-content: space-between;
             align-items: center;
             background: #f3f4f6;
-            padding: 16px 20px;
+            padding: 12px 16px;
             border-radius: 12px;
             margin-bottom: 24px;
             font-weight: 700;
-            font-size: 1.2rem;
+            font-size: clamp(0.9rem, 2.5vw, 1.2rem);
+            gap: 8px;
         }
 
         .timer-box {
@@ -108,11 +109,12 @@
             display: flex;
             align-items: center;
             gap: 4px;
+            white-space: nowrap;
         }
 
         /* Question Elements */
         .question-text {
-            font-size: 1.4rem; 
+            font-size: clamp(1.1rem, 3.5vw, 1.4rem); 
             font-weight: 700;
             line-height: 1.6;
             margin-bottom: 24px;
@@ -123,7 +125,7 @@
         .options-container {
             display: flex;
             flex-direction: column;
-            gap: 16px;
+            gap: 14px;
             margin-bottom: 20px;
         }
 
@@ -131,9 +133,9 @@
             background: var(--surface);
             border: 2.5px solid #e5e7eb;
             border-radius: 14px;
-            padding: 20px;
+            padding: clamp(14px, 3vw, 20px);
             text-align: left;
-            font-size: 1.25rem; 
+            font-size: clamp(1rem, 3vw, 1.25rem); 
             cursor: pointer;
             transition: all 0.2s ease;
             font-weight: 600;
@@ -160,9 +162,9 @@
         /* Feedback Panels */
         .feedback-box {
             border-radius: 12px;
-            padding: 20px;
+            padding: 16px;
             margin-top: 20px;
-            font-size: 1.15rem;
+            font-size: clamp(0.95rem, 2.5vw, 1.15rem);
             font-weight: 600;
             display: none;
             line-height: 1.5;
@@ -188,8 +190,8 @@
             color: #fff;
             border: none;
             border-radius: 14px;
-            padding: 20px;
-            font-size: 1.3rem;
+            padding: clamp(14px, 3vw, 20px);
+            font-size: clamp(1.1rem, 3vw, 1.3rem);
             font-weight: 700;
             cursor: pointer;
             text-align: center;
@@ -203,18 +205,30 @@
 
         /* Score Display styling */
         .score-circle {
-            width: 150px;
-            height: 150px;
+            width: clamp(110px, 30vw, 150px);
+            height: clamp(110px, 30vw, 150px);
             border-radius: 50%;
             background: #f3f4f6;
             display: flex;
             justify-content: center;
             align-items: center;
-            font-size: 2.5rem;
+            font-size: clamp(1.8rem, 5vw, 2.5rem);
             font-weight: bold;
             margin: 24px auto;
             color: var(--primary);
             border: 5px solid var(--secondary);
+        }
+
+        .graphic-wrapper {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+            width: 100%;
+        }
+
+        .graphic-wrapper svg {
+            max-width: 100%;
+            height: auto;
         }
 
         #particle-canvas {
@@ -222,12 +236,6 @@
             top: 0; left: 0; width: 100%; height: 100%;
             pointer-events: none;
             z-index: 10;
-        }
-
-        @media (max-width: 480px) {
-            .container { padding: 20px; }
-            .question-text { font-size: 1.2rem; }
-            .option-btn { padding: 16px; font-size: 1.1rem; }
         }
     </style>
 </head>
@@ -272,19 +280,19 @@
         <div id="result-screen" class="screen">
             <h2>Challenge Complete!</h2>
             <div class="score-circle" id="final-score-value">0/12</div>
-            <p class="description" id="final-status-msg">Loading summary...</p>
+            <p class="description" id="final-status-msg" style="font-weight: 600; padding: 0 10px;"></p>
             <button class="action-btn" onclick="resetInteractive()">Try Again</button>
         </div>
 
     </div>
 
     <script>
-        const questionBank = [
+        const originalQuestionBank = [
             {
                 question: "Rohan stops studying and goes for a break at the time shown on the clock face below. He returns to his desk exactly 20 minutes later. What time does he get back to his studies?",
                 hasImage: "clock-4-10",
                 options: ["4:10", "4:20", "4:30", "4:50"],
-                answer: 2,
+                answer: "4:30",
                 hint: "First, read the starting time from the clock face. Then, add 20 minutes to that value.",
                 explanation: "The clock face shows a starting break time of 4:10. Adding 20 minutes to the minute hand position (10 + 20 = 30) brings him back to his studies at exactly 4:30."
             },
@@ -292,7 +300,7 @@
                 question: "Sia is waiting for her school lunch break. Her teacher shows the class the clock below and mentions that lunch will be served immediately. What is another way to announce this time to her friends?",
                 hasImage: "clock-1-15",
                 options: ["Quarter to 1", "Quarter past 1", "Half past 1", "Quarter past 12"],
-                answer: 1,
+                answer: "Quarter past 1",
                 hint: "Notice that the minute hand has traveled exactly one-fourth of the way around the clock face.",
                 explanation: "The clock face shows 1:15. Because 15 minutes is exactly one quarter of a 60-minute hour, this time is widely known as 'Quarter past 1'."
             },
@@ -300,7 +308,7 @@
                 question: "Karan's after-school sports practice is scheduled to begin at exactly 5:00. He checks his wrist watch and sees the time displayed below. How many minutes do he and his teammates have left to prepare?",
                 hasImage: "clock-4-45",
                 options: ["45 minutes", "30 minutes", "15 minutes", "5 minutes"],
-                answer: 2,
+                answer: "15 minutes",
                 hint: "Count how many minute steps are remaining for the long hand to reach the top 12 mark.",
                 explanation: "The watch shows 4:45. To reach the start time of 5:00, the long hand must cover the remaining 15 minutes (or one quarter-hour interval)."
             },
@@ -312,35 +320,35 @@
                     "His estimate was too low compared to actual time.",
                     "Brushing teeth cannot be measured in minutes."
                 ],
-                answer: 1,
+                answer: "His estimate was way too high compared to actual time.",
                 hint: "Compare his guess (20 minutes) with the real measured value (3 minutes). Is 20 much larger or smaller than 3?",
                 explanation: "Aditya's estimate of 20 minutes was much higher than the actual measured time of 3 minutes. Brushing teeth normally takes a few minutes, not close to half an hour."
             },
             {
                 question: "Rahul's cousin calls him on Tuesday and says, 'I will reach your city by train the day after tomorrow.' On what day of the week will Rahul's cousin arrive?",
                 options: ["Wednesday", "Thursday", "Friday", "Monday"],
-                answer: 1,
+                answer: "Thursday",
                 hint: "Start at Tuesday. 'Tomorrow' is the very next day, and 'the day after tomorrow' is one more day after that.",
                 explanation: "Starting from Tuesday, tomorrow is Wednesday, and the day after tomorrow is Thursday. Therefore, his cousin will arrive on Thursday."
             },
             {
                 question: "Riya's school project is due 'the day after tomorrow'. If yesterday was Thursday, on which day must she submit her project?",
                 options: ["Friday", "Saturday", "Sunday", "Wednesday"],
-                answer: 2,
+                answer: "Sunday",
                 hint: "First find out what day it is today. If yesterday was Thursday, today must be Friday. Now skip ahead two days ('the day after tomorrow').",
                 explanation: "If yesterday was Thursday, today is Friday. 'Tomorrow' would be Saturday, and 'the day after tomorrow' is Sunday. Riya must submit her project on Sunday."
             },
             {
-                question: "Aman is creating a personal timeline. He lists his milestone events in chronological order from earliest to latest: He learned to ride a bike (2024), he joined nursery school (2022), and he learned to swim (2025). Which event should be listed first on his timeline?",
-                options: ["He learned to ride a bike", "He joined nursery school", "He learned to swim", "All events happened at the same time"],
-                answer: 1,
-                hint: "Find the smallest (earliest) year number among 2024, 2022, and 2025.",
-                explanation: "Chronological timelines start from the earliest year to the latest year. Comparing the years, 2022 is the earliest year, so joining nursery school must be listed first."
+                question: "Aman's older sister was born exactly 4 years before 2026. If Aman is exactly 3 years younger than his sister, in what calendar year was Aman born?",
+                options: ["2027", "2025", "2024", "2022"],
+                answer: "2025",
+                hint: "First, find his sister's birth year by subtracting 4 years from 2026. Then, since Aman is younger, add 3 years to that year.",
+                explanation: "His sister was born 4 years before 2026, which is 2022 (2026 - 4 = 2022). Since Aman is 3 years younger than his sister, he was born 3 years later, making his birth year 2025 (2022 + 3 = 2025)."
             },
             {
                 question: "Ananya is currently studying in Grade 3 in the year 2026. Her brother tells her she will join high school 'two years from now'. What calendar year will that be?",
                 options: ["2027", "2028", "2024", "2029"],
-                answer: 1,
+                answer: "2028",
                 hint: "Add exactly 2 years to the current year of 2026.",
                 explanation: "Two years from now is calculated by adding 2 to the current year: 2026 + 2 = 2028."
             },
@@ -352,7 +360,7 @@
                     "Quarter past 3 means there are 45 minutes left until 4 o'clock.",
                     "The year following 2030 will be 2031."
                 ],
-                answer: 2,
+                answer: "Quarter past 3 means there are 45 minutes left until 4 o'clock.",
                 hint: "Check the definition of 'quarter past'. Does it tell us how many minutes have passed, or how many are left?",
                 explanation: "The statement is incorrect. Quarter past 3 means it is 3:15 (15 minutes past 3). There are 45 minutes left until 4:00, but that time phrase itself is called 'quarter to 4', not quarter past 3."
             },
@@ -364,7 +372,7 @@
                     "The Assertion is correct, but the Reason is completely false.",
                     "Both the Assertion and the Reason are completely false."
                 ],
-                answer: 0,
+                answer: "Both Assertion and Reason are correct, and the Reason perfectly explains the Assertion.",
                 hint: "Think about why there are 60 markings on a clock and how the minute hand travels across them.",
                 explanation: "Both statements are correct. There are 60 markings because an hour contains 60 minutes, and the minute hand travels across one marking every single minute."
             },
@@ -372,30 +380,28 @@
                 question: "Kabir is looking at a family history timeline layout. Based on the rules and offsets shown below, what is the missing year value when Kabir was born?",
                 hasImage: "timeline-family-blank",
                 options: ["2018", "2019", "2021", "2022"],
-                answer: 1,
+                answer: "2019",
                 hint: "Look at the year the new car was bought (2020). If that milestone happened exactly '+1 year' after Kabir was born, count backward 1 year from 2020.",
                 explanation: "We can count backward from a known date: The family bought a new car in 2020. Since that happened 1 year after Kabir was born, Kabir's birth year must be 2020 - 1 = 2019."
             },
             {
-                question: "Review Kabir's completed family milestone chart below. Which of the selections below shows these events arranged in the correct chronological sequence from earliest to latest?",
-                hasImage: "timeline-family",
-                options: [
-                    "Event D → Event E → Event C",
-                    "Event C → Event D → Event E",
-                    "Event E → Event D → Event C",
-                    "Event C → Event E → Event D"
-                ],
-                answer: 1,
-                hint: "Chronological order means listing events in time sequence, starting from the smallest year number up to the largest year number.",
-                explanation: "Following the order of years: 2019 (Event C: Kabir Born) comes first, followed by 2020 (Event D: Bought new car), and finally 2022 (Event E: Kabir joined play school)."
+                question: "Aman is creating a personal timeline. He lists his milestone events in chronological order from earliest to latest: He learned to ride a bike (2024), he joined nursery school (2022), and he learned to swim (2025). Which event should be listed first on his timeline?",
+                options: ["He learned to ride a bike", "He joined nursery school", "He learned to swim", "All events happened at the same time"],
+                answer: "He joined nursery school",
+                hint: "Find the smallest (earliest) year number among 2024, 2022, and 2025.",
+                explanation: "Chronological timelines start from the earliest year to the latest year. Comparing the years, 2022 is the earliest year, so joining nursery school must be listed first."
             }
         ];
 
+        let activeQuestionBank = [];
         let currentIndex = 0;
         let runningScore = 0;
+        let firstAttemptCount = 0; // Tracks questions got right on the very first try
         let attemptTracker = 0; 
         let countdownTimer;
         let activeSeconds = 60;
+        let activeCurrentOptions = [];
+        let correctOptionIndexGlobal = -1;
 
         window.addEventListener('DOMContentLoaded', () => {
             setTimeout(() => {
@@ -410,7 +416,22 @@
             }, 5000);
         });
 
+        function shuffleArray(arr) {
+            let copy = [...arr];
+            for (let i = copy.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [copy[i], copy[j]] = [copy[j], copy[i]];
+            }
+            return copy;
+        }
+
         function startInteractive() {
+            activeQuestionBank = shuffleArray(originalQuestionBank);
+            currentIndex = 0;
+            runningScore = 0;
+            firstAttemptCount = 0; 
+            document.getElementById('score-text').innerText = `Score: 0`;
+
             document.getElementById('welcome-screen').classList.remove('active');
             document.getElementById('game-screen').classList.add('active');
             displayQuestion();
@@ -420,7 +441,7 @@
             const hrAngle = (hour * 30) + (minute * 0.5);
             const minAngle = minute * 6;
             return `
-            <div style="display:flex; justify-content:center; margin: 20px 0;">
+            <div class="graphic-wrapper">
                 <svg width="260" height="260" viewBox="0 0 100 100" style="background:transparent;">
                     <circle cx="50" cy="50" r="44" stroke="#1e3a8a" stroke-width="3" fill="#ffffff"/>
                     
@@ -443,7 +464,7 @@
 
         function generateTimelineSVG(hideBirthYear = false) {
             return `
-            <div style="display:flex; justify-content:center; margin: 20px 0; width:100%;">
+            <div class="graphic-wrapper">
                 <svg width="100%" height="120" viewBox="0 0 300 85" style="background:transparent;">
                     <line x1="20" y1="40" x2="280" y2="40" stroke="#1e3a8a" stroke-width="3" stroke-linecap="round"/>
                     <polygon points="280,35 290,40 280,45" fill="#1e3a8a"/>
@@ -451,21 +472,21 @@
                     <circle cx="50" cy="40" r="7" fill="#3b82f6"/>
                     <text x="50" y="22" font-size="10" font-weight="bold" text-anchor="middle" fill="#1f2937">${hideBirthYear ? '?' : '2019'}</text>
                     <text x="50" y="58" font-size="8.5" font-weight="bold" text-anchor="middle" fill="#4b5563">Event C</text>
-                    <text x="50" y="69" font-size="7.5" font-weight="bold" text-anchor="middle" fill="#9ca3af">(Kabir Born)</text>
+                    <text x="50" y="69" font-size="7.5" font-weight="middle" text-anchor="middle" fill="#9ca3af">(Kabir Born)</text>
                     
                     <text x="100" y="33" font-size="9" font-weight="800" fill="#f59e0b" text-anchor="middle">+1 Year</text>
                     
                     <circle cx="150" cy="40" r="7" fill="#3b82f6"/>
                     <text x="150" y="22" font-size="10" font-weight="bold" text-anchor="middle" fill="#1f2937">2020</text>
                     <text x="150" y="58" font-size="8.5" font-weight="bold" text-anchor="middle" fill="#4b5563">Event D</text>
-                    <text x="150" y="69" font-size="7.5" font-weight="bold" text-anchor="middle" fill="#9ca3af">(New Car)</text>
+                    <text x="150" y="69" font-size="7.5" font-weight="middle" text-anchor="middle" fill="#9ca3af">(New Car)</text>
                     
                     <text x="200" y="33" font-size="9" font-weight="800" fill="#f59e0b" text-anchor="middle">+2 Years</text>
                     
                     <circle cx="250" cy="40" r="7" fill="#3b82f6"/>
                     <text x="250" y="22" font-size="10" font-weight="bold" text-anchor="middle" fill="#1f2937">2022</text>
                     <text x="250" y="58" font-size="8.5" font-weight="bold" text-anchor="middle" fill="#4b5563">Event E</text>
-                    <text x="250" y="69" font-size="7.5" font-weight="bold" text-anchor="middle" fill="#9ca3af">(Play School)</text>
+                    <text x="250" y="69" font-size="7.5" font-weight="middle" text-anchor="middle" fill="#9ca3af">(Play School)</text>
                 </svg>
             </div>`;
         }
@@ -480,8 +501,8 @@
             document.getElementById('explain-feedback').style.display = 'none';
             document.getElementById('next-btn').style.display = 'none';
 
-            let qData = questionBank[currentIndex];
-            document.getElementById('progress-text').innerText = `Question: ${currentIndex + 1}/${questionBank.length}`;
+            let qData = activeQuestionBank[currentIndex];
+            document.getElementById('progress-text').innerText = `Question: ${currentIndex + 1}/${activeQuestionBank.length}`;
             
             let displayContent = qData.question;
             
@@ -501,10 +522,13 @@
 
             document.getElementById('target-question').innerHTML = displayContent;
             
+            activeCurrentOptions = shuffleArray(qData.options);
+            correctOptionIndexGlobal = activeCurrentOptions.indexOf(qData.answer);
+
             const optionsBox = document.getElementById('target-options');
             optionsBox.innerHTML = '';
 
-            qData.options.forEach((optText, index) => {
+            activeCurrentOptions.forEach((optText, index) => {
                 let btn = document.createElement('button');
                 btn.className = 'option-btn';
                 btn.innerText = optText;
@@ -527,7 +551,7 @@
         }
 
         function lockButtonsOnTimeout() {
-            let qData = questionBank[currentIndex];
+            let qData = activeQuestionBank[currentIndex];
             disableAllOptions();
             const explBox = document.getElementById('explain-feedback');
             explBox.innerHTML = `<strong>Time's Up!</strong> ${qData.explanation}`;
@@ -537,17 +561,21 @@
         }
 
         function evaluateSelection(selectedBtn, chosenIdx) {
-            let qData = questionBank[currentIndex];
+            let qData = activeQuestionBank[currentIndex];
             
-            if (chosenIdx === qData.answer) {
+            if (chosenIdx === correctOptionIndexGlobal) {
                 clearInterval(countdownTimer);
                 selectedBtn.classList.add('correct');
                 disableAllOptions();
                 
+                // Track points and clean first attempts
                 if (attemptTracker === 0) {
+                    firstAttemptCount++;
                     runningScore++;
-                    document.getElementById('score-text').innerText = `Score: ${runningScore}`;
+                } else {
+                    runningScore++;
                 }
+                document.getElementById('score-text').innerText = `Score: ${runningScore}`;
                 
                 triggerSparkles();
                 playSound('correct');
@@ -572,7 +600,7 @@
                     disableAllOptions();
                     
                     const optionsList = document.getElementById('target-options').children;
-                    optionsList[qData.answer].classList.add('correct');
+                    optionsList[correctOptionIndexGlobal].classList.add('correct');
 
                     const hintBox = document.getElementById('hint-feedback');
                     hintBox.style.display = 'none';
@@ -596,13 +624,13 @@
             const audio = document.getElementById(`audio-${type}`);
             if (audio) {
                 audio.currentTime = 0;
-                audio.play().catch(e => console.log("Audio infrastructure synchronized."));
+                audio.play().catch(e => console.log("Audio infrastructure initialized."));
             }
         }
 
         function advanceQuestion() {
             currentIndex++;
-            if (currentIndex < questionBank.length) {
+            if (currentIndex < activeQuestionBank.length) {
                 displayQuestion();
             } else {
                 showFinalResults();
@@ -612,26 +640,26 @@
         function showFinalResults() {
             document.getElementById('game-screen').classList.remove('active');
             document.getElementById('result-screen').classList.add('active');
-            document.getElementById('final-score-value').innerText = `${runningScore}/${questionBank.length}`;
             
-            let finalPercentage = (runningScore / questionBank.length) * 100;
-            let statusText = "";
-
-            if (finalPercentage >= 75) {
-                statusText = "Good job!";
-            } else if (finalPercentage >= 40) {
-                statusText = "Review this chapter and try again.";
+            // Display overall score out of 12
+            document.getElementById('final-score-value').innerText = `${runningScore}/${activeQuestionBank.length}`;
+            
+            // Honest Feedback Engine depending strictly on first-attempt accuracy
+            let honestFeedback = "";
+            if (firstAttemptCount === 12) {
+                honestFeedback = "Fantastic! You got a perfect score on your first attempt! You are a master of time and timelines.";
+            } else if (firstAttemptCount >= 9) {
+                honestFeedback = `Great job! You answered ${firstAttemptCount} questions correctly on your first attempt. Keep up the brilliant work!`;
+            } else if (firstAttemptCount >= 5) {
+                honestFeedback = `Good effort! You got ${firstAttemptCount} answers right on your first try, but using hints or a second guess helped you solve others. Review those topics to get even stronger!`;
             } else {
-                statusText = "Let’s practise more.";
+                honestFeedback = `Let's practice a bit more! Only ${firstAttemptCount} questions were answered correctly on the first attempt. Go back through the clock and timeline chapters, then try again—you've got this!`;
             }
             
-            document.getElementById('final-status-msg').innerText = statusText;
+            document.getElementById('final-status-msg').innerText = honestFeedback;
         }
 
         function resetInteractive() {
-            currentIndex = 0;
-            runningScore = 0;
-            document.getElementById('score-text').innerText = `Score: 0`;
             document.getElementById('result-screen').classList.remove('active');
             document.getElementById('welcome-screen').classList.add('active');
         }
