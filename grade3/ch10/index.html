@@ -133,33 +133,13 @@
             width: 100%;
         }
 
-        /* Clean Real Pizza Vector (No bounding boxes or external text) */
-        .pizza-graphic {
-            width: 140px;
-            height: 140px;
-            border-radius: 50%;
-            background: #F4D03F;
-            border: 8px solid #D35400;
-            position: relative;
-            box-shadow: inset 0 0 14px #E67E22, 0 6px 12px rgba(0,0,0,0.15);
+        /* Clean Pizza Image Display styling */
+        .pizza-img {
+            max-width: 150px;
+            height: auto;
+            object-fit: contain;
+            display: block;
         }
-
-        /* Individual styled pepperoni toppings distributed randomly */
-        .pizza-topping {
-            position: absolute;
-            width: 16px;
-            height: 16px;
-            background: #A93226;
-            border-radius: 50%;
-            border: 1px solid #78281F;
-        }
-        .t1 { top: 25px; left: 40px; }
-        .t2 { top: 30px; left: 80px; }
-        .t3 { top: 60px; left: 25px; }
-        .t4 { top: 55px; left: 60px; }
-        .t5 { top: 65px; left: 95px; }
-        .t6 { top: 95px; left: 45px; }
-        .t7 { top: 90px; left: 75px; }
 
         .fraction-window {
             display: grid;
@@ -388,7 +368,7 @@
     <audio id="audio-wrong" src="assets/wrong.mp3" preload="auto"></audio>
 
     <script>
-        // 10 Structural Competency Based Questions with brackets removed & clean visual paths
+        // 10 Structural Competency Based Questions with brackets removed
         const database = [
             {
                 context: "Mini brings a full round pizza to school. She wants to share it equally with her friend Rohan. Into how many equal parts should she cut the pizza so that both of them get an exact half?",
@@ -514,21 +494,12 @@
             const qData = database[state.currentIdx];
             document.getElementById('q-context').innerText = qData.context;
 
-            // Render dynamic visual aids natively
+            // Render dynamic visual aids cleanly
             const aidBox = document.getElementById('visual-aid-box');
             aidBox.innerHTML = '';
             
             if(qData.visualType === 'pizza') {
-                aidBox.innerHTML = `
-                    <div class="pizza-graphic">
-                        <div class="pizza-topping t1"></div>
-                        <div class="pizza-topping t2"></div>
-                        <div class="pizza-topping t3"></div>
-                        <div class="pizza-topping t4"></div>
-                        <div class="pizza-topping t5"></div>
-                        <div class="pizza-topping t6"></div>
-                        <div class="pizza-topping t7"></div>
-                    </div>`;
+                aidBox.innerHTML = `<img src="assets/pizza.png" alt="Pizza Graphic" class="pizza-img">`;
             } else if(qData.visualType === 'window') {
                 aidBox.innerHTML = `
                     <div class="fraction-window">
@@ -648,7 +619,6 @@
             }
         }
 
-        // Assessment messages based strictly on guidelines criteria
         function showResults() {
             document.getElementById('quiz-module').style.display = 'none';
             const screen = document.getElementById('result-screen');
