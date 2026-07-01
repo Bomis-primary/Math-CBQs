@@ -110,6 +110,64 @@
             white-space: pre-line;
         }
 
+        /* Visual Cloud Pattern Styles */
+        .pattern-visual-container {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin: 20px 0;
+            background: #f8fafc;
+            padding: 16px;
+            border-radius: 16px;
+            border: 1px dashed #cbd5e1;
+        }
+
+        .cloud-shape {
+            position: relative;
+            width: 50px;
+            height: 30px;
+            background: #cbd5e1;
+            border-radius: 20px;
+            display: inline-block;
+            margin-top: 15px;
+        }
+
+        .cloud-shape:before, .cloud-shape:after {
+            content: '';
+            position: absolute;
+            background: inherit;
+            border-radius: 50%;
+        }
+
+        .cloud-shape:before {
+            width: 24px;
+            height: 24px;
+            top: -12px;
+            left: 8px;
+        }
+
+        .cloud-shape:after {
+            width: 30px;
+            height: 30px;
+            top: -16px;
+            right: 6px;
+        }
+
+        /* Cloud Color Configurations */
+        .cloud-shape.red { background: #ef4444; }
+        .cloud-shape.yellow { background: #eab308; }
+        .cloud-shape.green { background: #22c55e; }
+        .cloud-shape.blue { background: #3b82f6; }
+
+        .pattern-ellipsis {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #64748b;
+            align-self: center;
+            margin-top: 10px;
+        }
+
         .options-container {
             display: flex;
             flex-direction: column;
@@ -128,6 +186,9 @@
             transition: all 0.2s ease;
             font-weight: 500;
             width: 100%;
+            display: flex;
+            align-items: center;
+            gap: 15px;
         }
 
         .option-btn:hover:not(:disabled) {
@@ -248,6 +309,7 @@
 
             <div id="question-box">
                 <div class="question-text" id="target-question">Loading dynamic layout...</div>
+                <div id="pattern-visual-zone" class="pattern-visual-container" style="display: none;"></div>
                 <div class="options-container" id="target-options"></div>
             </div>
 
@@ -270,8 +332,11 @@
         const questionBank = [
             {
                 type: "Repeating Color Sequence",
-                question: "Observe this repeating pattern layout carefully:\nRed, Yellow, Green, Red, Yellow, Green, Red, ...\n\nWhat item comes next in the chain?",
+                question: "Observe this repeating pattern layout carefully:\n\nWhat item comes next in the chain?",
+                isVisualCloud: true,
+                cloudPattern: ["red", "yellow", "green", "red", "yellow", "green", "red"],
                 options: ["Red", "Yellow", "Green", "Blue"],
+                optionColors: ["red", "yellow", "green", "blue"],
                 answer: 1,
                 hint: "Find the core unit that keeps repeating itself over and over.",
                 explanation: "The core repeating unit is [Red, Yellow, Green]. After Red, the next color in the unit is always Yellow."
@@ -392,7 +457,7 @@
                 const splash = document.getElementById('splash-screen');
                 splash.style.opacity = '0';
                 setTimeout(() => splash.style.display = 'none', 500);
-            }, 5000); // Strict 5-second brand requirement rule
+            }, 5000);
         });
 
         function startInteractive() {
@@ -413,17 +478,45 @@
 
             let qData = questionBank[currentIndex];
             document.getElementById('progress-text').innerText = `Question: ${currentIndex + 1}/${questionBank.length}`;
-            
-            // Clean question mapping without the bracketed headers
             document.getElementById('target-question').innerText = qData.question;
             
+            // Visual Cloud Container Setup
+            const visualZone = document.getElementById('pattern-visual-zone');
+            if (qData.isVisualCloud) {
+                visualZone.innerHTML = '';
+                qData.cloudPattern.forEach(color => {
+                    let cloud = document.createElement('div');
+                    cloud.className = `cloud-shape ${color}`;
+                    visualZone.appendChild(cloud);
+                });
+                let ellipsis = document.createElement('span');
+                ellipsis.className = 'pattern-ellipsis';
+                ellipsis.innerText = '...';
+                visualZone.appendChild(ellipsis);
+                visualZone.style.display = 'flex';
+            } else {
+                visualZone.style.display = 'none';
+            }
+
             const optionsBox = document.getElementById('target-options');
             optionsBox.innerHTML = '';
 
             qData.options.forEach((optText, index) => {
                 let btn = document.createElement('button');
                 btn.className = 'option-btn';
-                btn.innerText = optText;
+                
+                // If question uses visual elements, embed matching cloud icon inside button options
+                if (qData.isVisualCloud && qData.optionColors) {
+                    let optionCloud = document.createElement('div');
+                    optionCloud.className = `cloud-shape ${qData.optionColors[index]}`;
+                    optionCloud.style.marginTop = '0px'; 
+                    btn.appendChild(optionCloud);
+                }
+
+                let textSpan = document.createElement('span');
+                textSpan.innerText = optText;
+                btn.appendChild(textSpan);
+                
                 btn.setAttribute('onclick', `evaluateSelection(this, ${index})`);
                 optionsBox.appendChild(btn);
             });
@@ -512,7 +605,7 @@
             const audio = document.getElementById(`audio-${type}`);
             if (audio) {
                 audio.currentTime = 0;
-                audio.play().catch(e => console.log("Audio elements parsed smoothly."));
+                audio.play().catch(e => console.log("Audio pipeline parsed safely."));
             }
         }
 
