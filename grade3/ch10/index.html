@@ -224,12 +224,12 @@
     <canvas id="particle-canvas"></canvas>
 
     <div id="splash-screen">
-        <img src="grade-3/maths/chapter-8/assets/logo.png" alt="Innovine Logo" class="logo-placeholder" onerror="this.style.display='none'; document.getElementById('logo-text').style.display='block';">
+        <img src="grade3/ch10/assets/logo.png" alt="Innovine Logo" class="logo-placeholder" onerror="this.style.display='none'; document.getElementById('logo-text').style.display='block';">
         <h2 id="logo-text" style="display:none; color: var(--primary);">Innovine</h2>
     </div>
 
-    <audio id="audio-correct" src="grade-3/maths/chapter-8/assets/correct.mp3" preload="auto"></audio>
-    <audio id="audio-wrong" src="grade-3/maths/chapter-8/assets/wrong.mp3" preload="auto"></audio>
+    <audio id="audio-correct" src="grade3/ch10/assets/claps.mp3" preload="auto"></audio>
+    <audio id="audio-wrong" src="grade3/ch10/assets/wrong.mp3" preload="auto"></audio>
 
     <div class="container">
         
@@ -437,7 +437,7 @@
                 const splash = document.getElementById('splash-screen');
                 splash.style.opacity = '0';
                 setTimeout(() => splash.style.display = 'none', 500);
-            }, 5000); // Strict 5-second brand requirement
+            }, 5000);
         });
 
         function startInteractive() {
@@ -511,7 +511,6 @@
                 triggerSparkles();
                 playSound('correct');
                 
-                // Hide lingering hint boxes on successful answers
                 document.getElementById('hint-feedback').style.display = 'none';
 
                 const explBox = document.getElementById('explain-feedback');
@@ -555,10 +554,11 @@
         }
 
         function playSound(type) {
-            const audio = document.getElementById(`audio-${type}`);
+            let soundId = type === 'correct' ? 'audio-correct' : 'audio-wrong';
+            const audio = document.getElementById(soundId);
             if (audio) {
                 audio.currentTime = 0;
-                audio.play().catch(e => console.log("Audio contextual playback restriction track logs safely."));
+                audio.play().catch(e => console.log("Audio play prevented or missing."));
             }
         }
 
@@ -599,7 +599,7 @@
             document.getElementById('welcome-screen').classList.add('active');
         }
 
-        // Particle System Engine (Safely mutates elements by iterating backwards)
+        // Particle System Engine
         const canvas = document.getElementById('particle-canvas');
         const ctx = canvas.getContext('2d');
         let particles = [];
