@@ -124,83 +124,20 @@
             width: 100%;
         }
 
-        /* Interactive Custom Visual Aids */
+        /* Visual Aids Container */
         .visual-aid {
-            margin: 15px 0;
+            margin: 10px 0 20px 0;
             display: flex;
             justify-content: center;
             align-items: center;
             width: 100%;
         }
 
-        /* Clean Pizza Image Display styling */
         .pizza-img {
             max-width: 150px;
             height: auto;
             object-fit: contain;
             display: block;
-        }
-
-        .fraction-window {
-            display: grid;
-            grid-template-columns: repeat(2, 70px);
-            grid-template-rows: repeat(2, 70px);
-            gap: 4px;
-            background: #334155;
-            padding: 6px;
-            border-radius: 6px;
-        }
-
-        .window-pane {
-            background: #BAE6FD;
-            border: 1px solid #0284C7;
-        }
-
-        .window-pane.shaded {
-            background: #3B82F6;
-            position: relative;
-        }
-        .window-pane.shaded::after {
-            content: '☁️';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 20px;
-        }
-
-        .unequal-circle {
-            width: 130px;
-            height: 130px;
-            border-radius: 50%;
-            background: #E2E8F0;
-            border: 3px solid #64748B;
-            position: relative;
-            overflow: hidden;
-        }
-        .line-vertical {
-            position: absolute;
-            left: 35px;
-            top: 0;
-            width: 3px;
-            height: 100%;
-            background: #64748B;
-        }
-        .line-horizontal {
-            position: absolute;
-            top: 75px;
-            left: 0;
-            height: 3px;
-            width: 100%;
-            background: #64748B;
-        }
-        .circle-shaded-part {
-            position: absolute;
-            left: 0;
-            top: 0;
-            width: 35px;
-            height: 75px;
-            background: #FCD34D;
         }
 
         /* Buttons & Options Layout */
@@ -368,7 +305,6 @@
     <audio id="audio-wrong" src="assets/wrong.mp3" preload="auto"></audio>
 
     <script>
-        // 10 Structural Competency Based Questions with brackets removed
         const database = [
             {
                 context: "Mini brings a full round pizza to school. She wants to share it equally with her friend Rohan. Into how many equal parts should she cut the pizza so that both of them get an exact half?",
@@ -388,7 +324,7 @@
             },
             {
                 context: "Kabir has a long chocolate bar divided structurally into 4 equal pieces. He breaks it apart and gives 3 pieces to his younger sister. What fraction of the chocolate bar did his sister get?",
-                visualType: null,
+                visualType: "chocolate",
                 options: ["One-fourth (1/4)", "Two-fourths (2/4)", "Three-fourths (3/4)", "The whole chocolate"],
                 correct: 2,
                 hint: "Count how many equal pieces his sister received out of the 4 total matching pieces.",
@@ -440,7 +376,7 @@
                 explanation: "Dividing 12 cookies into 4 equal groups gives 3 cookies per group (1/4 = 3). Since Meera ate 2 groups, she ate 3 + 3 = 6 cookies."
             },
             {
-                context: "Looking back at the cookie box scenario: Rohan finished 1/4 of the cookies, and Meera finished 2/4 of the box. What total fraction of the cookies did both children finish together?",
+                context: "In a box of snacks, Rohan eats 1/4 of the cookies and Meera eats 2/4 of the cookies. What total fraction of the cookie box did both children finish together?",
                 visualType: null,
                 options: ["1/4 of the box", "2/4 of the box", "3/4 of the box", "4/4 of the box"],
                 correct: 2,
@@ -448,12 +384,12 @@
                 explanation: "Adding 1/4 and 2/4 directly gives 3/4. Together they ate three-fourths of the full cookie box."
             },
             {
-                context: "After Rohan and Meera finished eating their combined total fraction of 3/4 of the cookies, the remaining cookies left inside the box were saved for Papa. What fraction is left for Papa?",
+                context: "A full cookie box is represented by the fraction 4/4. If some children finish eating a combined total fraction of 3/4 of the box, what remaining fraction of cookies is left over for Papa?",
                 visualType: null,
                 options: ["1/4 of the box", "2/4 of the box", "3/4 of the box", "No cookies are left"],
                 correct: 0,
-                hint: "The full complete cookie box is represented by the whole fraction 4/4. Subtract what the children ate.",
-                explanation: "The full box is 1 whole (4/4). Subtracting the children's share leaves 4/4 - 3/4 = 1/4 of the box for Papa."
+                hint: "Start with the complete whole box fraction (4/4) and subtract the part that was already eaten (3/4).",
+                explanation: "The full box is 1 whole (4/4). Subtracting the eaten share leaves 4/4 - 3/4 = 1/4 of the box for Papa."
             }
         ];
 
@@ -494,27 +430,41 @@
             const qData = database[state.currentIdx];
             document.getElementById('q-context').innerText = qData.context;
 
-            // Render dynamic visual aids cleanly
             const aidBox = document.getElementById('visual-aid-box');
             aidBox.innerHTML = '';
             
             if(qData.visualType === 'pizza') {
-                aidBox.innerHTML = `<img src="assets/pizza.png" alt="Pizza Graphic" class="pizza-img">`;
+                aidBox.innerHTML = `<img src="assets/pizza.png" alt="Whole Pizza with Toppings" class="pizza-img">`;
             } else if(qData.visualType === 'window') {
                 aidBox.innerHTML = `
-                    <div class="fraction-window">
-                        <div class="window-pane shaded"></div>
-                        <div class="window-pane shaded"></div>
-                        <div class="window-pane"></div>
-                        <div class="window-pane"></div>
-                    </div>`;
+                    <svg width="150" height="150" viewBox="0 0 100 100" style="background:#334155; border-radius:8px; padding:6px;">
+                        <rect x="2" y="2" width="46" height="46" fill="#3B82F6" stroke="#0284C7" stroke-width="1"/>
+                        <text x="25" y="30" font-size="16" text-anchor="middle">☁️</text>
+                        <rect x="52" y="2" width="46" height="46" fill="#3B82F6" stroke="#0284C7" stroke-width="1"/>
+                        <text x="75" y="30" font-size="16" text-anchor="middle">☁️</text>
+                        <rect x="2" y="52" width="46" height="46" fill="#BAE6FD" stroke="#0284C7" stroke-width="1"/>
+                        <rect x="52" y="52" width="46" height="46" fill="#BAE6FD" stroke="#0284C7" stroke-width="1"/>
+                    </svg>`;
+            } else if(qData.visualType === 'chocolate') {
+                aidBox.innerHTML = `
+                    <svg width="220" height="65" viewBox="0 0 160 45" style="filter: drop-shadow(0px 2px 4px rgba(0,0,0,0.15));">
+                        <rect x="2" y="2" width="36" height="40" rx="4" fill="#7A431D" stroke="#5C3214" stroke-width="1.5"/>
+                        <rect x="7" y="6" width="26" height="32" rx="2" fill="#8B4F26"/>
+                        <rect x="41" y="2" width="36" height="40" rx="4" fill="#7A431D" stroke="#5C3214" stroke-width="1.5"/>
+                        <rect x="46" y="6" width="26" height="32" rx="2" fill="#8B4F26"/>
+                        <rect x="80" y="2" width="36" height="40" rx="4" fill="#7A431D" stroke="#5C3214" stroke-width="1.5"/>
+                        <rect x="85" y="6" width="26" height="32" rx="2" fill="#8B4F26"/>
+                        <rect x="119" y="2" width="36" height="40" rx="4" fill="#7A431D" stroke="#5C3214" stroke-width="1.5"/>
+                        <rect x="124" y="6" width="26" height="32" rx="2" fill="#8B4F26"/>
+                    </svg>`;
             } else if(qData.visualType === 'unequal-circle') {
                 aidBox.innerHTML = `
-                    <div class="unequal-circle">
-                        <div class="circle-shaded-part"></div>
-                        <div class="line-vertical"></div>
-                        <div class="line-horizontal"></div>
-                    </div>`;
+                    <svg width="140" height="140" viewBox="0 0 100 100">
+                        <circle cx="50" cy="50" r="46" fill="#E2E8F0" stroke="#64748B" stroke-width="3"/>
+                        <path d="M 50 50 L 25 50 A 46 46 0 0 1 50 4" fill="#FCD34D" />
+                        <line x1="25" y1="4" x2="25" y2="96" stroke="#64748B" stroke-width="2.5"/>
+                        <line x1="4" y1="50" x2="96" y2="50" stroke="#64748B" stroke-width="2.5"/>
+                    </svg>`;
             }
 
             const optBox = document.getElementById('options-box');
