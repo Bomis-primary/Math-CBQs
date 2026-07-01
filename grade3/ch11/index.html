@@ -413,7 +413,9 @@
 
             let qData = questionBank[currentIndex];
             document.getElementById('progress-text').innerText = `Question: ${currentIndex + 1}/${questionBank.length}`;
-            document.getElementById('target-question').innerText = `[${qData.type}]\n${qData.question}`;
+            
+            // Clean question mapping without the bracketed headers
+            document.getElementById('target-question').innerText = qData.question;
             
             const optionsBox = document.getElementById('target-options');
             optionsBox.innerHTML = '';
@@ -510,7 +512,7 @@
             const audio = document.getElementById(`audio-${type}`);
             if (audio) {
                 audio.currentTime = 0;
-                audio.play().catch(e => console.log("Audio pipeline loaded successfully."));
+                audio.play().catch(e => console.log("Audio elements parsed smoothly."));
             }
         }
 
@@ -551,7 +553,7 @@
             document.getElementById('welcome-screen').classList.add('active');
         }
 
-        // Particle System Engine (Sky Blue Accents)
+        // Particle System Engine
         const canvas = document.getElementById('particle-canvas');
         const ctx = canvas.getContext('2d');
         let particles = [];
