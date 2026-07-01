@@ -307,25 +307,25 @@
                 explanation: "Aditya's estimate of 20 minutes was much higher than the actual measured time of 3 minutes. Brushing teeth normally takes a few minutes, not close to half an hour."
             },
             {
-                question: "If today is Tuesday, what day of the week will it be tomorrow?",
-                options: ["Monday", "Wednesday", "Thursday", "Sunday"],
+                question: "Rahul's cousin calls him on Tuesday and says, 'I will reach your city by train the day after tomorrow.' On what day of the week will Rahul's cousin arrive?",
+                options: ["Wednesday", "Thursday", "Friday", "Monday"],
                 answer: 1,
-                hint: "Tomorrow means the very next day immediately following today.",
-                explanation: "The day that comes immediately after Tuesday is Wednesday."
+                hint: "Start at Tuesday. 'Tomorrow' is the very next day, and 'the day after tomorrow' is one more day after that.",
+                explanation: "Starting from Tuesday, tomorrow is Wednesday, and the day after tomorrow is Thursday. Therefore, his cousin will arrive on Thursday."
             },
             {
-                question: "Riya's school project is due 'the day after tomorrow'. If today is Thursday, on which day must she submit her project?",
+                question: "Riya's school project is due 'the day after tomorrow'. If yesterday was Thursday, on which day must she submit her project?",
                 options: ["Friday", "Saturday", "Sunday", "Wednesday"],
-                answer: 1,
-                hint: "'The day after tomorrow' means you must jump forward exactly two days from today.",
-                explanation: "Counting two days forward from Thursday (1 day is Friday, 2 days is Saturday) brings us to Saturday."
+                answer: 2,
+                hint: "First find out what day it is today. If yesterday was Thursday, today must be Friday. Now skip ahead two days ('the day after tomorrow').",
+                explanation: "If yesterday was Thursday, today is Friday. 'Tomorrow' would be Saturday, and 'the day after tomorrow' is Sunday. Riya must submit her project on Sunday."
             },
             {
-                question: "The current year is 2026. Aman was asked to write down the date of an event that happened in the 'previous year'. What year should he write?",
-                options: ["2027", "2025", "2024", "2028"],
-                answer: 1,
-                hint: "The 'previous year' means the year that came immediately before the current year (2026 - 1).",
-                explanation: "The year immediately preceding 2026 is 2025."
+                question: "The current year is 2026. Aman's older sister was born exactly 4 years before the 'previous year' relative to 2026. If Aman is exactly 3 years younger than his sister, in what calendar year was Aman born?",
+                options: ["2027", "2025", "2024", "2022"],
+                answer: 2,
+                hint: "Break it down: 1) What is the 'previous year' before 2026? 2) Subtract 4 years to find the sister's birth year. 3) Since Aman is younger, add 3 years to his sister's birth year.",
+                explanation: "The 'previous year' relative to 2026 is 2025. His sister was born 4 years before that (2025 - 4 = 2021). Since Aman is 3 years younger than her, he was born 3 years later (2021 + 3 = 2024)."
             },
             {
                 question: "Ananya is currently studying in Grade 3 in the year 2026. Her brother tells her she will join high school 'two years from now'. What calendar year will that be?",
@@ -347,7 +347,7 @@
                 explanation: "The statement is incorrect. Quarter past 3 means it is 3:15 (15 minutes past 3). There are 45 minutes left until 4:00, but that time phrase itself is called 'quarter to 4', not quarter past 3."
             },
             {
-                question: "Assertion: An analog clock face has 60 small tick marks around its circular edge.\nReason: The long hand takes exactly 1 hour to visit all 60 ticks because 1 hour equals 60 minutes.",
+                question: "Assertion: An analog clock face has 60 small markings around its circular edge.\nReason: The long hand takes exactly 1 hour to visit all 60 markings because 1 hour equals 60 minutes.",
                 options: [
                     "Both Assertion and Reason are correct, and the Reason perfectly explains the Assertion.",
                     "Both Assertion and Reason are correct, but the Reason does not explain the Assertion.",
@@ -356,28 +356,28 @@
                 ],
                 answer: 0,
                 hint: "Think about why there are 60 markings on a clock and how the minute hand travels across them.",
-                explanation: "Both statements are correct. There are 60 markings because an hour contains 60 minutes, and the minute hand travels across one tick mark every single minute."
+                explanation: "Both statements are correct. There are 60 markings because an hour contains 60 minutes, and the minute hand travels across one marking every single minute."
             },
             {
-                question: "Kabir is building a tracking timeline for his family's history milestones. Based on the clues hidden in his master plan diagram below, what is the missing year value when Kabir was born?",
+                question: "Kabir is reviewing a historical tracking chart for his family's milestones. Based on the clues hidden in his plan diagram below, what is the missing year value when Kabir was born?",
                 hasImage: "timeline-family-blank",
-                options: ["2015", "2019", "2020", "2014"],
+                options: ["2018", "2019", "2021", "2020"],
                 answer: 1,
-                hint: "Take the marriage milestone year of 2015 and add the 4-year growth offset interval to track his birthday.",
-                explanation: "According to the sequencing steps: The house was purchased in 2010. The parents married 5 years later (2015). Kabir was born 4 years after that, which means 2015 + 4 = 2019."
+                hint: "Count backwards from a known milestone. If the new car was bought in 2020, and that happened exactly '+1 year' after Kabir was born, subtract 1 year from 2020.",
+                explanation: "By analyzing the timeline segments backwards from a fixed date: The new car was bought in 2020. Since that milestone occurred 1 year after Kabir was born, Kabir's birth year must be 2020 - 1 = 2019."
             },
             {
-                question: "Review Kabir's completed historical chart below carefully. Which of the following selections correctly describes the historical chronological order of these family milestones from earliest to latest?",
+                question: "Review Kabir's completed family historical chart below carefully. Which of the following selections correctly describes the chronological sequence of these family milestones from earliest to latest?",
                 hasImage: "timeline-family",
                 options: [
-                    "Event B → Event C → Event A",
-                    "Event A → Event B → Event C",
-                    "Event C → Event B → Event A",
-                    "Event A → Event C → Event B"
+                    "Event D → Event E → Event C",
+                    "Event C → Event D → Event E",
+                    "Event E → Event D → Event C",
+                    "Event C → Event E → Event D"
                 ],
                 answer: 1,
-                hint: "Arrange the events starting from the oldest year (smallest number) moving forward to the most recent year.",
-                explanation: "Chronological order requires organizing by time sequence: 2010 (Event A) happened first, followed by 2015 (Event B), and finally 2019 (Event C)."
+                hint: "Arrange the milestones by sorting them from the earliest year value (smallest number) to the latest year value (largest number).",
+                explanation: "Chronological organization follows the flow of time: 2019 (Event C: Kabir Born) happened first, followed by 2020 (Event D: Bought new car), and finally 2022 (Event E: Kabir joined play school)."
             }
         ];
 
@@ -429,28 +429,28 @@
         function generateTimelineSVG(hideBirthYear = false) {
             return `
             <div style="display:flex; justify-content:center; margin: 15px 0; width:100%;">
-                <svg width="100%" height="80" viewBox="0 0 300 80" style="background:transparent;">
+                <svg width="100%" height="85" viewBox="0 0 300 85" style="background:transparent;">
                     <line x1="20" y1="40" x2="280" y2="40" stroke="#1e3a8a" stroke-width="3" stroke-linecap="round"/>
                     <polygon points="280,35 290,40 280,45" fill="#1e3a8a"/>
                     
                     <circle cx="50" cy="40" r="6" fill="#3b82f6"/>
-                    <text x="50" y="24" font-size="8" font-weight="bold" text-anchor="middle" fill="#1f2937">2010</text>
-                    <text x="50" y="58" font-size="7" font-weight="bold" text-anchor="middle" fill="#4b5563">Event A</text>
-                    <text x="50" y="68" font-size="6.5" text-anchor="middle" fill="#9ca3af">(House Bought)</text>
+                    <text x="50" y="24" font-size="8" font-weight="bold" text-anchor="middle" fill="#1f2937">${hideBirthYear ? '?' : '2019'}</text>
+                    <text x="50" y="56" font-size="7" font-weight="bold" text-anchor="middle" fill="#4b5563">Event C</text>
+                    <text x="50" y="66" font-size="6.5" text-anchor="middle" fill="#9ca3af">(Kabir Born)</text>
                     
-                    <text x="100" y="34" font-size="7" font-weight="bold" fill="#f59e0b" text-anchor="middle">+5 Years</text>
+                    <text x="100" y="34" font-size="7" font-weight="bold" fill="#f59e0b" text-anchor="middle">+1 Year</text>
                     
                     <circle cx="150" cy="40" r="6" fill="#3b82f6"/>
-                    <text x="150" y="24" font-size="8" font-weight="bold" text-anchor="middle" fill="#1f2937">2015</text>
-                    <text x="150" y="58" font-size="7" font-weight="bold" text-anchor="middle" fill="#4b5563">Event B</text>
-                    <text x="150" y="68" font-size="6.5" text-anchor="middle" fill="#9ca3af">(Parents Married)</text>
+                    <text x="150" y="24" font-size="8" font-weight="bold" text-anchor="middle" fill="#1f2937">2020</text>
+                    <text x="150" y="56" font-size="7" font-weight="bold" text-anchor="middle" fill="#4b5563">Event D</text>
+                    <text x="150" y="66" font-size="6.5" text-anchor="middle" fill="#9ca3af">(Bought New Car)</text>
                     
-                    <text x="200" y="34" font-size="7" font-weight="bold" fill="#f59e0b" text-anchor="middle">+4 Years</text>
+                    <text x="200" y="34" font-size="7" font-weight="bold" fill="#f59e0b" text-anchor="middle">+2 Years</text>
                     
                     <circle cx="250" cy="40" r="6" fill="#3b82f6"/>
-                    <text x="250" y="24" font-size="8" font-weight="bold" text-anchor="middle" fill="#1f2937">${hideBirthYear ? '?' : '2019'}</text>
-                    <text x="250" y="58" font-size="7" font-weight="bold" text-anchor="middle" fill="#4b5563">Event C</text>
-                    <text x="250" y="68" font-size="6.5" text-anchor="middle" fill="#9ca3af">(Kabir Born)</text>
+                    <text x="250" y="24" font-size="8" font-weight="bold" text-anchor="middle" fill="#1f2937">2022</text>
+                    <text x="250" y="56" font-size="7" font-weight="bold" text-anchor="middle" fill="#4b5563">Event E</text>
+                    <text x="250" y="66" font-size="6.5" text-anchor="middle" fill="#9ca3af">(Joined Play School)</text>
                 </svg>
             </div>`;
         }
@@ -581,7 +581,7 @@
             const audio = document.getElementById(`audio-${type}`);
             if (audio) {
                 audio.currentTime = 0;
-                audio.play().catch(e => console.log("Audio framework dynamic lock active."));
+                audio.play().catch(e => console.log("Audio node initialized."));
             }
         }
 
