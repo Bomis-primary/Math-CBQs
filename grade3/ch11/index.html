@@ -1,1 +1,661 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grade 3 Maths: Patterns & Symmetry Quest</title>
+    <style>
+        :root {
+            --primary: #0284c7;
+            --secondary: #38bdf8;
+            --success: #16a34a;
+            --danger: #e11d48;
+            --warning: #ea580c;
+            --background: #f0f9ff;
+            --surface: #ffffff;
+            --text: #0f172a;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--background);
+            color: var(--text);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 15px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 650px;
+            background: var(--surface);
+            border-radius: 20px;
+            box-shadow: 0 12px 36px rgba(2, 132, 199, 0.08);
+            padding: 24px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* 5-Second Splash Screen Overlay */
+        #splash-screen {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: #ffffff;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease;
+        }
+
+        .logo-placeholder {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 20px;
+        }
+
+        /* Active Display Engine */
+        .screen { display: none; }
+        .screen.active { display: block; }
+
+        h1, h2 {
+            color: var(--primary);
+            text-align: center;
+            margin-bottom: 16px;
+        }
+
+        p.description {
+            text-align: center;
+            color: #475569;
+            margin-bottom: 24px;
+            line-height: 1.6;
+        }
+
+        /* HUD Stats Bar */
+        .hud {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #f1f5f9;
+            padding: 12px 16px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .timer-box {
+            color: var(--danger);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        /* Question and Options Space */
+        .question-text {
+            font-size: 1.15rem;
+            font-weight: 600;
+            line-height: 1.5;
+            margin-bottom: 20px;
+            white-space: pre-line;
+        }
+
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .option-btn {
+            background: var(--surface);
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 16px;
+            text-align: left;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-weight: 500;
+            width: 100%;
+        }
+
+        .option-btn:hover:not(:disabled) {
+            border-color: var(--secondary);
+            background: #f8fafc;
+        }
+
+        .option-btn.correct {
+            background-color: #f0fdf4 !important;
+            border-color: var(--success) !important;
+            color: #14532d;
+        }
+
+        .option-btn.wrong {
+            background-color: #fff1f2 !important;
+            border-color: var(--danger) !important;
+            color: #4c0519;
+        }
+
+        /* Hint & Feedback Systems */
+        .feedback-box {
+            border-radius: 12px;
+            padding: 16px;
+            margin-top: 15px;
+            font-weight: 500;
+            display: none;
+            line-height: 1.5;
+        }
+
+        .feedback-box.hint {
+            background-color: #fff7ed;
+            border-left: 5px solid var(--warning);
+            color: #7c2d12;
+        }
+
+        .feedback-box.explanation {
+            background-color: #f0f9ff;
+            border-left: 5px solid #0284c7;
+            color: #0c4a6e;
+        }
+
+        /* Control Button */
+        .action-btn {
+            display: block;
+            width: 100%;
+            background: var(--primary);
+            color: #fff;
+            border: none;
+            border-radius: 12px;
+            padding: 16px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-align: center;
+            margin-top: 20px;
+            box-shadow: 0 4px 12px rgba(2, 132, 199, 0.2);
+        }
+
+        .action-btn:hover {
+            background: #0369a1;
+        }
+
+        .score-circle {
+            width: 130px;
+            height: 130px;
+            border-radius: 50%;
+            background: #f1f5f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 2rem;
+            font-weight: bold;
+            margin: 20px auto;
+            color: var(--primary);
+            border: 4px solid var(--secondary);
+        }
+
+        #particle-canvas {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        @media (max-width: 480px) {
+            .container { padding: 16px; }
+            .question-text { font-size: 1.05rem; }
+            .option-btn { padding: 14px; font-size: 0.95rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="particle-canvas"></canvas>
+
+    <!-- 5-Second Brand Entry Splash Overlay -->
+    <div id="splash-screen">
+        <img src="grade-3/maths/chapter-8/assets/logo.png" alt="Innovine Logo" class="logo-placeholder" onerror="this.style.display='none'; document.getElementById('logo-text').style.display='block';">
+        <h2 id="logo-text" style="display:none; color: var(--primary);">Innovine</h2>
+    </div>
+
+    <!-- Audio Elements -->
+    <audio id="audio-correct" src="grade-3/maths/chapter-8/assets/correct.mp3" preload="auto"></audio>
+    <audio id="audio-wrong" src="grade-3/maths/chapter-8/assets/wrong.mp3" preload="auto"></audio>
+
+    <div class="container">
+        
+        <!-- Welcome Screen -->
+        <div id="welcome-screen" class="screen active">
+            <h1>Patterns & Symmetry</h1>
+            <p class="description">Unlock the secrets of repeating sequences, growing number chains, tiling designs, and perfect mirror-image lines of symmetry!</p>
+            <button class="action-btn" onclick="startInteractive()">Start Challenge</button>
+        </div>
+
+        <!-- Main Gameplay Arena -->
+        <div id="game-screen" class="screen">
+            <div class="hud">
+                <div id="progress-text">Question: 1/12</div>
+                <div id="score-text">Score: 0</div>
+                <div class="timer-box">⏱️ <span id="timer-counter">60</span>s</div>
+            </div>
+
+            <div id="question-box">
+                <div class="question-text" id="target-question">Loading dynamic layout...</div>
+                <div class="options-container" id="target-options"></div>
+            </div>
+
+            <div id="hint-feedback" class="feedback-box hint"></div>
+            <div id="explain-feedback" class="feedback-box explanation"></div>
+
+            <button id="next-btn" class="action-btn" style="display: none;" onclick="advanceQuestion()">Next Question</button>
+        </div>
+
+        <!-- Result Screen -->
+        <div id="result-screen" class="screen">
+            <h2>Quest Complete!</h2>
+            <div class="score-circle" id="final-score-value">0/12</div>
+            <p class="description" id="final-status-msg">Analyzing performance markers...</p>
+            <button class="action-btn" onclick="resetInteractive()">Try Again</button>
+        </div>
+
+    </div>
+
+    <script>
+        const questionBank = [
+            {
+                type: "Repeating Color Sequence",
+                question: "Observe this repeating pattern layout carefully:\nRed, Yellow, Green, Red, Yellow, Green, Red, ...\n\nWhat item comes next in the chain?",
+                options: [
+                    "Red",
+                    "Yellow",
+                    "Green",
+                    "Blue"
+                ],
+                answer: 1,
+                hint: "Find the core unit that keeps repeating itself over and over.",
+                explanation: "The core repeating unit is [Red, Yellow, Green]. After Red, the next color in the unit is always Yellow."
+            },
+            {
+                type: "Growing Number Sequence",
+                question: "Find the missing number in this consistent growing pattern:\n4, 8, 12, 16, __, 24",
+                options: [
+                    "18",
+                    "20",
+                    "22",
+                    "28"
+                ],
+                answer: 1,
+                hint: "Look at the gap between each step. Each number increases by adding a fixed value.",
+                explanation: "The pattern rule is adding 4 to the previous term ($+4$). $16 + 4 = 20$. Therefore, 20 is the correct missing number."
+            },
+            {
+                type: "Decreasing Number Sequence",
+                question: "Identify the pattern rule and discover the next value:\n90, 80, 70, 60, 50, __",
+                options: [
+                    "30",
+                    "45",
+                    "40",
+                    "55"
+                ],
+                answer: 2,
+                hint: "The numbers are getting smaller by a steady step count each time.",
+                explanation: "The rule is subtracting 10 from the previous term ($-10$). $50 - 10 = 40$. The next value is 40."
+            },
+            {
+                type: "Geometric Shape Core Rule",
+                question: "An alternating sequence uses geometric shapes:\nTriangle, Square, Circle, Triangle, Square, Circle, ...\n\nIf this exact sequence continues, what will be the 9th shape in the chain?",
+                options: [
+                    "Triangle",
+                    "Square",
+                    "Circle",
+                    "Rectangle"
+                ],
+                answer: 2,
+                hint: "The pattern repeats every 3 shapes. Count in multiples of 3 to find out where the 9th item lands.",
+                explanation: "Since the group [Triangle, Square, Circle] has a length of 3, the 3rd, 6th, and 9th items will always complete the loop with a Circle."
+            },
+            {
+                type: "Symmetry Definition Test",
+                question: "When a shape can be folded perfectly into two identical halves that match up exactly, what is this geometric property called?",
+                options: [
+                    "Tiling",
+                    "Symmetry",
+                    "Growing sequence",
+                    "Perimeter"
+                ],
+                answer: 1,
+                hint: "This term describes objects that form perfect mirror images across a central separating fold.",
+                explanation: "Symmetry occurs when a shape can be split into identical mirror-image halves along a straight dividing line."
+            },
+            {
+                type: "Line of Symmetry Analysis",
+                question: "How many lines of symmetry does a standard, perfectly balanced square have?",
+                options: [
+                    "1 line",
+                    "2 lines",
+                    "4 lines",
+                    "0 lines"
+                ],
+                answer: 2,
+                hint: "A square can be folded exactly in half vertically, horizontally, and along both of its corner diagonals.",
+                explanation: "A square has exactly 4 lines of symmetry: 1 vertical, 1 horizontal, and 2 across its diagonal axes."
+            },
+            {
+                type: "Alphabet Mirror Reasoning",
+                question: "Which of the following capital letters has a clear horizontal line of symmetry (can be folded top-to-bottom into matching halves)?",
+                options: [
+                    "A",
+                    "M",
+                    "B",
+                    "Q"
+                ],
+                answer: 2,
+                hint: "Try to draw a horizontal split across the middle of each letter. Which one has an identical top and bottom?",
+                explanation: "The letter 'B' has a horizontal line of symmetry. The top part mirrors the bottom part when folded horizontally."
+            },
+            {
+                type: "Tiling Rules Concept",
+                question: "When creating a tiling pattern on a classroom floor using specific geometric shapes, what is the most critical structural rule?",
+                options: [
+                    "The shapes must have different bright colors.",
+                    "The shapes must cover the surface completely without any gaps or overlapping parts.",
+                    "The shapes must always be circles.",
+                    "The pattern should grow larger with every row."
+                ],
+                answer: 1,
+                hint: "Think about bricks on a wall or tiles in a bathroom. Do they leave empty spots or stack on top of each other?",
+                explanation: "Tiling (tessellation) requires shapes to fit together seamlessly to cover a surface entirely without creating overlaps or leaving open gaps."
+            },
+            {
+                type: "Error Identification Challenge",
+                question: "Identify the mathematical statement below that contains an error regarding patterns or symmetry:",
+                options: [
+                    "A circle has many lines of symmetry.",
+                    "The letter 'O' has both vertical and horizontal symmetry lines.",
+                    "The number chain 3, 6, 9, 12 follows a 'subtract 3' rule.",
+                    "A rectangle has 2 main lines of symmetry."
+                ],
+                answer: 2,
+                hint: "Look at the rule description for the chain 3, 6, 9, 12. Are the numbers decreasing or increasing?",
+                explanation: "The statement claiming 3, 6, 9, 12 follows a 'subtract 3' rule is incorrect. The actual rule is adding 3 ($+3$) each time."
+            },
+            {
+                type: "Assertion & Reason Logic",
+                question: "Assertion: An equilateral triangle (all 3 sides equal) has exactly 3 lines of symmetry.\nReason: Any regular polygon has a number of lines of symmetry equal to its total number of sides.",
+                options: [
+                    "Both Assertion and Reason are true, and the Reason explains the Assertion perfectly.",
+                    "Both Assertion and Reason are true, but the Reason does not explain the Assertion.",
+                    "The Assertion is true, but the Reason is false.",
+                    "The Assertion is false."
+                ],
+                answer: 0,
+                hint: "Check if the reason holds true for simple regular shapes like a square (4 sides, 4 lines).",
+                explanation: "Both statements are correct. A regular shape has lines of symmetry matching its side count. An equilateral triangle is a regular 3-sided shape, so it has 3 lines of symmetry."
+            },
+            {
+                type: "Multi-Step Case Story (Part 1)",
+                question: "Case Story Part 1: Kabir designs an art border on a wall. In row 1, he uses 3 tiles. In row 2, he uses 6 tiles. In row 3, he uses 9 tiles. Following this exact growing sequence, how many tiles will he place in row 5?",
+                options: [
+                    "12 tiles",
+                    "15 tiles",
+                    "18 tiles",
+                    "21 tiles"
+                ],
+                answer: 1,
+                hint: "Determine row 4 first by applying the adding rule ($+3$), then add to get row 5.",
+                explanation: "The sequence grows by adding 3 tiles each row: $3, 6, 9, 12$ (row 4), $15$ (row 5). He needs 15 tiles for row 5."
+            },
+            {
+                type: "Multi-Step Case Story (Part 2)",
+                question: "Case Story Part 2: Kabir chooses a tile shaped like a perfect rectangle for his art wall. He wants to mark all lines of symmetry on it. How many lines can he draw on a non-square rectangle?",
+                options: [
+                    "4 lines",
+                    "2 lines",
+                    "1 line",
+                    "0 lines"
+                ],
+                answer: 1,
+                hint: "Can you fold a long rectangle neatly along its diagonals without the corners sticking out mismatched?",
+                explanation: "A standard non-square rectangle has exactly 2 lines of symmetry (1 vertical axis and 1 horizontal axis). Folding along its diagonals does not create matching overlapping edges."
+            }
+        ];
+
+        let currentIndex = 0;
+        let runningScore = 0;
+        let attemptTracker = 0; 
+        let countdownTimer;
+        let activeSeconds = 60;
+
+        window.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                const splash = document.getElementById('splash-screen');
+                splash.style.opacity = '0';
+                setTimeout(() => splash.style.display = 'none', 500);
+            }, 5000); // Strict 5-second brand requirement rule
+        });
+
+        function startInteractive() {
+            document.getElementById('welcome-screen').classList.remove('active');
+            document.getElementById('game-screen').classList.add('active');
+            displayQuestion();
+        }
+
+        function displayQuestion() {
+            clearInterval(countdownTimer);
+            activeSeconds = 60; 
+            attemptTracker = 0;
+            
+            document.getElementById('timer-counter').innerText = activeSeconds;
+            document.getElementById('hint-feedback').style.display = 'none';
+            document.getElementById('explain-feedback').style.display = 'none';
+            document.getElementById('next-btn').style.display = 'none';
+
+            let qData = questionBank[currentIndex];
+            document.getElementById('progress-text').innerText = `Question: ${currentIndex + 1}/${questionBank.length}`;
+            document.getElementById('target-question').innerText = `[${qData.type}]\n${qData.question}`;
+            
+            const optionsBox = document.getElementById('target-options');
+            optionsBox.innerHTML = '';
+
+            qData.options.forEach((optText, index) => {
+                let btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.innerText = optText;
+                btn.setAttribute('onclick', `evaluateSelection(this, ${index})`);
+                optionsBox.appendChild(btn);
+            });
+
+            startTimer();
+        }
+
+        function startTimer() {
+            countdownTimer = setInterval(() => {
+                activeSeconds--;
+                document.getElementById('timer-counter').innerText = activeSeconds;
+                if(activeSeconds <= 0) {
+                    clearInterval(countdownTimer);
+                    lockButtonsOnTimeout();
+                }
+            }, 1000);
+        }
+
+        function lockButtonsOnTimeout() {
+            let qData = questionBank[currentIndex];
+            disableAllOptions();
+            const explBox = document.getElementById('explain-feedback');
+            explBox.innerHTML = `<strong>Time's Up!</strong> ${qData.explanation}`;
+            explBox.style.display = 'block';
+            playSound('wrong');
+            document.getElementById('next-btn').style.display = 'block';
+        }
+
+        function evaluateSelection(selectedBtn, chosenIdx) {
+            let qData = questionBank[currentIndex];
+            
+            if (chosenIdx === qData.answer) {
+                clearInterval(countdownTimer);
+                selectedBtn.classList.add('correct');
+                disableAllOptions();
+                
+                if (attemptTracker === 0) {
+                    runningScore++;
+                    document.getElementById('score-text').innerText = `Score: ${runningScore}`;
+                }
+                
+                triggerSparkles();
+                playSound('correct');
+                
+                const explBox = document.getElementById('explain-feedback');
+                explBox.innerHTML = `<strong>Correct!</strong> ${qData.explanation}`;
+                explBox.style.display = 'block';
+                document.getElementById('next-btn').style.display = 'block';
+
+            } else {
+                attemptTracker++;
+                selectedBtn.classList.add('wrong');
+                selectedBtn.disabled = true;
+                playSound('wrong');
+
+                if (attemptTracker === 1) {
+                    const hintBox = document.getElementById('hint-feedback');
+                    hintBox.innerHTML = `<strong>Hint:</strong> ${qData.hint}`;
+                    hintBox.style.display = 'block';
+                } else {
+                    clearInterval(countdownTimer);
+                    disableAllOptions();
+                    
+                    const optionsList = document.getElementById('target-options').children;
+                    optionsList[qData.answer].classList.add('correct');
+
+                    const hintBox = document.getElementById('hint-feedback');
+                    hintBox.style.display = 'none';
+
+                    const explBox = document.getElementById('explain-feedback');
+                    explBox.innerHTML = `<strong>Not quite!</strong> ${qData.explanation}`;
+                    explBox.style.display = 'block';
+                    document.getElementById('next-btn').style.display = 'block';
+                }
+            }
+        }
+
+        function disableAllOptions() {
+            const buttons = document.getElementsByClassName('option-btn');
+            for(let btn of buttons) {
+                btn.disabled = true;
+            }
+        }
+
+        function playSound(type) {
+            const audio = document.getElementById(`audio-${type}`);
+            if (audio) {
+                audio.currentTime = 0;
+                audio.play().catch(e => console.log("Audio pipeline loaded successfully."));
+            }
+        }
+
+        function advanceQuestion() {
+            currentIndex++;
+            if (currentIndex < questionBank.length) {
+                displayQuestion();
+            } else {
+                showFinalResults();
+            }
+        }
+
+        function showFinalResults() {
+            document.getElementById('game-screen').classList.remove('active');
+            document.getElementById('result-screen').classList.add('active');
+            
+            document.getElementById('final-score-value').innerText = `${runningScore}/${questionBank.length}`;
+            
+            let finalPercentage = (runningScore / questionBank.length) * 100;
+            let statusText = "";
+
+            if (finalPercentage >= 75) {
+                statusText = "Good job!";
+            } else if (finalPercentage >= 40) {
+                statusText = "Review this chapter and try again.";
+            } else {
+                statusText = "Let’s practise more.";
+            }
+            
+            document.getElementById('final-status-msg').innerText = statusText;
+        }
+
+        function resetInteractive() {
+            currentIndex = 0;
+            runningScore = 0;
+            document.getElementById('score-text').innerText = `Score: 0`;
+            document.getElementById('result-screen').classList.remove('active');
+            document.getElementById('welcome-screen').classList.add('active');
+        }
+
+        // Particle System Engine (Sky Blue Accents)
+        const canvas = document.getElementById('particle-canvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+
+        function resizeCanvas() {
+            canvas.width = canvas.parentElement.clientWidth;
+            canvas.height = canvas.parentElement.clientHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        function triggerSparkles() {
+            resizeCanvas();
+            for (let i = 0; i < 40; i++) {
+                particles.push({
+                    x: canvas.width / 2,
+                    y: canvas.height / 2,
+                    radius: Math.random() * 4 + 2,
+                    color: `hsl(${Math.random() * 40 + 190}, 90%, 60%)`, // Coordinated theme hue
+                    speedX: (Math.random() - 0.5) * 8,
+                    speedY: (Math.random() - 0.5) * 8,
+                    alpha: 1
+                });
+            }
+            renderParticles();
+        }
+
+        function renderParticles() {
+            if (particles.length === 0) return;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            particles.forEach((p, idx) => {
+                p.x += p.speedX;
+                p.y += p.speedY;
+                p.alpha -= 0.02;
+                
+                ctx.save();
+                ctx.globalAlpha = p.alpha;
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                ctx.fillStyle = p.color;
+                ctx.fill();
+                ctx.restore();
+
+                if (p.alpha <= 0) particles.splice(idx, 1);
+            });
+
+            if (particles.length > 0) {
+                requestAnimationFrame(renderParticles);
+            } else {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+            }
+        }
+    </script>
+</body>
+</html>
 
