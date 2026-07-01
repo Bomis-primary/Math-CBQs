@@ -445,7 +445,9 @@
 
             let qData = activeQuestionPool[currentIndex];
             document.getElementById('progress-text').innerText = `Question: ${currentIndex + 1}/${activeQuestionPool.length}`;
-            document.getElementById('target-question').innerText = `[${qData.type}]\n${qData.question}`;
+            
+            // Fixed line: Removed the type prefix in brackets [qData.type] to directly output the question content
+            document.getElementById('target-question').innerText = qData.question;
             
             const optionsBox = document.getElementById('target-options');
             optionsBox.innerHTML = '';
