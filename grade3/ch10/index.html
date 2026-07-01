@@ -305,12 +305,13 @@
     <audio id="audio-wrong" src="assets/wrong.mp3" preload="auto"></audio>
 
     <script>
-        const database = [
+        // Master dataset containing the canonical correct answer text
+        const masterDatabase = [
             {
                 context: "Mini brings a full round pizza to school. She wants to share it equally with her friend Rohan. Into how many equal parts should she cut the pizza so that both of them get an exact half?",
                 visualType: "pizza",
                 options: ["1 part", "2 parts", "3 parts", "4 parts"],
-                correct: 1,
+                correctText: "2 parts",
                 hint: "Think about how many total people want to eat an equal share of the pizza.",
                 explanation: "When 1 whole object is divided into 2 equal parts, each part is called a half (1/2)."
             },
@@ -318,7 +319,7 @@
                 context: "Look at the square window frame. It has 4 small equal square blocks. 2 of the blocks are covered completely by a blue cloud curtain. What fraction of the window is covered?",
                 visualType: "window",
                 options: ["One-fourth (1/4)", "One-half (1/2)", "Three-fourths (3/4)", "Four-fourths (4/4)"],
-                correct: 1,
+                correctText: "One-half (1/2)",
                 hint: "Count how many blocks are covered out of 4. Is 2 exactly half of 4?",
                 explanation: "Covering 2 out of 4 equal parts (2/4) covers exactly one-half (1/2) of the whole window frame."
             },
@@ -326,7 +327,7 @@
                 context: "Kabir has a long chocolate bar divided structurally into 4 equal pieces. He breaks it apart and gives 3 pieces to his younger sister. What fraction of the chocolate bar did his sister get?",
                 visualType: "chocolate",
                 options: ["One-fourth (1/4)", "Two-fourths (2/4)", "Three-fourths (3/4)", "The whole chocolate"],
-                correct: 2,
+                correctText: "Three-fourths (3/4)",
                 hint: "Count how many equal pieces his sister received out of the 4 total matching pieces.",
                 explanation: "Giving 3 out of 4 equal parts represents three-fourths (3/4) of the entire chocolate bar."
             },
@@ -334,7 +335,7 @@
                 context: "Simran writes four fractions on the blackboard: 1/4, 3/4, 2/4, and 1/2. Which fraction does NOT belong to the same group of 'like fractions' as the other three?",
                 visualType: null,
                 options: ["1/4", "3/4", "2/4", "1/2"],
-                correct: 3,
+                correctText: "1/2",
                 hint: "Look closely at the bottom numbers (denominators) of all four fractions written on the board.",
                 explanation: "Like fractions always share the exact same denominator. 1/4, 3/4, and 2/4 all have 4 at the bottom, while 1/2 does not."
             },
@@ -342,7 +343,7 @@
                 context: "Three friends measure how much of their identical drawing sheets they have colored in class: Riya colored 1/3, Amit colored 2/3, and Sana colored 3/3. Who colored the largest part of their sheet?",
                 visualType: null,
                 options: ["Riya", "Amit", "Sana", "They all colored the same amount"],
-                correct: 2,
+                correctText: "Sana",
                 hint: "When the bottom numbers are identical, compare the top numbers to see who completed more parts.",
                 explanation: "3/3 means Sana colored 3 out of 3 equal parts, which is equal to finishing 1 whole drawing sheet."
             },
@@ -350,7 +351,7 @@
                 context: "Arjun wants to show 1/4 of a paper circle. He draws lines to cut it into 4 pieces and colors 1 piece yellow. Look at his shape. What mistake did Arjun make?",
                 visualType: "unequal-circle",
                 options: ["He colored too many parts.", "The 4 parts are not equal in size.", "He should have made only 2 parts.", "He made no mistake."],
-                correct: 1,
+                correctText: "The 4 parts are not equal in size.",
                 hint: "Fractions can only show parts of a whole if all the broken parts are completely fair and identical.",
                 explanation: "Fractions must always represent equal parts of a whole. Because Arjun's pieces are different sizes, it cannot represent 1/4."
             },
@@ -363,7 +364,7 @@
                     "A is correct, but R is wrong.",
                     "Both A and R are wrong."
                 ],
-                correct: 0,
+                correctText: "Both A and R are correct, and R explains A perfectly.",
                 hint: "If you share a single ribbon among 4 people instead of 2 people, do the shares get smaller or larger?",
                 explanation: "The larger the denominator, the more pieces the whole object is divided into, making each single piece smaller."
             },
@@ -371,7 +372,7 @@
                 context: "Mother baked 12 identical cookies for the snack box. Rohan eats 1/4 of the total cookies, and Meera eats 2/4 of the total cookies. How many cookies did Meera eat from the box?",
                 visualType: null,
                 options: ["3 cookies", "4 cookies", "6 cookies", "8 cookies"],
-                correct: 2,
+                correctText: "6 cookies",
                 hint: "Divide 12 cookies into 4 equal groups. Each group has 3 cookies. Meera took 2 of those groups.",
                 explanation: "Dividing 12 cookies into 4 equal groups gives 3 cookies per group (1/4 = 3). Since Meera ate 2 groups, she ate 3 + 3 = 6 cookies."
             },
@@ -379,7 +380,7 @@
                 context: "In a box of snacks, Rohan eats 1/4 of the cookies and Meera eats 2/4 of the cookies. What total fraction of the cookie box did both children finish together?",
                 visualType: null,
                 options: ["1/4 of the box", "2/4 of the box", "3/4 of the box", "4/4 of the box"],
-                correct: 2,
+                correctText: "3/4 of the box",
                 hint: "Since they are like fractions sharing the same bottom number, simply add the top numbers together.",
                 explanation: "Adding 1/4 and 2/4 directly gives 3/4. Together they ate three-fourths of the full cookie box."
             },
@@ -387,11 +388,14 @@
                 context: "A full cookie box is represented by the fraction 4/4. If some children finish eating a combined total fraction of 3/4 of the box, what remaining fraction of cookies is left over for Papa?",
                 visualType: null,
                 options: ["1/4 of the box", "2/4 of the box", "3/4 of the box", "No cookies are left"],
-                correct: 0,
+                correctText: "1/4 of the box",
                 hint: "Start with the complete whole box fraction (4/4) and subtract the part that was already eaten (3/4).",
                 explanation: "The full box is 1 whole (4/4). Subtracting the eaten share leaves 4/4 - 3/4 = 1/4 of the box for Papa."
             }
         ];
+
+        // Active database instance that gets shuffled and randomized
+        let database = [];
 
         let state = {
             currentIdx: 0,
@@ -408,7 +412,34 @@
             }, 5000);
         });
 
+        // Fisher-Yates shuffle engine to randomize any target array
+        function shuffleArray(arr) {
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
+        function prepareQuizData() {
+            // Deep clone master list to ensure fresh state on play-again clicks
+            database = masterDatabase.map(item => {
+                return {
+                    context: item.context,
+                    visualType: item.visualType,
+                    // Randomize order of individual options within the question item
+                    options: shuffleArray([...item.options]),
+                    correctText: item.correctText,
+                    hint: item.hint,
+                    explanation: item.explanation
+                };
+            });
+            // Randomize whole question queue sequence layout
+            shuffleArray(database);
+        }
+
         function startQuiz() {
+            prepareQuizData();
             document.getElementById('intro-screen').classList.remove('active');
             document.getElementById('quiz-module').style.display = 'flex';
             loadQuestion();
@@ -469,11 +500,11 @@
 
             const optBox = document.getElementById('options-box');
             optBox.innerHTML = '';
-            qData.options.forEach((opt, idx) => {
+            qData.options.forEach((opt) => {
                 const btn = document.createElement('button');
                 btn.className = 'option-btn';
                 btn.innerText = opt;
-                btn.onclick = () => handleSelection(idx, btn);
+                btn.onclick = () => handleSelection(opt, btn);
                 optBox.appendChild(btn);
             });
 
@@ -495,11 +526,12 @@
             }, 1000);
         }
 
-        function handleSelection(selectedIdx, selectedBtn) {
+        function handleSelection(selectedText, selectedBtn) {
             const qData = database[state.currentIdx];
             const feedback = document.getElementById('feedback-message');
             
-            if(selectedIdx === qData.correct) {
+            // Evaluates text payload directly rather than indexes to stay dynamic
+            if(selectedText === qData.correctText) {
                 clearInterval(state.timer);
                 playSound('claps');
                 triggerConfetti();
@@ -529,7 +561,7 @@
                     disableAllOptions();
                     feedback.className = 'feedback-box reveal';
                     feedback.style.borderLeft = '4px solid var(--error-color)';
-                    feedback.innerHTML = `<strong>Let's learn:</strong> The correct answer is <strong>${qData.options[qData.correct]}</strong>.<br><br>${qData.explanation}`;
+                    feedback.innerHTML = `<strong>Let's learn:</strong> The correct answer is <strong>${qData.correctText}</strong>.<br><br>${qData.explanation}`;
                     feedback.style.display = 'block';
                     document.getElementById('next-btn').style.display = 'inline-block';
                 }
@@ -542,7 +574,7 @@
             const feedback = document.getElementById('feedback-message');
             feedback.className = 'feedback-box reveal';
             feedback.style.borderLeft = '4px solid var(--secondary-color)';
-            feedback.innerHTML = `<strong>⏰ Time's up!</strong> The correct answer is <strong>${qData.options[qData.correct]}</strong>.<br><br>${qData.explanation}`;
+            feedback.innerHTML = `<strong>⏰ Time's up!</strong> The correct answer is <strong>${qData.correctText}</strong>.<br><br>${qData.explanation}`;
             feedback.style.display = 'block';
             document.getElementById('next-btn').style.display = 'inline-block';
         }
