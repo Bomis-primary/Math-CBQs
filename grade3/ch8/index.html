@@ -36,11 +36,11 @@
 
         .container {
             width: 100%;
-            max-width: 650px;
+            max-width: 750px; 
             background: var(--surface);
             border-radius: 16px;
             box-shadow: 0 8px 24px rgba(0,0,0,0.06);
-            padding: 24px;
+            padding: 32px;
             position: relative;
             overflow: hidden;
         }
@@ -68,7 +68,15 @@
         .screen { display: none; }
         .screen.active { display: block; }
 
-        h1, h2 {
+        h1 {
+            font-size: 2.2rem;
+            color: var(--primary);
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            font-size: 1.8rem;
             color: var(--primary);
             text-align: center;
             margin-bottom: 16px;
@@ -78,7 +86,8 @@
             text-align: center;
             color: #4b5563;
             margin-bottom: 24px;
-            line-height: 1.5;
+            line-height: 1.6;
+            font-size: 1.2rem;
         }
 
         /* HUD layout */
@@ -87,11 +96,11 @@
             justify-content: space-between;
             align-items: center;
             background: #f3f4f6;
-            padding: 12px 16px;
+            padding: 16px 20px;
             border-radius: 12px;
-            margin-bottom: 20px;
-            font-weight: 600;
-            font-size: 0.95rem;
+            margin-bottom: 24px;
+            font-weight: 700;
+            font-size: 1.2rem;
         }
 
         .timer-box {
@@ -103,10 +112,10 @@
 
         /* Question Elements */
         .question-text {
-            font-size: 1.15rem;
-            font-weight: 600;
-            line-height: 1.5;
-            margin-bottom: 20px;
+            font-size: 1.4rem; 
+            font-weight: 700;
+            line-height: 1.6;
+            margin-bottom: 24px;
             white-space: pre-line;
         }
 
@@ -114,20 +123,20 @@
         .options-container {
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 16px;
             margin-bottom: 20px;
         }
 
         .option-btn {
             background: var(--surface);
-            border: 2px solid #e5e7eb;
-            border-radius: 12px;
-            padding: 16px;
+            border: 2.5px solid #e5e7eb;
+            border-radius: 14px;
+            padding: 20px;
             text-align: left;
-            font-size: 1rem;
+            font-size: 1.25rem; 
             cursor: pointer;
             transition: all 0.2s ease;
-            font-weight: 500;
+            font-weight: 600;
             width: 100%;
         }
 
@@ -151,22 +160,23 @@
         /* Feedback Panels */
         .feedback-box {
             border-radius: 12px;
-            padding: 16px;
-            margin-top: 15px;
-            font-weight: 500;
+            padding: 20px;
+            margin-top: 20px;
+            font-size: 1.15rem;
+            font-weight: 600;
             display: none;
-            line-height: 1.4;
+            line-height: 1.5;
         }
 
         .feedback-box.hint {
             background-color: #fef3c7;
-            border-left: 5px solid var(--warning);
+            border-left: 6px solid var(--warning);
             color: #92400e;
         }
 
         .feedback-box.explanation {
             background-color: #dbeafe;
-            border-left: 5px solid var(--secondary);
+            border-left: 6px solid var(--secondary);
             color: #1e40af;
         }
 
@@ -177,14 +187,14 @@
             background: var(--primary);
             color: #fff;
             border: none;
-            border-radius: 12px;
-            padding: 16px;
-            font-size: 1.1rem;
-            font-weight: 600;
+            border-radius: 14px;
+            padding: 20px;
+            font-size: 1.3rem;
+            font-weight: 700;
             cursor: pointer;
             text-align: center;
-            margin-top: 20px;
-            box-shadow: 0 4px 6px rgba(30,58,138,0.15);
+            margin-top: 24px;
+            box-shadow: 0 4px 8px rgba(30,58,138,0.2);
         }
 
         .action-btn:hover {
@@ -193,18 +203,18 @@
 
         /* Score Display styling */
         .score-circle {
-            width: 130px;
-            height: 130px;
+            width: 150px;
+            height: 150px;
             border-radius: 50%;
             background: #f3f4f6;
             display: flex;
             justify-content: center;
             align-items: center;
-            font-size: 2rem;
+            font-size: 2.5rem;
             font-weight: bold;
-            margin: 20px auto;
+            margin: 24px auto;
             color: var(--primary);
-            border: 4px solid var(--secondary);
+            border: 5px solid var(--secondary);
         }
 
         #particle-canvas {
@@ -215,9 +225,9 @@
         }
 
         @media (max-width: 480px) {
-            .container { padding: 16px; }
-            .question-text { font-size: 1.05rem; }
-            .option-btn { padding: 14px; font-size: 0.95rem; }
+            .container { padding: 20px; }
+            .question-text { font-size: 1.2rem; }
+            .option-btn { padding: 16px; font-size: 1.1rem; }
         }
     </style>
 </head>
@@ -227,7 +237,7 @@
 
     <div id="splash-screen">
         <img src="assets/logo.png" alt="Innovine Logo" class="logo-placeholder" onerror="this.style.display='none'; document.getElementById('logo-text').style.display='block';">
-        <h2 id="logo-text" style="display:none; color: var(--primary); font-size: 2.5rem; font-weight: 800; letter-spacing: 1px;">Innovine</h2>
+        <h2 id="logo-text" style="display:none; color: var(--primary); font-size: 3rem; font-weight: 800; letter-spacing: 1px;">Innovine</h2>
     </div>
 
     <audio id="audio-correct" src="assets/claps.mp3" preload="auto"></audio>
@@ -321,11 +331,11 @@
                 explanation: "If yesterday was Thursday, today is Friday. 'Tomorrow' would be Saturday, and 'the day after tomorrow' is Sunday. Riya must submit her project on Sunday."
             },
             {
-                question: "Aman's older sister was born exactly 4 years before 2026. If Aman is exactly 3 years younger than his sister, in what calendar year was Aman born?",
-                options: ["2027", "2025", "2024", "2022"],
+                question: "Aman is creating a personal timeline. He lists his milestone events in chronological order from earliest to latest: He learned to ride a bike (2024), he joined nursery school (2022), and he learned to swim (2025). Which event should be listed first on his timeline?",
+                options: ["He learned to ride a bike", "He joined nursery school", "He learned to swim", "All events happened at the same time"],
                 answer: 1,
-                hint: "First, find his sister's birth year by subtracting 4 years from 2026. Then, since Aman is younger, add 3 years to that year.",
-                explanation: "His sister was born 4 years before 2026, which is 2022 (2026 - 4 = 2022). Since Aman is 3 years younger than his sister, he was born 3 years later, making his birth year 2025 (2022 + 3 = 2025)."
+                hint: "Find the smallest (earliest) year number among 2024, 2022, and 2025.",
+                explanation: "Chronological timelines start from the earliest year to the latest year. Comparing the years, 2022 is the earliest year, so joining nursery school must be listed first."
             },
             {
                 question: "Ananya is currently studying in Grade 3 in the year 2026. Her brother tells her she will join high school 'two years from now'. What calendar year will that be?",
@@ -335,7 +345,7 @@
                 explanation: "Two years from now is calculated by adding 2 to the current year: 2026 + 2 = 2028."
             },
             {
-                question: "Which of these statements contains an incorrect definition or time calculation error?",
+                question: "Anik logs these temporal facts in a diary entry. Which statement contains an incorrect definition or time calculation error?",
                 options: [
                     "Half past 6 is written digitally as 6:30.",
                     "If today is Sunday, then tomorrow is Monday.",
@@ -388,7 +398,6 @@
         let activeSeconds = 60;
 
         window.addEventListener('DOMContentLoaded', () => {
-            // Force splash screen dismissal precisely after 5 seconds
             setTimeout(() => {
                 const splash = document.getElementById('splash-screen');
                 if (splash) {
@@ -411,8 +420,8 @@
             const hrAngle = (hour * 30) + (minute * 0.5);
             const minAngle = minute * 6;
             return `
-            <div style="display:flex; justify-content:center; margin: 15px 0;">
-                <svg width="180" height="180" viewBox="0 0 100 100" style="background:transparent;">
+            <div style="display:flex; justify-content:center; margin: 20px 0;">
+                <svg width="260" height="260" viewBox="0 0 100 100" style="background:transparent;">
                     <circle cx="50" cy="50" r="44" stroke="#1e3a8a" stroke-width="3" fill="#ffffff"/>
                     
                     <line x1="50" y1="9" x2="50" y2="12" stroke="#1e3a8a" stroke-width="1.5"/>
@@ -424,39 +433,39 @@
                     <line x1="50" y1="50" x2="50" y2="16" stroke="#3b82f6" stroke-width="2.5" stroke-linecap="round" transform="rotate(${minAngle} 50 50)"/>
                     <circle cx="50" cy="50" r="3.5" fill="#1e3a8a"/>
                     
-                    <text x="50" y="19" font-size="7" font-weight="bold" text-anchor="middle" fill="#1f2937">12</text>
-                    <text x="83" y="52.5" font-size="7" font-weight="bold" text-anchor="middle" fill="#1f2937">3</text>
-                    <text x="50" y="86" font-size="7" font-weight="bold" text-anchor="middle" fill="#1f2937">6</text>
-                    <text x="17" y="52.5" font-size="7" font-weight="bold" text-anchor="middle" fill="#1f2937">9</text>
+                    <text x="50" y="20.5" font-size="9" font-weight="bold" text-anchor="middle" fill="#1f2937">12</text>
+                    <text x="82.5" y="53" font-size="9" font-weight="bold" text-anchor="middle" fill="#1f2937">3</text>
+                    <text x="50" y="85.5" font-size="9" font-weight="bold" text-anchor="middle" fill="#1f2937">6</text>
+                    <text x="17.5" y="53" font-size="9" font-weight="bold" text-anchor="middle" fill="#1f2937">9</text>
                 </svg>
             </div>`;
         }
 
         function generateTimelineSVG(hideBirthYear = false) {
             return `
-            <div style="display:flex; justify-content:center; margin: 15px 0; width:100%;">
-                <svg width="100%" height="85" viewBox="0 0 300 85" style="background:transparent;">
+            <div style="display:flex; justify-content:center; margin: 20px 0; width:100%;">
+                <svg width="100%" height="120" viewBox="0 0 300 85" style="background:transparent;">
                     <line x1="20" y1="40" x2="280" y2="40" stroke="#1e3a8a" stroke-width="3" stroke-linecap="round"/>
                     <polygon points="280,35 290,40 280,45" fill="#1e3a8a"/>
                     
-                    <circle cx="50" cy="40" r="6" fill="#3b82f6"/>
-                    <text x="50" y="24" font-size="8" font-weight="bold" text-anchor="middle" fill="#1f2937">${hideBirthYear ? '?' : '2019'}</text>
-                    <text x="50" y="56" font-size="7" font-weight="bold" text-anchor="middle" fill="#4b5563">Event C</text>
-                    <text x="50" y="66" font-size="6.5" text-anchor="middle" fill="#9ca3af">(Kabir Born)</text>
+                    <circle cx="50" cy="40" r="7" fill="#3b82f6"/>
+                    <text x="50" y="22" font-size="10" font-weight="bold" text-anchor="middle" fill="#1f2937">${hideBirthYear ? '?' : '2019'}</text>
+                    <text x="50" y="58" font-size="8.5" font-weight="bold" text-anchor="middle" fill="#4b5563">Event C</text>
+                    <text x="50" y="69" font-size="7.5" font-weight="bold" text-anchor="middle" fill="#9ca3af">(Kabir Born)</text>
                     
-                    <text x="100" y="34" font-size="7" font-weight="bold" fill="#f59e0b" text-anchor="middle">+1 Year</text>
+                    <text x="100" y="33" font-size="9" font-weight="800" fill="#f59e0b" text-anchor="middle">+1 Year</text>
                     
-                    <circle cx="150" cy="40" r="6" fill="#3b82f6"/>
-                    <text x="150" y="24" font-size="8" font-weight="bold" text-anchor="middle" fill="#1f2937">2020</text>
-                    <text x="150" y="56" font-size="7" font-weight="bold" text-anchor="middle" fill="#4b5563">Event D</text>
-                    <text x="150" y="66" font-size="6.5" text-anchor="middle" fill="#9ca3af">(Bought New Car)</text>
+                    <circle cx="150" cy="40" r="7" fill="#3b82f6"/>
+                    <text x="150" y="22" font-size="10" font-weight="bold" text-anchor="middle" fill="#1f2937">2020</text>
+                    <text x="150" y="58" font-size="8.5" font-weight="bold" text-anchor="middle" fill="#4b5563">Event D</text>
+                    <text x="150" y="69" font-size="7.5" font-weight="bold" text-anchor="middle" fill="#9ca3af">(New Car)</text>
                     
-                    <text x="200" y="34" font-size="7" font-weight="bold" fill="#f59e0b" text-anchor="middle">+2 Years</text>
+                    <text x="200" y="33" font-size="9" font-weight="800" fill="#f59e0b" text-anchor="middle">+2 Years</text>
                     
-                    <circle cx="250" cy="40" r="6" fill="#3b82f6"/>
-                    <text x="250" y="24" font-size="8" font-weight="bold" text-anchor="middle" fill="#1f2937">2022</text>
-                    <text x="250" y="56" font-size="7" font-weight="bold" text-anchor="middle" fill="#4b5563">Event E</text>
-                    <text x="250" y="66" font-size="6.5" text-anchor="middle" fill="#9ca3af">(Joined Play School)</text>
+                    <circle cx="250" cy="40" r="7" fill="#3b82f6"/>
+                    <text x="250" y="22" font-size="10" font-weight="bold" text-anchor="middle" fill="#1f2937">2022</text>
+                    <text x="250" y="58" font-size="8.5" font-weight="bold" text-anchor="middle" fill="#4b5563">Event E</text>
+                    <text x="250" y="69" font-size="7.5" font-weight="bold" text-anchor="middle" fill="#9ca3af">(Play School)</text>
                 </svg>
             </div>`;
         }
@@ -587,7 +596,7 @@
             const audio = document.getElementById(`audio-${type}`);
             if (audio) {
                 audio.currentTime = 0;
-                audio.play().catch(e => console.log("Audio infrastructure safely active."));
+                audio.play().catch(e => console.log("Audio infrastructure synchronized."));
             }
         }
 
