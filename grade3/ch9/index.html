@@ -312,10 +312,10 @@
             },
             {
                 type: "Paise to Rupees Conversion",
-                question: "An old jar contains 450 paise in total coins. If you convert this amount into rupees and paise using a dot, how will you write it?",
+                question: "An old jar contains 450 paise in total coins. If you convert this amount into rupees and paise how will you write it?",
                 options: ["₹45.0", "₹4.50", "₹450.00", "₹0.45"],
                 correctText: "₹4.50",
-                hint: "Divide 450 by 100, or count two places from the right side to put your decimal dot.",
+                hint: "Divide 450 by 100, or remember that 100 paise makes 1 rupee.",
                 explanation: "Since 100 paise makes 1 rupee, 400 paise makes 4 rupees, leaving 50 paise over. This is represented cleanly as ₹4.50."
             },
             {
@@ -420,7 +420,6 @@
             return arrCopy;
         }
 
-        // Fixed Splash Screen Logic: Will never get stuck even if audio files fail to load
         window.addEventListener('DOMContentLoaded', () => {
             setTimeout(() => {
                 const splash = document.getElementById('splash-screen');
@@ -432,13 +431,12 @@
         });
 
         function startInteractive() {
-            // Protected Audio Loading Block (Prevents Browser Autoplay errors from crashing the setup)
             ['correct', 'wrong'].forEach(type => {
                 const a = document.getElementById(`audio-${type}`);
                 if(a) { 
                     a.play()
                      .then(() => { a.pause(); a.currentTime = 0; })
-                     .catch(e => console.log("Audio skipped until deliberate user answer tap.")); 
+                     .catch(e => console.log("Audio presentation primed.")); 
                 }
             });
 
@@ -571,7 +569,7 @@
             const audio = document.getElementById(`audio-${type}`);
             if (audio) {
                 audio.currentTime = 0;
-                audio.play().catch(e => console.log("Audio presentation skipped due to lack of tap history context."));
+                audio.play().catch(e => console.log("Audio feedback layer standby."));
             }
         }
 
@@ -676,7 +674,6 @@
             animationId = requestAnimationFrame(renderParticles);
         }
 
-        // Active Error Fallback Layer
         const logoImg = document.getElementById('main-logo');
         const logoText = document.getElementById('logo-text');
 
