@@ -124,13 +124,62 @@
             width: 100%;
         }
 
-        /* Interactive Custom Visual Aids (No external images) */
+        /* Interactive Custom Visual Aids */
         .visual-aid {
             margin: 15px 0;
             display: flex;
             justify-content: center;
             align-items: center;
             width: 100%;
+        }
+
+        /* Pizza Visual Dynamic Container */
+        .pizza-container {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            align-items: center;
+            background: #FFF9E6;
+            padding: 15px 25px;
+            border-radius: 12px;
+            border: 2px dashed #F5A623;
+        }
+
+        .pizza-character {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+            font-weight: bold;
+            font-size: 14px;
+            color: #5C4033;
+        }
+
+        .pizza-avatar {
+            font-size: 40px;
+        }
+
+        .pizza-whole {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: #F4D03F;
+            border: 6px solid #D35400;
+            position: relative;
+            box-shadow: inset 0 0 10px #E67E22, 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        /* Pepperoni toppings inside the CSS pizza */
+        .pizza-whole::before {
+            content: '• •\n• • •';
+            white-space: pre-line;
+            color: #C0392B;
+            font-size: 24px;
+            position: absolute;
+            top: 15%;
+            left: 25%;
+            line-height: 0.8;
+            letter-spacing: 5px;
         }
 
         .fraction-window {
@@ -172,7 +221,7 @@
         }
         .line-vertical {
             position: absolute;
-            left: 35px; /* Offset line to make unequal */
+            left: 35px;
             top: 0;
             width: 3px;
             height: 100%;
@@ -180,7 +229,7 @@
         }
         .line-horizontal {
             position: absolute;
-            top: 75px; /* Offset line to make unequal */
+            top: 75px;
             left: 0;
             height: 3px;
             width: 100%;
@@ -225,11 +274,6 @@
             background: #F0F7FF;
         }
 
-        .option-btn:active:not(:disabled) {
-            transform: scale(0.98);
-        }
-
-        /* Status UI changes */
         .option-btn.correct {
             background: #E8F8F0 !important;
             border-color: var(--success-color) !important;
@@ -288,7 +332,6 @@
             background: #357ABD;
         }
 
-        /* Confetti Canvas Overlay */
         #confetti-canvas {
             position: absolute;
             top: 0;
@@ -304,7 +347,6 @@
             to { transform: scale(1); opacity: 1; }
         }
 
-        /* Mobile adaptation overrides */
         @media (max-width: 480px) {
             h2 { font-size: 19px; }
             p.context-text { font-size: 14px; padding: 10px; }
@@ -364,22 +406,20 @@
     </div>
 
     <audio id="audio-claps" src="assets/claps.mp3" preload="auto"></audio>
-    <audio id="audio-wrong" src="assets/wrong.mp3" preload="auto"></preload>
+    <audio id="audio-wrong" src="assets/wrong.mp3" preload="auto"></audio>
 
     <script>
-        // 10 Comprehensive Structural Grade 3 Competency Based Questions
+        // 10 Structural Competency Based Questions with brackets removed & dynamic visual hooks
         const database = [
             {
-                type: "Scenario-Based MCQ",
                 context: "Mini brings a full round pizza to school. She wants to share it equally with her friend Rohan. Into how many equal parts should she cut the pizza so that both of them get an exact half?",
-                visualType: null,
+                visualType: "pizza",
                 options: ["1 part", "2 parts", "3 parts", "4 parts"],
                 correct: 1,
                 hint: "Think about how many total people want to eat an equal share of the pizza.",
                 explanation: "When 1 whole object is divided into 2 equal parts, each part is called a half (1/2)."
             },
             {
-                type: "Picture-Based MCQ",
                 context: "Look at the square window frame. It has 4 small equal square blocks. 2 of the blocks are covered completely by a blue cloud curtain. What fraction of the window is covered?",
                 visualType: "window",
                 options: ["One-fourth (1/4)", "One-half (1/2)", "Three-fourths (3/4)", "Four-fourths (4/4)"],
@@ -388,7 +428,6 @@
                 explanation: "Covering 2 out of 4 equal parts (2/4) covers exactly one-half (1/2) of the whole window frame."
             },
             {
-                type: "Scenario-Based MCQ",
                 context: "Kabir has a long chocolate bar divided structurally into 4 equal pieces. He breaks it apart and gives 3 pieces to his younger sister. What fraction of the chocolate bar did his sister get?",
                 visualType: null,
                 options: ["One-fourth (1/4)", "Two-fourths (2/4)", "Three-fourths (3/4)", "The whole chocolate"],
@@ -397,7 +436,6 @@
                 explanation: "Giving 3 out of 4 equal parts represents three-fourths (3/4) of the entire chocolate bar."
             },
             {
-                type: "What Does Not Belong MCQ",
                 context: "Simran writes four fractions on the blackboard: 1/4, 3/4, 2/4, and 1/2. Which fraction does NOT belong to the same group of 'like fractions' as the other three?",
                 visualType: null,
                 options: ["1/4", "3/4", "2/4", "1/2"],
@@ -406,7 +444,6 @@
                 explanation: "Like fractions always share the exact same denominator. 1/4, 3/4, and 2/4 all have 4 at the bottom, while 1/2 does not."
             },
             {
-                type: "Data-Based MCQ",
                 context: "Three friends measure how much of their identical drawing sheets they have colored in class: Riya colored 1/3, Amit colored 2/3, and Sana colored 3/3. Who colored the largest part of their sheet?",
                 visualType: null,
                 options: ["Riya", "Amit", "Sana", "They all colored the same amount"],
@@ -415,7 +452,6 @@
                 explanation: "3/3 means Sana colored 3 out of 3 equal parts, which is equal to finishing 1 whole drawing sheet."
             },
             {
-                type: "Error Detection MCQ",
                 context: "Arjun wants to show 1/4 of a paper circle. He draws lines to cut it into 4 pieces and colors 1 piece yellow. Look at his shape. What mistake did Arjun make?",
                 visualType: "unequal-circle",
                 options: ["He colored too many parts.", "The 4 parts are not equal in size.", "He should have made only 2 parts.", "He made no mistake."],
@@ -424,8 +460,7 @@
                 explanation: "Fractions must always represent equal parts of a whole. Because Arjun's pieces are different sizes, it cannot represent 1/4."
             },
             {
-                type: "Assertion-Reason MCQ",
-                context: "Read both statements carefully:\nAssertion (A): 1/4 of a school ribbon is shorter than 1/2 of the exact same ribbon.\nReason (R): Cutting a whole into 4 equal pieces makes each piece smaller than cutting it into 2 equal pieces.",
+                context: "Read both statements carefully:\n\nAssertion (A): 1/4 of a school ribbon is shorter than 1/2 of the exact same ribbon.\n\nReason (R): Cutting a whole into 4 equal pieces makes each piece smaller than cutting it into 2 equal pieces.",
                 visualType: null,
                 options: [
                     "Both A and R are correct, and R explains A perfectly.",
@@ -438,7 +473,6 @@
                 explanation: "The larger the denominator, the more pieces the whole object is divided into, making each single piece smaller."
             },
             {
-                type: "Case-Based MCQ",
                 context: "Mother baked 12 identical cookies for the snack box. Rohan eats 1/4 of the total cookies, and Meera eats 2/4 of the total cookies. How many cookies did Meera eat from the box?",
                 visualType: null,
                 options: ["3 cookies", "4 cookies", "6 cookies", "8 cookies"],
@@ -447,7 +481,6 @@
                 explanation: "Dividing 12 cookies into 4 equal groups gives 3 cookies per group (1/4 = 3). Since Meera ate 2 groups, she ate 3 + 3 = 6 cookies."
             },
             {
-                type: "Case-Based MCQ",
                 context: "Looking back at the cookie box scenario: Rohan finished 1/4 of the cookies, and Meera finished 2/4 of the box. What total fraction of the cookies did both children finish together?",
                 visualType: null,
                 options: ["1/4 of the box", "2/4 of the box", "3/4 of the box", "4/4 of the box"],
@@ -456,7 +489,6 @@
                 explanation: "Adding 1/4 and 2/4 directly gives 3/4. Together they ate three-fourths of the full cookie box."
             },
             {
-                type: "Case-Based MCQ",
                 context: "After Rohan and Meera finished eating their combined total fraction of 3/4 of the cookies, the remaining cookies left inside the box were saved for Papa. What fraction is left for Papa?",
                 visualType: null,
                 options: ["1/4 of the box", "2/4 of the box", "3/4 of the box", "No cookies are left"],
@@ -474,7 +506,6 @@
             timeLeft: 60
         };
 
-        // Strict branding timer loop configuration
         window.addEventListener('DOMContentLoaded', () => {
             setTimeout(() => {
                 document.getElementById('logo-screen').classList.remove('active');
@@ -493,7 +524,6 @@
             state.timeLeft = 60;
             state.attempts = 0;
             
-            // UI elements update
             document.getElementById('current-q-num').innerText = state.currentIdx + 1;
             document.getElementById('current-score').innerText = state.score;
             document.getElementById('next-btn').style.display = 'none';
@@ -503,12 +533,20 @@
             feedback.className = 'feedback-box';
 
             const qData = database[state.currentIdx];
-            document.getElementById('q-context').innerText = `[${qData.type}]\n\n${qData.context}`;
+            document.getElementById('q-context').innerText = qData.context;
 
-            // Render embedded visual vectors natively if required
+            // Render dynamic visual aids natively without any white bounding boxes
             const aidBox = document.getElementById('visual-aid-box');
             aidBox.innerHTML = '';
-            if(qData.visualType === 'window') {
+            
+            if(qData.visualType === 'pizza') {
+                aidBox.innerHTML = `
+                    <div class="pizza-container">
+                        <div class="pizza-character"><span class="pizza-avatar">👧 Mini</span></div>
+                        <div class="pizza-whole"></div>
+                        <div class="pizza-character"><span class="pizza-avatar">👦 Rohan</span></div>
+                    </div>`;
+            } else if(qData.visualType === 'window') {
                 aidBox.innerHTML = `
                     <div class="fraction-window">
                         <div class="window-pane shaded"></div>
@@ -525,7 +563,6 @@
                     </div>`;
             }
 
-            // Render options safely
             const optBox = document.getElementById('options-box');
             optBox.innerHTML = '';
             qData.options.forEach((opt, idx) => {
@@ -559,7 +596,6 @@
             const feedback = document.getElementById('feedback-message');
             
             if(selectedIdx === qData.correct) {
-                // Correct path flow execution
                 clearInterval(state.timer);
                 playSound('claps');
                 triggerConfetti();
@@ -567,7 +603,7 @@
                 disableAllOptions();
                 
                 if(state.attempts === 0) state.score += 10;
-                else state.score += 5; // Partial modular tier credit for 2nd try success
+                else state.score += 5;
                 
                 document.getElementById('current-score').innerText = state.score;
                 feedback.className = 'feedback-box reveal';
@@ -575,7 +611,6 @@
                 feedback.style.display = 'block';
                 document.getElementById('next-btn').style.display = 'inline-block';
             } else {
-                // Incorrect path flow execution
                 state.attempts++;
                 selectedBtn.classList.add('wrong');
                 selectedBtn.disabled = true;
@@ -617,7 +652,7 @@
             const snd = document.getElementById(`audio-${type}`);
             if(snd) {
                 snd.currentTime = 0;
-                snd.play().catch(() => {/* Handle browser gesture blocks gracefully */});
+                snd.play().catch(() => {});
             }
         }
 
@@ -660,7 +695,6 @@
             startQuiz();
         }
 
-        // Lightweight programmatic confetti canvas micro-engine
         function triggerConfetti() {
             const canvas = document.getElementById('confetti-canvas');
             const ctx = canvas.getContext('2d');
