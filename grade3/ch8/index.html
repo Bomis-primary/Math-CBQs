@@ -271,28 +271,28 @@
     <script>
         const questionBank = [
             {
-                question: "Rohan looks at the classroom wall clock. The short hour hand is slightly past 4, and the long minute hand points directly at the number 2. What exact time is it?",
+                question: "Rohan stops studying and goes for a break at the time shown on the clock face below. He returns to his desk exactly 20 minutes later. What time does he get back to his studies?",
                 hasImage: "clock-4-10",
-                options: ["4:02", "4:10", "2:20", "5:10"],
-                answer: 1,
-                hint: "Each large number on an analog clock face represents a count of 5 minutes.",
-                explanation: "When the minute hand points at 2, you multiply $2 \\times 5 = 10$ minutes. Since the hour hand is past 4, the time is exactly 4:10."
+                options: ["4:10", "4:20", "4:30", "4:50"],
+                answer: 2,
+                hint: "First, read the starting time from the clock face. Then, add 20 minutes to that value.",
+                explanation: "The clock face shows a starting break time of 4:10. Adding 20 minutes to the minute hand position (10 + 20 = 30) brings him back to his studies at exactly 4:30."
             },
             {
-                question: "Sia's mother told her that lunch will be ready at 'quarter past 1'. Which digital display matches what her mother said?",
+                question: "Sia is waiting for her school lunch break. Her teacher shows the class the clock below and mentions that lunch will be served immediately. What is another way to announce this time to her friends?",
                 hasImage: "clock-1-15",
-                options: ["1:45", "1:15", "1:30", "12:45"],
+                options: ["Quarter to 1", "Quarter past 1", "Half past 1", "Quarter past 12"],
                 answer: 1,
-                hint: "An hour is split into 4 quarters of 15 minutes each. 'Quarter past' means 1 quarter of an hour has passed.",
-                explanation: "A quarter of an hour is 15 minutes ($60 \\div 4 = 15$). Therefore, 'quarter past 1' means 15 minutes have passed after 1 o'clock, which is 1:15."
+                hint: "Notice that the minute hand has traveled exactly one-fourth of the way around the clock face.",
+                explanation: "The clock face shows 1:15. Because 15 minutes is exactly one quarter of a 60-minute hour, this time is widely known as 'Quarter past 1'."
             },
             {
-                question: "Karan's swimming class starts at 5:00. He checks his watch and notices that it is exactly 'quarter to 5'. How many minutes does he have left before class starts?",
+                question: "Karan's after-school sports practice is scheduled to begin at exactly 5:00. He checks his wrist watch and sees the time displayed below. How many minutes do he and his teammates have left to prepare?",
                 hasImage: "clock-4-45",
                 options: ["45 minutes", "30 minutes", "15 minutes", "5 minutes"],
                 answer: 2,
-                hint: "'Quarter to 5' means there is exactly one quarter of an hour remaining until the clock strikes 5:00.",
-                explanation: "'Quarter to 5' represents the time 4:45. From 4:45 to 5:00, there are exactly 15 minutes left."
+                hint: "Count how many minute steps are remaining for the long hand to reach the top 12 mark.",
+                explanation: "The watch shows 4:45. To reach the start time of 5:00, the long hand must cover the remaining 15 minutes (or one quarter-hour interval)."
             },
             {
                 question: "Aditya wants to check his time-estimation skills. He estimates that brushing his teeth thoroughly takes about 20 minutes. He uses a stopwatch and finds it actually takes 3 minutes. What can we say about his estimate?",
@@ -324,7 +324,7 @@
                 question: "The current year is 2026. Aman was asked to write down the date of an event that happened in the 'previous year'. What year should he write?",
                 options: ["2027", "2025", "2024", "2028"],
                 answer: 1,
-                hint: "The 'previous year' means the year that came immediately before the current year ($2026 - 1$).",
+                hint: "The 'previous year' means the year that came immediately before the current year (2026 - 1).",
                 explanation: "The year immediately preceding 2026 is 2025."
             },
             {
@@ -332,7 +332,7 @@
                 options: ["2027", "2028", "2024", "2029"],
                 answer: 1,
                 hint: "Add exactly 2 years to the current year of 2026.",
-                explanation: "Two years from now is calculated by adding 2 to the current year: $2026 + 2 = 2028$."
+                explanation: "Two years from now is calculated by adding 2 to the current year: 2026 + 2 = 2028."
             },
             {
                 question: "Anik logs these temporal facts in a diary entry. Which statement contains an incorrect definition or time calculation error?",
@@ -359,15 +359,15 @@
                 explanation: "Both statements are correct. There are 60 markings because an hour contains 60 minutes, and the minute hand travels across one tick mark every single minute."
             },
             {
-                question: "Case Story Part 1: Kabir is creating a historical timeline for his family history. He discovers that his grandfather bought their house in 2010, his parents got married 5 years later, and Kabir was born 4 years after his parents' marriage. In what year was Kabir born?",
-                hasImage: "timeline-family",
+                question: "Kabir is building a tracking timeline for his family's history milestones. Based on the clues hidden in his master plan diagram below, what is the missing year value when Kabir was born?",
+                hasImage: "timeline-family-blank",
                 options: ["2015", "2019", "2020", "2014"],
                 answer: 1,
-                hint: "Start at 2010, add 5 years for the marriage, then add 4 more years for Kabir's birth.",
-                explanation: "Parents married: $2010 + 5 = 2015$. Kabir born: $2015 + 4 = 2019$."
+                hint: "Take the marriage milestone year of 2015 and add the 4-year growth offset interval to track his birthday.",
+                explanation: "According to the sequencing steps: The house was purchased in 2010. The parents married 5 years later (2015). Kabir was born 4 years after that, which means 2015 + 4 = 2019."
             },
             {
-                question: "Case Story Part 2: Look at Kabir's completed family timeline sequence below:\nEvent A: Grandfather buys house (2010)\nEvent B: Parents get married (2015)\nEvent C: Kabir is born (2019)\nWhich of the following describes the correct chronological order of these events from earliest to latest?",
+                question: "Review Kabir's completed historical chart below carefully. Which of the following selections correctly describes the historical chronological order of these family milestones from earliest to latest?",
                 hasImage: "timeline-family",
                 options: [
                     "Event B → Event C → Event A",
@@ -406,34 +406,51 @@
             const minAngle = minute * 6;
             return `
             <div style="display:flex; justify-content:center; margin: 15px 0;">
-                <svg width="160" height="160" viewBox="0 0 100 100" style="background:transparent;">
-                    <circle cx="50" cy="50" r="45" stroke="#1e3a8a" stroke-width="3" fill="#ffffff"/>
+                <svg width="180" height="180" viewBox="0 0 100 100" style="background:transparent;">
+                    <circle cx="50" cy="50" r="44" stroke="#1e3a8a" stroke-width="3" fill="#ffffff"/>
+                    
+                    <line x1="50" y1="9" x2="50" y2="12" stroke="#1e3a8a" stroke-width="1.5"/>
+                    <line x1="91" y1="50" x2="88" y2="50" stroke="#1e3a8a" stroke-width="1.5"/>
+                    <line x1="50" y1="91" x2="50" y2="88" stroke="#1e3a8a" stroke-width="1.5"/>
+                    <line x1="9" y1="50" x2="12" y2="50" stroke="#1e3a8a" stroke-width="1.5"/>
+                    
                     <line x1="50" y1="50" x2="50" y2="28" stroke="#1f2937" stroke-width="3.5" stroke-linecap="round" transform="rotate(${hrAngle} 50 50)"/>
-                    <line x1="50" y1="50" x2="50" y2="18" stroke="#3b82f6" stroke-width="2.5" stroke-linecap="round" transform="rotate(${minAngle} 50 50)"/>
-                    <circle cx="50" cy="50" r="3" fill="#1e3a8a"/>
-                    <text x="50" y="14" font-size="8" font-weight="bold" text-anchor="middle" fill="#1f2937">12</text>
-                    <text x="88" y="53" font-size="8" font-weight="bold" text-anchor="middle" fill="#1f2937">3</text>
-                    <text x="50" y="92" font-size="8" font-weight="bold" text-anchor="middle" fill="#1f2937">6</text>
-                    <text x="12" y="53" font-size="8" font-weight="bold" text-anchor="middle" fill="#1f2937">9</text>
+                    <line x1="50" y1="50" x2="50" y2="16" stroke="#3b82f6" stroke-width="2.5" stroke-linecap="round" transform="rotate(${minAngle} 50 50)"/>
+                    <circle cx="50" cy="50" r="3.5" fill="#1e3a8a"/>
+                    
+                    <text x="50" y="19" font-size="7" font-weight="bold" text-anchor="middle" fill="#1f2937">12</text>
+                    <text x="83" y="52.5" font-size="7" font-weight="bold" text-anchor="middle" fill="#1f2937">3</text>
+                    <text x="50" y="86" font-size="7" font-weight="bold" text-anchor="middle" fill="#1f2937">6</text>
+                    <text x="17" y="52.5" font-size="7" font-weight="bold" text-anchor="middle" fill="#1f2937">9</text>
                 </svg>
             </div>`;
         }
 
-        function generateTimelineSVG() {
+        function generateTimelineSVG(hideBirthYear = false) {
             return `
             <div style="display:flex; justify-content:center; margin: 15px 0; width:100%;">
-                <svg width="100%" height="70" viewBox="0 0 300 70" style="background:transparent;">
-                    <line x1="20" y1="35" x2="280" y2="35" stroke="#1e3a8a" stroke-width="3" stroke-linecap="round"/>
-                    <polygon points="280,30 290,35 280,40" fill="#1e3a8a"/>
-                    <circle cx="50" cy="35" r="5" fill="#3b82f6"/>
-                    <text x="50" y="22" font-size="7" font-weight="bold" text-anchor="middle" fill="#1f2937">2010</text>
-                    <text x="50" y="52" font-size="6" text-anchor="middle" fill="#4b5563">House Bought</text>
-                    <circle cx="150" cy="35" r="5" fill="#3b82f6"/>
-                    <text x="150" y="22" font-size="7" font-weight="bold" text-anchor="middle" fill="#1f2937">2015</text>
-                    <text x="150" y="52" font-size="6" text-anchor="middle" fill="#4b5563">Marriage</text>
-                    <circle cx="240" cy="35" r="5" fill="#3b82f6"/>
-                    <text x="240" y="22" font-size="7" font-weight="bold" text-anchor="middle" fill="#1f2937">2019</text>
-                    <text x="240" y="52" font-size="6" text-anchor="middle" fill="#4b5563">Kabir Born</text>
+                <svg width="100%" height="80" viewBox="0 0 300 80" style="background:transparent;">
+                    <line x1="20" y1="40" x2="280" y2="40" stroke="#1e3a8a" stroke-width="3" stroke-linecap="round"/>
+                    <polygon points="280,35 290,40 280,45" fill="#1e3a8a"/>
+                    
+                    <circle cx="50" cy="40" r="6" fill="#3b82f6"/>
+                    <text x="50" y="24" font-size="8" font-weight="bold" text-anchor="middle" fill="#1f2937">2010</text>
+                    <text x="50" y="58" font-size="7" font-weight="bold" text-anchor="middle" fill="#4b5563">Event A</text>
+                    <text x="50" y="68" font-size="6.5" text-anchor="middle" fill="#9ca3af">(House Bought)</text>
+                    
+                    <text x="100" y="34" font-size="7" font-weight="bold" fill="#f59e0b" text-anchor="middle">+5 Years</text>
+                    
+                    <circle cx="150" cy="40" r="6" fill="#3b82f6"/>
+                    <text x="150" y="24" font-size="8" font-weight="bold" text-anchor="middle" fill="#1f2937">2015</text>
+                    <text x="150" y="58" font-size="7" font-weight="bold" text-anchor="middle" fill="#4b5563">Event B</text>
+                    <text x="150" y="68" font-size="6.5" text-anchor="middle" fill="#9ca3af">(Parents Married)</text>
+                    
+                    <text x="200" y="34" font-size="7" font-weight="bold" fill="#f59e0b" text-anchor="middle">+4 Years</text>
+                    
+                    <circle cx="250" cy="40" r="6" fill="#3b82f6"/>
+                    <text x="250" y="24" font-size="8" font-weight="bold" text-anchor="middle" fill="#1f2937">${hideBirthYear ? '?' : '2019'}</text>
+                    <text x="250" y="58" font-size="7" font-weight="bold" text-anchor="middle" fill="#4b5563">Event C</text>
+                    <text x="250" y="68" font-size="6.5" text-anchor="middle" fill="#9ca3af">(Kabir Born)</text>
                 </svg>
             </div>`;
         }
@@ -460,8 +477,10 @@
                     displayContent += generateClockSVG(1, 15);
                 } else if (qData.hasImage === "clock-4-45") {
                     displayContent += generateClockSVG(4, 45);
+                } else if (qData.hasImage === "timeline-family-blank") {
+                    displayContent += generateTimelineSVG(true);
                 } else if (qData.hasImage === "timeline-family") {
-                    displayContent += generateTimelineSVG();
+                    displayContent += generateTimelineSVG(false);
                 }
             }
 
@@ -562,7 +581,7 @@
             const audio = document.getElementById(`audio-${type}`);
             if (audio) {
                 audio.currentTime = 0;
-                audio.play().catch(e => console.log("Audio waiting for user gesture."));
+                audio.play().catch(e => console.log("Audio framework dynamic lock active."));
             }
         }
 
