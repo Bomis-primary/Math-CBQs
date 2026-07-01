@@ -45,7 +45,6 @@
             overflow: hidden;
         }
 
-        /* 5-Second Brand Splash Screen */
         #splash-screen {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -64,24 +63,12 @@
             margin-bottom: 20px;
         }
 
-        /* Active Screen Engine */
         .screen { display: none; }
         .screen.active { display: block; }
 
-        h1, h2 {
-            color: var(--primary);
-            text-align: center;
-            margin-bottom: 16px;
-        }
+        h1, h2 { color: var(--primary); text-align: center; margin-bottom: 16px; }
+        p.description { text-align: center; color: #4b5563; margin-bottom: 24px; line-height: 1.6; }
 
-        p.description {
-            text-align: center;
-            color: #4b5563;
-            margin-bottom: 24px;
-            line-height: 1.6;
-        }
-
-        /* Game HUD Layout */
         .hud {
             display: flex;
             justify-content: space-between;
@@ -94,28 +81,9 @@
             font-size: 0.95rem;
         }
 
-        .timer-box {
-            color: var(--danger);
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-
-        /* Question and Options Area */
-        .question-text {
-            font-size: 1.15rem;
-            font-weight: 600;
-            line-height: 1.5;
-            margin-bottom: 20px;
-            white-space: pre-line;
-        }
-
-        .options-container {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            margin-bottom: 20px;
-        }
+        .timer-box { color: var(--danger); display: flex; align-items: center; gap: 4px; }
+        .question-text { font-size: 1.15rem; font-weight: 600; line-height: 1.5; margin-bottom: 20px; }
+        .options-container { display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; }
 
         .option-btn {
             background: var(--surface);
@@ -130,112 +98,41 @@
             width: 100%;
         }
 
-        .option-btn:hover:not(:disabled) {
-            border-color: var(--secondary);
-            background: #fbfbfe;
-        }
+        .option-btn:hover:not(:disabled) { border-color: var(--secondary); background: #fbfbfe; }
+        .option-btn.correct { background-color: #ecfdf5 !important; border-color: var(--success) !important; color: #064e3b; }
+        .option-btn.wrong { background-color: #fef2f2 !important; border-color: var(--danger) !important; color: #7f1d1d; }
 
-        .option-btn.correct {
-            background-color: #ecfdf5 !important;
-            border-color: var(--success) !important;
-            color: #064e3b;
-        }
+        .feedback-box { border-radius: 12px; padding: 16px; margin-top: 15px; font-weight: 500; display: none; line-height: 1.5; }
+        .feedback-box.hint { background-color: #fffbeb; border-left: 5px solid var(--warning); color: #92400e; }
+        .feedback-box.explanation { background-color: #eff6ff; border-left: 5px solid #3b82f6; color: #1e40af; }
 
-        .option-btn.wrong {
-            background-color: #fef2f2 !important;
-            border-color: var(--danger) !important;
-            color: #7f1d1d;
-        }
-
-        /* Explanatory Context Boxes */
-        .feedback-box {
-            border-radius: 12px;
-            padding: 16px;
-            margin-top: 15px;
-            font-weight: 500;
-            display: none;
-            line-height: 1.5;
-        }
-
-        .feedback-box.hint {
-            background-color: #fffbeb;
-            border-left: 5px solid var(--warning);
-            color: #92400e;
-        }
-
-        .feedback-box.explanation {
-            background-color: #eff6ff;
-            border-left: 5px solid #3b82f6;
-            color: #1e40af;
-        }
-
-        /* Navigation Button */
         .action-btn {
-            display: block;
-            width: 100%;
-            background: var(--primary);
-            color: #fff;
-            border: none;
-            border-radius: 12px;
-            padding: 16px;
-            font-size: 1.1rem;
-            font-weight: 600;
-            cursor: pointer;
-            text-align: center;
-            margin-top: 20px;
-            box-shadow: 0 4px 12px rgba(109, 40, 217, 0.2);
-        }
-
-        .action-btn:hover {
-            background: #5b21b6;
+            display: block; width: 100%; background: var(--primary); color: #fff; border: none;
+            border-radius: 12px; padding: 16px; font-size: 1.1rem; font-weight: 600; cursor: pointer;
+            text-align: center; margin-top: 20px; box-shadow: 0 4px 12px rgba(109, 40, 217, 0.2);
         }
 
         .score-circle {
-            width: 130px;
-            height: 130px;
-            border-radius: 50%;
-            background: #f3f4f6;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 2rem;
-            font-weight: bold;
-            margin: 20px auto;
-            color: var(--primary);
-            border: 4px solid var(--secondary);
-        }
-
-        #particle-canvas {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            pointer-events: none;
-            z-index: 10;
-        }
-
-        @media (max-width: 480px) {
-            .container { padding: 16px; }
-            .question-text { font-size: 1.05rem; }
-            .option-btn { padding: 14px; font-size: 0.95rem; }
+            width: 130px; height: 130px; border-radius: 50%; background: #f3f4f6;
+            display: flex; justify-content: center; align-items: center; font-size: 2rem;
+            font-weight: bold; margin: 20px auto; color: var(--primary); border: 4px solid var(--secondary);
         }
     </style>
 </head>
 <body>
 
-    <canvas id="particle-canvas"></canvas>
-
     <div id="splash-screen">
-        <img src="grade3/ch10/assets/logo.png" alt="Innovine Logo" class="logo-placeholder" onerror="this.style.display='none'; document.getElementById('logo-text').style.display='block';">
+        <img src="assets/logo.png" alt="Innovine Logo" class="logo-placeholder" onerror="this.style.display='none'; document.getElementById('logo-text').style.display='block';">
         <h2 id="logo-text" style="display:none; color: var(--primary);">Innovine</h2>
     </div>
 
-    <audio id="audio-correct" src="grade3/ch10/assets/claps.mp3" preload="auto"></audio>
-    <audio id="audio-wrong" src="grade3/ch10/assets/wrong.mp3" preload="auto"></audio>
+    <audio id="audio-correct" src="assets/claps.mp3" preload="auto"></audio>
+    <audio id="audio-wrong" src="assets/wrong.mp3" preload="auto"></audio>
 
     <div class="container">
-        
         <div id="welcome-screen" class="screen active">
             <h1>Fractions Masterclass</h1>
-            <p class="description">Explore how whole things are shared, master numerator and denominator rules, compare fraction walls, and solve practical storytelling challenges!</p>
+            <p class="description">Master numerators, denominators, and fraction logic!</p>
             <button class="action-btn" onclick="startInteractive()">Start Quest</button>
         </div>
 
@@ -245,188 +142,38 @@
                 <div id="score-text">Score: 0</div>
                 <div class="timer-box">⏱️ <span id="timer-counter">60</span>s</div>
             </div>
-
-            <div id="question-box">
-                <div class="question-text" id="target-question">Loading dynamic configuration...</div>
-                <div class="options-container" id="target-options"></div>
-            </div>
-
+            <div id="target-question" class="question-text"></div>
+            <div id="target-options" class="options-container"></div>
             <div id="hint-feedback" class="feedback-box hint"></div>
             <div id="explain-feedback" class="feedback-box explanation"></div>
-
             <button id="next-btn" class="action-btn" style="display: none;" onclick="advanceQuestion()">Next Question</button>
         </div>
 
         <div id="result-screen" class="screen">
             <h2>Quest Complete!</h2>
             <div class="score-circle" id="final-score-value">0/12</div>
-            <p class="description" id="final-status-msg">Gathering your scores...</p>
+            <p class="description" id="final-status-msg"></p>
             <button class="action-btn" onclick="resetInteractive()">Play Again</button>
         </div>
-
     </div>
 
     <script>
         const questionBank = [
-            {
-                question: "Pooja cuts a complete circular pizza into 4 identical, equal-sized slices. She eats 3 of those slices with her friends. What numerical fraction of the pizza did they eat?",
-                options: [
-                    "One-half (1/2)",
-                    "One-fourth (1/4)",
-                    "Three-fourths (3/4)",
-                    "Four-thirds (4/3)"
-                ],
-                answer: 2,
-                hint: "Count how many slices were eaten out of the total number of equal slices.",
-                explanation: "The pizza is divided into 4 equal slices (denominator). They ate 3 slices (numerator). This is written as 3/4, which means three-fourths."
-            },
-            {
-                question: "Imagine a perfect rectangle divided into 2 completely equal vertical strips. If exactly 1 of these strips is shaded blue, what fraction represents the shaded region?",
-                options: [
-                    "1/4",
-                    "1/2",
-                    "2/2",
-                    "3/4"
-                ],
-                answer: 1,
-                hint: "1 out of 2 equal parts is colored. This is also called a half.",
-                explanation: "When 1 part out of 2 equal divisions is shaded, it represents exactly half of the complete figure, written mathematically as 1/2."
-            },
-            {
-                question: "In the fraction 2/4, what is the specific mathematical term used for the bottom number '4'?",
-                options: [
-                    "Numerator",
-                    "Whole Number",
-                    "Denominator",
-                    "Like Fraction"
-                ],
-                answer: 2,
-                hint: "The top number shows selected parts, while the bottom number states the total parts in the whole.",
-                explanation: "The bottom number in a fraction is called the denominator. It tells us the total number of equal parts the whole is divided into."
-            },
-            {
-                question: "Rohan has a pack of 8 identical marbles. He gives exactly half of his total marbles to his sister Maya. How many marbles does Maya receive?",
-                options: [
-                    "2 marbles",
-                    "4 marbles",
-                    "6 marbles",
-                    "8 marbles"
-                ],
-                answer: 1,
-                hint: "Finding half means dividing the total group of items into 2 equal parts.",
-                explanation: "To find a half (1/2) of 8, divide 8 by 2. 8 ÷ 2 = 4. Maya gets 4 marbles."
-            },
-            {
-                question: "Look closely at this group of fractions: 1/5, 3/5, and 4/5. Because they all share the exact same denominator, what specific name are they given?",
-                options: [
-                    "Unlike fractions",
-                    "Equal fractions",
-                    "Like fractions",
-                    "Whole fractions"
-                ],
-                answer: 2,
-                hint: "Fractions that have identical numbers at the bottom are grouped under this name.",
-                explanation: "Fractions that have the same denominator are called 'Like fractions'. They are easy to add, subtract, and compare."
-            },
-            {
-                question: "Using a fraction wall model, compare 1/3 and 1/4. If you have two bars of identical length, one split into 3 parts and the other into 4 parts, which part is larger?",
-                options: [
-                    "1/3 is larger than 1/4",
-                    "1/4 is larger than 1/3",
-                    "1/3 and 1/4 are perfectly equal",
-                    "It is impossible to tell without numbers"
-                ],
-                answer: 0,
-                hint: "If a whole cake is shared among 3 people, do they get bigger or smaller pieces than if shared among 4 people?",
-                explanation: "When denominators are different but numerators are equal to 1, the fraction with the smaller denominator is larger. Thus, 1/3 > 1/4."
-            },
-            {
-                question: "Compare the two like fractions 2/7 and 5/7. Which statement correctly identifies the relationship?",
-                options: [
-                    "2/7 is equal to 5/7",
-                    "2/7 is greater than 5/7",
-                    "2/7 is smaller than 5/7",
-                    "The denominators must be added first"
-                ],
-                answer: 2,
-                hint: "When denominators match, simply compare the numerators. Is 2 smaller or larger than 5?",
-                explanation: "Since both fractions have the same denominator (7), we compare the numerators. 2 is less than 5, so 2/7 is smaller than 5/7."
-            },
-            {
-                question: "You have a rectangular strip with 1/2 shaded. Another identical strip is divided into 4 equal blocks. How many blocks must you shade to cover the exact same area as 1/2?",
-                options: [
-                    "1 block",
-                    "2 blocks",
-                    "3 blocks",
-                    "4 blocks"
-                ],
-                answer: 1,
-                hint: "Find a fraction with a denominator of 4 that equals a half. Shading how many fourths makes a half?",
-                explanation: "Two-fourths (2/4) is equal in size to one-half (1/2). Therefore, you need to shade exactly 2 blocks."
-            },
-            {
-                question: "Anu is writing down mathematical statements about fractions. Which statement written below is completely INCORRECT?",
-                options: [
-                    "1/2 of an object is one of two equal parts.",
-                    "In a fraction, the numerator is always written on the bottom.",
-                    "3/4 means three parts out of four equal parts.",
-                    "Fractions with different denominators are called unlike fractions."
-                ],
-                answer: 1,
-                hint: "Think about the layout of a fraction. Is the numerator on the top or on the bottom?",
-                explanation: "The incorrect statement is that the numerator is written on the bottom. The numerator is always the top number; the denominator is on the bottom."
-            },
-            {
-                question: "Assertion: 1/5 is smaller than 1/2.\nReason: When dividing a whole into more parts, each individual part becomes smaller in size.",
-                options: [
-                    "Both Assertion and Reason are true, and the Reason explains the Assertion perfectly.",
-                    "Both Assertion and Reason are true, but the Reason does not explain the Assertion.",
-                    "The Assertion is true, but the Reason is false.",
-                    "The Assertion is completely false."
-                ],
-                answer: 0,
-                hint: "Think about dividing a chocolate bar among 5 people versus sharing it with just 1 friend.",
-                explanation: "Both statements are correct. Dividing a whole into 5 pieces makes each piece much smaller than dividing it into just 2 pieces. Hence, 1/5 < 1/2."
-            },
-            {
-                question: "Case Story Part 1: Kabir has a basket containing 12 fresh apples. He uses exactly one-fourth (1/4) of the apples to bake a small pie. How many apples did he take out for the pie?",
-                options: [
-                    "2 apples",
-                    "3 apples",
-                    "4 apples",
-                    "6 apples"
-                ],
-                answer: 1,
-                hint: "To find one-fourth of a collection, divide the total number of items by 4.",
-                explanation: "One-fourth (1/4) of 12 apples is found by calculating 12 ÷ 4 = 3. Kabir uses 3 apples."
-            },
-            {
-                question: "Case Story Part 2: Kabir started with 12 apples and used 3 of them to make the pie in Part 1. What fraction of the original 12 apples does he have left inside the basket?",
-                options: [
-                    "1/4",
-                    "2/4",
-                    "3/4",
-                    "4/4"
-                ],
-                answer: 2,
-                hint: "If 1/4 of the apples are taken away from a whole (4/4), how many fourths are left?",
-                explanation: "Since 3 apples out of 12 were used, 9 apples remain (12 - 3 = 9). 9 apples represent 3/4 (three-fourths) of the original 12 apples."
-            }
+            { question: "Pooja cuts a pizza into 4 equal slices. She eats 3 of those slices. What fraction of the pizza did she eat?", options: ["1/2", "1/4", "3/4", "4/3"], answer: 2, hint: "Count the eaten slices out of the total.", explanation: "She ate 3 out of 4 slices, which is 3/4." },
+            { question: "If a rectangle is divided into 2 equal parts and 1 part is shaded, what fraction is shaded?", options: ["1/4", "1/2", "2/2", "3/4"], answer: 1, hint: "1 out of 2 is a half.", explanation: "1 out of 2 is 1/2." },
+            { question: "In the fraction 2/4, what is the number '4' called?", options: ["Numerator", "Whole Number", "Denominator", "Like Fraction"], answer: 2, hint: "It is the bottom number.", explanation: "The bottom number is the denominator." },
+            { question: "Half of 8 marbles is how many?", options: ["2", "4", "6", "8"], answer: 1, hint: "Divide 8 by 2.", explanation: "8 ÷ 2 = 4." },
+            { question: "Fractions with the same denominator are called what?", options: ["Unlike", "Equal", "Like", "Whole"], answer: 2, hint: "They are 'alike'.", explanation: "They are called Like fractions." },
+            { question: "Which is larger, 1/3 or 1/4?", options: ["1/3", "1/4", "They are equal", "Cannot tell"], answer: 0, hint: "Sharing among 3 people gives bigger pieces.", explanation: "1/3 is larger than 1/4." },
+            { question: "Which is smaller, 2/7 or 5/7?", options: ["2/7 is equal to 5/7", "2/7 is greater", "2/7 is smaller", "None"], answer: 2, hint: "Compare 2 and 5.", explanation: "2 is less than 5, so 2/7 is smaller." },
+            { question: "How many fourths make a half?", options: ["1", "2", "3", "4"], answer: 1, hint: "Think of 2/4.", explanation: "2/4 equals 1/2." },
+            { question: "Where is the numerator located in a fraction?", options: ["Top", "Bottom", "Middle", "Side"], answer: 0, hint: "The 'nu' stands for north/top.", explanation: "The numerator is the top number." },
+            { question: "Why is 1/5 smaller than 1/2?", options: ["1 is smaller than 1", "5 is bigger than 2", "More parts mean smaller pieces", "They are equal"], answer: 2, hint: "Division.", explanation: "Dividing into more parts makes each piece smaller." },
+            { question: "Kabir uses 1/4 of his 12 apples for a pie. How many apples did he use?", options: ["2", "3", "4", "6"], answer: 1, hint: "12 divided by 4.", explanation: "12 ÷ 4 = 3." },
+            { question: "Kabir used 3 apples from 12. What fraction of apples is left?", options: ["1/4", "2/4", "3/4", "4/4"], answer: 2, hint: "9 apples are left out of 12.", explanation: "9/12 simplifies to 3/4." }
         ];
 
-        let currentIndex = 0;
-        let runningScore = 0;
-        let attemptTracker = 0; 
-        let countdownTimer;
-        let activeSeconds = 60;
-
-        window.addEventListener('DOMContentLoaded', () => {
-            setTimeout(() => {
-                const splash = document.getElementById('splash-screen');
-                splash.style.opacity = '0';
-                setTimeout(() => splash.style.display = 'none', 500);
-            }, 5000);
-        });
+        let currentIndex = 0, runningScore = 0, attemptTracker = 0, countdownTimer, activeSeconds = 60;
 
         function startInteractive() {
             document.getElementById('welcome-screen').classList.remove('active');
@@ -436,214 +183,75 @@
 
         function displayQuestion() {
             clearInterval(countdownTimer);
-            activeSeconds = 60; 
-            attemptTracker = 0;
-            
+            activeSeconds = 60; attemptTracker = 0;
             document.getElementById('timer-counter').innerText = activeSeconds;
             document.getElementById('hint-feedback').style.display = 'none';
             document.getElementById('explain-feedback').style.display = 'none';
             document.getElementById('next-btn').style.display = 'none';
-
             let qData = questionBank[currentIndex];
             document.getElementById('progress-text').innerText = `Question: ${currentIndex + 1}/${questionBank.length}`;
             document.getElementById('target-question').innerText = qData.question;
-            
             const optionsBox = document.getElementById('target-options');
             optionsBox.innerHTML = '';
-
             qData.options.forEach((optText, index) => {
                 let btn = document.createElement('button');
                 btn.className = 'option-btn';
                 btn.innerText = optText;
-                btn.setAttribute('onclick', `evaluateSelection(this, ${index})`);
+                btn.onclick = () => evaluateSelection(btn, index);
                 optionsBox.appendChild(btn);
             });
-
-            startTimer();
-        }
-
-        function startTimer() {
             countdownTimer = setInterval(() => {
                 activeSeconds--;
                 document.getElementById('timer-counter').innerText = activeSeconds;
-                if(activeSeconds <= 0) {
-                    clearInterval(countdownTimer);
-                    lockButtonsOnTimeout();
-                }
+                if(activeSeconds <= 0) { clearInterval(countdownTimer); lockButtonsOnTimeout(); }
             }, 1000);
         }
 
         function lockButtonsOnTimeout() {
-            let qData = questionBank[currentIndex];
             disableAllOptions();
-            const explBox = document.getElementById('explain-feedback');
-            explBox.innerHTML = `<strong>Time's Up!</strong> ${qData.explanation}`;
-            explBox.style.display = 'block';
-            playSound('wrong');
+            document.getElementById('explain-feedback').innerHTML = `<strong>Time's Up!</strong> ${questionBank[currentIndex].explanation}`;
+            document.getElementById('explain-feedback').style.display = 'block';
             document.getElementById('next-btn').style.display = 'block';
+            playSound('wrong');
         }
 
-        function evaluateSelection(selectedBtn, chosenIdx) {
-            let qData = questionBank[currentIndex];
-            
-            if (chosenIdx === qData.answer) {
+        function evaluateSelection(btn, idx) {
+            let q = questionBank[currentIndex];
+            disableAllOptions();
+            if (idx === q.answer) {
                 clearInterval(countdownTimer);
-                selectedBtn.classList.add('correct');
-                disableAllOptions();
-                
-                if (attemptTracker === 0) {
-                    runningScore++;
-                    document.getElementById('score-text').innerText = `Score: ${runningScore}`;
-                }
-                
-                triggerSparkles();
+                btn.classList.add('correct');
+                if (attemptTracker === 0) { runningScore++; document.getElementById('score-text').innerText = `Score: ${runningScore}`; }
+                document.getElementById('explain-feedback').innerHTML = `<strong>Correct!</strong> ${q.explanation}`;
+                document.getElementById('explain-feedback').style.display = 'block';
                 playSound('correct');
-                
-                document.getElementById('hint-feedback').style.display = 'none';
-
-                const explBox = document.getElementById('explain-feedback');
-                explBox.innerHTML = `<strong>Correct!</strong> ${qData.explanation}`;
-                explBox.style.display = 'block';
-                document.getElementById('next-btn').style.display = 'block';
-
             } else {
                 attemptTracker++;
-                selectedBtn.classList.add('wrong');
-                selectedBtn.disabled = true;
-                playSound('wrong');
-
+                btn.classList.add('wrong');
                 if (attemptTracker === 1) {
-                    const hintBox = document.getElementById('hint-feedback');
-                    hintBox.innerHTML = `<strong>Hint:</strong> ${qData.hint}`;
-                    hintBox.style.display = 'block';
+                    document.getElementById('hint-feedback').innerHTML = `<strong>Hint:</strong> ${q.hint}`;
+                    document.getElementById('hint-feedback').style.display = 'block';
+                    for(let b of document.querySelectorAll('.option-btn')) b.disabled = false;
                 } else {
                     clearInterval(countdownTimer);
-                    disableAllOptions();
-                    
-                    const optionsList = document.getElementById('target-options').children;
-                    optionsList[qData.answer].classList.add('correct');
-
-                    const hintBox = document.getElementById('hint-feedback');
-                    hintBox.style.display = 'none';
-
-                    const explBox = document.getElementById('explain-feedback');
-                    explBox.innerHTML = `<strong>Not quite!</strong> ${qData.explanation}`;
-                    explBox.style.display = 'block';
-                    document.getElementById('next-btn').style.display = 'block';
+                    document.querySelectorAll('.option-btn')[q.answer].classList.add('correct');
+                    document.getElementById('explain-feedback').innerHTML = `<strong>Not quite!</strong> ${q.explanation}`;
+                    document.getElementById('explain-feedback').style.display = 'block';
+                    playSound('wrong');
                 }
             }
+            if (attemptTracker !== 1) document.getElementById('next-btn').style.display = 'block';
         }
 
-        function disableAllOptions() {
-            const buttons = document.getElementsByClassName('option-btn');
-            for(let btn of buttons) {
-                btn.disabled = true;
-            }
-        }
-
-        function playSound(type) {
-            let soundId = type === 'correct' ? 'audio-correct' : 'audio-wrong';
-            const audio = document.getElementById(soundId);
-            if (audio) {
-                audio.currentTime = 0;
-                audio.play().catch(e => console.log("Audio play prevented or missing."));
-            }
-        }
-
-        function advanceQuestion() {
-            currentIndex++;
-            if (currentIndex < questionBank.length) {
-                displayQuestion();
-            } else {
-                showFinalResults();
-            }
-        }
-
+        function disableAllOptions() { for(let b of document.querySelectorAll('.option-btn')) b.disabled = true; }
+        function playSound(type) { document.getElementById(type === 'correct' ? 'audio-correct' : 'audio-wrong').play().catch(()=>{}); }
+        function advanceQuestion() { currentIndex++; currentIndex < questionBank.length ? displayQuestion() : showFinalResults(); }
         function showFinalResults() {
             document.getElementById('game-screen').classList.remove('active');
             document.getElementById('result-screen').classList.add('active');
-            
             document.getElementById('final-score-value').innerText = `${runningScore}/${questionBank.length}`;
-            
-            let finalPercentage = (runningScore / questionBank.length) * 100;
-            let statusText = "";
-
-            if (finalPercentage >= 75) {
-                statusText = "Good job!";
-            } else if (finalPercentage >= 40) {
-                statusText = "Review this chapter and try again.";
-            } else {
-                statusText = "Let’s practise more.";
-            }
-            
-            document.getElementById('final-status-msg').innerText = statusText;
         }
-
-        function resetInteractive() {
-            currentIndex = 0;
-            runningScore = 0;
-            document.getElementById('score-text').innerText = `Score: 0`;
-            document.getElementById('result-screen').classList.remove('active');
-            document.getElementById('welcome-screen').classList.add('active');
-        }
-
-        // Particle System Engine
-        const canvas = document.getElementById('particle-canvas');
-        const ctx = canvas.getContext('2d');
-        let particles = [];
-
-        function resizeCanvas() {
-            canvas.width = canvas.parentElement.clientWidth;
-            canvas.height = canvas.parentElement.clientHeight;
-        }
-        window.addEventListener('resize', resizeCanvas);
-        resizeCanvas();
-
-        function triggerSparkles() {
-            resizeCanvas();
-            for (let i = 0; i < 40; i++) {
-                particles.push({
-                    x: canvas.width / 2,
-                    y: canvas.height / 2,
-                    radius: Math.random() * 4 + 2,
-                    color: `hsl(${Math.random() * 40 + 260}, 90%, 65%)`, 
-                    speedX: (Math.random() - 0.5) * 8,
-                    speedY: (Math.random() - 0.5) * 8,
-                    alpha: 1
-                });
-            }
-            renderParticles();
-        }
-
-        function renderParticles() {
-            if (particles.length === 0) return;
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            
-            for (let idx = particles.length - 1; idx >= 0; idx--) {
-                let p = particles[idx];
-                p.x += p.speedX;
-                p.y += p.speedY;
-                p.alpha -= 0.02;
-                
-                ctx.save();
-                ctx.globalAlpha = p.alpha;
-                ctx.beginPath();
-                ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-                ctx.fillStyle = p.color;
-                ctx.fill();
-                ctx.restore();
-
-                if (p.alpha <= 0) {
-                    particles.splice(idx, 1);
-                }
-            }
-
-            if (particles.length > 0) {
-                requestAnimationFrame(renderParticles);
-            } else {
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-            }
-        }
+        function resetInteractive() { location.reload(); }
     </script>
 </body>
 </html>
