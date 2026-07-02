@@ -185,7 +185,7 @@
                 const splash = document.getElementById('splash-screen');
                 if (splash) splash.classList.remove('active');
                 document.getElementById('welcome-screen').classList.add('active');
-            }, 5000); // 5 Seconds fixed branding display constraint
+            }, 5000); // 5 Seconds fixed display constraint
         });
 
         // Fisher-Yates Randomization Engine
@@ -309,7 +309,6 @@
             }
         }
 
-        // Lock inputs helper
         function disableAllOptions() {
             const area = document.getElementById('options-area');
             if (area.className === "letter-grid") {
