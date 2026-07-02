@@ -102,7 +102,7 @@
             max-width: 650px;
             padding: 40px 32px;
             text-align: center;
-            display: none; /* Controlled via state workflow */
+            display: none;
             flex-direction: column;
             align-items: center;
             animation: fadeIn 0.5s ease-out;
@@ -293,20 +293,109 @@
             background-color: var(--body-bg);
             border: 1px solid var(--neutral-light);
             border-radius: var(--radius-md);
-            padding: 16px;
+            padding: 20px;
             margin-bottom: 20px;
             display: flex;
             justify-content: center;
             align-items: center;
+            width: 100%;
         }
 
-        .graphical-payload {
-            max-width: 100%;
-            height: auto;
-            max-height: 240px;
-            object-fit: contain;
+        /*------------------------------------------------------------------
+        [4b. NATIVE INTERACTIVE DATA COMPONENTS]
+        ------------------------------------------------------------------*/
+        /* Q3 Pictograph Table Component */
+        .native-table-view {
+            width: 100%;
+            max-width: 460px;
+            border-collapse: collapse;
+            background: #fff;
+            border: 2px solid #b4c6e7;
+            font-weight: 600;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+        }
+        .native-table-view th {
+            background-color: #4a90e2;
+            color: #ffffff;
+            padding: 12px;
+            font-size: 1rem;
+            border: 1px solid #b4c6e7;
+        }
+        .native-table-view td {
+            padding: 14px;
+            border: 1px solid #b4c6e7;
+            text-align: center;
+            font-size: 1rem;
+            color: var(--neutral-dark);
+        }
+        .table-key-callout {
+            background-color: #f1f5f9;
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #1e3a8a !important;
         }
 
+        /* Q2 Beautiful Tally Graphics Card */
+        .tally-card {
+            background-color: #ffffff;
+            border: 2px solid #cbd5e1;
+            border-radius: 12px;
+            padding: 16px 24px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+            max-width: 400px;
+            width: 100%;
+        }
+        .tally-card-title {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--neutral-medium);
+        }
+        .tally-graphic-bundle {
+            display: flex;
+            align-items: center;
+            position: relative;
+            height: 40px;
+            width: 50px;
+            margin-left: auto;
+        }
+        .tally-stick {
+            width: 4px;
+            height: 36px;
+            background-color: #1e40af;
+            border-radius: 2px;
+            position: absolute;
+        }
+        .tally-stick:nth-child(1) { left: 4px; }
+        .tally-stick:nth-child(2) { left: 14px; }
+        .tally-stick:nth-child(3) { left: 24px; }
+        .tally-stick:nth-child(4) { left: 34px; }
+        .tally-stick.diagonal-slash {
+            transform: rotate(-65deg);
+            transform-origin: center;
+            left: 19px;
+            height: 42px;
+            background-color: #dc2626;
+        }
+        .tally-extra-sticks {
+            display: flex;
+            gap: 6px;
+            margin-left: 12px;
+            height: 36px;
+            align-items: center;
+        }
+        .tally-single-stick {
+            width: 4px;
+            height: 36px;
+            background-color: #1e40af;
+            border-radius: 2px;
+        }
+
+        /* Options layout system */
         .options-grid {
             display: grid;
             grid-template-columns: 1fr;
@@ -439,6 +528,22 @@
             font-weight: 700;
         }
 
+        .restart-action-btn {
+            background-color: var(--primary);
+            color: #fff;
+            border: none;
+            padding: 12px 28px;
+            font-size: 1rem;
+            font-weight: 700;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: background-color var(--transition);
+        }
+
+        .restart-action-btn:hover {
+            background-color: var(--primary-dark);
+        }
+
         /*------------------------------------------------------------------
         [7. RUNTIME EFFECTS & KEYFRAMES ENGINE]
         ------------------------------------------------------------------*/
@@ -482,7 +587,7 @@
             </ul>
         </div>
         
-        <button class="start-action-btn" id="ui-action-start-module">Start Learning 🚀</button>
+        <button class="start-action-btn" id="ui-action-start-module">Start</button>
     </div>
 
     <main class="quiz-container" id="app-canvas-container" role="application">
@@ -506,7 +611,6 @@
 <script>
     /**
      * @fileoverview Comprehensive Chapter 12 Data Handling Matrix Definition Store
-     * Rigorously structuralized against all listed syllabus sub-competencies.
      */
     const DATASET_REGISTRY = [
         {
@@ -515,7 +619,7 @@
             pointsAllocation: 2,
             durationLimit: 60,
             statement: "Karan wants to know the most popular playground game among his classmates. What is the most effective method for him to collect this data?",
-            media: null,
+            renderType: "text",
             choices: [
                 "Guessing based on what he likes to play",
                 "Conducting short interviews or giving out a small questionnaire to his class",
@@ -531,41 +635,41 @@
             displayIndex: "2/12",
             pointsAllocation: 2,
             durationLimit: 60,
-            statement: "Ananya is explaining tally marks to her younger brother. Why do we draw a diagonal slash across four vertical marks when recording data?",
-            media: null,
+            statement: "Ananya is counting the number of birds visiting her garden window. She records the birds using the tally block shown below. What is the total number of birds Ananya saw?",
+            renderType: "q2_interactive_tally",
             choices: [
-                "To show that the data collection is completely finished",
-                "To group the counts into clear bundles of 5 for easier and faster counting",
-                "To indicate that the number is wrong and needs to be deleted",
-                "To make the chart look artistic and colorful"
+                "4 birds",
+                "5 birds",
+                "7 birds",
+                "8 birds"
             ],
-            solutionKey: "To group the counts into clear bundles of 5 for easier and faster counting",
-            hint: "Think about how skipping by 5s helps you find a total faster than counting things one by one.",
-            explanation: "The fifth diagonal mark creates a distinct bundle of 5, enabling us to quickly skip-count large data sets by fives."
+            solutionKey: "7 birds",
+            hint: "Count the closed bundle as 5 first, then add the single vertical blue sticks next to it.",
+            explanation: "A crossed group of lines always represents 5 items. Adding the 2 individual lines gives 5 + 2 = 7 birds total."
         },
         {
             uid: "q-ch12-comp-03",
             displayIndex: "3/12",
             pointsAllocation: 2,
             durationLimit: 60,
-            statement: "Sanya is building a school transport graph. Based on the rules defined in the key, how many total bus symbols must she draw to show 60 students?",
-            media: "assets/question_3_graph.png",
+            statement: "Sanya is making a chart to track how students travel to school. Based on the rules defined in the key below, how many total bus symbols (🚌) must she draw to show 60 students?",
+            renderType: "q3_pictograph",
             choices: ["6 symbols", "10 symbols", "60 symbols", "5 symbols"],
             solutionKey: "6 symbols",
-            hint: "Look at the key rule: 1 bus symbol equals 10 students. Divide total students by 10.",
-            explanation: "Since each bus icon handles 10 students, drawing 6 icons represents 6 × 10 = 60 students."
+            hint: "Look closely at the key: 1 bus symbol equals 10 students. Divide the 60 total students into groups of 10.",
+            explanation: "Since each bus icon represents 10 students, drawing 6 icons represents 6 × 10 = 60 students."
         },
         {
             uid: "q-ch12-comp-04",
             displayIndex: "4/12",
             pointsAllocation: 2,
             durationLimit: 60,
-            statement: "Look at the vertical points graph below. How many points did Blue House score?",
-            media: "assets/question_4_graph.png",
-            choices: ["40 points", "45 points", "50 points", "0 points"],
+            statement: "Look at the school sports points graph below. How many points did Blue House score altogether?",
+            renderType: "q4_vertical_graph",
+            choices: ["40 points", "45 points", "50 points", "20 points"],
             solutionKey: "45 points",
-            hint: "Locate the top edge of the Blue bar and check the specific value designated inside or alongside it.",
-            explanation: "The height tracker and inner marking of the Blue House column points straight to 45 points."
+            hint: "Look at the top of the dark blue bar labeled 'Blue' to see its direct score value on the chart.",
+            explanation: "The bar for Blue House clearly reaches and shows the number 45 marked at its peak level."
         },
         {
             uid: "q-ch12-comp-05",
@@ -573,7 +677,7 @@
             pointsAllocation: 2,
             durationLimit: 60,
             statement: "A class voted on favorite fruits. 4 students chose Mango, and 8 students chose Apple. How many more students preferred Apple over Mango?",
-            media: null,
+            renderType: "text",
             choices: ["2 students", "4 students", "12 students", "8 students"],
             solutionKey: "4 students",
             hint: "Subtract the number of students who like Mango from the number who like Apple.",
@@ -585,7 +689,7 @@
             pointsAllocation: 2,
             durationLimit: 60,
             statement: "A pictograph shows star symbols for student high-scores. If each star equals 2 points, how many points do 7 star symbols signify?",
-            media: null,
+            renderType: "text",
             choices: ["14 points", "9 points", "5 points", "7 points"],
             solutionKey: "14 points",
             hint: "Multiply the total count of symbols by the value scale of a single element (7 groups of 2).",
@@ -597,7 +701,7 @@
             pointsAllocation: 2,
             durationLimit: 60,
             statement: "If a bar chart tracking favorite pets shows the 'Cat' bar reaching up to value 18, and the 'Dog' bar reaching up to 10, which option accurately compares these two sets of data?",
-            media: null,
+            renderType: "text",
             choices: [
                 "There are 8 more dogs than cats",
                 "There are 8 more cats than dogs",
@@ -614,7 +718,7 @@
             pointsAllocation: 2,
             durationLimit: 60,
             statement: "Simran collects data on toy vehicles. She notes 5 cars, 3 trucks, and 2 cycles. Which item represents the least collected toy format?",
-            media: null,
+            renderType: "text",
             choices: ["Cars", "Trucks", "Cycles", "All are equal"],
             solutionKey: "Cycles",
             hint: "Compare all values to pinpoint the smallest integer in the recorded list.",
@@ -626,7 +730,7 @@
             pointsAllocation: 2,
             durationLimit: 60,
             statement: "Rohan reads a pictograph about tree counts in a park. The scale key says: 1 tree icon = 5 actual trees. If a row contains 4 icons, how many real trees are there?",
-            media: null,
+            renderType: "text",
             choices: ["20 trees", "9 trees", "4 trees", "1 tree"],
             solutionKey: "20 trees",
             hint: "Calculate 4 icons using the scaling multiplier value of 5.",
@@ -638,7 +742,7 @@
             pointsAllocation: 2,
             durationLimit: 60,
             statement: "A horizontal bar graph monitors favorite school subjects. The Math bar stops exactly at 25. How many students selected Math as their top choice?",
-            media: null,
+            renderType: "text",
             choices: ["50 students", "25 students", "12 students", "0 students"],
             solutionKey: "25 students",
             hint: "The direct numeric value at the end of a bar matches the specific count for that option.",
@@ -650,7 +754,7 @@
             pointsAllocation: 2,
             durationLimit: 60,
             statement: "In a sports tally tracking sheet, a student notes down 9 goals scored. How should this data layer be transcribed into standard tally format?",
-            media: null,
+            renderType: "text",
             choices: ["//// ////", "//// //", "//// //// //", "Oooo Oooo O"],
             solutionKey: "//// //// //",
             hint: "Recall that 5 is written as a crossed group of 4 lines, followed by separate single strokes for any remainder.",
@@ -662,7 +766,7 @@
             pointsAllocation: 2,
             durationLimit: 60,
             statement: "A chart records ice cream sales: Vanilla = 30, Chocolate = 50. What step determines the aggregate total of ice cream sold during this tracking period?",
-            media: null,
+            renderType: "text",
             choices: ["Subtract 30 from 50", "Add 30 and 50 together", "Multiply 30 by 50", "Divide 50 by 30"],
             solutionKey: "Add 30 and 50 together",
             hint: "To find an 'aggregate total' or total amount, you must combine the quantities from all categories.",
@@ -684,11 +788,9 @@
             this.attemptCount = 0; 
             this.isMuted = false;
 
-            // Audio assets setup
             this.audioSuccess = new Audio('assets/claps.mp3');
             this.audioFailure = new Audio('assets/wrong.mp3');
 
-            // Cache core elements
             this.domProgressBar = document.getElementById('ui-progress-bar');
             this.domIndexLabel = document.getElementById('ui-index-label');
             this.domScoreLabel = document.getElementById('ui-score-label');
@@ -708,7 +810,6 @@
                 this.domAudioToggle.style.color = this.isMuted ? "var(--danger)" : "var(--neutral-medium)";
             });
 
-            // "Start Learning" Button triggers primary activity canvas
             document.getElementById('ui-action-start-module').addEventListener('click', () => {
                 document.getElementById('app-title-screen').style.display = 'none';
                 document.getElementById('app-canvas-container').style.display = 'flex';
@@ -717,13 +818,11 @@
         }
 
         initializeSplashConstraint() {
-            // Strictly enforce branding visibility on splash view for exactly 5 seconds
             setTimeout(() => {
                 const splash = document.getElementById('app-splash-screen');
                 splash.style.opacity = '0';
                 setTimeout(() => {
                     splash.style.display = 'none';
-                    // Route directly to the Title Screen with explicit instructions
                     document.getElementById('app-title-screen').style.display = 'flex';
                 }, 500);
             }, 5000);
@@ -765,22 +864,77 @@
         }
 
         renderCanvasInterface(item) {
+            let graphicalPayloadHTML = '';
+            
+            if (item.renderType === 'q3_pictograph') {
+                graphicalPayloadHTML = `
+                    <div class="graphical-container">
+                        <table class="native-table-view">
+                            <thead>
+                                <tr>
+                                    <th colspan="2">School Transport Plan</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>🚌 Bus Riders</td>
+                                    <td><strong>60 Students Needed</strong></td>
+                                </tr>
+                                <tr class="table-key-callout">
+                                    <td colspan="2">Scale Key rule: One 🚌 symbol = 10 Students</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                `;
+            } else if (item.renderType === 'q2_interactive_tally') {
+                graphicalPayloadHTML = `
+                    <div class="graphical-container">
+                        <div class="tally-card">
+                            <span class="tally-card-title">Garden Birds:</span>
+                            <div class="tally-graphic-bundle">
+                                <div class="tally-stick"></div>
+                                <div class="tally-stick"></div>
+                                <div class="tally-stick"></div>
+                                <div class="tally-stick"></div>
+                                <div class="tally-stick diagonal-slash"></div>
+                            </div>
+                            <div class="tally-extra-sticks">
+                                <div class="tally-single-stick"></div>
+                                <div class="tally-single-stick"></div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else if (item.renderType === 'q4_vertical_graph') {
+                graphicalPayloadHTML = `
+                    <div class="graphical-container">
+                        <svg viewBox="0 0 300 180" style="width:100%; max-width:320px; font-family:sans-serif;">
+                            <line x1="40" y1="40" x2="260" y2="40" stroke="#edf2f7" stroke-width="1"/>
+                            <line x1="40" y1="95" x2="260" y2="95" stroke="#edf2f7" stroke-width="1"/>
+                            
+                            <line x1="40" y1="20" x2="40" y2="150" stroke="#2d3748" stroke-width="2"/>
+                            <line x1="40" y1="150" x2="260" y2="150" stroke="#2d3748" stroke-width="2"/>
+                            
+                            <rect x="75" y="40" width="50" height="110" fill="#4a90e2" rx="4"/>
+                            <text x="100" y="30" fill="#1e3a8a" font-weight="bold" font-size="14" text-anchor="middle">45</text>
+                            <text x="100" y="166" fill="#4a5568" font-weight="bold" font-size="13" text-anchor="middle">Blue</text>
+
+                            <rect x="165" y="95" width="50" height="55" fill="#e2e8f0" rx="4"/>
+                            <text x="190" y="85" fill="#4a5568" font-weight="bold" font-size="14" text-anchor="middle">20</text>
+                            <text x="190" y="166" fill="#4a5568" font-weight="bold" font-size="13" text-anchor="middle">Red</text>
+                        </svg>
+                    </div>
+                `;
+            }
+
             this.domViewport.innerHTML = `
                 <div class="question-statement">${item.statement}</div>
-                ${item.media ? `
-                    <div class="graphical-container">
-                        <img src="${item.media}" alt="Chapter 12 Data Reference Graphic" class="graphical-payload" id="ui-media-element">
-                    </div>
-                ` : ''}
+                ${graphicalPayloadHTML}
                 <div class="options-grid" id="ui-options-root" role="radiogroup" aria-label="Choices Grid Matrix"></div>
                 <div class="feedback-panel type-hint" id="panel-hint"></div>
                 <div class="feedback-panel type-solution" id="panel-solution"></div>
             `;
-
-            if (item.media) {
-                const img = document.getElementById('ui-media-element');
-                img.onerror = () => img.closest('.graphical-container').style.display = 'none';
-            }
 
             const rootOptionsGrid = document.getElementById('ui-options-root');
             item.choices.forEach((optionText, idx) => {
@@ -868,7 +1022,7 @@
                 audioTarget.currentTime = 0;
                 audioTarget.play().catch(() => {});
             } catch (e) {
-                console.warn("Audio context playback deferred safely.");
+                console.warn("Audio playback context safely deferred.");
             }
         }
 
