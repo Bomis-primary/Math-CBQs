@@ -50,7 +50,7 @@
         .screen { display: none !important; }
         .screen.active { display: block !important; }
         
-        /* Splash Screen Flex Centering */
+        /* Splash Screen Setup */
         #splash-screen.active { 
             display: flex !important; 
             flex-direction: column;
@@ -60,50 +60,20 @@
             padding: 40px;
         }
 
-        /* Animated Splash Logo Placeholder */
-        .splash-logo {
-            width: 100px;
-            height: 100px;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            border-radius: 24px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 3rem;
-            font-weight: bold;
-            margin-bottom: 20px;
-            box-shadow: 0 12px 24px rgba(2, 132, 199, 0.3);
-            animation: pulse-glow 2s infinite ease-in-out;
-        }
-        .splash-title {
-            color: var(--primary);
-            font-size: 1.6rem;
-            font-weight: 700;
-            letter-spacing: 1px;
+        .logo-frame { 
+            max-width: 240px; 
+            height: auto; 
+            animation: pulse 2s infinite ease-in-out; 
         }
 
-        @keyframes pulse-glow {
-            0%, 100% { transform: scale(1); box-shadow: 0 12px 24px rgba(2, 132, 199, 0.3); }
-            50% { transform: scale(1.08); box-shadow: 0 16px 32px rgba(2, 132, 199, 0.5); }
+        @keyframes pulse { 
+            0%, 100% { transform: scale(1); } 
+            50% { transform: scale(1.04); } 
         }
 
         /* Welcome Screen Styling */
         .welcome-content { text-align: center; }
-        .welcome-logo-fallback {
-            width: 70px;
-            height: 70px;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            border-radius: 16px;
-            margin: 0 auto 24px auto;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 2rem;
-            font-weight: bold;
-            box-shadow: 0 8px 16px rgba(2, 132, 199, 0.2);
-        }
+        .welcome-logo { max-width: 200px; height: auto; margin-bottom: 24px; }
         h1 { color: #0284c7; font-size: 1.8rem; margin-bottom: 16px; font-weight: 700; text-align: center; }
         .description { text-align: center; color: #475569; margin-bottom: 32px; line-height: 1.6; font-size: 1rem; }
         
@@ -129,7 +99,7 @@
             gap: 6px; 
         }
 
-        /* Question & Dynamic Typography */
+        /* Question Typography */
         .question-text { 
             font-size: 1.15rem; 
             font-weight: 600; 
@@ -138,7 +108,7 @@
             color: #0f172a;
         }
 
-        /* Inline CSS Visual Generators */
+        /* Inline CSS Visual Track Base */
         .visual-track {
             display: flex;
             gap: 14px;
@@ -151,7 +121,7 @@
             border-radius: 16px;
         }
 
-        /* Ornament Sequence CSS Styles */
+        /* Ornament Sequence Layout */
         .ornament-item {
             font-size: 2.2rem;
             display: flex;
@@ -166,7 +136,7 @@
             font-weight: 700;
         }
 
-        /* Pure CSS Blocks Grid Stack styles */
+        /* Pure CSS Building Blocks */
         .grid-stack {
             display: flex;
             flex-direction: column-reverse;
@@ -194,7 +164,7 @@
             text-align: center;
         }
 
-        /* Options layout system */
+        /* Options System Layout */
         .options-container { 
             display: flex; 
             flex-direction: column; 
@@ -239,7 +209,7 @@
             cursor: not-allowed;
         }
         
-        /* Explanatory Explanations Box */
+        /* Explanation Feedback */
         .feedback-box { 
             padding: 18px; 
             border-radius: 12px; 
@@ -255,7 +225,7 @@
             color: #0c4a6e; 
         }
 
-        /* Action Buttons Interaction styles */
+        /* Action Controls */
         .action-btn { 
             width: 100%; 
             background: #0284c7; 
@@ -276,15 +246,17 @@
 </head>
 <body>
 
+    <audio id="audio-correct" src="assets/claps.mp3" preload="auto"></audio>
+    <audio id="audio-wrong" src="assets/wrong.mp3" preload="auto"></audio>
+
     <div class="container">
         <div id="splash-screen" class="screen active">
-            <div class="splash-logo">∑</div>
-            <div class="splash-title">INNOVINE SOLUTIONS</div>
+            <img src="assets/logo.png" alt="Innovine Solutions" class="logo-frame">
         </div>
 
         <div id="welcome-screen" class="screen">
             <div class="welcome-content">
-                <div class="welcome-logo-fallback">∑</div>
+                <img src="assets/logo.png" alt="Innovine Solutions" class="welcome-logo">
                 <h1>Patterns & Symmetry Quest</h1>
                 <p class="description">Welcome, Explorer! Get ready to apply mirror lines, pattern tracks, and tiling logic to crack real-world math mysteries.</p>
                 <button class="action-btn" onclick="startInteractive()">Start Challenge</button>
@@ -358,7 +330,7 @@
         let countdownTimer;
         let activeSeconds = 60;
 
-        // Auto-switch away from splash screen cleanly after 3 seconds
+        // Automatically transitions cleanly from Splash Screen into Welcome Screen
         window.addEventListener('DOMContentLoaded', () => {
             setTimeout(() => {
                 const splash = document.getElementById('splash-screen');
@@ -367,7 +339,7 @@
                     splash.classList.remove('active');
                     welcome.classList.add('active');
                 }
-            }, 3000);
+            }, 3000); // 3 Seconds Display Duration
         });
 
         function startInteractive() {
@@ -443,6 +415,7 @@
         function lockButtonsOnTimeout() {
             let q = questionBank[currentIndex];
             disableAllOptions();
+            playSound('wrong');
             highlightCorrectAnswer(q.answer);
             
             const explBox = document.getElementById('explain-feedback');
@@ -458,12 +431,14 @@
             
             if (idx === q.answer) {
                 selectedBtn.classList.add('correct');
+                playSound('correct');
                 runningScore++;
                 document.getElementById('score-text').innerText = `Score: ${runningScore}`;
                 document.getElementById('explain-feedback').innerHTML = `<strong>Correct!</strong> ${q.explanation}`;
             } else {
                 selectedBtn.classList.add('wrong');
                 highlightCorrectAnswer(q.answer);
+                playSound('wrong');
                 document.getElementById('explain-feedback').innerHTML = `<strong>Incorrect.</strong> ${q.explanation}`;
             }
             
@@ -480,6 +455,14 @@
             const area = document.getElementById('options-area');
             if(area.children[correctIdx]) {
                 area.children[correctIdx].classList.add('correct');
+            }
+        }
+
+        function playSound(type) {
+            const audio = document.getElementById(`audio-${type}`);
+            if (audio) {
+                audio.currentTime = 0;
+                audio.play().catch(e => console.log("Audio gesture delay handled safely."));
             }
         }
 
