@@ -13,15 +13,19 @@
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
         body { background-color: var(--background); color: var(--text); display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 15px; position: relative; overflow-x: hidden; }
-        .container { width: 100%; max-width: 650px; background: var(--surface); border-radius: 20px; box-shadow: 0 12px 36px rgba(2, 132, 199, 0.08); padding: 24px; position: relative; z-index: 2; }
+        .container { width: 100%; max-width: 650px; background: var(--surface); border-radius: 20px; box-shadow: 0 12px 36px rgba(2, 132, 199, 0.08); padding: 24px; position: relative; z-index: 2; min-height: 350px; }
         
-        .screen { display: none; }
-        .screen.active { display: block; }
+        /* Bulletproof Screen Isolation toggles */
+        .screen { display: none !important; }
+        .screen.active { display: block !important; }
+        
+        #splash-screen.active { display: flex !important; justify-content: center; align-items: center; }
+
         h1, h2 { color: var(--primary); text-align: center; margin-bottom: 16px; }
         .description { text-align: center; color: #475569; margin-bottom: 24px; line-height: 1.6; }
         
         /* Splash Screen Style */
-        #splash-screen { text-align: center; padding: 60px 20px; display: flex; justify-content: center; align-items: center; min-height: 300px; }
+        #splash-screen { text-align: center; padding: 60px 20px; min-height: 300px; }
         .logo-frame { max-width: 240px; height: auto; animation: pulse 2s infinite ease-in-out; }
         @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.04); } }
 
@@ -195,10 +199,13 @@
         let countdownTimer;
         let activeSeconds = 60;
 
+        // Auto-switch away from splash screen completely after 5 seconds
         window.addEventListener('DOMContentLoaded', () => {
             setTimeout(() => {
                 const splash = document.getElementById('splash-screen');
-                if (splash) splash.classList.remove('active');
+                if (splash) {
+                    splash.classList.remove('active');
+                }
                 document.getElementById('welcome-screen').classList.add('active');
             }, 5000);
         });
@@ -375,7 +382,7 @@
             const audio = document.getElementById(`audio-${type}`);
             if (audio) {
                 audio.currentTime = 0;
-                audio.play().catch(e => console.log("Audio skipped."));
+                audio.play().catch(e => console.log("Audio presentation handled."));
             }
         }
 
