@@ -2,38 +2,40 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Grade 3 Mathematics - Chapter 12: Data Handling Quiz</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Grade 3 Mathematics - Chapter 12: Data Handling Master Module</title>
     <style>
         /*------------------------------------------------------------------
-        [Custom Properties / Theme Engine]
+        [CSS CUSTOM PROPERTIES / DESIGN SYSTEM ENGINE]
         ------------------------------------------------------------------*/
         :root {
-            --cls-primary: #4a90e2;
-            --cls-primary-dark: #357abd;
-            --cls-primary-light: #f0f7ff;
-            --cls-success: #28a745;
-            --cls-success-bg: #d4edda;
-            --cls-success-border: #c3e6cb;
-            --cls-danger: #dc3545;
-            --cls-danger-bg: #f8d7da;
-            --cls-danger-border: #f5c6cb;
-            --cls-neutral-dark: #2d3748;
-            --cls-neutral-medium: #4a5568;
-            --cls-neutral-light: #edf2f7;
-            --cls-body-bg: #f7fafc;
-            --cls-card-bg: #ffffff;
+            --primary: #4a90e2;
+            --primary-dark: #357abd;
+            --primary-light: #f0f7ff;
+            --success: #28a745;
+            --success-bg: #d4edda;
+            --success-border: #c3e6cb;
+            --danger: #dc3545;
+            --danger-bg: #f8d7da;
+            --danger-border: #f5c6cb;
+            --warning: #ffc107;
+            --warning-bg: #fff3cd;
+            --warning-border: #ffeeba;
+            --neutral-dark: #2d3748;
+            --neutral-medium: #4a5568;
+            --neutral-light: #edf2f7;
+            --body-bg: #f7fafc;
+            --card-bg: #ffffff;
             
-            --cls-font-sans: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            --cls-radius-lg: 16px;
-            --cls-radius-md: 12px;
-            --cls-shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.05);
-            --cls-shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-            --cls-transition-fast: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+            --radius-lg: 16px;
+            --radius-md: 12px;
+            --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         /*------------------------------------------------------------------
-        [Base & Reset Styles]
+        [BASE STYLES & LAYOUT RESET]
         ------------------------------------------------------------------*/
         * {
             box-sizing: border-box;
@@ -42,67 +44,92 @@
         }
 
         body {
-            font-family: var(--cls-font-sans);
-            background-color: var(--cls-body-bg);
-            color: var(--cls-neutral-dark);
+            font-family: var(--font-sans);
+            background-color: var(--body-bg);
+            color: var(--neutral-dark);
             min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 16px;
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+
+        /*------------------------------------------------------------------
+        [1. INTRO / SPLASH SCREEN]
+        ------------------------------------------------------------------*/
+        .splash-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--card-bg);
+            z-index: 9999;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            padding: 24px;
-            line-height: 1.6;
-            -webkit-font-smoothing: antialiased;
+            transition: opacity 0.5s ease;
+        }
+
+        .splash-logo {
+            max-width: 220px;
+            height: auto;
+            object-fit: contain;
+            margin-bottom: 24px;
+        }
+
+        .splash-loader {
+            width: 40px;
+            height: 40px;
+            border: 4px solid var(--neutral-light);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
         }
 
         /*------------------------------------------------------------------
-        [LMS Layout Wrapper]
+        [2. APP WORKSPACE FRAME LAYOUT]
         ------------------------------------------------------------------*/
-        .quiz-application {
-            background-color: var(--cls-card-bg);
-            border-radius: var(--cls-radius-lg);
-            box-shadow: var(--cls-shadow-md);
+        .quiz-container {
+            background-color: var(--card-bg);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
             width: 100%;
-            max-width: 720px;
+            max-width: 700px;
             overflow: hidden;
-            display: flex;
+            display: none; /* Display is toggled by JS exactly after 5 seconds */
             flex-direction: column;
+            position: relative;
         }
 
-        /* Progress Bar Core indicator */
         .progress-track {
             height: 6px;
-            background-color: var(--cls-neutral-light);
+            background-color: var(--neutral-light);
             width: 100%;
-            position: relative;
         }
 
         .progress-fill {
             height: 100%;
-            background: linear-gradient(90deg, var(--cls-primary), #63b3ed);
+            background: linear-gradient(90deg, var(--primary), #63b3ed);
             width: 0%;
-            transition: width var(--cls-transition-fast);
+            transition: width var(--transition);
         }
 
-        /*------------------------------------------------------------------
-        [Header Component]
-        ------------------------------------------------------------------*/
         .quiz-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 24px 32px;
-            border-bottom: 1px solid var(--cls-neutral-light);
+            padding: 16px 24px;
+            border-bottom: 1px solid var(--neutral-light);
             background-color: #fff;
         }
 
-        .brand-logo-container {
-            display: flex;
-            align-items: center;
-        }
-
-        .brand-logo {
-            max-height: 44px;
+        .header-logo {
+            max-height: 32px;
             width: auto;
             object-fit: contain;
         }
@@ -110,53 +137,69 @@
         .meta-dashboard {
             display: flex;
             align-items: center;
-            gap: 20px;
+            gap: 12px;
         }
 
         .dashboard-pill {
-            background-color: var(--cls-body-bg);
-            padding: 8px 14px;
+            background-color: var(--body-bg);
+            padding: 6px 12px;
             border-radius: 20px;
-            font-size: 0.875rem;
-            font-weight: 600;
-            color: var(--cls-neutral-medium);
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--neutral-medium);
             display: flex;
             align-items: center;
-            gap: 6px;
-            border: 1px solid var(--cls-neutral-light);
+            gap: 4px;
+            border: 1px solid var(--neutral-light);
         }
 
         .dashboard-pill.timer-alert {
-            color: var(--cls-danger);
-            background-color: var(--cls-danger-bg);
-            border-color: var(--cls-danger-border);
-            animation: pulse-subtle 2s infinite;
+            color: var(--danger);
+            background-color: var(--danger-bg);
+            border-color: var(--danger-border);
+            animation: pulse 1.5s infinite;
+        }
+
+        .audio-toggle-btn {
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--neutral-medium);
+            transition: transform var(--transition);
+        }
+
+        .audio-toggle-btn:hover {
+            transform: scale(1.1);
         }
 
         /*------------------------------------------------------------------
-        [Main View / Canvas Area]
+        [3. MAIN PLAYSPACE CANVAS AREA]
         ------------------------------------------------------------------*/
         .quiz-body {
-            padding: 32px;
-            min-height: 380px;
+            padding: 24px;
             display: flex;
             flex-direction: column;
         }
 
         .question-statement {
-            font-size: 1.35rem;
+            font-size: 1.2rem;
             font-weight: 700;
-            color: var(--cls-neutral-dark);
-            margin-bottom: 24px;
-            line-height: 1.45;
+            color: var(--neutral-dark);
+            margin-bottom: 20px;
+            line-height: 1.4;
         }
 
-        .graphical-payload-wrapper {
-            background-color: var(--cls-body-bg);
-            border: 1px solid var(--cls-neutral-light);
-            border-radius: var(--cls-radius-md);
-            padding: 20px;
-            margin-bottom: 28px;
+        .graphical-container {
+            background-color: var(--body-bg);
+            border: 1px solid var(--neutral-light);
+            border-radius: var(--radius-md);
+            padding: 16px;
+            margin-bottom: 20px;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -165,455 +208,655 @@
         .graphical-payload {
             max-width: 100%;
             height: auto;
-            max-height: 280px;
+            max-height: 240px;
             object-fit: contain;
-            border-radius: 6px;
         }
 
-        /*------------------------------------------------------------------
-        [Interactive Options Layer]
-        ------------------------------------------------------------------*/
-        .interactive-options-grid {
+        .options-grid {
             display: grid;
             grid-template-columns: 1fr;
-            gap: 16px;
+            gap: 12px;
+            margin-bottom: 16px;
         }
 
         .option-node {
-            background-color: var(--cls-card-bg);
-            border: 2px solid var(--cls-neutral-light);
-            border-radius: var(--cls-radius-md);
-            padding: 18px 24px;
-            font-family: var(--cls-font-sans);
-            font-size: 1.05rem;
+            background-color: var(--card-bg);
+            border: 2px solid var(--neutral-light);
+            border-radius: var(--radius-md);
+            padding: 14px 20px;
+            font-family: var(--font-sans);
+            font-size: 1rem;
             font-weight: 600;
-            color: var(--cls-neutral-medium);
+            color: var(--neutral-medium);
             text-align: left;
             cursor: pointer;
-            transition: all var(--cls-transition-fast);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
+            transition: all var(--transition);
             outline: none;
-            position: relative;
+            width: 100%;
         }
 
         .option-node:hover:not(:disabled) {
-            border-color: var(--cls-primary);
-            background-color: var(--cls-primary-light);
-            color: var(--cls-primary-dark);
-            transform: translateY(-1px);
-            box-shadow: var(--cls-shadow-sm);
+            border-color: var(--primary);
+            background-color: var(--primary-light);
+            color: var(--primary-dark);
         }
 
-        .option-node:focus-visible {
-            border-color: var(--cls-primary);
-            box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.4);
-        }
-
-        /* Interactive feedback matrix states */
-        .option-node.node-state-correct {
-            background-color: var(--cls-success-bg) !important;
-            border-color: var(--cls-success) !important;
+        /* Feedback styling mappings */
+        .option-node.state-correct {
+            background-color: var(--success-bg) !important;
+            border-color: var(--success) !important;
             color: #155724 !important;
         }
 
-        .option-node.node-state-incorrect {
-            background-color: var(--cls-danger-bg) !important;
-            border-color: var(--cls-danger) !important;
+        .option-node.state-incorrect {
+            background-color: var(--danger-bg) !important;
+            border-color: var(--danger) !important;
             color: #721c24 !important;
         }
 
         .option-node:disabled {
             cursor: not-allowed;
-            opacity: 0.8;
         }
 
         /*------------------------------------------------------------------
-        [End-of-Session Performance Analytics Screen]
+        [4. HINTS AND REVIEWS CONTEXT PANELS]
         ------------------------------------------------------------------*/
-        .analytics-viewport {
+        .feedback-panel {
+            border-radius: var(--radius-md);
+            padding: 14px 18px;
+            margin-top: 10px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            display: none;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        .feedback-panel.type-hint {
+            background-color: var(--warning-bg);
+            border: 1px solid var(--warning-border);
+            color: #856404;
+        }
+
+        .feedback-panel.type-solution {
+            background-color: var(--primary-light);
+            border: 1px solid #b8daff;
+            color: #004085;
+        }
+
+        /*------------------------------------------------------------------
+        [5. FINAL END-OF-SESSION METRICS VIEW]
+        ------------------------------------------------------------------*/
+        .analytics-view {
             text-align: center;
-            padding: 48px 24px;
+            padding: 40px 20px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
-            animation: fadeIn 0.5s ease-out;
+            animation: fadeIn 0.4s ease-out;
         }
 
         .analytics-icon {
-            font-size: 4rem;
-            margin-bottom: 20px;
+            font-size: 3.5rem;
+            margin-bottom: 16px;
         }
 
         .analytics-title {
-            font-size: 2rem;
-            font-weight: 800;
-            color: var(--cls-neutral-dark);
-            margin-bottom: 12px;
-        }
-
-        .analytics-subtitle {
-            font-size: 1.1rem;
-            color: var(--cls-neutral-medium);
-            margin-bottom: 32px;
-            max-width: 480px;
-        }
-
-        .metric-card-group {
-            display: flex;
-            gap: 24px;
-            width: 100%;
-            max-width: 460px;
-            margin-bottom: 32px;
-        }
-
-        .metric-card {
-            flex: 1;
-            background-color: var(--cls-body-bg);
-            border: 1px solid var(--cls-neutral-light);
-            padding: 16px;
-            border-radius: var(--cls-radius-md);
-        }
-
-        .metric-val {
             font-size: 1.75rem;
             font-weight: 800;
-            color: var(--cls-primary-dark);
+            color: var(--neutral-dark);
+            margin-bottom: 8px;
         }
 
-        .metric-lbl {
+        .analytics-text {
+            font-size: 1rem;
+            color: var(--neutral-medium);
+            margin-bottom: 24px;
+            max-width: 440px;
+        }
+
+        .metrics-row {
+            display: flex;
+            gap: 16px;
+            width: 100%;
+            max-width: 400px;
+            margin-bottom: 28px;
+        }
+
+        .metric-box {
+            flex: 1;
+            background-color: var(--body-bg);
+            border: 1px solid var(--neutral-light);
+            padding: 14px;
+            border-radius: var(--radius-md);
+        }
+
+        .metric-value {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--primary-dark);
+        }
+
+        .metric-label {
             font-size: 0.75rem;
             text-transform: uppercase;
             letter-spacing: 0.05em;
-            color: var(--cls-neutral-medium);
-            margin-top: 4px;
-            font-weight: 600;
+            color: var(--neutral-medium);
+            margin-top: 2px;
+            font-weight: 700;
         }
 
-        .action-fallback-btn {
-            background-color: var(--cls-primary);
+        .restart-action-btn {
+            background-color: var(--primary);
             color: #fff;
             border: none;
-            padding: 14px 32px;
+            padding: 12px 28px;
             font-size: 1rem;
             font-weight: 700;
-            border-radius: var(--cls-radius-md);
+            border-radius: var(--radius-md);
             cursor: pointer;
-            transition: background-color var(--cls-transition-fast);
+            transition: background-color var(--transition);
         }
 
-        .action-fallback-btn:hover {
-            background-color: var(--cls-primary-dark);
+        .restart-action-btn:hover {
+            background-color: var(--primary-dark);
         }
 
         /*------------------------------------------------------------------
-        [Utility Animations]
+        [6. RUNTIME EFFECTS & KEYFRAMES ENGINE]
         ------------------------------------------------------------------*/
-        @keyframes pulse-subtle {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.85; }
+        .confetti-particle {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            z-index: 999;
+            animation: fall linear forwards;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+        @keyframes pulse { 50% { opacity: 0.6; } }
+        @keyframes slideIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes fall {
+            0% { transform: translateY(-10px) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(450px) rotate(360deg); opacity: 0; }
         }
     </style>
 </head>
 <body>
 
-<main class="quiz-application" id="application-scope" role="application">
-    <div class="progress-track" aria-hidden="true">
-        <div class="progress-fill" id="runtime-progress-indicator"></div>
+    <div class="splash-overlay" id="app-splash-screen">
+        <img src="assets/logo.png" alt="Innovine Logo" class="splash-logo" id="splash-logo-asset">
+        <div class="splash-loader"></div>
     </div>
 
-    <header class="quiz-header">
-        <div class="brand-logo-container">
-            <img src="assets/logo.png" alt="Institution Workspace Logo" class="brand-logo" id="brand-logo-node">
+    <main class="quiz-container" id="app-canvas-container" role="application">
+        <div class="progress-track" aria-hidden="true">
+            <div class="progress-fill" id="ui-progress-bar"></div>
         </div>
-        <div class="meta-dashboard">
-            <div class="dashboard-pill" aria-label="Current Question Frame Location">
-                <span>Index:</span> <span id="view-meta-index">--/--</span>
-            </div>
-            <div class="dashboard-pill" aria-label="Accumulated Target Performance Units">
-                <span>Score:</span> <span id="view-meta-score">0</span>
-            </div>
-            <div class="dashboard-pill" id="view-timer-container" aria-label="Remaining System Execution Duration Allocation">
-                <span>⏱</span> <span id="view-meta-timer">00</span>s
-            </div>
-        </div>
-    </header>
 
-    <section class="quiz-body" id="dynamic-canvas-sandbox" aria-live="polite">
-        </section>
-</main>
+        <header class="quiz-header">
+            <div></div> 
+            <div class="meta-dashboard">
+                <button class="audio-toggle-btn" id="ui-audio-toggle" title="Toggle Mute Configuration" aria-label="Toggle Mute">🔊</button>
+                <div class="dashboard-pill" aria-label="Question Track Placement">Q: <span id="ui-index-label">--/--</span></div>
+                <div class="dashboard-pill" aria-label="Accrued Performance Score Tracker">Score: <span id="ui-score-label">0</span></div>
+                <div class="dashboard-pill" id="ui-timer-container" aria-label="Temporal Allocation Window Remaining">⏱ <span id="ui-timer-label">60</span>s</div>
+            </div>
+        </header>
+
+        <section class="quiz-body" id="ui-dynamic-viewport" aria-live="polite">
+            </section>
+    </main>
 
 <script>
     /**
-     * @fileoverview Enterprise Architecture Quiz Engine Configuration Data Repository
-     * Encapsulating exact parameters, telemetry tracking, visual content and constraints.
+     * @fileoverview Comprehensive Chapter 12 Data Handling Matrix Definition Store
+     * Rigorously structuralized against all listed syllabus sub-competencies.
      */
-    const ENGINE_DATASET_PAYLOAD = [
+    const DATASET_REGISTRY = [
         {
-            uid: "q-c12-g3-003",
-            orderLabel: "3/12",
-            allottedPoints: 2,
-            countdownLimitSeconds: 50,
-            instructionText: "Sanya is building a school transport graph. Based on the rules defined in the key, how many total bus symbols must she draw to show 60 students?",
-            graphicResourcePath: "assets/question_3_graph.png",
-            selectionMatrix: ["6 symbols", "10 symbols", "60 symbols", "5 symbols"],
-            validatedAssertionKey: "6 symbols"
+            uid: "q-ch12-comp-01",
+            displayIndex: "1/12",
+            pointsAllocation: 2,
+            durationLimit: 60,
+            statement: "Karan wants to know the most popular playground game among his classmates. What is the most effective method for him to collect this dynamic data?",
+            media: null,
+            choices: [
+                "Guessing based on what he likes to play",
+                "Conducting short interviews or giving out a small questionnaire to his class",
+                "Looking at a sports magazine from another country",
+                "Counting how many toys are in the classroom cabinet"
+            ],
+            solutionKey: "Conducting short interviews or giving out a small questionnaire to his class",
+            hint: "To find out what a specific group of people thinks or prefers, you must ask them directly using questions.",
+            explanation: "Interviews and questionnaires are fundamental data-collection tools used to gather accurate, direct information from a targeted group."
         },
         {
-            uid: "q-c12-g3-004",
-            orderLabel: "4/12",
-            allottedPoints: 2,
-            countdownLimitSeconds: 51,
-            instructionText: "Look at the vertical points graph below. How many points did Blue House score?",
-            graphicResourcePath: "assets/question_4_graph.png",
-            selectionMatrix: ["40 points", "45 points", "50 points", "0 points"],
-            validatedAssertionKey: "45 points"
+            uid: "q-ch12-comp-02",
+            displayIndex: "2/12",
+            pointsAllocation: 2,
+            durationLimit: 60,
+            statement: "Ananya is explaining tally marks to her younger brother. Why do we draw a diagonal slash across four vertical marks when recording data?",
+            media: null,
+            choices: [
+                "To show that the data collection is completely finished",
+                "To group the counts into clear bundles of 5 for easier and faster counting",
+                "To indicate that the number is wrong and needs to be deleted",
+                "To make the chart look artistic and colorful"
+            ],
+            solutionKey: "To group the counts into clear bundles of 5 for easier and faster counting",
+            hint: "Think about how skipping by 5s helps you find a total faster than counting things one by one.",
+            explanation: "The fifth diagonal mark creates a distinct bundle of 5, enabling us to quickly skip-count large data sets by fives."
+        },
+        {
+            uid: "q-ch12-comp-03",
+            displayIndex: "3/12",
+            pointsAllocation: 2,
+            durationLimit: 60,
+            statement: "Sanya is building a school transport graph. Based on the rules defined in the key, how many total bus symbols must she draw to show 60 students?",
+            media: "assets/question_3_graph.png",
+            choices: ["6 symbols", "10 symbols", "60 symbols", "5 symbols"],
+            solutionKey: "6 symbols",
+            hint: "Look at the key rule: 1 bus symbol equals 10 students. Divide total students by 10.",
+            explanation: "Since each bus icon handles 10 students, drawing 6 icons represents 6 × 10 = 60 students."
+        },
+        {
+            uid: "q-ch12-comp-04",
+            displayIndex: "4/12",
+            pointsAllocation: 2,
+            durationLimit: 60,
+            statement: "Look at the vertical points graph below. How many points did Blue House score?",
+            media: "assets/question_4_graph.png",
+            choices: ["40 points", "45 points", "50 points", "0 points"],
+            solutionKey: "45 points",
+            hint: "Locate the top edge of the Blue bar and check the specific value designated inside or alongside it.",
+            explanation: "The height tracker and inner marking of the Blue House column points straight to 45 points."
+        },
+        {
+            uid: "q-ch12-comp-05",
+            displayIndex: "5/12",
+            pointsAllocation: 2,
+            durationLimit: 60,
+            statement: "A class voted on favorite fruits. 4 students chose Mango, and 8 students chose Apple. How many more students preferred Apple over Mango?",
+            media: null,
+            choices: ["2 students", "4 students", "12 students", "8 students"],
+            solutionKey: "4 students",
+            hint: "Subtract the number of students who like Mango from the number who like Apple.",
+            explanation: "8 students preferred Apple and 4 preferred Mango. Therefore, 8 - 4 = 4 more students preferred Apple."
+        },
+        {
+            uid: "q-ch12-comp-06",
+            displayIndex: "6/12",
+            pointsAllocation: 2,
+            durationLimit: 60,
+            statement: "A pictograph shows star symbols for student high-scores. If each star equals 2 points, how many points do 7 star symbols signify?",
+            media: null,
+            choices: ["14 points", "9 points", "5 points", "7 points"],
+            solutionKey: "14 points",
+            hint: "Multiply the total count of symbols by the value scale of a single element (7 groups of 2).",
+            explanation: "7 stars multiplied by a scaling metric of 2 points per item equals 14 cumulative points."
+        },
+        {
+            uid: "q-ch12-comp-07",
+            displayIndex: "7/12",
+            pointsAllocation: 2,
+            durationLimit: 60,
+            statement: "If a bar chart tracking favorite pets shows the 'Cat' bar reaching up to value 18, and the 'Dog' bar reaching up to 10, which option accurately compares these two sets of data?",
+            media: null,
+            choices: [
+                "There are 8 more dogs than cats",
+                "There are 8 more cats than dogs",
+                "There are 28 pets altogether in the entire chart",
+                "Cats are less popular than dogs"
+            ],
+            solutionKey: "There are 8 more cats than dogs",
+            hint: "Subtract the values to check which bar is taller and find the exact difference.",
+            explanation: "The Cat bar (18) is greater than the Dog bar (10) by an offset of 18 - 10 = 8 units."
+        },
+        {
+            uid: "q-ch12-comp-08",
+            displayIndex: "8/12",
+            pointsAllocation: 2,
+            durationLimit: 60,
+            statement: "Simran collects data on toy vehicles. She notes 5 cars, 3 trucks, and 2 cycles. Which item represents the least collected toy format?",
+            media: null,
+            choices: ["Cars", "Trucks", "Cycles", "All are equal"],
+            solutionKey: "Cycles",
+            hint: "Compare all values to pinpoint the smallest integer in the recorded list.",
+            explanation: "Comparing 5 (cars), 3 (trucks), and 2 (cycles), 2 is the minimum value. Thus, cycles are the least collected item."
+        },
+        {
+            uid: "q-ch12-comp-09",
+            displayIndex: "9/12",
+            pointsAllocation: 2,
+            durationLimit: 60,
+            statement: "Rohan reads a pictograph about tree counts in a park. The scale key says: 1 tree icon = 5 actual trees. If a row contains 4 icons, how many real trees are there?",
+            media: null,
+            choices: ["20 trees", "9 trees", "4 trees", "1 tree"],
+            solutionKey: "20 trees",
+            hint: "Calculate 4 icons using the scaling multiplier value of 5.",
+            explanation: "4 icons scaled by a factor of 5 trees each yields 4 × 5 = 20 actual park trees."
+        },
+        {
+            uid: "q-ch12-comp-10",
+            displayIndex: "10/12",
+            pointsAllocation: 2,
+            durationLimit: 60,
+            statement: "A horizontal bar graph monitors favorite school subjects. The Math bar stops exactly at 25. How many students selected Math as their top choice?",
+            media: null,
+            choices: ["50 students", "25 students", "12 students", "0 students"],
+            solutionKey: "25 students",
+            hint: "The direct numeric value at the end of a bar matches the specific count for that option.",
+            explanation: "Since the bar terminates directly on the 25 tick mark line, exactly 25 students selected Math."
+        },
+        {
+            uid: "q-ch12-comp-11",
+            displayIndex: "11/12",
+            pointsAllocation: 2,
+            durationLimit: 60,
+            statement: "In a sports tally tracking sheet, a student notes down 9 goals scored. How should this data layer be transcribed into standard tally format?",
+            media: null,
+            choices: ["//// ////", "//// //", "//// //// //", "Oooo Oooo O"],
+            solutionKey: "//// //// //",
+            hint: "Recall that 5 is written as a crossed group of 4 lines, followed by separate single strokes for any remainder.",
+            explanation: "9 is formed by one complete 5-stroke cluster followed by 4 separate vertical ticks."
+        },
+        {
+            uid: "q-ch12-comp-12",
+            displayIndex: "12/12",
+            pointsAllocation: 2,
+            durationLimit: 60,
+            statement: "A chart records ice cream sales: Vanilla = 30, Chocolate = 50. What step determines the aggregate total of ice cream sold during this tracking period?",
+            media: null,
+            choices: ["Subtract 30 from 50", "Add 30 and 50 together", "Multiply 30 by 50", "Divide 50 by 30"],
+            solutionKey: "Add 30 and 50 together",
+            hint: "To find an 'aggregate total' or total amount, you must combine the quantities from all categories.",
+            explanation: "Finding the absolute collection size demands adding both target integers together (30 + 50 = 80)."
         }
     ];
 
     /**
-     * @class CoreAudioTelemetryPipeline
-     * Standardizes resource requests for system peripheral sound effects.
+     * @class ExecutionStateEngine
+     * Main runtime application controller managing audio channels, UI updates, and data flow.
      */
-    class CoreAudioTelemetryPipeline {
-        constructor() {
-            this.successNode = new Audio('assets/claps.mp3');
-            this.failureNode = new Audio('assets/wrong.mp3');
+    class ExecutionStateEngine {
+        constructor(questionsPayload) {
+            this.registry = questionsPayload;
+            this.currentIndex = 0;
+            this.score = 0;
+            this.timerRef = null;
+            this.secondsRemaining = 60;
+            this.attemptCount = 0; 
+            this.isMuted = false;
+
+            // Audio instantiation
+            this.audioSuccess = new Audio('assets/claps.mp3');
+            this.audioFailure = new Audio('assets/wrong.mp3');
+
+            // Cache global DOM nodes
+            this.domProgressBar = document.getElementById('ui-progress-bar');
+            this.domIndexLabel = document.getElementById('ui-index-label');
+            this.domScoreLabel = document.getElementById('ui-score-label');
+            this.domTimerLabel = document.getElementById('ui-timer-label');
+            this.domTimerContainer = document.getElementById('ui-timer-container');
+            this.domViewport = document.getElementById('ui-dynamic-viewport');
+            this.domAudioToggle = document.getElementById('ui-audio-toggle');
+
+            this.bindGlobalEvents();
+            this.initializeSplashConstraint();
         }
 
-        dispatchSuccessFeedback() {
-            this.safeguardPlayback(this.successNode);
+        bindGlobalEvents() {
+            this.domAudioToggle.addEventListener('click', () => {
+                this.isMuted = !this.isMuted;
+                this.domAudioToggle.textContent = this.isMuted ? "✕" : "🔊";
+                this.domAudioToggle.style.color = this.isMuted ? "var(--danger)" : "var(--neutral-medium)";
+            });
         }
 
-        dispatchFailureFeedback() {
-            this.safeguardPlayback(this.failureNode);
+        initializeSplashConstraint() {
+            // Strictly enforce logo splash screen visibility for 5 seconds
+            setTimeout(() => {
+                const splash = document.getElementById('app-splash-screen');
+                splash.style.opacity = '0';
+                setTimeout(() => {
+                    splash.style.display = 'none';
+                    const mainContainer = document.getElementById('app-canvas-container');
+                    mainContainer.style.display = 'flex';
+                    this.loadActiveQuestionFrame();
+                }, 500);
+            }, 5000);
         }
 
-        safeguardPlayback(audioContextInstance) {
-            if (audioContextInstance) {
-                audioContextInstance.currentTime = 0;
-                audioContextInstance.play().catch(err => {
-                    console.warn("Audio Context pipeline interface deferred execution pending hardware gesture initialization.", err);
-                });
-            }
-        }
-    }
-
-    /**
-     * @class EvaluationEngineController
-     * Core Application Layer managing State Machines, Event Processors and Document Rendering.
-     */
-    class EvaluationEngineController {
-        constructor(dataset) {
-            this.immutableDataRegistry = dataset;
-            this.audioPipeline = new CoreAudioTelemetryPipeline();
+        loadActiveQuestionFrame() {
+            clearInterval(this.timerRef);
+            this.attemptCount = 0; 
             
-            // Mutable State Parameters Matrix tracking app state
-            this.activeCursorIndex = 0;
-            this.cumulativeAccruedScore = 0;
-            this.countdownTimerPulseRef = null;
-            this.activeTimerTemporalPool = 0;
-            this.isSelectionCycleLocked = false;
-
-            // Global DOM References
-            this.domProgressBar = document.getElementById('runtime-progress-indicator');
-            this.domMetaIndex = document.getElementById('view-meta-index');
-            this.domMetaScore = document.getElementById('view-meta-score');
-            this.domMetaTimer = document.getElementById('view-meta-timer');
-            this.domTimerContainer = document.getElementById('view-timer-container');
-            this.domCanvasSandbox = document.getElementById('dynamic-canvas-sandbox');
-            this.domBrandLogo = document.getElementById('brand-logo-node');
-
-            this.initApplicationLifecycle();
-        }
-
-        initApplicationLifecycle() {
-            // Gracefully handle local fallback visibility for brand image configurations
-            this.domBrandLogo.onerror = () => this.domBrandLogo.style.display = 'none';
-            this.executeQuestionFrameDeployment();
-        }
-
-        executeQuestionFrameDeployment() {
-            this.isSelectionCycleLocked = false;
-            clearInterval(this.countdownTimerPulseRef);
+            const currentItem = this.registry[this.currentIndex];
             
-            const currentItem = this.immutableDataRegistry[this.activeCursorIndex];
-            
-            // Refresh Header Telemetry Metrics UI View
-            this.domMetaIndex.textContent = currentItem.orderLabel;
-            this.domMetaScore.textContent = this.cumulativeAccruedScore;
-            this.activeTimerTemporalPool = currentItem.countdownLimitSeconds;
-            this.domMetaTimer.textContent = this.activeTimerTemporalPool;
-            this.domTimerContainer.classList.remove('timer-alert');
+            this.domIndexLabel.textContent = currentItem.displayIndex;
+            this.domScoreLabel.textContent = this.score;
+            this.secondsRemaining = currentItem.durationLimit;
+            this.domTimerLabel.textContent = this.secondsRemaining;
+            this.domTimerContainer.className = 'dashboard-pill';
 
-            // Synchronize Progress Indicator Track Bar Length
-            const completePercentage = (this.activeCursorIndex / this.immutableDataRegistry.length) * 100;
-            this.domProgressBar.style.width = `${completePercentage}%`;
+            const calculationPercentage = (this.currentIndex / this.registry.length) * 100;
+            this.domProgressBar.style.width = `${calculationPercentage}%`;
 
-            this.runCountdownChronometer(currentItem);
-            this.renderQuestionComponentTemplate(currentItem);
+            this.renderCanvasInterface(currentItem);
+            this.engageChronometerCycle();
         }
 
-        runCountdownChronometer(currentItem) {
-            this.countdownTimerPulseRef = setInterval(() => {
-                this.activeTimerTemporalPool--;
-                this.domMetaTimer.textContent = this.activeTimerTemporalPool;
+        engageChronometerCycle() {
+            this.timerRef = setInterval(() => {
+                this.secondsRemaining--;
+                this.domTimerLabel.textContent = this.secondsRemaining;
 
-                if (this.activeTimerTemporalPool <= 10) {
+                if (this.secondsRemaining <= 10) {
                     this.domTimerContainer.classList.add('timer-alert');
                 }
 
-                if (this.activeTimerTemporalPool <= 0) {
-                    clearInterval(this.countdownTimerPulseRef);
-                    this.processResolutionSequence(null, true); // Evaluate as dynamic Timeout Event condition
+                if (this.secondsRemaining <= 0) {
+                    clearInterval(this.timerRef);
+                    this.evaluateSubmissionSequence(null, true); 
                 }
             }, 1000);
         }
 
-        renderQuestionComponentTemplate(item) {
-            // Construct a template dynamically matching modern responsive specifications safely
-            this.domCanvasSandbox.innerHTML = `
-                <div class="question-statement">${item.instructionText}</div>
-                ${item.graphicResourcePath ? `
-                    <div class="graphical-payload-wrapper">
-                        <img src="${item.graphicResourcePath}" alt="Spatial Statistical Graphic Artifact Visual Display" class="graphical-payload">
+        renderCanvasInterface(item) {
+            this.domViewport.innerHTML = `
+                <div class="question-statement">${item.statement}</div>
+                ${item.media ? `
+                    <div class="graphical-container">
+                        <img src="${item.media}" alt="Chapter 12 Data Reference Graphic" class="graphical-payload" id="ui-media-element">
                     </div>
                 ` : ''}
-                <div class="interactive-options-grid" id="interactive-options-root" role="radiogroup" aria-label="Response Option Configurations Matrix">
-                </div>
+                <div class="options-grid" id="ui-options-root" role="radiogroup" aria-label="Choices Grid Matrix"></div>
+                <div class="feedback-panel type-hint" id="panel-hint"></div>
+                <div class="feedback-panel type-solution" id="panel-solution"></div>
             `;
 
-            const optionsRoot = document.getElementById('interactive-options-root');
-            
-            item.selectionMatrix.forEach((optionText, idx) => {
-                const nodeButton = document.createElement('button');
-                nodeButton.className = 'option-node';
-                nodeButton.setAttribute('role', 'radio');
-                nodeButton.setAttribute('aria-checked', 'false');
-                nodeButton.id = `option-node-item-${idx}`;
-                nodeButton.textContent = optionText;
-                
-                nodeButton.addEventListener('click', () => {
-                    this.processResolutionSequence(nodeButton, false);
-                });
-
-                optionsRoot.appendChild(nodeButton);
-            });
-        }
-
-        processResolutionSequence(targetDomElement, isTimeoutTriggered) {
-            if (this.isSelectionCycleLocked) return;
-            this.isSelectionCycleLocked = true;
-            
-            clearInterval(this.countdownTimerPulseRef);
-            
-            const itemContext = this.immutableDataRegistry[this.activeCursorIndex];
-            const siblingNodes = this.domCanvasSandbox.querySelectorAll('.option-node');
-            
-            // Disengage control interface interaction access across elements safely
-            siblingNodes.forEach(btn => btn.disabled = true);
-
-            if (isTimeoutTriggered) {
-                this.audioPipeline.dispatchFailureFeedback();
-                this.illuminateAbsoluteTruthState(siblingNodes, itemContext.validatedAssertionKey);
-            } else {
-                targetDomElement.setAttribute('aria-checked', 'true');
-                const evaluationsMatch = (targetDomElement.textContent.trim() === itemContext.validatedAssertionKey.trim());
-
-                if (evaluationsMatch) {
-                    targetDomElement.classList.add('node-state-correct');
-                    this.cumulativeAccruedScore += itemContext.allottedPoints;
-                    this.domMetaScore.textContent = this.cumulativeAccruedScore;
-                    this.audioPipeline.dispatchSuccessFeedback();
-                } else {
-                    targetDomElement.classList.add('node-state-incorrect');
-                    this.illuminateAbsoluteTruthState(siblingNodes, itemContext.validatedAssertionKey);
-                    this.audioPipeline.dispatchFailureFeedback();
-                }
+            if (item.media) {
+                const img = document.getElementById('ui-media-element');
+                img.onerror = () => img.closest('.graphical-container').style.display = 'none';
             }
 
-            // Stage execution flow transition context interval to advance screen space
-            setTimeout(() => {
-                this.activeCursorIndex++;
-                if (this.activeCursorIndex < this.immutableDataRegistry.length) {
-                    this.executeQuestionFrameDeployment();
-                } else {
-                    this.executeFinalMetricsEvaluationSummary();
-                }
-            }, 2500);
+            const rootOptionsGrid = document.getElementById('ui-options-root');
+            item.choices.forEach((optionText, idx) => {
+                const button = document.createElement('button');
+                button.className = 'option-node';
+                button.textContent = optionText;
+                button.id = `opt-node-${idx}`;
+                button.setAttribute('role', 'radio');
+                
+                button.addEventListener('click', () => this.evaluateSubmissionSequence(button, false));
+                rootOptionsGrid.appendChild(button);
+            });
         }
 
-        illuminateAbsoluteTruthState(nodeCollection, correctAssertionString) {
-            nodeCollection.forEach(node => {
-                if (node.textContent.trim() === correctAssertionString.trim()) {
-                    node.classList.add('node-state-correct');
+        evaluateSubmissionSequence(clickedButton, isTimeout) {
+            const currentItem = this.registry[this.currentIndex];
+            const allOptionButtons = this.domViewport.querySelectorAll('.option-node');
+            const panelHint = document.getElementById('panel-hint');
+            const panelSolution = document.getElementById('panel-solution');
+
+            if (isTimeout) {
+                this.fireAudioFeedback(false);
+                allOptionButtons.forEach(btn => btn.disabled = true);
+                this.highlightAbsoluteAnswer(allOptionButtons, currentItem.solutionKey);
+                
+                panelSolution.textContent = `Time expired! ${currentItem.explanation}`;
+                panelSolution.style.display = 'block';
+                
+                this.stageTransitionDelay();
+                return;
+            }
+
+            const chosenAnswerText = clickedButton.textContent.trim();
+            const isCorrect = (chosenAnswerText === currentItem.solutionKey.trim());
+
+            if (isCorrect) {
+                clearInterval(this.timerRef);
+                this.fireAudioFeedback(true);
+                clickedButton.classList.add('state-correct');
+                allOptionButtons.forEach(btn => btn.disabled = true);
+                
+                this.triggerConfettiVisualParticles();
+                this.score += currentItem.pointsAllocation;
+                this.domScoreLabel.textContent = this.score;
+                
+                this.stageTransitionDelay();
+            } else {
+                this.attemptCount++;
+                this.fireAudioFeedback(false);
+
+                if (this.attemptCount === 1) {
+                    clickedButton.classList.add('state-incorrect');
+                    clickedButton.disabled = true; 
+                    
+                    panelHint.textContent = `Hint: ${currentItem.hint}`;
+                    panelHint.style.display = 'block';
+                } else {
+                    clearInterval(this.timerRef);
+                    clickedButton.classList.add('state-incorrect');
+                    allOptionButtons.forEach(btn => btn.disabled = true);
+                    
+                    this.highlightAbsoluteAnswer(allOptionButtons, currentItem.solutionKey);
+                    panelHint.style.display = 'none';
+                    
+                    panelSolution.textContent = `Review: ${currentItem.explanation}`;
+                    panelSolution.style.display = 'block';
+                    
+                    this.stageTransitionDelay();
+                }
+            }
+        }
+
+        highlightAbsoluteAnswer(buttonsCollection, solutionString) {
+            buttonsCollection.forEach(btn => {
+                if (btn.textContent.trim() === solutionString.trim()) {
+                    btn.classList.add('state-correct');
                 }
             });
         }
 
-        executeFinalMetricsEvaluationSummary() {
+        fireAudioFeedback(isSuccessMode) {
+            if (this.isMuted) return;
+            try {
+                const audioTarget = isSuccessMode ? this.audioSuccess : this.audioFailure;
+                audioTarget.currentTime = 0;
+                audioTarget.play().catch(() => {});
+            } catch (e) {
+                console.warn("Audio Context playback deferred safely.");
+            }
+        }
+
+        triggerConfettiVisualParticles() {
+            const colors = ['#4a90e2', '#28a745', '#ffc107', '#e74c3c', '#9b59b6'];
+            const containerBox = document.getElementById('app-canvas-container');
+            
+            for (let i = 0; i < 35; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'confetti-particle';
+                particle.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                particle.style.left = `${Math.random() * 100}%`;
+                particle.style.top = '0px';
+                
+                const scaleSize = Math.random() * 6 + 6;
+                particle.style.width = `${scaleSize}px`;
+                particle.style.height = `${scaleSize}px`;
+                
+                particle.style.animationDuration = `${Math.random() * 1.2 + 1.2}s`;
+                containerBox.appendChild(particle);
+                
+                setTimeout(() => particle.remove(), 2400);
+            }
+        }
+
+        stageTransitionDelay() {
+            setTimeout(() => {
+                this.currentIndex++;
+                if (this.currentIndex < this.registry.length) {
+                    this.loadActiveQuestionFrame();
+                } else {
+                    this.compileFinalPerformanceSummary();
+                }
+            }, 3000);
+        }
+
+        compileFinalPerformanceSummary() {
+            clearInterval(this.timerRef);
             this.domProgressBar.style.width = '100%';
             
-            // Sum global theoretical structural capability potential bounds
-            const maximumAggregateYieldValue = this.immutableDataRegistry.reduce((accum, node) => accum + node.allottedPoints, 0);
-            const precisionPerformanceRating = Math.round((this.cumulativeAccruedScore / maximumAggregateYieldValue) * 100);
+            const totalPossiblePoints = this.registry.reduce((acc, current) => acc + current.pointsAllocation, 0);
+            const accuracyFactor = Math.round((this.score / totalPossiblePoints) * 100);
 
-            let conditionalIcon = '🎉';
-            let strategicReviewFeedback = 'Splendid operational sequence! Concept handling parameters verified.';
-            
-            if (precisionPerformanceRating < 50) {
-                conditionalIcon = '📚';
-                strategicReviewFeedback = 'Further framework review recommended to solidify analytical parameters.';
+            let iconEmoji = '🎉';
+            let summaryMessage = 'Good job';
+
+            if (accuracyFactor >= 75) {
+                iconEmoji = '🎉';
+                summaryMessage = 'Good job! Excellent data parsing capability demonstrated.';
+            } else if (accuracyFactor >= 40) {
+                iconEmoji = '📚';
+                summaryMessage = 'Review this chapter and try again. Practice makes perfect!';
+            } else {
+                iconEmoji = '✏️';
+                summaryMessage = 'Let’s practise more. Review the fundamentals of graphs and keys.';
             }
 
-            // Redraw viewport space container canvas structural context natively
-            this.domCanvasSandbox.innerHTML = `
-                <div class="analytics-viewport">
-                    <div class="analytics-icon" aria-hidden="true">${conditionalIcon}</div>
-                    <h1 class="analytics-title">Session Complete</h1>
-                    <p class="analytics-subtitle">${strategicReviewFeedback}</p>
+            this.domViewport.innerHTML = `
+                <div class="analytics-view">
+                    <div class="analytics-icon" aria-hidden="true">${iconEmoji}</div>
+                    <h2 class="analytics-title">Module Completed</h2>
+                    <p class="analytics-text">${summaryMessage}</p>
                     
-                    <div class="metric-card-group">
-                        <div class="metric-card">
-                            <div class="metric-val">${this.cumulativeAccruedScore} / ${maximumAggregateYieldValue}</div>
-                            <div class="metric-lbl">Points Awarded</div>
+                    <div class="metrics-row">
+                        <div class="metric-box">
+                            <div class="metric-value">${this.score} / ${totalPossiblePoints}</div>
+                            <div class="metric-label">Points Scored</div>
                         </div>
-                        <div class="metric-card">
-                            <div class="metric-val">${precisionPerformanceRating}%</div>
-                            <div class="metric-lbl">Accuracy Index</div>
+                        <div class="metric-box">
+                            <div class="metric-value">${accuracyFactor}%</div>
+                            <div class="metric-label">Accuracy Index</div>
                         </div>
                     </div>
 
-                    <button class="action-fallback-btn" id="runtime-restart-trigger">
-                        Re-initialize Module
-                    </button>
+                    <button class="restart-action-btn" id="ui-action-restart">Re-initialize Chapter 12</button>
                 </div>
             `;
 
-            document.getElementById('runtime-restart-trigger').addEventListener('click', () => {
-                this.resetEvaluationEnginePipeline();
+            document.getElementById('ui-action-restart').addEventListener('click', () => {
+                this.currentIndex = 0;
+                this.score = 0;
+                this.loadActiveQuestionFrame();
             });
-        }
-
-        resetEvaluationEnginePipeline() {
-            this.activeCursorIndex = 0;
-            this.cumulativeAccruedScore = 0;
-            this.executeQuestionFrameDeployment();
         }
     }
 
-    // Instantiation entry point triggers full system orchestration safely inside execution context window
     window.addEventListener('DOMContentLoaded', () => {
-        window.GlobalQuizKernelInstance = new EvaluationEngineController(ENGINE_DATASET_PAYLOAD);
+        window.ActiveModuleEngineInstance = new ExecutionStateEngine(DATASET_REGISTRY);
     });
 </script>
-
 </body>
 </html>
