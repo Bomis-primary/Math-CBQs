@@ -304,6 +304,34 @@
         /*------------------------------------------------------------------
         [4b. NATIVE INTERACTIVE DATA COMPONENTS]
         ------------------------------------------------------------------*/
+        /* Q1 Game List Card Component */
+        .game-list-card {
+            background-color: #ffffff;
+            border: 2px solid #cbd5e1;
+            border-radius: 12px;
+            padding: 16px;
+            width: 100%;
+            max-width: 380px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+        }
+        .game-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 12px;
+            border-bottom: 1px solid #f1f5f9;
+            font-weight: 700;
+        }
+        .game-item:last-child {
+            border-bottom: none;
+        }
+        .game-count-badge {
+            background-color: #e0f2fe;
+            color: #0369a1;
+            padding: 4px 12px;
+            border-radius: 12px;
+        }
+
         /* Q3 Pictograph Table Component */
         .native-table-view {
             width: 100%;
@@ -335,6 +363,12 @@
             font-size: 0.95rem;
             font-weight: 700;
             color: #1e3a8a !important;
+        }
+        .pictograph-row-symbols {
+            font-size: 1.3rem;
+            letter-spacing: 4px;
+            text-align: left !important;
+            padding-left: 20px !important;
         }
 
         /* Q2 Beautiful Tally Graphics Card */
@@ -618,17 +652,17 @@
             displayIndex: "1/12",
             pointsAllocation: 2,
             durationLimit: 60,
-            statement: "Karan wants to know the most popular playground game among his classmates. What is the most effective method for him to collect this data?",
-            renderType: "text",
+            statement: "Karan wrote down his friends' favorite playground games in the list below. Look at his collected data. Which game did the highest number of friends choose?",
+            renderType: "q1_game_list",
             choices: [
-                "Guessing based on what he likes to play",
-                "Conducting short interviews or giving out a small questionnaire to his class",
-                "Looking at a sports magazine from another country",
-                "Counting how many toys are in the classroom cabinet"
+                "⚽ Football",
+                "🏏 Cricket",
+                "🏸 Badminton",
+                "All games are equal"
             ],
-            solutionKey: "Conducting short interviews or giving out a small questionnaire to his class",
-            hint: "To find out what a specific group of people thinks or prefers, you must ask them directly using questions.",
-            explanation: "Interviews and questionnaires are fundamental data-collection tools used to gather accurate, direct information from a targeted group."
+            solutionKey: "🏏 Cricket",
+            hint: "Find the game in the list that has the biggest number next to it.",
+            explanation: "In the list, Cricket has 5 friends, which is the highest number among all the choices."
         },
         {
             uid: "q-ch12-comp-02",
@@ -652,12 +686,12 @@
             displayIndex: "3/12",
             pointsAllocation: 2,
             durationLimit: 60,
-            statement: "Sanya is making a chart to track how students travel to school. Based on the rules defined in the key below, how many total bus symbols (🚌) must she draw to show 60 students?",
+            statement: "Rahul looks at the Bakery Pictograph below to find how many Strawberry cupcakes were sold. If each cupcake symbol (🧁) equals 5 real cupcakes, how many real Strawberry cupcakes were sold?",
             renderType: "q3_pictograph",
-            choices: ["6 symbols", "10 symbols", "60 symbols", "5 symbols"],
-            solutionKey: "6 symbols",
-            hint: "Look closely at the key: 1 bus symbol equals 10 students. Divide the 60 total students into groups of 10.",
-            explanation: "Since each bus icon represents 10 students, drawing 6 icons represents 6 × 10 = 60 students."
+            choices: ["3 cupcakes", "5 cupcakes", "15 cupcakes", "20 cupcakes"],
+            solutionKey: "15 cupcakes",
+            hint: "Count the total number of cupcake symbols in the Strawberry row, then multiply that number by 5.",
+            explanation: "There are 3 cupcake symbols in the Strawberry row. Since each symbol represents 5 real cupcakes, 3 × 5 = 15 cupcakes were sold."
         },
         {
             uid: "q-ch12-comp-04",
@@ -866,22 +900,37 @@
         renderCanvasInterface(item) {
             let graphicalPayloadHTML = '';
             
-            if (item.renderType === 'q3_pictograph') {
+            if (item.renderType === 'q1_game_list') {
+                graphicalPayloadHTML = `
+                    <div class="graphical-container">
+                        <div class="game-list-card">
+                            <div class="game-item"><span>⚽ Football</span> <span class="game-count-badge">3 Friends</span></div>
+                            <div class="game-item"><span>🏏 Cricket</span> <span class="game-count-badge">5 Friends</span></div>
+                            <div class="game-item"><span>🏸 Badminton</span> <span class="game-count-badge">2 Friends</span></div>
+                        </div>
+                    </div>
+                `;
+            } else if (item.renderType === 'q3_pictograph') {
                 graphicalPayloadHTML = `
                     <div class="graphical-container">
                         <table class="native-table-view">
                             <thead>
                                 <tr>
-                                    <th colspan="2">School Transport Plan</th>
+                                    <th>Cupcake Flavor</th>
+                                    <th>Cupcakes Sold</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td>🚌 Bus Riders</td>
-                                    <td><strong>60 Students Needed</strong></td>
+                                    <td>🍫 Chocolate</td>
+                                    <td class="pictograph-row-symbols">🧁 🧁</td>
+                                </tr>
+                                <tr>
+                                    <td>🍓 Strawberry</td>
+                                    <td class="pictograph-row-symbols">🧁 🧁 🧁</td>
                                 </tr>
                                 <tr class="table-key-callout">
-                                    <td colspan="2">Scale Key rule: One 🚌 symbol = 10 Students</td>
+                                    <td colspan="2">🔑 Key Rule: Each 🧁 symbol = 5 real cupcakes</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -897,221 +946,4 @@
                                 <div class="tally-stick"></div>
                                 <div class="tally-stick"></div>
                                 <div class="tally-stick"></div>
-                                <div class="tally-stick diagonal-slash"></div>
-                            </div>
-                            <div class="tally-extra-sticks">
-                                <div class="tally-single-stick"></div>
-                                <div class="tally-single-stick"></div>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            } else if (item.renderType === 'q4_vertical_graph') {
-                graphicalPayloadHTML = `
-                    <div class="graphical-container">
-                        <svg viewBox="0 0 300 180" style="width:100%; max-width:320px; font-family:sans-serif;">
-                            <line x1="40" y1="40" x2="260" y2="40" stroke="#edf2f7" stroke-width="1"/>
-                            <line x1="40" y1="95" x2="260" y2="95" stroke="#edf2f7" stroke-width="1"/>
-                            
-                            <line x1="40" y1="20" x2="40" y2="150" stroke="#2d3748" stroke-width="2"/>
-                            <line x1="40" y1="150" x2="260" y2="150" stroke="#2d3748" stroke-width="2"/>
-                            
-                            <rect x="75" y="40" width="50" height="110" fill="#4a90e2" rx="4"/>
-                            <text x="100" y="30" fill="#1e3a8a" font-weight="bold" font-size="14" text-anchor="middle">45</text>
-                            <text x="100" y="166" fill="#4a5568" font-weight="bold" font-size="13" text-anchor="middle">Blue</text>
-
-                            <rect x="165" y="95" width="50" height="55" fill="#e2e8f0" rx="4"/>
-                            <text x="190" y="85" fill="#4a5568" font-weight="bold" font-size="14" text-anchor="middle">20</text>
-                            <text x="190" y="166" fill="#4a5568" font-weight="bold" font-size="13" text-anchor="middle">Red</text>
-                        </svg>
-                    </div>
-                `;
-            }
-
-            this.domViewport.innerHTML = `
-                <div class="question-statement">${item.statement}</div>
-                ${graphicalPayloadHTML}
-                <div class="options-grid" id="ui-options-root" role="radiogroup" aria-label="Choices Grid Matrix"></div>
-                <div class="feedback-panel type-hint" id="panel-hint"></div>
-                <div class="feedback-panel type-solution" id="panel-solution"></div>
-            `;
-
-            const rootOptionsGrid = document.getElementById('ui-options-root');
-            item.choices.forEach((optionText, idx) => {
-                const button = document.createElement('button');
-                button.className = 'option-node';
-                button.textContent = optionText;
-                button.id = `opt-node-${idx}`;
-                button.setAttribute('role', 'radio');
-                
-                button.addEventListener('click', () => this.evaluateSubmissionSequence(button, false));
-                rootOptionsGrid.appendChild(button);
-            });
-        }
-
-        evaluateSubmissionSequence(clickedButton, isTimeout) {
-            const currentItem = this.registry[this.currentIndex];
-            const allOptionButtons = this.domViewport.querySelectorAll('.option-node');
-            const panelHint = document.getElementById('panel-hint');
-            const panelSolution = document.getElementById('panel-solution');
-
-            if (isTimeout) {
-                this.fireAudioFeedback(false);
-                allOptionButtons.forEach(btn => btn.disabled = true);
-                this.highlightAbsoluteAnswer(allOptionButtons, currentItem.solutionKey);
-                
-                panelSolution.textContent = `Time expired! ${currentItem.explanation}`;
-                panelSolution.style.display = 'block';
-                
-                this.stageTransitionDelay();
-                return;
-            }
-
-            const chosenAnswerText = clickedButton.textContent.trim();
-            const isCorrect = (chosenAnswerText === currentItem.solutionKey.trim());
-
-            if (isCorrect) {
-                clearInterval(this.timerRef);
-                this.fireAudioFeedback(true);
-                clickedButton.classList.add('state-correct');
-                allOptionButtons.forEach(btn => btn.disabled = true);
-                
-                this.triggerConfettiVisualParticles();
-                this.score += currentItem.pointsAllocation;
-                this.domScoreLabel.textContent = this.score;
-                
-                this.stageTransitionDelay();
-            } else {
-                this.attemptCount++;
-                this.fireAudioFeedback(false);
-
-                if (this.attemptCount === 1) {
-                    clickedButton.classList.add('state-incorrect');
-                    clickedButton.disabled = true; 
-                    
-                    panelHint.textContent = `Hint: ${currentItem.hint}`;
-                    panelHint.style.display = 'block';
-                } else {
-                    clearInterval(this.timerRef);
-                    clickedButton.classList.add('state-incorrect');
-                    allOptionButtons.forEach(btn => btn.disabled = true);
-                    
-                    this.highlightAbsoluteAnswer(allOptionButtons, currentItem.solutionKey);
-                    panelHint.style.display = 'none';
-                    
-                    panelSolution.textContent = `Review: ${currentItem.explanation}`;
-                    panelSolution.style.display = 'block';
-                    
-                    this.stageTransitionDelay();
-                }
-            }
-        }
-
-        highlightAbsoluteAnswer(buttonsCollection, solutionString) {
-            buttonsCollection.forEach(btn => {
-                if (btn.textContent.trim() === solutionString.trim()) {
-                    btn.classList.add('state-correct');
-                }
-            });
-        }
-
-        fireAudioFeedback(isSuccessMode) {
-            if (this.isMuted) return;
-            try {
-                const audioTarget = isSuccessMode ? this.audioSuccess : this.audioFailure;
-                audioTarget.currentTime = 0;
-                audioTarget.play().catch(() => {});
-            } catch (e) {
-                console.warn("Audio playback context safely deferred.");
-            }
-        }
-
-        triggerConfettiVisualParticles() {
-            const colors = ['#4a90e2', '#28a745', '#ffc107', '#e74c3c', '#9b59b6'];
-            const containerBox = document.getElementById('app-canvas-container');
-            
-            for (let i = 0; i < 35; i++) {
-                const particle = document.createElement('div');
-                particle.className = 'confetti-particle';
-                particle.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-                particle.style.left = `${Math.random() * 100}%`;
-                particle.style.top = '0px';
-                
-                const scaleSize = Math.random() * 6 + 6;
-                particle.style.width = `${scaleSize}px`;
-                particle.style.height = `${scaleSize}px`;
-                
-                particle.style.animationDuration = `${Math.random() * 1.2 + 1.2}s`;
-                containerBox.appendChild(particle);
-                
-                setTimeout(() => particle.remove(), 2400);
-            }
-        }
-
-        stageTransitionDelay() {
-            setTimeout(() => {
-                this.currentIndex++;
-                if (this.currentIndex < this.registry.length) {
-                    this.loadActiveQuestionFrame();
-                } else {
-                    this.compileFinalPerformanceSummary();
-                }
-            }, 3000);
-        }
-
-        compileFinalPerformanceSummary() {
-            clearInterval(this.timerRef);
-            this.domProgressBar.style.width = '100%';
-            
-            const totalPossiblePoints = this.registry.reduce((acc, current) => acc + current.pointsAllocation, 0);
-            const accuracyFactor = Math.round((this.score / totalPossiblePoints) * 100);
-
-            let iconEmoji = '🎉';
-            let summaryMessage = 'Good job';
-
-            if (accuracyFactor >= 75) {
-                iconEmoji = '🎉';
-                summaryMessage = 'Good job! Excellent data parsing capability demonstrated.';
-            } else if (accuracyFactor >= 40) {
-                iconEmoji = '📚';
-                summaryMessage = 'Review this chapter and try again. Practice makes perfect!';
-            } else {
-                iconEmoji = '✏️';
-                summaryMessage = 'Let’s practise more. Review the fundamentals of graphs and keys.';
-            }
-
-            this.domViewport.innerHTML = `
-                <div class="analytics-view">
-                    <div class="analytics-icon" aria-hidden="true">${iconEmoji}</div>
-                    <h2 class="analytics-title">Module Completed</h2>
-                    <p class="analytics-text">${summaryMessage}</p>
-                    
-                    <div class="metrics-row">
-                        <div class="metric-box">
-                            <div class="metric-value">${this.score} / ${totalPossiblePoints}</div>
-                            <div class="metric-label">Points Scored</div>
-                        </div>
-                        <div class="metric-box">
-                            <div class="metric-value">${accuracyFactor}%</div>
-                            <div class="metric-label">Accuracy Index</div>
-                        </div>
-                    </div>
-
-                    <button class="restart-action-btn" id="ui-action-restart">Re-initialize Chapter 12</button>
-                </div>
-            `;
-
-            document.getElementById('ui-action-restart').addEventListener('click', () => {
-                this.currentIndex = 0;
-                this.score = 0;
-                this.loadActiveQuestionFrame();
-            });
-        }
-    }
-
-    window.addEventListener('DOMContentLoaded', () => {
-        window.ActiveModuleEngineInstance = new ExecutionStateEngine(DATASET_REGISTRY);
-    });
-</script>
-</body>
-</html>
+                                <div
