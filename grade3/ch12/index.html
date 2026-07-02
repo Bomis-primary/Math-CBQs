@@ -110,10 +110,111 @@
             white-space: pre-line;
         }
 
+        /* Rendered Visuals Container */
+        .visual-container {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+            width: 100%;
+        }
+
+        /* Table Assets */
+        .visual-table {
+            border-collapse: collapse;
+            font-size: 15px;
+            font-weight: 500;
+            background-color: #ffffff;
+            border: 2px solid #334155;
+            width: 100%;
+            max-width: 450px;
+        }
+
+        .visual-table th {
+            background-color: #cbd5e1;
+            color: #0f172a;
+            padding: 8px;
+            font-size: 16px;
+            border: 2px solid #334155;
+            text-align: center;
+        }
+
+        .visual-table td {
+            border: 2px solid #334155;
+            padding: 10px 14px;
+            vertical-align: middle;
+        }
+
+        .key-row {
+            background-color: #f1f5f9;
+            text-align: center;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        /* CSS Bar Graphs */
+        .chart-wrapper {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-around;
+            border-left: 3px solid #334155;
+            border-bottom: 3px solid #334155;
+            height: 180px;
+            width: 100%;
+            max-width: 400px;
+            padding: 10px;
+            position: relative;
+            margin-bottom: 10px;
+        }
+
+        .bar-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 60px;
+            height: 100%;
+            justify-content: flex-end;
+        }
+
+        .bar {
+            width: 100%;
+            background-color: var(--primary);
+            border-radius: 4px 4px 0 0;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            color: white;
+            font-size: 12px;
+            font-weight: bold;
+            padding-top: 4px;
+            transition: height 0.5s ease;
+        }
+
+        .bar-label {
+            font-size: 13px;
+            font-weight: 600;
+            margin-top: 8px;
+            position: absolute;
+            bottom: -25px;
+        }
+
+        /* Tally Graphics styling */
+        .tally-bundle {
+            font-family: monospace;
+            font-size: 24px;
+            letter-spacing: 2px;
+            font-weight: bold;
+            color: #0f766e;
+            background: #f1f5f9;
+            padding: 4px 8px;
+            border-radius: 6px;
+            display: inline-block;
+        }
+
         .options-container {
             display: flex;
             flex-direction: column;
             gap: 12px;
+            margin-top: 30px;
             margin-bottom: 20px;
         }
 
@@ -169,7 +270,6 @@
             color: #115e59;
         }
 
-        /* Interactive Footer Action Button */
         .action-btn {
             display: block;
             width: 100%;
@@ -223,26 +323,22 @@
 
     <canvas id="particle-canvas"></canvas>
 
-    <!-- 5-Second Brand Entry Splash Overlay -->
     <div id="splash-screen">
         <img src="grade-3/maths/chapter-8/assets/logo.png" alt="Innovine Logo" class="logo-placeholder" onerror="this.style.display='none'; document.getElementById('logo-text').style.display='block';">
         <h2 id="logo-text" style="display:none; color: var(--primary);">Innovine</h2>
     </div>
 
-    <!-- Audio Placeholders -->
     <audio id="audio-correct" src="grade-3/maths/chapter-8/assets/correct.mp3" preload="auto"></audio>
     <audio id="audio-wrong" src="grade-3/maths/chapter-8/assets/wrong.mp3" preload="auto"></audio>
 
     <div class="container">
         
-        <!-- Welcome Screen -->
         <div id="welcome-screen" class="screen active">
             <h1>Data Handling Quest</h1>
             <p class="description">Master the art of tracking surveys! Learn to read tally systems, calculate pictograph scales, unlock bar graph keys, and extract useful information.</p>
             <button class="action-btn" onclick="startInteractive()">Start Challenge</button>
         </div>
 
-        <!-- Dynamic Game Engine -->
         <div id="game-screen" class="screen">
             <div class="hud">
                 <div id="progress-text">Question: 1/12</div>
@@ -252,6 +348,9 @@
 
             <div id="question-box">
                 <div class="question-text" id="target-question">Loading data layout...</div>
+                
+                <div class="visual-container" id="target-visual"></div>
+                
                 <div class="options-container" id="target-options"></div>
             </div>
 
@@ -261,7 +360,6 @@
             <button id="next-btn" class="action-btn" style="display: none;" onclick="advanceQuestion()">Next Question</button>
         </div>
 
-        <!-- Result Screen -->
         <div id="result-screen" class="screen">
             <h2>Quest Complete!</h2>
             <div class="score-circle" id="final-score-value">0/12</div>
@@ -274,99 +372,104 @@
     <script>
         const questionBank = [
             {
-                type: "Tally System Recognition",
-                question: "Rohan is counting the number of red birds in a park. He draws two complete crossed-five tally groups and three extra single vertical lines (卌 卌 |||).\n\nWhat total number did Rohan record?",
-                options: [
-                    "8 birds",
-                    "13 birds",
-                    "10 birds",
-                    "15 birds"
-                ],
+                question: "Rohan counted the number of red birds spotted in a park and recorded them using tally groups.\n\nWhat total number did Rohan record?",
+                visual: `<div class="tally-bundle">卌</div> &nbsp; <div class="tally-bundle">卌</div> &nbsp; <div class="tally-bundle">|||</div>`,
+                options: ["8 birds", "13 birds", "10 birds", "15 birds"],
                 answer: 1,
                 hint: "Each complete block with a diagonal cross slash represents exactly 5 items. Count by fives and add the leftover ones.",
                 explanation: "Two complete tally blocks mean $5 + 5 = 10$. Adding the 3 extra vertical lines gives $10 + 3 = 13$. He recorded 13 birds."
             },
             {
-                type: "Pictograph Key Interpretation",
-                question: "In a class pictograph tracking favorite books, a single open book symbol (📖) represents exactly 4 children. \n\nIf the row for 'Adventure Books' displays 5 book symbols, how many children chose Adventure?",
-                options: [
-                    "9 children",
-                    "16 children",
-                    "20 children",
-                    "25 children"
-                ],
+                question: "Look at the favorite books chart row setup below.\n\nHow many children chose Adventure Books altogether?",
+                visual: `
+                    <table class="visual-table">
+                        <thead><tr><th colspan="2">Class Favorite Books</th></tr></thead>
+                        <tbody>
+                            <tr>
+                                <td style="background:#f8fafc;">Adventure Books</td>
+                                <td>📖 📖 📖 📖 📖</td>
+                            </tr>
+                            <tr><td colspan="2" class="key-row">Key: 📖 = 4 children</td></tr>
+                        </tbody>
+                    </table>
+                `,
+                options: ["9 children", "16 children", "20 children", "25 children"],
                 answer: 2,
                 hint: "Multiply the total number of symbols drawn by the value given in the chart's key rule.",
                 explanation: "Since 1 symbol = 4 children, 5 identical symbols equal $5 \\times 4 = 20$ children. The answer is 20."
             },
             {
-                type: "Pictograph Scale Analysis",
-                question: "Sanya looks at a pictograph about school transport. The chart key states that 1 bus symbol (🚌) = 10 students. The row for 'Bus Riders' has a total count of 60 students. \n\nHow many bus symbols should be drawn in that row?",
-                options: [
-                    "6 symbols",
-                    "10 symbols",
-                    "60 symbols",
-                    "5 symbols"
-                ],
+                question: "Sanya is building a school transport graph. Based on the rules defined in the key, how many total bus symbols must she draw to show 60 students?",
+                visual: `
+                    <table class="visual-table">
+                        <thead><tr><th colspan="2">School Transport Tracker</th></tr></thead>
+                        <tbody>
+                            <tr><td style="background:#f8fafc; width:40%;">Bus Riders</td><td>(60 Students Total)</td></tr>
+                            <tr><td colspan="2" class="key-row">Key: 🚌 = 10 students</td></tr>
+                        </tbody>
+                    </table>
+                `,
+                options: ["6 symbols", "10 symbols", "60 symbols", "5 symbols"],
                 answer: 0,
                 hint: "Divide the total target count of students by the value that a single symbol stands for.",
                 explanation: "To find the number of symbols needed, divide the total count by the key value: $60 \\div 10 = 6$. So, 6 bus symbols are required."
             },
             {
-                type: "Bar Graph Reading",
-                question: "A vertical bar graph shows how many points different school houses scored. The bar for Blue House starts at the baseline and lines up perfectly with the marker labeled 45 on the vertical side axis.\n\nHow many points did Blue House score?",
-                options: [
-                    "40 points",
-                    "45 points",
-                    "50 points",
-                    "0 points"
-                ],
+                question: "Look at the vertical points graph below.\n\nHow many points did Blue House score?",
+                visual: `
+                    <div class="chart-wrapper">
+                        <div class="bar-container"><div class="bar" style="height: 90%;">45</div><span class="bar-label">Blue</span></div>
+                        <div class="bar-container"><div class="bar" style="height: 40%; background:#94a3b8;">20</div><span class="bar-label">Red</span></div>
+                    </div>
+                `,
+                options: ["40 points", "45 points", "50 points", "0 points"],
                 answer: 1,
                 hint: "Look directly across from the top edge of the column bar to read the number value on the side scale.",
                 explanation: "The height of the column bar tells us its value. Since it aligns exactly with the 45 mark on the axis, Blue House scored 45 points."
             },
             {
-                type: "Data Collection Framework",
                 question: "Karan wants to find out what flavor of ice cream the students in his class prefer. What is the most effective way for him to collect this primary information?",
+                visual: "",
                 options: [
                     "Guess what his classmates like by looking at them.",
                     "Ask every student by conducting a survey or using a questionnaire.",
                     "Read a storybook about ice cream shops.",
-                    "Check the weather report outside."
+                    "Check the weather report outside"
                 ],
                 answer: 1,
                 hint: "To get accurate facts from people, you must ask them directly or write down their answers.",
                 explanation: "Conducting a systematic interview or survey questionnaire is the best way to gather real and accurate data directly from a group."
             },
             {
-                type: "Bar Graph Comparison",
-                question: "Look at a sports bar graph. The Cricket bar climbs up to 30, the Football bar climbs up to 55, and the Basketball bar stops at 20.\n\nWhich sport is the LEAST popular among the surveyed group?",
-                options: [
-                    "Cricket",
-                    "Football",
-                    "Basketball",
-                    "All are equally popular"
-                ],
+                question: "Look at the sports interest chart.\n\nWhich sport is the LEAST popular among the surveyed student group?",
+                visual: `
+                    <div class="chart-wrapper" style="height: 140px;">
+                        <div class="bar-container"><div class="bar" style="height: 54%;">30</div><span class="bar-label">Cricket</span></div>
+                        <div class="bar-container"><div class="bar" style="height: 100%;">55</div><span class="bar-label">Football</span></div>
+                        <div class="bar-container"><div class="bar" style="height: 36%;">20</div><span class="bar-label">Basket.</span></div>
+                    </div>
+                `,
+                options: ["Cricket", "Football", "Basketball", "All are equally popular"],
                 answer: 2,
                 hint: "The least popular category is shown by the shortest bar column on the graph chart.",
                 explanation: "Comparing the heights: Basketball is the shortest column bar at 20, making it the least favorite choice."
             },
             {
-                type: "Data Extraction & Arithmetic",
-                question: "A fruit chart tracks weekly sales. The bar for Apples shows 18 boxes sold, and the bar for Oranges shows 12 boxes sold.\n\nHow many MORE boxes of Apples were sold compared to Oranges?",
-                options: [
-                    "30 boxes",
-                    "6 boxes",
-                    "12 boxes",
-                    "8 boxes"
-                ],
+                question: "Look at the weekly fruit tracking data graph.\n\nHow many MORE boxes of Apples were sold compared to Oranges?",
+                visual: `
+                    <div class="chart-wrapper" style="height: 120px;">
+                        <div class="bar-container"><div class="bar" style="height: 100%;">18</div><span class="bar-label">Apples</span></div>
+                        <div class="bar-container"><div class="bar" style="height: 66%;">12</div><span class="bar-label">Oranges</span></div>
+                    </div>
+                `,
+                options: ["30 boxes", "6 boxes", "12 boxes", "8 boxes"],
                 answer: 1,
                 hint: "Find the numerical difference between the two category values by subtracting the smaller amount from the larger one.",
                 explanation: "To find how many more boxes were sold, subtract the values: $18 - 12 = 6$. Exactly 6 more boxes of apples were sold."
             },
             {
-                type: "Method Comparison & Purpose",
                 question: "Why do we use visual charts like bar graphs and pictographs instead of just keeping a long unorganized list of random answers?",
+                visual: "",
                 options: [
                     "Because charts take up more space in notebooks.",
                     "Because they hide information from other people.",
@@ -378,8 +481,8 @@
                 explanation: "Visual representations summarize numbers efficiently, allowing people to extract patterns, maximums, and trends instantly."
             },
             {
-                type: "Error Identification Challenge",
                 question: "Identify the mathematical statement below that contains an error regarding data handling tools:",
+                visual: "",
                 options: [
                     "A pictograph uses small images or symbols to show quantities.",
                     "Tally marks are always written down in groups of 10 with two diagonal slash bars across.",
@@ -391,8 +494,8 @@
                 explanation: "The second statement is incorrect. Tally marks are bundled into groups of 5, not 10. The fifth mark is drawn as a diagonal line across the first 4 vertical strokes."
             },
             {
-                type: "Assertion & Reason Logic",
                 question: "Assertion: If a pictograph symbol represents 5 trees, then a row with 4 tree symbols means there are 20 trees in total.\nReason: Multiplication is used to decode the total value when each symbol represents a group size greater than 1.",
+                visual: "",
                 options: [
                     "Both Assertion and Reason are true, and the Reason explains the Assertion perfectly.",
                     "Both Assertion and Reason are true, but the Reason does not explain the Assertion.",
@@ -404,27 +507,35 @@
                 explanation: "Both statements are correct. 4 symbols $\\times$ 5 items per symbol = 20. The reason correctly explains why multiplication is the method used to decode a pictograph row."
             },
             {
-                type: "Multi-Step Case Story (Part 1)",
-                question: "Case Story Part 1: Maya surveys her friends to count their pets. She collects the following entries:\nDogs: 卌 卌\nCats: 卌 ||\nBirds: ||||\n\nHow many total cats do Maya's friends own?",
-                options: [
-                    "5 cats",
-                    "7 cats",
-                    "10 cats",
-                    "4 cats"
-                ],
+                question: "Maya surveyed her friends to find out what pets they own and stored the results in a table.\n\nHow many total cats do Maya's friends own?",
+                visual: `
+                    <table class="visual-table">
+                        <thead><tr><th>Pet Type</th><th>Tally Collected</th></tr></thead>
+                        <tbody>
+                            <tr><td>Dogs</td><td>卌 卌</td></tr>
+                            <tr><td>Cats</td><td>卌 ||</td></tr>
+                            <tr><td>Birds</td><td>||||</td></tr>
+                        </tbody>
+                    </table>
+                `,
+                options: ["5 cats", "7 cats", "10 cats", "4 cats"],
                 answer: 1,
                 hint: "Look at the Cats row. Add the value of one closed cross-five tally group to the two single vertical lines next to it.",
                 explanation: "The tally marks for cats show one complete bundle (5) plus two individual lines (2). This equals $5 + 2 = 7$ cats."
             },
             {
-                type: "Multi-Step Case Story (Part 2)",
-                question: "Case Story Part 2: Maya wants to display her entire pet dataset (10 Dogs, 7 Cats, 4 Birds) on a clean bar graph. What total number of pets will the sum of all the bars combined show?",
-                options: [
-                    "17 pets",
-                    "21 pets",
-                    "14 pets",
-                    "25 pets"
-                ],
+                question: "Maya wants to display her entire pet dataset on a single bar graph.\n\nWhat total number of pets will the sum of all the bars combined show?",
+                visual: `
+                    <table class="visual-table">
+                        <thead><tr><th>Pet Category</th><th>Calculated Count</th></tr></thead>
+                        <tbody>
+                            <tr><td>Dogs</td><td>10</td></tr>
+                            <tr><td>Cats</td><td>7</td></tr>
+                            <tr><td>Birds</td><td>4</td></tr>
+                        </tbody>
+                    </table>
+                `,
+                options: ["17 pets", "21 pets", "14 pets", "25 pets"],
                 answer: 1,
                 hint: "Add up the values of all three separate animal categories together: $10 + 7 + 4$.",
                 explanation: "To find the complete count of all pet data combined, calculate the sum: $10 \\text{ (dogs)} + 7 \\text{ (cats)} + 4 \\text{ (birds)} = 21$ total pets."
@@ -442,7 +553,7 @@
                 const splash = document.getElementById('splash-screen');
                 splash.style.opacity = '0';
                 setTimeout(() => splash.style.display = 'none', 500);
-            }, 5000); // Strict 5-second brand requirements
+            }, 5000);
         });
 
         function startInteractive() {
@@ -463,8 +574,14 @@
 
             let qData = questionBank[currentIndex];
             document.getElementById('progress-text').innerText = `Question: ${currentIndex + 1}/${questionBank.length}`;
-            document.getElementById('target-question').innerText = `[${qData.type}]\n${qData.question}`;
             
+            // Render text clean (removed bracketted headings prefix logic)
+            document.getElementById('target-question').innerText = qData.question;
+            
+            // Inject dynamically structured visuals
+            const visualBox = document.getElementById('target-visual');
+            visualBox.innerHTML = qData.visual || "";
+
             const optionsBox = document.getElementById('target-options');
             optionsBox.innerHTML = '';
 
@@ -490,171 +607,4 @@
             }, 1000);
         }
 
-        function lockButtonsOnTimeout() {
-            let qData = questionBank[currentIndex];
-            disableAllOptions();
-            const explBox = document.getElementById('explain-feedback');
-            explBox.innerHTML = `<strong>Time's Up!</strong> ${qData.explanation}`;
-            explBox.style.display = 'block';
-            playSound('wrong');
-            document.getElementById('next-btn').style.display = 'block';
-        }
-
-        function evaluateSelection(selectedBtn, chosenIdx) {
-            let qData = questionBank[currentIndex];
-            
-            if (chosenIdx === qData.answer) {
-                clearInterval(countdownTimer);
-                selectedBtn.classList.add('correct');
-                disableAllOptions();
-                
-                if (attemptTracker === 0) {
-                    runningScore++;
-                    document.getElementById('score-text').innerText = `Score: ${runningScore}`;
-                }
-                
-                triggerSparkles();
-                playSound('correct');
-                
-                const explBox = document.getElementById('explain-feedback');
-                explBox.innerHTML = `<strong>Correct!</strong> ${qData.explanation}`;
-                explBox.style.display = 'block';
-                document.getElementById('next-btn').style.display = 'block';
-
-            } else {
-                attemptTracker++;
-                selectedBtn.classList.add('wrong');
-                selectedBtn.disabled = true;
-                playSound('wrong');
-
-                if (attemptTracker === 1) {
-                    const hintBox = document.getElementById('hint-feedback');
-                    hintBox.innerHTML = `<strong>Hint:</strong> ${qData.hint}`;
-                    hintBox.style.display = 'block';
-                } else {
-                    clearInterval(countdownTimer);
-                    disableAllOptions();
-                    
-                    const optionsList = document.getElementById('target-options').children;
-                    optionsList[qData.answer].classList.add('correct');
-
-                    const hintBox = document.getElementById('hint-feedback');
-                    hintBox.style.display = 'none';
-
-                    const explBox = document.getElementById('explain-feedback');
-                    explBox.innerHTML = `<strong>Not quite!</strong> ${qData.explanation}`;
-                    explBox.style.display = 'block';
-                    document.getElementById('next-btn').style.display = 'block';
-                }
-            }
-        }
-
-        function disableAllOptions() {
-            const buttons = document.getElementsByClassName('option-btn');
-            for(let btn of buttons) {
-                btn.disabled = true;
-            }
-        }
-
-        function playSound(type) {
-            const audio = document.getElementById(`audio-${type}`);
-            if (audio) {
-                audio.currentTime = 0;
-                audio.play().catch(e => console.log("Audio asset initialization track."));
-            }
-        }
-
-        function advanceQuestion() {
-            currentIndex++;
-            if (currentIndex < questionBank.length) {
-                displayQuestion();
-            } else {
-                showFinalResults();
-            }
-        }
-
-        function showFinalResults() {
-            document.getElementById('game-screen').classList.remove('active');
-            document.getElementById('result-screen').classList.add('active');
-            
-            document.getElementById('final-score-value').innerText = `${runningScore}/${questionBank.length}`;
-            
-            let finalPercentage = (runningScore / questionBank.length) * 100;
-            let statusText = "";
-
-            if (finalPercentage >= 75) {
-                statusText = "Good job!";
-            } else if (finalPercentage >= 40) {
-                statusText = "Review this chapter and try again.";
-            } else {
-                statusText = "Let’s practise more.";
-            }
-            
-            document.getElementById('final-status-msg').innerText = statusText;
-        }
-
-        function resetInteractive() {
-            currentIndex = 0;
-            runningScore = 0;
-            document.getElementById('score-text').innerText = `Score: 0`;
-            document.getElementById('result-screen').classList.remove('active');
-            document.getElementById('welcome-screen').classList.add('active');
-        }
-
-        // Particle Canvas Graphics (Teal / Turquoise Theme)
-        const canvas = document.getElementById('particle-canvas');
-        const ctx = canvas.getContext('2d');
-        let particles = [];
-
-        function resizeCanvas() {
-            canvas.width = canvas.parentElement.clientWidth;
-            canvas.height = canvas.parentElement.clientHeight;
-        }
-        window.addEventListener('resize', resizeCanvas);
-        resizeCanvas();
-
-        function triggerSparkles() {
-            resizeCanvas();
-            for (let i = 0; i < 40; i++) {
-                particles.push({
-                    x: canvas.width / 2,
-                    y: canvas.height / 2,
-                    radius: Math.random() * 4 + 2,
-                    color: `hsl(${Math.random() * 40 + 170}, 85%, 55%)`, 
-                    speedX: (Math.random() - 0.5) * 8,
-                    speedY: (Math.random() - 0.5) * 8,
-                    alpha: 1
-                });
-            }
-            renderParticles();
-        }
-
-        function renderParticles() {
-            if (particles.length === 0) return;
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            
-            particles.forEach((p, idx) => {
-                p.x += p.speedX;
-                p.y += p.speedY;
-                p.alpha -= 0.02;
-                
-                ctx.save();
-                ctx.globalAlpha = p.alpha;
-                ctx.beginPath();
-                ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-                ctx.fillStyle = p.color;
-                ctx.fill();
-                ctx.restore();
-
-                if (p.alpha <= 0) particles.splice(idx, 1);
-            });
-
-            if (particles.length > 0) {
-                requestAnimationFrame(renderParticles);
-            } else {
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-            }
-        }
-    </script>
-</body>
-</html>
+        ...
