@@ -31,9 +31,16 @@
         .question-text { font-size: 1.15rem; font-weight: 600; margin-bottom: 20px; white-space: pre-line; line-height: 1.5; }
 
         /* Visual Sequence Track Display */
-        .sequence-track { display: flex; gap: 10px; justify-content: center; align-items: center; margin: 15px 0 25px 0; padding: 15px; background: #f8fafc; border: 2px dashed #cbd5e1; border-radius: 16px; }
-        .sequence-item { display: flex; flex-direction: column; align-items: center; font-size: 2rem; background: white; padding: 8px 12px; border-radius: 10px; border: 1px solid #e2e8f0; min-width: 50px; text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+        .sequence-track { display: flex; gap: 10px; justify-content: center; align-items: center; margin: 15px 0 25px 0; padding: 15px; background: #f8fafc; border: 2px dashed #cbd5e1; border-radius: 16px; flex-wrap: wrap; }
+        .sequence-item { display: flex; flex-direction: column; align-items: center; font-size: 2rem; background: white; padding: 8px 12px; border-radius: 10px; border: 1px solid #e2e8f0; min-width: 55px; text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
         .sequence-index { font-size: 0.75rem; color: #64748b; font-weight: bold; margin-top: 4px; }
+
+        /* Row Tiling Visual Variant */
+        .tiling-track { display: flex; flex-direction: column; gap: 6px; margin: 15px 0 25px 0; background: #f8fafc; padding: 12px; border-radius: 14px; border: 1px solid #e2e8f0; }
+        .tiling-row { display: flex; align-items: center; border-bottom: 1px solid #e2e8f0; padding: 4px 0; }
+        .tiling-row:last-child { border-bottom: none; }
+        .tiling-label { width: 70px; font-size: 0.8rem; font-weight: bold; color: #475569; }
+        .tiling-shapes { display: flex; gap: 4px; font-size: 1.2rem; font-wrap: nowrap; overflow: hidden; }
 
         /* Alphabet Grid Matrix */
         .letter-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: 20px 0; }
@@ -118,7 +125,7 @@
                 question: "An automated design patterns an ornament using a repeating sequence. Observe the ornament chain layout below:\n\nIf the pattern continues in this exact sequence, which object will occupy the 8th position?",
                 options: ["❤️ Heart", "⭐ Star", "💎 Diamond", "⏹️ Square"],
                 visualSequence: ["❤️", "⭐", "💎", "❤️", "⭐", "💎", "❓", "⏳"],
-                answer: 1, // 1 corresponds to Star
+                answer: 1, 
                 hint: "The structure repeats in clusters of 3 elements. Skip count or fill in positions 7 and 8 step-by-step.",
                 explanation: "Since the core sequence repeats every 3 slots (1=Heart, 2=Star, 3=Diamond), position 7 resets to a Heart, which makes position 8 a Star!"
             },
@@ -174,6 +181,7 @@
             {
                 question: "A tiling pattern alternates lines: Row 1 uses all Triangles. Row 2 uses all Squares. Row 3 uses all Triangles. What does Row 10 use?",
                 options: ["Triangles", "Squares", "Circles", "Hexagons"],
+                visualTiling: true,
                 answer: 1,
                 hint: "Look at the pattern properties. Odd rows contain Triangles, while even rows contain Squares.",
                 explanation: "Since the rows alternate between odd (Triangles) and even (Squares), Row 10—being an even number—will consist entirely of Squares."
@@ -227,9 +235,10 @@
             document.getElementById('explain-feedback').style.display = 'none';
             document.getElementById('next-btn').style.display = 'none';
 
-            // Generate sequence track if configured
             const trackContainer = document.getElementById('visual-sequence-display');
             trackContainer.innerHTML = '';
+            
+            // Dynamic Layout Conditional Rendering Engines
             if(q.visualSequence) {
                 const trackDiv = document.createElement('div');
                 trackDiv.className = 'sequence-track';
@@ -240,6 +249,23 @@
                     trackDiv.appendChild(block);
                 });
                 trackContainer.appendChild(trackDiv);
+            } else if (q.visualTiling) {
+                const tilingDiv = document.createElement('div');
+                tilingDiv.className = 'tiling-track';
+                const rowsData = [
+                    { label: "Row 1 (Odd)", items: "🔺🔺🔺🔺🔺🔺🔺" },
+                    { label: "Row 2 (Even)", items: "🟦🟦🟦🟦🟦🟦🟦" },
+                    { label: "Row 3 (Odd)", items: "🔺🔺🔺🔺🔺🔺🔺" },
+                    { label: "...", items: "• • • • • • • • • • • • •" },
+                    { label: "Row 10 (Even)", items: "❓ ❓ ❓ ❓ ❓ ❓ ❓" }
+                ];
+                rowsData.forEach(r => {
+                    const rDiv = document.createElement('div');
+                    rDiv.className = 'tiling-row';
+                    rDiv.innerHTML = `<div class="tiling-label">${r.label}</div><div class="tiling-shapes">${r.items}</div>`;
+                    tilingDiv.appendChild(rDiv);
+                });
+                trackContainer.appendChild(tilingDiv);
             }
 
             const area = document.getElementById('options-area');
@@ -350,7 +376,7 @@
             const audio = document.getElementById(`audio-${type}`);
             if (audio) {
                 audio.currentTime = 0;
-                audio.play().catch(e => console.log("Audio feedback enabled."));
+                audio.play().catch(e => console.log("Contextual audio handled dynamically."));
             }
         }
 
