@@ -30,6 +30,11 @@
         .timer-box { color: var(--danger); display: flex; align-items: center; gap: 4px; }
         .question-text { font-size: 1.15rem; font-weight: 600; margin-bottom: 20px; white-space: pre-line; line-height: 1.5; }
 
+        /* Visual Sequence Track Display */
+        .sequence-track { display: flex; gap: 10px; justify-content: center; align-items: center; margin: 15px 0 25px 0; padding: 15px; background: #f8fafc; border: 2px dashed #cbd5e1; border-radius: 16px; }
+        .sequence-item { display: flex; flex-direction: column; align-items: center; font-size: 2rem; background: white; padding: 8px 12px; border-radius: 10px; border: 1px solid #e2e8f0; min-width: 50px; text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+        .sequence-index { font-size: 0.75rem; color: #64748b; font-weight: bold; margin-top: 4px; }
+
         /* Alphabet Grid Matrix */
         .letter-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: 20px 0; }
         .letter-card { background: white; border: 3px solid #e2e8f0; border-radius: 16px; padding: 20px; font-size: 3rem; font-weight: 800; text-align: center; color: var(--primary); cursor: pointer; transition: 0.2s; }
@@ -41,7 +46,7 @@
 
         /* Options layout */
         .options-container { display: flex; flex-direction: column; gap: 12px; }
-        .option-btn { background: var(--surface); border: 2px solid #e2e8f0; border-radius: 12px; padding: 16px; cursor: pointer; font-weight: 500; width: 100%; transition: 0.2s; font-size: 1rem; text-align: left; line-height: 1.4; }
+        .option-btn { background: var(--surface); border: 2px solid #e2e8f0; border-radius: 12px; padding: 16px; cursor: pointer; font-weight: 500; width: 100%; transition: 0.2s; font-size: 1.1rem; text-align: left; line-height: 1.4; display: flex; align-items: center; gap: 12px; }
         .option-btn:hover:not(:disabled) { border-color: var(--secondary); background: #f8fafc; }
         .option-btn.correct { background: #f0fdf4 !important; border-color: var(--success) !important; color: #14532d; }
         .option-btn.wrong { background: #fff1f2 !important; border-color: var(--danger) !important; color: #4c0519; }
@@ -82,6 +87,9 @@
                 <div class="timer-box">⏱️ <span id="timer-counter">60</span>s</div>
             </div>
             <div id="target-question" class="question-text"></div>
+            
+            <div id="visual-sequence-display"></div>
+
             <div id="options-area"></div>
             <div id="hint-feedback" class="feedback-box hint"></div>
             <div id="explain-feedback" class="feedback-box explanation"></div>
@@ -97,7 +105,6 @@
     </div>
 
     <script>
-        // Real-world, Application-Based Competency Bank (10 Questions)
         const baseQuestionBank = [
             {
                 question: "Which capital letter can be split down the middle horizontally so the top half is a perfect reflection of the bottom half?",
@@ -108,11 +115,12 @@
                 explanation: "The letter 'B' has a horizontal line of symmetry, meaning its upper loop reflects perfectly over the central dividing fold line."
             },
             {
-                question: "An automated design patterns an ornament using: Heart, Star, Diamond, Heart, Star, Diamond... If this arrangement continues, what item represents position 12?",
-                options: ["Heart", "Star", "Diamond", "Square"],
-                answer: 2,
-                hint: "The structure builds in clusters of 3. Think about multiples of 3 or skip counting.",
-                explanation: "Because the core sequence repeats every 3 slots, any position that is a multiple of 3 (like 3, 6, 9, 12) will always be the final element: a Diamond."
+                question: "An automated design patterns an ornament using a repeating sequence. Observe the ornament chain layout below:\n\nIf the pattern continues in this exact sequence, which object will occupy the 8th position?",
+                options: ["❤️ Heart", "⭐ Star", "💎 Diamond", "⏹️ Square"],
+                visualSequence: ["❤️", "⭐", "💎", "❤️", "⭐", "💎", "❓", "⏳"],
+                answer: 1, // 1 corresponds to Star
+                hint: "The structure repeats in clusters of 3 elements. Skip count or fill in positions 7 and 8 step-by-step.",
+                explanation: "Since the core sequence repeats every 3 slots (1=Heart, 2=Star, 3=Diamond), position 7 resets to a Heart, which makes position 8 a Star!"
             },
             {
                 question: "A construction grid builds a growing pattern. Step 1 uses 2 squares, Step 2 uses 4 squares, and Step 3 uses 6 squares. How many total squares will Step 6 need?",
@@ -179,16 +187,14 @@
         let countdownTimer;
         let activeSeconds = 60;
 
-        // Auto-run Splash Cycle on entry
         window.addEventListener('DOMContentLoaded', () => {
             setTimeout(() => {
                 const splash = document.getElementById('splash-screen');
                 if (splash) splash.classList.remove('active');
                 document.getElementById('welcome-screen').classList.add('active');
-            }, 5000); // 5 Seconds fixed display constraint
+            }, 5000);
         });
 
-        // Fisher-Yates Randomization Engine
         function prepareQuestions() {
             let shuffled = [...baseQuestionBank];
             for (let i = shuffled.length - 1; i > 0; i--) {
@@ -220,6 +226,21 @@
             document.getElementById('hint-feedback').style.display = 'none';
             document.getElementById('explain-feedback').style.display = 'none';
             document.getElementById('next-btn').style.display = 'none';
+
+            // Generate sequence track if configured
+            const trackContainer = document.getElementById('visual-sequence-display');
+            trackContainer.innerHTML = '';
+            if(q.visualSequence) {
+                const trackDiv = document.createElement('div');
+                trackDiv.className = 'sequence-track';
+                q.visualSequence.forEach((item, pos) => {
+                    const block = document.createElement('div');
+                    block.className = 'sequence-item';
+                    block.innerHTML = `<span>${item}</span><div class="sequence-index">${pos + 1}</div>`;
+                    trackDiv.appendChild(block);
+                });
+                trackContainer.appendChild(trackDiv);
+            }
 
             const area = document.getElementById('options-area');
             area.innerHTML = '';
@@ -320,14 +341,16 @@
 
         function highlightCorrectAnswer(correctIdx) {
             const area = document.getElementById('options-area');
-            area.children[correctIdx].classList.add('correct');
+            if(area.children[correctIdx]) {
+                area.children[correctIdx].classList.add('correct');
+            }
         }
 
         function playSound(type) {
             const audio = document.getElementById(`audio-${type}`);
             if (audio) {
                 audio.currentTime = 0;
-                audio.play().catch(e => console.log("Audio contextual trigger active."));
+                audio.play().catch(e => console.log("Audio feedback enabled."));
             }
         }
 
