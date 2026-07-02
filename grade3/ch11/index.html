@@ -6,76 +6,226 @@
     <title>Grade 3 Maths: Patterns & Symmetry Quest</title>
     <style>
         :root {
-            --primary: #0284c7; --secondary: #38bdf8; --success: #16a34a;
-            --danger: #e11d48; --warning: #ea580c; --background: #f0f9ff;
-            --surface: #ffffff; --text: #0f172a;
+            --primary: #0284c7; 
+            --secondary: #38bdf8; 
+            --success: #16a34a;
+            --danger: #e11d48; 
+            --warning: #ea580c; 
+            --background: #f0f9ff;
+            --surface: #ffffff; 
+            --text: #0f172a;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-        body { background-color: var(--background); color: var(--text); display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 15px; position: relative; overflow-x: hidden; }
-        .container { width: 100%; max-width: 650px; background: var(--surface); border-radius: 20px; box-shadow: 0 12px 36px rgba(2, 132, 199, 0.08); padding: 24px; position: relative; z-index: 2; min-height: 350px; }
+        * { 
+            box-sizing: border-box; 
+            margin: 0; 
+            padding: 0; 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
+        }
         
-        /* Bulletproof Screen Isolation toggles */
+        body { 
+            background-color: var(--background); 
+            color: var(--text); 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            min-height: 100vh; 
+            padding: 15px; 
+        }
+
+        .container { 
+            width: 100%; 
+            max-width: 650px; 
+            background: var(--surface); 
+            border-radius: 20px; 
+            box-shadow: 0 12px 36px rgba(2, 132, 199, 0.08); 
+            padding: 32px; 
+            min-height: 450px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        /* Strict Screen Isolation */
         .screen { display: none !important; }
         .screen.active { display: block !important; }
-        
         #splash-screen.active { display: flex !important; justify-content: center; align-items: center; }
 
-        h1, h2 { color: var(--primary); text-align: center; margin-bottom: 16px; }
-        .description { text-align: center; color: #475569; margin-bottom: 24px; line-height: 1.6; }
+        /* Welcome Screen Styling */
+        .welcome-content { text-align: center; }
+        .welcome-logo { max-width: 200px; height: auto; margin-bottom: 24px; }
+        h1 { color: #0284c7; font-size: 1.8rem; margin-bottom: 16px; font-weight: 700; }
+        .description { text-align: center; color: #475569; margin-bottom: 32px; line-height: 1.6; font-size: 1rem; }
         
         /* Splash Screen Style */
-        #splash-screen { text-align: center; padding: 60px 20px; min-height: 300px; }
+        #splash-screen { text-align: center; padding: 60px 20px; }
         .logo-frame { max-width: 240px; height: auto; animation: pulse 2s infinite ease-in-out; }
         @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.04); } }
 
-        /* HUD & Question */
-        .hud { display: flex; justify-content: space-between; align-items: center; background: #f1f5f9; padding: 12px 16px; border-radius: 12px; margin-bottom: 20px; font-weight: 600; }
-        .timer-box { color: var(--danger); display: flex; align-items: center; gap: 4px; }
-        .question-text { font-size: 1.15rem; font-weight: 600; margin-bottom: 20px; white-space: pre-line; line-height: 1.5; }
+        /* HUD Bar from Screenshots */
+        .hud { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            background: #f1f5f9; 
+            padding: 12px 20px; 
+            border-radius: 12px; 
+            margin-bottom: 24px; 
+            font-weight: 600; 
+            font-size: 0.95rem;
+        }
+        .timer-box { 
+            color: #e11d48; 
+            background: #fff1f2; 
+            padding: 4px 10px; 
+            border-radius: 8px; 
+            display: flex; 
+            align-items: center; 
+            gap: 6px; 
+        }
 
-        /* Visual Sequence Track Display */
-        .sequence-track { display: flex; gap: 10px; justify-content: center; align-items: center; margin: 15px 0 25px 0; padding: 15px; background: #f8fafc; border: 2px dashed #cbd5e1; border-radius: 16px; flex-wrap: wrap; }
-        .sequence-item { display: flex; flex-direction: column; align-items: center; font-size: 2rem; background: white; padding: 8px 12px; border-radius: 10px; border: 1px solid #e2e8f0; min-width: 55px; text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
-        .sequence-index { font-size: 0.75rem; color: #64748b; font-weight: bold; margin-top: 4px; }
+        /* Question Text */
+        .question-text { 
+            font-size: 1.1rem; 
+            font-weight: 600; 
+            margin-bottom: 20px; 
+            line-height: 1.6; 
+            color: #0f172a;
+        }
 
-        /* Row Tiling Visual Variant */
-        .tiling-track { display: flex; flex-direction: column; gap: 6px; margin: 15px 0 25px 0; background: #f8fafc; padding: 12px; border-radius: 14px; border: 1px solid #e2e8f0; }
-        .tiling-row { display: flex; align-items: center; border-bottom: 1px solid #e2e8f0; padding: 4px 0; }
-        .tiling-row:last-child { border-bottom: none; }
-        .tiling-label { width: 110px; font-size: 0.8rem; font-weight: bold; color: #475569; }
-        .tiling-shapes { display: flex; gap: 4px; font-size: 1.2rem; white-space: nowrap; overflow: hidden; }
+        /* HTML Visual Tracks */
+        .visual-track {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            align-items: flex-end;
+            margin-bottom: 24px;
+            padding: 16px;
+            background: #f8fafc;
+            border: 2px dashed #cbd5e1;
+            border-radius: 14px;
+        }
 
-        /* Alphabet Grid Matrix */
-        .letter-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: 20px 0; }
-        .letter-card { background: white; border: 3px solid #e2e8f0; border-radius: 16px; padding: 20px; font-size: 3rem; font-weight: 800; text-align: center; color: var(--primary); cursor: pointer; transition: 0.2s; }
-        .letter-card:hover:not(.disabled) { border-color: var(--secondary); background: #f8fafc; }
-        .letter-card.correct { border-color: var(--success); background: #f0fdf4; color: var(--success); }
-        .letter-card.wrong { border-color: var(--danger); background: #fff1f2; color: var(--danger); }
-        .letter-card.disabled { pointer-events: none; opacity: 0.6; }
-        .letter-card.correct.disabled, .letter-card.wrong.disabled { opacity: 1; }
+        /* Shape/Ornament Track Elements */
+        .ornament-item {
+            font-size: 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .item-label {
+            font-size: 0.8rem;
+            color: #64748b;
+            margin-top: 4px;
+            font-weight: 700;
+        }
 
-        /* Options layout */
-        .options-container { display: flex; flex-direction: column; gap: 12px; }
-        .option-btn { background: var(--surface); border: 2px solid #e2e8f0; border-radius: 12px; padding: 16px; cursor: pointer; font-weight: 500; width: 100%; transition: 0.2s; font-size: 1.1rem; text-align: left; line-height: 1.4; display: flex; align-items: center; gap: 12px; }
-        .option-btn:hover:not(:disabled) { border-color: var(--secondary); background: #f8fafc; }
-        .option-btn.correct { background: #f0fdf4 !important; border-color: var(--success) !important; color: #14532d; }
-        .option-btn.wrong { background: #fff1f2 !important; border-color: var(--danger) !important; color: #4c0519; }
+        /* Building Grid Stack Elements */
+        .grid-stack {
+            display: flex;
+            flex-direction: column-reverse;
+            gap: 2px;
+            background: #fff;
+            padding: 6px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            align-items: center;
+        }
+        .grid-block {
+            width: 30px;
+            height: 20px;
+            background: #38bdf8;
+            border: 2px solid #0284c7;
+            border-radius: 3px;
+        }
+        .stack-label {
+            font-size: 0.8rem;
+            font-weight: bold;
+            color: #475569;
+            margin-top: 6px;
+            text-align: center;
+        }
+
+        /* Options Layout */
+        .options-container { 
+            display: flex; 
+            flex-direction: column; 
+            gap: 12px; 
+            margin-bottom: 20px;
+        }
         
-        /* Interactive Panels */
-        .feedback-box { padding: 16px; border-radius: 12px; margin-top: 15px; display: none; line-height: 1.5; font-weight: 500; }
-        .feedback-box.hint { background: #fff7ed; border-left: 5px solid var(--warning); color: #7c2d12; }
-        .feedback-box.explanation { background: #f0f9ff; border-left: 5px solid var(--primary); color: #0c4a6e; }
-        .action-btn { width: 100%; background: var(--primary); color: #fff; border: none; border-radius: 12px; padding: 16px; font-size: 1.1rem; font-weight: 600; cursor: pointer; margin-top: 20px; }
-        .action-btn:hover { background: #0369a1; }
+        .option-btn { 
+            background: var(--surface); 
+            border: 2px solid #e2e8f0; 
+            border-radius: 12px; 
+            padding: 18px 20px; 
+            cursor: pointer; 
+            font-weight: 500; 
+            width: 100%; 
+            transition: all 0.2s ease; 
+            font-size: 1.05rem; 
+            text-align: left; 
+            color: #334155;
+        }
+        
+        .option-btn:hover:not(:disabled) { 
+            border-color: #94a3b8; 
+            background: #f8fafc; 
+        }
+        
+        .option-btn.correct { 
+            background: #f0fdf4 !important; 
+            border-color: #16a34a !important; 
+            color: #14532d !important; 
+            font-weight: 600;
+        }
+        
+        .option-btn.wrong { 
+            background: #fff1f2 !important; 
+            border-color: #e11d48 !important; 
+            color: #4c0519 !important; 
+        }
+
+        .option-btn:disabled:not(.correct):not(.wrong) {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+        
+        /* Feedback Panels */
+        .feedback-box { 
+            padding: 18px; 
+            border-radius: 12px; 
+            margin-top: 16px; 
+            display: none; 
+            line-height: 1.6; 
+            font-weight: 500; 
+            font-size: 0.95rem;
+        }
+        .feedback-box.explanation { 
+            background: #f0f9ff; 
+            border-left: 5px solid #0284c7; 
+            color: #0c4a6e; 
+        }
+
+        .action-btn { 
+            width: 100%; 
+            background: #0084c7; 
+            color: #fff; 
+            border: none; 
+            border-radius: 12px; 
+            padding: 16px; 
+            font-size: 1.1rem; 
+            font-weight: 600; 
+            cursor: pointer; 
+            margin-top: 12px; 
+            transition: background 0.2s;
+        }
+        .action-btn:hover { background: #0269a1; }
 
         .score-circle { width: 130px; height: 130px; border-radius: 50%; background: #f1f5f9; display: flex; justify-content: center; align-items: center; font-size: 2rem; font-weight: bold; margin: 20px auto; color: var(--primary); border: 4px solid var(--secondary); }
-        #particle-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; }
     </style>
 </head>
 <body>
-
-    <canvas id="particle-canvas"></canvas>
 
     <audio id="audio-correct" src="assets/claps.mp3" preload="auto"></audio>
     <audio id="audio-wrong" src="assets/wrong.mp3" preload="auto"></audio>
@@ -86,141 +236,91 @@
         </div>
 
         <div id="welcome-screen" class="screen">
-            <h1>Patterns & Symmetry Quest</h1>
-            <p class="description">Welcome, Explorer! Get ready to apply mirror lines, pattern tracks, and tiling logic to crack 10 real-world math mysteries.</p>
-            <button class="action-btn" onclick="startInteractive()">Start Challenge</button>
+            <div class="welcome-content">
+                <img src="assets/logo.png" alt="Logo" class="welcome-logo">
+                <h1>Patterns & Symmetry Quest</h1>
+                <p class="description">Welcome, Explorer! Get ready to apply mirror lines, pattern tracks, and tiling logic to crack real-world math mysteries.</p>
+                <button class="action-btn" style="display: block;" onclick="startInteractive()">Start Challenge</button>
+            </div>
         </div>
 
         <div id="game-screen" class="screen">
             <div class="hud">
-                <div id="progress-text">Question: 1/10</div>
+                <div id="progress-text">Question: 1/5</div>
                 <div id="score-text">Score: 0</div>
-                <div class="timer-box">⏱️ <span id="timer-counter">60</span>s</div>
+                <div class="timer-box">⏱️ <span id="timer-counter">60</span> s</div>
             </div>
             <div id="target-question" class="question-text"></div>
             
-            <div id="visual-sequence-display"></div>
+            <div id="dynamic-visual-panel"></div>
 
-            <div id="options-area"></div>
-            <div id="hint-feedback" class="feedback-box hint"></div>
+            <div id="options-area" class="options-container"></div>
             <div id="explain-feedback" class="feedback-box explanation"></div>
-            <button id="next-btn" class="action-btn" style="display: none;" onclick="advanceQuestion()">Next Question</button>
+            <button id="next-btn" class="action-btn" onclick="advanceQuestion()">Next Question</button>
         </div>
 
         <div id="result-screen" class="screen">
-            <h2>Quest Complete!</h2>
-            <div class="score-circle" id="final-score-value">0/10</div>
+            <h2 style="text-align: center; margin-bottom: 10px;">Quest Complete!</h2>
+            <div class="score-circle" id="final-score-value">0/5</div>
             <p class="description" id="final-status-msg"></p>
-            <button class="action-btn" onclick="resetInteractive()">Try Again</button>
+            <button class="action-btn" style="display: block;" onclick="resetInteractive()">Try Again</button>
         </div>
     </div>
 
     <script>
         const baseQuestionBank = [
             {
-                question: "Which capital letter can be split down the middle horizontally so the top half is a perfect reflection of the bottom half?",
-                options: ["A", "M", "B", "Q"],
-                isVisualLetters: true,
-                answer: 2,
-                hint: "Imagine slicing across the center belly of the letter. Which one matches flawlessly above and below?",
-                explanation: "The letter 'B' has a horizontal line of symmetry, meaning its upper loop reflects perfectly over the central dividing fold line."
+                type: "ornament",
+                question: "An automated design patterns an ornament using: Heart, Star, Diamond, Heart, Star, Diamond... If this arrangement continues, what item represents position 12?",
+                options: ["Heart", "Star", "Diamond", "Square"],
+                answer: 2, 
+                explanation: "The pattern repeats every 3 items (1=Heart, 2=Star, 3=Diamond). Since 12 is a multiple of 3, it will land exactly on a Diamond!"
             },
             {
-                question: "An automated design patterns an ornament using a repeating sequence. Observe the ornament chain layout below:\n\nIf the pattern continues in this exact sequence, which object will occupy the 8th position?",
-                options: ["❤️ Heart", "⭐ Star", "💎 Diamond", "⏹️ Square"],
-                visualSequence: ["❤️", "⭐", "💎", "❤️", "⭐", "💎", "❓", "⏳"],
-                answer: 1, 
-                hint: "The structure repeats in clusters of 3 elements. Skip count or fill in positions 7 and 8 step-by-step.",
-                explanation: "Since the core sequence repeats every 3 slots (1=Heart, 2=Star, 3=Diamond), position 7 resets to a Heart, which makes position 8 a Star!"
-            },
-            {
+                type: "grid",
                 question: "A construction grid builds a growing pattern. Step 1 uses 2 squares, Step 2 uses 4 squares, and Step 3 uses 6 squares. How many total squares will Step 6 need?",
                 options: ["8 squares", "10 squares", "12 squares", "14 squares"],
                 answer: 2,
-                hint: "Notice that each consecutive step scales up by adding exactly 2 blocks. Calculate the value for step 6.",
-                explanation: "The pattern rule multiplies the step number by 2. Therefore, step 6 requires 6 × 2 = 12 total squares."
+                explanation: "The count increases by 2 blocks with each step (Step number × 2). Step 6 will require 6 × 2 = 12 blocks total."
             },
             {
-                question: "Imagine folding a clean sheet of paper in half once and cutting a clean half-circle out directly along the creased edge. When you unfold the paper fully, what will you see?",
-                options: ["Two separate standalone circles", "One single full circle split perfectly down its center by the fold", "One half-circle shape", "Four independent mini-circles"],
-                answer: 1,
-                hint: "The crease serves as a line of reflection. Cutting a half-circle out of a fold doubles the shape when opened.",
-                explanation: "The creased edge acts as a line of symmetry. Cutting into the fold creates identical matching mirrored halves that join together to form a single complete circle."
-            },
-            {
+                type: "text",
                 question: "Rahul is arranging square colored tiles on a wall without leaving any gaps or overlaps. He uses Red, Blue, Red, Blue. What geometric concept is Rahul creating?",
                 options: ["Perimeter boundaries", "Tiling and tessellation", "An asymmetric layout", "A decreasing sequence"],
                 answer: 1,
-                hint: "Think about what we call a continuous pattern of geometric shapes covering a surface completely without gaps.",
-                explanation: "Covering a flat surface with repeating shapes with no gaps or overlaps is called tiling or tessellating a plane."
+                explanation: "Covering a completely flat surface with repeating geometric shapes without any gaps or overlapping spaces is called tiling or tessellation."
             },
             {
-                question: "Look at this number sequence: 40, 35, 30, 25... If you continue tracking this reduction exactly, what value falls into position 6?",
-                options: ["20", "15", "10", "5"],
-                answer: 1,
-                hint: "Identify the rule first. The sequence reduces by subtracting 5 on each step. Calculate two steps past 25.",
-                explanation: "Position 4 is 25. Subtracting 5 gives 20 for position 5, and subtracting 5 once more gives 15 for position 6."
-            },
-            {
-                question: "Which of these real-world objects features both a clear vertical line of symmetry and a horizontal line of symmetry?",
-                options: ["A standard human hand", "A plain rectangular unprinted envelope", "A standard asymmetric teapot", "An irregular jagged tree branch"],
-                answer: 1,
-                hint: "The object must be capable of being cut both top-to-bottom and left-to-right while making perfect identical matches.",
-                explanation: "A plain rectangular envelope can be folded perfectly across its horizontal centerline or its vertical centerline, giving it two axes of reflection."
-            },
-            {
+                type: "text",
                 question: "An artist designs a floor border sequence using layout lengths: 3cm, 6cm, 12cm, 24cm... What logic is being used to expand the pattern steps?",
                 options: ["Adding 3cm to each previous measurement", "Subtracting 3cm from each step", "Using a rule to double the previous length", "Dividing the length value by 3"],
                 answer: 2,
-                hint: "Look closely at how 3 transforms to 6, then 6 transforms to 12, and 12 transforms to 24.",
-                explanation: "The sequence logic involves doubling the previous number. Each step multiplies the preceding value by 2 (3×2=6, 6×2=12, 12×2=24)."
+                explanation: "Each measurement is multiplied by 2 to construct the next position (3×2=6, 6×2=12, 12×2=24). The logic rule is to double the previous value."
             },
             {
-                question: "If you place a standard analog clock facing a direct upright mirror, at what time will the hands in the mirror image look exactly the same as the real clock hands?",
-                options: ["3 o'clock", "9 o'clock", "6 o'clock", "4 o'clock"],
-                answer: 2,
-                hint: "Think about which time sets the clock hands perfectly straight along the central vertical line of symmetry.",
-                explanation: "At 6 o'clock, the minute hand points directly at 12 and the hour hand points directly at 6. This aligns perfectly along the vertical center axis."
-            },
-            {
+                type: "text",
                 question: "A tiling pattern alternates lines: Row 1 uses all Triangles. Row 2 uses all Squares. Row 3 uses all Triangles. What does Row 10 use?",
                 options: ["Triangles", "Squares", "Circles", "Hexagons"],
-                visualTiling: true,
                 answer: 1,
-                hint: "Look at the pattern properties. Odd rows contain Triangles, while even rows contain Squares.",
-                explanation: "Since the rows alternate between odd (Triangles) and even (Squares), Row 10—being an even number—will consist entirely of Squares."
+                explanation: "Odd rows map entirely to Triangles, while even rows map directly to Squares. Since 10 is an even number, Row 10 will use Squares."
             }
         ];
 
-        let questionBank = [];
+        let questionBank = [...baseQuestionBank];
         let currentIndex = 0;
         let runningScore = 0;
-        let attemptTracker = 0; 
         let countdownTimer;
         let activeSeconds = 60;
 
-        // Auto-switch away from splash screen completely after 5 seconds
+        // Auto-switch away from splash screen cleanly after 3.5 seconds
         window.addEventListener('DOMContentLoaded', () => {
             setTimeout(() => {
-                const splash = document.getElementById('splash-screen');
-                if (splash) {
-                    splash.classList.remove('active');
-                }
+                document.getElementById('splash-screen').classList.remove('active');
                 document.getElementById('welcome-screen').classList.add('active');
-            }, 5000);
+            }, 3500);
         });
 
-        function prepareQuestions() {
-            let shuffled = [...baseQuestionBank];
-            for (let i = shuffled.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-            }
-            questionBank = shuffled.slice(0, 10);
-        }
-
         function startInteractive() {
-            prepareQuestions();
             currentIndex = 0;
             runningScore = 0;
             document.getElementById('score-text').innerText = `Score: 0`;
@@ -233,69 +333,49 @@
             let q = questionBank[currentIndex];
             clearInterval(countdownTimer);
             activeSeconds = 60;
-            attemptTracker = 0; 
             
             document.getElementById('timer-counter').innerText = activeSeconds;
             document.getElementById('target-question').innerText = q.question;
             document.getElementById('progress-text').innerText = `Question: ${currentIndex + 1}/${questionBank.length}`;
-            document.getElementById('hint-feedback').style.display = 'none';
             document.getElementById('explain-feedback').style.display = 'none';
             document.getElementById('next-btn').style.display = 'none';
 
-            const trackContainer = document.getElementById('visual-sequence-display');
-            trackContainer.innerHTML = '';
+            // Generate Native Non-Image Visual Component Elements
+            const visualPanel = document.getElementById('dynamic-visual-panel');
+            visualPanel.innerHTML = '';
             
-            if(q.visualSequence) {
-                const trackDiv = document.createElement('div');
-                trackDiv.className = 'sequence-track';
-                q.visualSequence.forEach((item, pos) => {
-                    const block = document.createElement('div');
-                    block.className = 'sequence-item';
-                    block.innerHTML = `<span>${item}</span><div class="sequence-index">${pos + 1}</div>`;
-                    trackDiv.appendChild(block);
-                });
-                trackContainer.appendChild(trackDiv);
-            } else if (q.visualTiling) {
-                const tilingDiv = document.createElement('div');
-                tilingDiv.className = 'tiling-track';
-                const rowsData = [
-                    { label: "Row 1 (Odd)", items: "🔺🔺🔺🔺🔺🔺🔺" },
-                    { label: "Row 2 (Even)", items: "🟦🟦🟦🟦🟦🟦🟦" },
-                    { label: "Row 3 (Odd)", items: "🔺🔺🔺🔺🔺🔺🔺" },
-                    { label: "...", items: "• • • • • • • • • • • • •" },
-                    { label: "Row 10 (Even)", items: "❓ ❓ ❓ ❓ ❓ ❓ ❓" }
-                ];
-                rowsData.forEach(r => {
-                    const rDiv = document.createElement('div');
-                    rDiv.className = 'tiling-row';
-                    rDiv.innerHTML = `<div class="tiling-label">${r.label}</div><div class="tiling-shapes">${r.items}</div>`;
-                    tilingDiv.appendChild(rDiv);
-                });
-                trackContainer.appendChild(tilingDiv);
+            if (q.type === "ornament") {
+                visualPanel.innerHTML = `
+                    <div class="visual-track">
+                        <div class="ornament-item">❤️<div class="item-label">1</div></div>
+                        <div class="ornament-item">⭐<div class="item-label">2</div></div>
+                        <div class="ornament-item">💎<div class="item-label">3</div></div>
+                        <div class="ornament-item">❤️<div class="item-label">4</div></div>
+                        <div class="ornament-item">⭐<div class="item-label">5</div></div>
+                        <div class="ornament-item">💎<div class="item-label">6</div></div>
+                        <div class="ornament-item" style="opacity:0.5;">❓<div class="item-label">...12</div></div>
+                    </div>`;
+            } else if (q.type === "grid") {
+                visualPanel.innerHTML = `
+                    <div class="visual-track">
+                        <div><div class="grid-stack"><div class="grid-block"></div><div class="grid-block"></div></div><div class="stack-label">Step 1</div></div>
+                        <div><div class="grid-stack"><div class="grid-block"></div><div class="grid-block"></div><div class="grid-block"></div><div class="grid-block"></div></div><div class="stack-label">Step 2</div></div>
+                        <div><div class="grid-stack"><div class="grid-block"></div><div class="grid-block"></div><div class="grid-block"></div><div class="grid-block"></div><div class="grid-block"></div><div class="grid-block"></div></div><div class="stack-label">Step 3</div></div>
+                        <div style="opacity:0.4; font-size:1.5rem; font-weight:bold; padding-bottom:20px;">... Step 6?</div>
+                    </div>`;
             }
 
             const area = document.getElementById('options-area');
             area.innerHTML = '';
             
-            if (q.isVisualLetters) {
-                area.className = "letter-grid";
-                q.options.forEach((char, idx) => {
-                    let div = document.createElement('div');
-                    div.className = 'letter-card';
-                    div.innerText = char;
-                    div.onclick = () => evaluate(div, idx);
-                    area.appendChild(div);
-                });
-            } else {
-                area.className = "options-container";
-                q.options.forEach((opt, idx) => {
-                    let btn = document.createElement('button');
-                    btn.className = 'option-btn';
-                    btn.innerText = opt;
-                    btn.onclick = () => evaluate(btn, idx);
-                    area.appendChild(btn);
-                });
-            }
+            q.options.forEach((opt, idx) => {
+                let btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.innerText = opt;
+                btn.onclick = () => evaluate(btn, idx);
+                area.appendChild(btn);
+            });
+            
             startTimer();
         }
 
@@ -314,61 +394,39 @@
             let q = questionBank[currentIndex];
             disableAllOptions();
             playSound('wrong');
+            highlightCorrectAnswer(q.answer);
+            
             const explBox = document.getElementById('explain-feedback');
             explBox.innerHTML = `<strong>Time's Up!</strong> ${q.explanation}`;
             explBox.style.display = 'block';
             document.getElementById('next-btn').style.display = 'block';
         }
 
-        function evaluate(el, idx) {
+        function evaluate(selectedBtn, idx) {
+            clearInterval(countdownTimer);
             let q = questionBank[currentIndex];
+            disableAllOptions();
             
             if (idx === q.answer) {
-                clearInterval(countdownTimer);
-                el.classList.add('correct');
-                disableAllOptions();
-                triggerSparkles();
+                selectedBtn.classList.add('correct');
                 playSound('correct');
-                
-                if (attemptTracker === 0) {
-                    runningScore++;
-                    document.getElementById('score-text').innerText = `Score: ${runningScore}`;
-                }
-                
-                document.getElementById('hint-feedback').style.display = 'none';
-                document.getElementById('explain-feedback').innerHTML = "<strong>Correct!</strong> " + q.explanation;
-                document.getElementById('explain-feedback').style.display = 'block';
-                document.getElementById('next-btn').style.display = 'block';
+                runningScore++;
+                document.getElementById('score-text').innerText = `Score: ${runningScore}`;
+                document.getElementById('explain-feedback').innerHTML = `<strong>Correct!</strong> ${q.explanation}`;
             } else {
-                attemptTracker++;
-                el.classList.add('wrong');
+                selectedBtn.classList.add('wrong');
+                highlightCorrectAnswer(q.answer);
                 playSound('wrong');
-                
-                if (q.isVisualLetters) el.classList.add('disabled');
-                else el.disabled = true;
-
-                if (attemptTracker === 1) {
-                    document.getElementById('hint-feedback').innerHTML = "<strong>Hint:</strong> " + q.hint;
-                    document.getElementById('hint-feedback').style.display = 'block';
-                } else {
-                    clearInterval(countdownTimer);
-                    disableAllOptions();
-                    highlightCorrectAnswer(q.answer);
-                    document.getElementById('hint-feedback').style.display = 'none';
-                    document.getElementById('explain-feedback').innerHTML = "<strong>Not quite!</strong> " + q.explanation;
-                    document.getElementById('explain-feedback').style.display = 'block';
-                    document.getElementById('next-btn').style.display = 'block';
-                }
+                document.getElementById('explain-feedback').innerHTML = `<strong>Incorrect.</strong> ${q.explanation}`;
             }
+            
+            document.getElementById('explain-feedback').style.display = 'block';
+            document.getElementById('next-btn').style.display = 'block';
         }
 
         function disableAllOptions() {
             const area = document.getElementById('options-area');
-            if (area.className === "letter-grid") {
-                Array.from(area.children).forEach(card => card.classList.add('disabled'));
-            } else {
-                Array.from(area.children).forEach(btn => btn.disabled = true);
-            }
+            Array.from(area.children).forEach(btn => btn.disabled = true);
         }
 
         function highlightCorrectAnswer(correctIdx) {
@@ -382,7 +440,7 @@
             const audio = document.getElementById(`audio-${type}`);
             if (audio) {
                 audio.currentTime = 0;
-                audio.play().catch(e => console.log("Audio presentation handled."));
+                audio.play().catch(e => console.log("Audio play deferred."));
             }
         }
 
@@ -408,52 +466,6 @@
         function resetInteractive() {
             document.getElementById('result-screen').classList.remove('active');
             document.getElementById('welcome-screen').classList.add('active');
-        }
-
-        /* Particle System Engine */
-        const canvas = document.getElementById('particle-canvas');
-        const ctx = canvas.getContext('2d');
-        let particles = [];
-
-        function resizeCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        }
-        window.addEventListener('resize', resizeCanvas);
-        resizeCanvas();
-
-        function triggerSparkles() {
-            for (let i = 0; i < 45; i++) {
-                particles.push({
-                    x: window.innerWidth / 2,
-                    y: window.innerHeight / 2,
-                    radius: Math.random() * 4 + 2,
-                    color: `hsl(${Math.random() * 50 + 180}, 95%, 60%)`,
-                    speedX: (Math.random() - 0.5) * 9,
-                    speedY: (Math.random() - 0.5) * 9,
-                    alpha: 1
-                });
-            }
-            renderParticles();
-        }
-
-        function renderParticles() {
-            if (particles.length === 0) return;
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            
-            particles.forEach((p, idx) => {
-                p.x += p.speedX; p.y += p.speedY; p.alpha -= 0.025;
-                ctx.save();
-                ctx.globalAlpha = p.alpha;
-                ctx.beginPath();
-                ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-                ctx.fillStyle = p.color;
-                ctx.fill();
-                ctx.restore();
-                if (p.alpha <= 0) particles.splice(idx, 1);
-            });
-
-            if (particles.length > 0) requestAnimationFrame(renderParticles);
         }
     </script>
 </body>
