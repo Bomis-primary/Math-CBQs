@@ -324,12 +324,12 @@
     <canvas id="particle-canvas"></canvas>
 
     <div id="splash-screen">
-        <img src="grade-3/maths/chapter-8/assets/logo.png" alt="Innovine Logo" class="logo-placeholder" onerror="this.style.display='none'; document.getElementById('logo-text').style.display='block';">
+        <img src="grade3/ch12/assets/logo.png" alt="Innovine Logo" class="logo-placeholder" onerror="this.style.display='none'; document.getElementById('logo-text').style.display='block';">
         <h2 id="logo-text" style="display:none; color: var(--primary);">Innovine</h2>
     </div>
 
-    <audio id="audio-correct" src="grade-3/maths/chapter-8/assets/correct.mp3" preload="auto"></audio>
-    <audio id="audio-wrong" src="grade-3/maths/chapter-8/assets/wrong.mp3" preload="auto"></audio>
+    <audio id="audio-correct" src="grade3/ch12/assets/claps.mp3" preload="auto"></audio>
+    <audio id="audio-wrong" src="grade3/ch12/assets/wrong.mp3" preload="auto"></audio>
 
     <div class="container">
         
@@ -434,7 +434,7 @@
                     "Guess what his classmates like by looking at them.",
                     "Ask every student by conducting a survey or using a questionnaire.",
                     "Read a storybook about ice cream shops.",
-                    "Check the weather report outside"
+                    "Check the weather report outside."
                 ],
                 answer: 1,
                 hint: "To get accurate facts from people, you must ask them directly or write down their answers.",
@@ -575,10 +575,8 @@
             let qData = questionBank[currentIndex];
             document.getElementById('progress-text').innerText = `Question: ${currentIndex + 1}/${questionBank.length}`;
             
-            // Render text clean (removed bracketted headings prefix logic)
             document.getElementById('target-question').innerText = qData.question;
             
-            // Inject dynamically structured visuals
             const visualBox = document.getElementById('target-visual');
             visualBox.innerHTML = qData.visual || "";
 
@@ -607,4 +605,171 @@
             }, 1000);
         }
 
-        ...
+        function lockButtonsOnTimeout() {
+            let qData = questionBank[currentIndex];
+            disableAllOptions();
+            const explBox = document.getElementById('explain-feedback');
+            explBox.innerHTML = `<strong>Time's Up!</strong> ${qData.explanation}`;
+            explBox.style.display = 'block';
+            playSound('wrong');
+            document.getElementById('next-btn').style.display = 'block';
+        }
+
+        function evaluateSelection(selectedBtn, chosenIdx) {
+            let qData = questionBank[currentIndex];
+            
+            if (chosenIdx === qData.answer) {
+                clearInterval(countdownTimer);
+                selectedBtn.classList.add('correct');
+                disableAllOptions();
+                
+                if (attemptTracker === 0) {
+                    runningScore++;
+                    document.getElementById('score-text').innerText = `Score: ${runningScore}`;
+                }
+                
+                triggerSparkles();
+                playSound('correct');
+                
+                const explBox = document.getElementById('explain-feedback');
+                explBox.innerHTML = `<strong>Correct!</strong> ${qData.explanation}`;
+                explBox.style.display = 'block';
+                document.getElementById('next-btn').style.display = 'block';
+
+            } else {
+                attemptTracker++;
+                selectedBtn.classList.add('wrong');
+                selectedBtn.disabled = true;
+                playSound('wrong');
+
+                if (attemptTracker === 1) {
+                    const hintBox = document.getElementById('hint-feedback');
+                    hintBox.innerHTML = `<strong>Hint:</strong> ${qData.hint}`;
+                    hintBox.style.display = 'block';
+                } else {
+                    clearInterval(countdownTimer);
+                    disableAllOptions();
+                    
+                    const optionsList = document.getElementById('target-options').children;
+                    optionsList[qData.answer].classList.add('correct');
+
+                    const hintBox = document.getElementById('hint-feedback');
+                    hintBox.style.display = 'none';
+
+                    const explBox = document.getElementById('explain-feedback');
+                    explBox.innerHTML = `<strong>Not quite!</strong> ${qData.explanation}`;
+                    explBox.style.display = 'block';
+                    document.getElementById('next-btn').style.display = 'block';
+                }
+            }
+        }
+
+        function disableAllOptions() {
+            const buttons = document.getElementsByClassName('option-btn');
+            for(let btn of buttons) {
+                btn.disabled = true;
+            }
+        }
+
+        function playSound(type) {
+            const audio = document.getElementById(`audio-${type}`);
+            if (audio) {
+                audio.currentTime = 0;
+                audio.play().catch(e => console.log("Audio feedback trigger asset check."));
+            }
+        }
+
+        function advanceQuestion() {
+            currentIndex++;
+            if (currentIndex < questionBank.length) {
+                displayQuestion();
+            } else {
+                showFinalResults();
+            }
+        }
+
+        function showFinalResults() {
+            document.getElementById('game-screen').classList.remove('active');
+            document.getElementById('result-screen').classList.add('active');
+            
+            document.getElementById('final-score-value').innerText = `${runningScore}/${questionBank.length}`;
+            
+            let finalPercentage = (runningScore / questionBank.length) * 100;
+            let statusText = "";
+
+            if (finalPercentage >= 75) {
+                statusText = "Good job!";
+            } else if (finalPercentage >= 40) {
+                statusText = "Review this chapter and try again.";
+            } else {
+                statusText = "Let’s practise more.";
+            }
+            
+            document.getElementById('final-status-msg').innerText = statusText;
+        }
+
+        function resetInteractive() {
+            currentIndex = 0;
+            runningScore = 0;
+            document.getElementById('score-text').innerText = `Score: 0`;
+            document.getElementById('result-screen').classList.remove('active');
+            document.getElementById('welcome-screen').classList.add('active');
+        }
+
+        // Particle Canvas Graphics (Teal / Turquoise Theme)
+        const canvas = document.getElementById('particle-canvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+
+        function resizeCanvas() {
+            canvas.width = canvas.parentElement.clientWidth;
+            canvas.height = canvas.parentElement.clientHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        function triggerSparkles() {
+            resizeCanvas();
+            for (let i = 0; i < 40; i++) {
+                particles.push({
+                    x: canvas.width / 2,
+                    y: canvas.height / 2,
+                    radius: Math.random() * 4 + 2,
+                    color: `hsl(${Math.random() * 40 + 170}, 85%, 55%)`, 
+                    speedX: (Math.random() - 0.5) * 8,
+                    speedY: (Math.random() - 0.5) * 8,
+                    alpha: 1
+                });
+            }
+            renderParticles();
+        }
+
+        function renderParticles() {
+            if (particles.length === 0) return;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            particles.forEach((p, idx) => {
+                p.x += p.speedX;
+                p.y += p.speedY;
+                p.alpha -= 0.02;
+                
+                ctx.save();
+                ctx.globalAlpha = p.alpha;
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                ctx.fillStyle = p.color;
+                ctx.fill();
+                ctx.restore();
+
+                if (p.alpha <= 0) particles.splice(idx, 1);
+            });
+
+            if (particles.length > 0) {
+                requestAnimationFrame(renderParticles);
+            } else {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+            }
+        }
+    </script>
+</body>
+</html>
