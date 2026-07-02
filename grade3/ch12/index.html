@@ -92,7 +92,109 @@
         }
 
         /*------------------------------------------------------------------
-        [2. APP WORKSPACE FRAME LAYOUT]
+        [2. INTERACTIVE TITLE / INSTRUCTION SCREEN]
+        ------------------------------------------------------------------*/
+        .title-screen-container {
+            background-color: var(--card-bg);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+            width: 100%;
+            max-width: 650px;
+            padding: 40px 32px;
+            text-align: center;
+            display: none; /* Controlled via state workflow */
+            flex-direction: column;
+            align-items: center;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .title-badge {
+            background-color: var(--primary-light);
+            color: var(--primary-dark);
+            padding: 6px 16px;
+            font-weight: 700;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 16px;
+        }
+
+        .title-heading {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--neutral-dark);
+            margin-bottom: 12px;
+            line-height: 1.3;
+        }
+
+        .title-subheading {
+            font-size: 1.1rem;
+            color: var(--neutral-medium);
+            margin-bottom: 32px;
+        }
+
+        .instruction-box {
+            background-color: var(--body-bg);
+            border: 1px solid var(--neutral-light);
+            border-radius: var(--radius-md);
+            padding: 24px;
+            width: 100%;
+            text-align: left;
+            margin-bottom: 32px;
+        }
+
+        .instruction-title {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--neutral-dark);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .instruction-list {
+            list-style: none;
+        }
+
+        .instruction-list li {
+            font-size: 0.95rem;
+            color: var(--neutral-medium);
+            margin-bottom: 10px;
+            position: relative;
+            padding-left: 24px;
+        }
+
+        .instruction-list li::before {
+            content: "➔";
+            position: absolute;
+            left: 0;
+            color: var(--primary);
+            font-weight: bold;
+        }
+
+        .start-action-btn {
+            background-color: var(--success);
+            color: #fff;
+            border: none;
+            padding: 16px 40px;
+            font-size: 1.15rem;
+            font-weight: 700;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            box-shadow: 0 4px 6px -1px rgba(40, 167, 69, 0.2);
+            transition: all var(--transition);
+        }
+
+        .start-action-btn:hover {
+            background-color: #218838;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px -2px rgba(40, 167, 69, 0.3);
+        }
+
+        /*------------------------------------------------------------------
+        [3. APP WORKSPACE FRAME LAYOUT]
         ------------------------------------------------------------------*/
         .quiz-container {
             background-color: var(--card-bg);
@@ -101,7 +203,7 @@
             width: 100%;
             max-width: 700px;
             overflow: hidden;
-            display: none; /* Display is toggled by JS exactly after 5 seconds */
+            display: none;
             flex-direction: column;
             position: relative;
         }
@@ -128,16 +230,12 @@
             background-color: #fff;
         }
 
-        .header-logo {
-            max-height: 32px;
-            width: auto;
-            object-fit: contain;
-        }
-
         .meta-dashboard {
             display: flex;
             align-items: center;
             gap: 12px;
+            width: 100%;
+            justify-content: flex-end;
         }
 
         .dashboard-pill {
@@ -171,14 +269,11 @@
             justify-content: center;
             color: var(--neutral-medium);
             transition: transform var(--transition);
-        }
-
-        .audio-toggle-btn:hover {
-            transform: scale(1.1);
+            margin-right: auto;
         }
 
         /*------------------------------------------------------------------
-        [3. MAIN PLAYSPACE CANVAS AREA]
+        [4. MAIN PLAYSPACE CANVAS AREA]
         ------------------------------------------------------------------*/
         .quiz-body {
             padding: 24px;
@@ -241,7 +336,6 @@
             color: var(--primary-dark);
         }
 
-        /* Feedback styling mappings */
         .option-node.state-correct {
             background-color: var(--success-bg) !important;
             border-color: var(--success) !important;
@@ -259,7 +353,7 @@
         }
 
         /*------------------------------------------------------------------
-        [4. HINTS AND REVIEWS CONTEXT PANELS]
+        [5. HINTS AND REVIEWS CONTEXT PANELS]
         ------------------------------------------------------------------*/
         .feedback-panel {
             border-radius: var(--radius-md);
@@ -284,7 +378,7 @@
         }
 
         /*------------------------------------------------------------------
-        [5. FINAL END-OF-SESSION METRICS VIEW]
+        [6. FINAL END-OF-SESSION METRICS VIEW]
         ------------------------------------------------------------------*/
         .analytics-view {
             text-align: center;
@@ -345,24 +439,8 @@
             font-weight: 700;
         }
 
-        .restart-action-btn {
-            background-color: var(--primary);
-            color: #fff;
-            border: none;
-            padding: 12px 28px;
-            font-size: 1rem;
-            font-weight: 700;
-            border-radius: var(--radius-md);
-            cursor: pointer;
-            transition: background-color var(--transition);
-        }
-
-        .restart-action-btn:hover {
-            background-color: var(--primary-dark);
-        }
-
         /*------------------------------------------------------------------
-        [6. RUNTIME EFFECTS & KEYFRAMES ENGINE]
+        [7. RUNTIME EFFECTS & KEYFRAMES ENGINE]
         ------------------------------------------------------------------*/
         .confetti-particle {
             position: absolute;
@@ -389,13 +467,30 @@
         <div class="splash-loader"></div>
     </div>
 
+    <div class="title-screen-container" id="app-title-screen">
+        <span class="title-badge">Mathematics • Grade 3</span>
+        <h1 class="title-heading">Chapter 12: Data Handling</h1>
+        <p class="title-subheading">Learn to collect data, use tally marks, and build graphs!</p>
+        
+        <div class="instruction-box">
+            <h3 class="instruction-title">📋 Instructions for Play:</h3>
+            <ul class="instruction-list">
+                <li>Read each real-life story problem carefully.</li>
+                <li>Analyze the tally charts, keys, and bar metrics provided.</li>
+                <li>You get <strong>2 attempts</strong> per question before the solution is revealed.</li>
+                <li>An incorrect first attempt unlocks a helpful hint box!</li>
+            </ul>
+        </div>
+        
+        <button class="start-action-btn" id="ui-action-start-module">Start Learning 🚀</button>
+    </div>
+
     <main class="quiz-container" id="app-canvas-container" role="application">
         <div class="progress-track" aria-hidden="true">
             <div class="progress-fill" id="ui-progress-bar"></div>
         </div>
 
         <header class="quiz-header">
-            <div></div> 
             <div class="meta-dashboard">
                 <button class="audio-toggle-btn" id="ui-audio-toggle" title="Toggle Mute Configuration" aria-label="Toggle Mute">🔊</button>
                 <div class="dashboard-pill" aria-label="Question Track Placement">Q: <span id="ui-index-label">--/--</span></div>
@@ -419,7 +514,7 @@
             displayIndex: "1/12",
             pointsAllocation: 2,
             durationLimit: 60,
-            statement: "Karan wants to know the most popular playground game among his classmates. What is the most effective method for him to collect this dynamic data?",
+            statement: "Karan wants to know the most popular playground game among his classmates. What is the most effective method for him to collect this data?",
             media: null,
             choices: [
                 "Guessing based on what he likes to play",
@@ -577,7 +672,7 @@
 
     /**
      * @class ExecutionStateEngine
-     * Main runtime application controller managing audio channels, UI updates, and data flow.
+     * Main runtime application controller managing screens, audio channels, and game loops.
      */
     class ExecutionStateEngine {
         constructor(questionsPayload) {
@@ -589,11 +684,11 @@
             this.attemptCount = 0; 
             this.isMuted = false;
 
-            // Audio instantiation
+            // Audio assets setup
             this.audioSuccess = new Audio('assets/claps.mp3');
             this.audioFailure = new Audio('assets/wrong.mp3');
 
-            // Cache global DOM nodes
+            // Cache core elements
             this.domProgressBar = document.getElementById('ui-progress-bar');
             this.domIndexLabel = document.getElementById('ui-index-label');
             this.domScoreLabel = document.getElementById('ui-score-label');
@@ -612,18 +707,24 @@
                 this.domAudioToggle.textContent = this.isMuted ? "✕" : "🔊";
                 this.domAudioToggle.style.color = this.isMuted ? "var(--danger)" : "var(--neutral-medium)";
             });
+
+            // "Start Learning" Button triggers primary activity canvas
+            document.getElementById('ui-action-start-module').addEventListener('click', () => {
+                document.getElementById('app-title-screen').style.display = 'none';
+                document.getElementById('app-canvas-container').style.display = 'flex';
+                this.loadActiveQuestionFrame();
+            });
         }
 
         initializeSplashConstraint() {
-            // Strictly enforce logo splash screen visibility for 5 seconds
+            // Strictly enforce branding visibility on splash view for exactly 5 seconds
             setTimeout(() => {
                 const splash = document.getElementById('app-splash-screen');
                 splash.style.opacity = '0';
                 setTimeout(() => {
                     splash.style.display = 'none';
-                    const mainContainer = document.getElementById('app-canvas-container');
-                    mainContainer.style.display = 'flex';
-                    this.loadActiveQuestionFrame();
+                    // Route directly to the Title Screen with explicit instructions
+                    document.getElementById('app-title-screen').style.display = 'flex';
                 }, 500);
             }, 5000);
         }
@@ -767,7 +868,7 @@
                 audioTarget.currentTime = 0;
                 audioTarget.play().catch(() => {});
             } catch (e) {
-                console.warn("Audio Context playback deferred safely.");
+                console.warn("Audio context playback deferred safely.");
             }
         }
 
