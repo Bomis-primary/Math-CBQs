@@ -39,8 +39,8 @@
         .tiling-track { display: flex; flex-direction: column; gap: 6px; margin: 15px 0 25px 0; background: #f8fafc; padding: 12px; border-radius: 14px; border: 1px solid #e2e8f0; }
         .tiling-row { display: flex; align-items: center; border-bottom: 1px solid #e2e8f0; padding: 4px 0; }
         .tiling-row:last-child { border-bottom: none; }
-        .tiling-label { width: 70px; font-size: 0.8rem; font-weight: bold; color: #475569; }
-        .tiling-shapes { display: flex; gap: 4px; font-size: 1.2rem; font-wrap: nowrap; overflow: hidden; }
+        .tiling-label { width: 110px; font-size: 0.8rem; font-weight: bold; color: #475569; }
+        .tiling-shapes { display: flex; gap: 4px; font-size: 1.2rem; white-space: nowrap; overflow: hidden; }
 
         /* Alphabet Grid Matrix */
         .letter-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: 20px 0; }
@@ -238,7 +238,6 @@
             const trackContainer = document.getElementById('visual-sequence-display');
             trackContainer.innerHTML = '';
             
-            // Dynamic Layout Conditional Rendering Engines
             if(q.visualSequence) {
                 const trackDiv = document.createElement('div');
                 trackDiv.className = 'sequence-track';
@@ -376,7 +375,7 @@
             const audio = document.getElementById(`audio-${type}`);
             if (audio) {
                 audio.currentTime = 0;
-                audio.play().catch(e => console.log("Contextual audio handled dynamically."));
+                audio.play().catch(e => console.log("Audio skipped."));
             }
         }
 
