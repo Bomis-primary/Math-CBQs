@@ -46,9 +46,47 @@
             justify-content: center;
         }
         
-        /* Screen State System */
+        /* Strict Screen State System */
         .screen { display: none !important; }
         .screen.active { display: block !important; }
+        
+        /* Splash Screen Flex Centering */
+        #splash-screen.active { 
+            display: flex !important; 
+            flex-direction: column;
+            align-items: center; 
+            justify-content: center;
+            text-align: center;
+            padding: 40px;
+        }
+
+        /* Animated Splash Logo Placeholder */
+        .splash-logo {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 3rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+            box-shadow: 0 12px 24px rgba(2, 132, 199, 0.3);
+            animation: pulse-glow 2s infinite ease-in-out;
+        }
+        .splash-title {
+            color: var(--primary);
+            font-size: 1.6rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        @keyframes pulse-glow {
+            0%, 100% { transform: scale(1); box-shadow: 0 12px 24px rgba(2, 132, 199, 0.3); }
+            50% { transform: scale(1.08); box-shadow: 0 16px 32px rgba(2, 132, 199, 0.5); }
+        }
 
         /* Welcome Screen Styling */
         .welcome-content { text-align: center; }
@@ -239,7 +277,12 @@
 <body>
 
     <div class="container">
-        <div id="welcome-screen" class="screen active">
+        <div id="splash-screen" class="screen active">
+            <div class="splash-logo">∑</div>
+            <div class="splash-title">INNOVINE SOLUTIONS</div>
+        </div>
+
+        <div id="welcome-screen" class="screen">
             <div class="welcome-content">
                 <div class="welcome-logo-fallback">∑</div>
                 <h1>Patterns & Symmetry Quest</h1>
@@ -314,6 +357,18 @@
         let runningScore = 0;
         let countdownTimer;
         let activeSeconds = 60;
+
+        // Auto-switch away from splash screen cleanly after 3 seconds
+        window.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                const splash = document.getElementById('splash-screen');
+                const welcome = document.getElementById('welcome-screen');
+                if (splash && welcome) {
+                    splash.classList.remove('active');
+                    welcome.classList.add('active');
+                }
+            }, 3000);
+        });
 
         function startInteractive() {
             currentIndex = 0;
