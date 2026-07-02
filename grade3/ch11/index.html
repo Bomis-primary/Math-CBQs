@@ -40,29 +40,36 @@
             border-radius: 20px; 
             box-shadow: 0 12px 36px rgba(2, 132, 199, 0.08); 
             padding: 32px; 
-            min-height: 450px;
+            min-height: 500px;
             display: flex;
             flex-direction: column;
             justify-content: center;
         }
         
-        /* Strict Screen Isolation */
+        /* Screen State System */
         .screen { display: none !important; }
         .screen.active { display: block !important; }
-        #splash-screen.active { display: flex !important; justify-content: center; align-items: center; }
 
         /* Welcome Screen Styling */
         .welcome-content { text-align: center; }
-        .welcome-logo { max-width: 200px; height: auto; margin-bottom: 24px; }
-        h1 { color: #0284c7; font-size: 1.8rem; margin-bottom: 16px; font-weight: 700; }
+        .welcome-logo-fallback {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 16px;
+            margin: 0 auto 24px auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2rem;
+            font-weight: bold;
+            box-shadow: 0 8px 16px rgba(2, 132, 199, 0.2);
+        }
+        h1 { color: #0284c7; font-size: 1.8rem; margin-bottom: 16px; font-weight: 700; text-align: center; }
         .description { text-align: center; color: #475569; margin-bottom: 32px; line-height: 1.6; font-size: 1rem; }
         
-        /* Splash Screen Style */
-        #splash-screen { text-align: center; padding: 60px 20px; }
-        .logo-frame { max-width: 240px; height: auto; animation: pulse 2s infinite ease-in-out; }
-        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.04); } }
-
-        /* HUD Bar from Screenshots */
+        /* HUD Display Bar */
         .hud { 
             display: flex; 
             justify-content: space-between; 
@@ -84,69 +91,72 @@
             gap: 6px; 
         }
 
-        /* Question Text */
+        /* Question & Dynamic Typography */
         .question-text { 
-            font-size: 1.1rem; 
+            font-size: 1.15rem; 
             font-weight: 600; 
             margin-bottom: 20px; 
             line-height: 1.6; 
             color: #0f172a;
         }
 
-        /* HTML Visual Tracks */
+        /* Inline CSS Visual Generators */
         .visual-track {
             display: flex;
-            gap: 12px;
+            gap: 14px;
             justify-content: center;
             align-items: flex-end;
-            margin-bottom: 24px;
-            padding: 16px;
+            margin: 8px 0 24px 0;
+            padding: 20px;
             background: #f8fafc;
             border: 2px dashed #cbd5e1;
-            border-radius: 14px;
+            border-radius: 16px;
         }
 
-        /* Shape/Ornament Track Elements */
+        /* Ornament Sequence CSS Styles */
         .ornament-item {
-            font-size: 2rem;
+            font-size: 2.2rem;
             display: flex;
             flex-direction: column;
             align-items: center;
+            line-height: 1;
         }
         .item-label {
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             color: #64748b;
-            margin-top: 4px;
+            margin-top: 6px;
             font-weight: 700;
         }
 
-        /* Building Grid Stack Elements */
+        /* Pure CSS Blocks Grid Stack styles */
         .grid-stack {
             display: flex;
             flex-direction: column-reverse;
-            gap: 2px;
-            background: #fff;
-            padding: 6px;
-            border: 1px solid #e2e8f0;
-            border-radius: 8px;
+            gap: 3px;
+            background: #ffffff;
+            padding: 8px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
             align-items: center;
+            min-width: 60px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.02);
         }
         .grid-block {
-            width: 30px;
-            height: 20px;
+            width: 44px;
+            height: 18px;
             background: #38bdf8;
             border: 2px solid #0284c7;
-            border-radius: 3px;
+            border-radius: 4px;
         }
         .stack-label {
             font-size: 0.8rem;
-            font-weight: bold;
+            font-weight: 700;
             color: #475569;
-            margin-top: 6px;
+            margin-top: 8px;
             text-align: center;
         }
 
-        /* Options Layout */
+        /* Options layout system */
         .options-container { 
             display: flex; 
             flex-direction: column; 
@@ -169,8 +179,8 @@
         }
         
         .option-btn:hover:not(:disabled) { 
-            border-color: #94a3b8; 
-            background: #f8fafc; 
+            border-color: #38bdf8; 
+            background: #f0f9ff; 
         }
         
         .option-btn.correct { 
@@ -191,7 +201,7 @@
             cursor: not-allowed;
         }
         
-        /* Feedback Panels */
+        /* Explanatory Explanations Box */
         .feedback-box { 
             padding: 18px; 
             border-radius: 12px; 
@@ -207,9 +217,10 @@
             color: #0c4a6e; 
         }
 
+        /* Action Buttons Interaction styles */
         .action-btn { 
             width: 100%; 
-            background: #0084c7; 
+            background: #0284c7; 
             color: #fff; 
             border: none; 
             border-radius: 12px; 
@@ -227,20 +238,13 @@
 </head>
 <body>
 
-    <audio id="audio-correct" src="assets/claps.mp3" preload="auto"></audio>
-    <audio id="audio-wrong" src="assets/wrong.mp3" preload="auto"></audio>
-
     <div class="container">
-        <div id="splash-screen" class="screen active">
-            <img src="assets/logo.png" alt="Logo" class="logo-frame">
-        </div>
-
-        <div id="welcome-screen" class="screen">
+        <div id="welcome-screen" class="screen active">
             <div class="welcome-content">
-                <img src="assets/logo.png" alt="Logo" class="welcome-logo">
+                <div class="welcome-logo-fallback">∑</div>
                 <h1>Patterns & Symmetry Quest</h1>
                 <p class="description">Welcome, Explorer! Get ready to apply mirror lines, pattern tracks, and tiling logic to crack real-world math mysteries.</p>
-                <button class="action-btn" style="display: block;" onclick="startInteractive()">Start Challenge</button>
+                <button class="action-btn" onclick="startInteractive()">Start Challenge</button>
             </div>
         </div>
 
@@ -263,25 +267,25 @@
             <h2 style="text-align: center; margin-bottom: 10px;">Quest Complete!</h2>
             <div class="score-circle" id="final-score-value">0/5</div>
             <p class="description" id="final-status-msg"></p>
-            <button class="action-btn" style="display: block;" onclick="resetInteractive()">Try Again</button>
+            <button class="action-btn" onclick="resetInteractive()">Try Again</button>
         </div>
     </div>
 
     <script>
-        const baseQuestionBank = [
+        const questionBank = [
             {
                 type: "ornament",
                 question: "An automated design patterns an ornament using: Heart, Star, Diamond, Heart, Star, Diamond... If this arrangement continues, what item represents position 12?",
                 options: ["Heart", "Star", "Diamond", "Square"],
                 answer: 2, 
-                explanation: "The pattern repeats every 3 items (1=Heart, 2=Star, 3=Diamond). Since 12 is a multiple of 3, it will land exactly on a Diamond!"
+                explanation: "The pattern repeats every 3 items (1=Heart, 2=Star, 3=Diamond). Since 12 is a perfect multiple of 3, it lands exactly on a Diamond!"
             },
             {
                 type: "grid",
                 question: "A construction grid builds a growing pattern. Step 1 uses 2 squares, Step 2 uses 4 squares, and Step 3 uses 6 squares. How many total squares will Step 6 need?",
                 options: ["8 squares", "10 squares", "12 squares", "14 squares"],
                 answer: 2,
-                explanation: "The count increases by 2 blocks with each step (Step number × 2). Step 6 will require 6 × 2 = 12 blocks total."
+                explanation: "The pattern increases by adding 2 squares at each consecutive step (Step number × 2). Therefore, Step 6 will require 6 × 2 = 12 squares total."
             },
             {
                 type: "text",
@@ -295,30 +299,21 @@
                 question: "An artist designs a floor border sequence using layout lengths: 3cm, 6cm, 12cm, 24cm... What logic is being used to expand the pattern steps?",
                 options: ["Adding 3cm to each previous measurement", "Subtracting 3cm from each step", "Using a rule to double the previous length", "Dividing the length value by 3"],
                 answer: 2,
-                explanation: "Each measurement is multiplied by 2 to construct the next position (3×2=6, 6×2=12, 12×2=24). The logic rule is to double the previous value."
+                explanation: "Each step number value is multiplied by 2 to build the next position (3×2=6, 6×2=12, 12×2=24). The logic pattern is to double the previous value."
             },
             {
                 type: "text",
                 question: "A tiling pattern alternates lines: Row 1 uses all Triangles. Row 2 uses all Squares. Row 3 uses all Triangles. What does Row 10 use?",
                 options: ["Triangles", "Squares", "Circles", "Hexagons"],
                 answer: 1,
-                explanation: "Odd rows map entirely to Triangles, while even rows map directly to Squares. Since 10 is an even number, Row 10 will use Squares."
+                explanation: "Odd rows contain Triangles and even rows contain Squares. Since 10 is an even number, Row 10 will use Squares."
             }
         ];
 
-        let questionBank = [...baseQuestionBank];
         let currentIndex = 0;
         let runningScore = 0;
         let countdownTimer;
         let activeSeconds = 60;
-
-        // Auto-switch away from splash screen cleanly after 3.5 seconds
-        window.addEventListener('DOMContentLoaded', () => {
-            setTimeout(() => {
-                document.getElementById('splash-screen').classList.remove('active');
-                document.getElementById('welcome-screen').classList.add('active');
-            }, 3500);
-        });
 
         function startInteractive() {
             currentIndex = 0;
@@ -340,7 +335,7 @@
             document.getElementById('explain-feedback').style.display = 'none';
             document.getElementById('next-btn').style.display = 'none';
 
-            // Generate Native Non-Image Visual Component Elements
+            // Non-Image Pure UI Visual Markup Builder
             const visualPanel = document.getElementById('dynamic-visual-panel');
             visualPanel.innerHTML = '';
             
@@ -353,15 +348,15 @@
                         <div class="ornament-item">❤️<div class="item-label">4</div></div>
                         <div class="ornament-item">⭐<div class="item-label">5</div></div>
                         <div class="ornament-item">💎<div class="item-label">6</div></div>
-                        <div class="ornament-item" style="opacity:0.5;">❓<div class="item-label">...12</div></div>
+                        <div class="ornament-item" style="opacity: 0.35;">❓<div class="item-label">...12</div></div>
                     </div>`;
             } else if (q.type === "grid") {
                 visualPanel.innerHTML = `
-                    <div class="visual-track">
+                    <div class="visual-track" style="gap: 20px;">
                         <div><div class="grid-stack"><div class="grid-block"></div><div class="grid-block"></div></div><div class="stack-label">Step 1</div></div>
                         <div><div class="grid-stack"><div class="grid-block"></div><div class="grid-block"></div><div class="grid-block"></div><div class="grid-block"></div></div><div class="stack-label">Step 2</div></div>
                         <div><div class="grid-stack"><div class="grid-block"></div><div class="grid-block"></div><div class="grid-block"></div><div class="grid-block"></div><div class="grid-block"></div><div class="grid-block"></div></div><div class="stack-label">Step 3</div></div>
-                        <div style="opacity:0.4; font-size:1.5rem; font-weight:bold; padding-bottom:20px;">... Step 6?</div>
+                        <div style="align-self: center; opacity: 0.5; font-size: 1.3rem; font-weight: bold; letter-spacing: 2px;">... Step 6?</div>
                     </div>`;
             }
 
@@ -393,7 +388,6 @@
         function lockButtonsOnTimeout() {
             let q = questionBank[currentIndex];
             disableAllOptions();
-            playSound('wrong');
             highlightCorrectAnswer(q.answer);
             
             const explBox = document.getElementById('explain-feedback');
@@ -409,14 +403,12 @@
             
             if (idx === q.answer) {
                 selectedBtn.classList.add('correct');
-                playSound('correct');
                 runningScore++;
                 document.getElementById('score-text').innerText = `Score: ${runningScore}`;
                 document.getElementById('explain-feedback').innerHTML = `<strong>Correct!</strong> ${q.explanation}`;
             } else {
                 selectedBtn.classList.add('wrong');
                 highlightCorrectAnswer(q.answer);
-                playSound('wrong');
                 document.getElementById('explain-feedback').innerHTML = `<strong>Incorrect.</strong> ${q.explanation}`;
             }
             
@@ -433,14 +425,6 @@
             const area = document.getElementById('options-area');
             if(area.children[correctIdx]) {
                 area.children[correctIdx].classList.add('correct');
-            }
-        }
-
-        function playSound(type) {
-            const audio = document.getElementById(`audio-${type}`);
-            if (audio) {
-                audio.currentTime = 0;
-                audio.play().catch(e => console.log("Audio play deferred."));
             }
         }
 
