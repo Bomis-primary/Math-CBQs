@@ -44,6 +44,8 @@
             display: flex;
             flex-direction: column;
             justify-content: center;
+            position: relative;
+            overflow: hidden;
         }
         
         /* Strict Screen State System */
@@ -242,6 +244,17 @@
         .action-btn:hover { background: #0269a1; }
 
         .score-circle { width: 130px; height: 130px; border-radius: 50%; background: #f1f5f9; display: flex; justify-content: center; align-items: center; font-size: 2rem; font-weight: bold; margin: 20px auto; color: var(--primary); border: 4px solid var(--secondary); }
+
+        /* Confetti Overlay Setup */
+        #confetti-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 99;
+        }
     </style>
 </head>
 <body>
@@ -250,6 +263,8 @@
     <audio id="audio-wrong" src="assets/wrong.mp3" preload="auto"></audio>
 
     <div class="container">
+        <canvas id="confetti-canvas"></canvas>
+
         <div id="splash-screen" class="screen active">
             <img src="assets/logo.png" alt="Innovine Solutions" class="logo-frame">
         </div>
@@ -298,197 +313,4 @@
             {
                 type: "grid",
                 question: "A construction grid builds a growing pattern. Step 1 uses 2 squares, Step 2 uses 4 squares, and Step 3 uses 6 squares. How many total squares will Step 6 need?",
-                options: ["8 squares", "10 squares", "12 squares", "14 squares"],
-                answer: 2,
-                explanation: "The pattern increases by adding 2 squares at each consecutive step (Step number × 2). Therefore, Step 6 will require 6 × 2 = 12 squares total."
-            },
-            {
-                type: "text",
-                question: "Rahul is arranging square colored tiles on a wall without leaving any gaps or overlaps. He uses Red, Blue, Red, Blue. What geometric concept is Rahul creating?",
-                options: ["Perimeter boundaries", "Tiling and tessellation", "An asymmetric layout", "A decreasing sequence"],
-                answer: 1,
-                explanation: "Covering a completely flat surface with repeating geometric shapes without any gaps or overlapping spaces is called tiling or tessellation."
-            },
-            {
-                type: "text",
-                question: "An artist designs a floor border sequence using layout lengths: 3cm, 6cm, 12cm, 24cm... What logic is being used to expand the pattern steps?",
-                options: ["Adding 3cm to each previous measurement", "Subtracting 3cm from each step", "Using a rule to double the previous length", "Dividing the length value by 3"],
-                answer: 2,
-                explanation: "Each step number value is multiplied by 2 to build the next position (3×2=6, 6×2=12, 12×2=24). The logic pattern is to double the previous value."
-            },
-            {
-                type: "text",
-                question: "A tiling pattern alternates lines: Row 1 uses all Triangles. Row 2 uses all Squares. Row 3 uses all Triangles. What does Row 10 use?",
-                options: ["Triangles", "Squares", "Circles", "Hexagons"],
-                answer: 1,
-                explanation: "Odd rows contain Triangles and even rows contain Squares. Since 10 is an even number, Row 10 will use Squares."
-            }
-        ];
-
-        let currentIndex = 0;
-        let runningScore = 0;
-        let countdownTimer;
-        let activeSeconds = 60;
-
-        // Automatically transitions cleanly from Splash Screen into Welcome Screen
-        window.addEventListener('DOMContentLoaded', () => {
-            setTimeout(() => {
-                const splash = document.getElementById('splash-screen');
-                const welcome = document.getElementById('welcome-screen');
-                if (splash && welcome) {
-                    splash.classList.remove('active');
-                    welcome.classList.add('active');
-                }
-            }, 3000); // 3 Seconds Display Duration
-        });
-
-        function startInteractive() {
-            currentIndex = 0;
-            runningScore = 0;
-            document.getElementById('score-text').innerText = `Score: 0`;
-            document.getElementById('welcome-screen').classList.remove('active');
-            document.getElementById('game-screen').classList.add('active');
-            displayQuestion();
-        }
-
-        function displayQuestion() {
-            let q = questionBank[currentIndex];
-            clearInterval(countdownTimer);
-            activeSeconds = 60;
-            
-            document.getElementById('timer-counter').innerText = activeSeconds;
-            document.getElementById('target-question').innerText = q.question;
-            document.getElementById('progress-text').innerText = `Question: ${currentIndex + 1}/${questionBank.length}`;
-            document.getElementById('explain-feedback').style.display = 'none';
-            document.getElementById('next-btn').style.display = 'none';
-
-            // Non-Image Pure UI Visual Markup Builder
-            const visualPanel = document.getElementById('dynamic-visual-panel');
-            visualPanel.innerHTML = '';
-            
-            if (q.type === "ornament") {
-                visualPanel.innerHTML = `
-                    <div class="visual-track">
-                        <div class="ornament-item">❤️<div class="item-label">1</div></div>
-                        <div class="ornament-item">⭐<div class="item-label">2</div></div>
-                        <div class="ornament-item">💎<div class="item-label">3</div></div>
-                        <div class="ornament-item">❤️<div class="item-label">4</div></div>
-                        <div class="ornament-item">⭐<div class="item-label">5</div></div>
-                        <div class="ornament-item">💎<div class="item-label">6</div></div>
-                        <div class="ornament-item" style="opacity: 0.35;">❓<div class="item-label">...12</div></div>
-                    </div>`;
-            } else if (q.type === "grid") {
-                visualPanel.innerHTML = `
-                    <div class="visual-track" style="gap: 20px;">
-                        <div><div class="grid-stack"><div class="grid-block"></div><div class="grid-block"></div></div><div class="stack-label">Step 1</div></div>
-                        <div><div class="grid-stack"><div class="grid-block"></div><div class="grid-block"></div><div class="grid-block"></div><div class="grid-block"></div></div><div class="stack-label">Step 2</div></div>
-                        <div><div class="grid-stack"><div class="grid-block"></div><div class="grid-block"></div><div class="grid-block"></div><div class="grid-block"></div><div class="grid-block"></div><div class="grid-block"></div></div><div class="stack-label">Step 3</div></div>
-                        <div style="align-self: center; opacity: 0.5; font-size: 1.3rem; font-weight: bold; letter-spacing: 2px;">... Step 6?</div>
-                    </div>`;
-            }
-
-            const area = document.getElementById('options-area');
-            area.innerHTML = '';
-            
-            q.options.forEach((opt, idx) => {
-                let btn = document.createElement('button');
-                btn.className = 'option-btn';
-                btn.innerText = opt;
-                btn.onclick = () => evaluate(btn, idx);
-                area.appendChild(btn);
-            });
-            
-            startTimer();
-        }
-
-        function startTimer() {
-            countdownTimer = setInterval(() => {
-                activeSeconds--;
-                document.getElementById('timer-counter').innerText = activeSeconds;
-                if(activeSeconds <= 0) {
-                    clearInterval(countdownTimer);
-                    lockButtonsOnTimeout();
-                }
-            }, 1000);
-        }
-
-        function lockButtonsOnTimeout() {
-            let q = questionBank[currentIndex];
-            disableAllOptions();
-            playSound('wrong');
-            highlightCorrectAnswer(q.answer);
-            
-            const explBox = document.getElementById('explain-feedback');
-            explBox.innerHTML = `<strong>Time's Up!</strong> ${q.explanation}`;
-            explBox.style.display = 'block';
-            document.getElementById('next-btn').style.display = 'block';
-        }
-
-        function evaluate(selectedBtn, idx) {
-            clearInterval(countdownTimer);
-            let q = questionBank[currentIndex];
-            disableAllOptions();
-            
-            if (idx === q.answer) {
-                selectedBtn.classList.add('correct');
-                playSound('correct');
-                runningScore++;
-                document.getElementById('score-text').innerText = `Score: ${runningScore}`;
-                document.getElementById('explain-feedback').innerHTML = `<strong>Correct!</strong> ${q.explanation}`;
-            } else {
-                selectedBtn.classList.add('wrong');
-                highlightCorrectAnswer(q.answer);
-                playSound('wrong');
-                document.getElementById('explain-feedback').innerHTML = `<strong>Incorrect.</strong> ${q.explanation}`;
-            }
-            
-            document.getElementById('explain-feedback').style.display = 'block';
-            document.getElementById('next-btn').style.display = 'block';
-        }
-
-        function disableAllOptions() {
-            const area = document.getElementById('options-area');
-            Array.from(area.children).forEach(btn => btn.disabled = true);
-        }
-
-        function highlightCorrectAnswer(correctIdx) {
-            const area = document.getElementById('options-area');
-            if(area.children[correctIdx]) {
-                area.children[correctIdx].classList.add('correct');
-            }
-        }
-
-        function playSound(type) {
-            const audio = document.getElementById(`audio-${type}`);
-            if (audio) {
-                audio.currentTime = 0;
-                audio.play().catch(e => console.log("Audio gesture delay handled safely."));
-            }
-        }
-
-        function advanceQuestion() {
-            currentIndex++;
-            if (currentIndex < questionBank.length) {
-                displayQuestion();
-            } else {
-                showFinalResults();
-            }
-        }
-
-        function showFinalResults() {
-            document.getElementById('game-screen').classList.remove('active');
-            document.getElementById('result-screen').classList.add('active');
-            document.getElementById('final-score-value').innerText = `${runningScore}/${questionBank.length}`;
-            
-            let finalPercentage = (runningScore / questionBank.length) * 100;
-            let statusText = finalPercentage >= 80 ? "Spectacular! You have mastered patterns and symmetry!" : (finalPercentage >= 50 ? "Good effort! Let's review and try again to improve." : "Let’s practice more together!");
-            document.getElementById('final-status-msg').innerText = statusText;
-        }
-
-        function resetInteractive() {
-            document.getElementById('result-screen').classList.remove('active');
-            document.getElementById('welcome-screen').classList.add('active');
-        }
-    </script>
-</body>
-</html>
+                options:
