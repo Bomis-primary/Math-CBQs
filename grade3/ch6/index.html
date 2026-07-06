@@ -65,91 +65,91 @@
     <audio id="audio-wrong" src="assets/wrong.mp3"></audio>
 
     <script>
-        // Balanced Grade 3 Appropriate Problems (Multiplication limits within 100)
+        // 12 CBSE-Aligned Competency-Based Questions for Grade 3 Math
         const masterQuestions = [
             {
-                question: "What is 15 ÷ 3?",
-                options: ["3", "4", "5", "6"],
+                question: "Rohan has 20 laddoos. He wants to pack them into small boxes such that each box has exactly 4 laddoos. Which mathematical action represents finding the number of boxes needed?",
+                options: ["Adding 4 to 20 multiple times", "Subtracting 4 from 20 repeatedly until reaching 0", "Multiplying 20 by 4", "Subtracting 20 from itself"],
+                answer: 1,
+                hint: "Division can be thought of as taking away the same group size over and over.",
+                explanation: "Division is equivalent to repeated subtraction. Subtracting 4 from 20 repeatedly tells you how many boxes (5) can be made."
+            },
+            {
+                question: "Anu draws 18 stars and wants to put them into equal rows. She tries putting 4 stars in each row but finds she cannot do it equally. Which of these row setups will let her share all 18 stars with none left over?",
+                options: ["Rows of 5 stars", "Rows of 4 stars", "Rows of 3 stars", "Rows of 7 stars"],
                 answer: 2,
-                hint: "Count up by 3s until you reach 15.",
-                explanation: "15 divided by 3 is 5 because 3 × 5 = 15."
+                hint: "Find a number that can count up exactly to 18 without skipping past it.",
+                explanation: "18 can be divided into 3 equal rows because 3 × 6 = 18. Other numbers leave remainders."
             },
             {
-                question: "What is 24 ÷ 4?",
-                options: ["4", "6", "8", "12"],
+                question: "A teacher writes '___ × 5 = 35' on the board to help students solve a word problem. Which division problem is this multiplication fact helping them solve?",
+                options: ["35 ÷ 5 = ___", "5 ÷ 35 = ___", "35 ÷ 7 = ___", "35 - 5 = ___"],
+                answer: 0,
+                hint: "Look for the total being split into 5 equal groups.",
+                explanation: "Multiplication and division are inverse operations. Finding what times 5 equals 35 directly solves 35 divided by 5."
+            },
+            {
+                question: "Kiran is creating a pattern using 28 beads. He decides to divide the beads into 4 equal groups. If he wants to use a number line to show this division, how should he make his backward jumps starting from 28?",
+                options: ["Take 4 giant jumps backward of 1 bead each", "Take 4 backward jumps of 7 beads each", "Take 7 backward jumps of 1 bead each", "Take 28 backward jumps of 4 beads each"],
                 answer: 1,
-                hint: "What number multiplied by 4 gives you 24?",
-                explanation: "24 ÷ 4 = 6 because 4 × 6 = 24."
+                hint: "28 ÷ 4 = 7. Think about how many steps are in each jump.",
+                explanation: "To divide 28 into 4 equal groups on a number line, you skip count backward from 28 to 0 in 4 balanced jumps of 7 units each."
             },
             {
-                question: "If you share 12 cookies equally among 2 friends, how many cookies does each friend get?",
-                options: ["4", "5", "6", "8"],
+                question: "Sana has 0 chocolates to distribute among her 5 friends. How many chocolates will each friend receive?",
+                options: ["5 chocolates", "1 chocolate", "0 chocolates", "Each gets an unequal share"],
                 answer: 2,
-                hint: "What is half of 12?",
-                explanation: "12 shared equally between 2 groups leaves 6 in each group."
+                hint: "If there is nothing to start with, what can be shared?",
+                explanation: "When you share 0 items into any number of groups, each group gets 0 items (0 ÷ 5 = 0)."
             },
             {
-                question: "What is 40 ÷ 5?",
-                options: ["7", "8", "9", "10"],
+                question: "A gardener has 36 saplings to plant. He wants to form an array with 6 saplings in each row. How many rows will he be able to make?",
+                options: ["5 rows", "6 rows", "7 rows", "12 rows"],
                 answer: 1,
-                hint: "Think of your 5 times tables: 5, 10, 15, 20...",
-                explanation: "40 ÷ 5 = 8 because 5 × 8 = 40."
+                hint: "Think about which square number fact matches 36.",
+                explanation: "An array organizes items into rows and columns. 36 items with 6 in each row means 36 ÷ 6 = 6 rows."
             },
             {
-                question: "Which multiplication sentence helps you solve 18 ÷ 2 = ?",
-                options: ["2 × 9 = 18", "2 + 9 = 11", "18 - 2 = 16", "18 × 2 = 36"],
+                question: "A fruit seller packs 45 apples equally into 5 baskets. Later, he finds 1 more apple and tries to put it in a basket. Why can he not keep the baskets equal now?",
+                options: ["Because 46 cannot be divided by 5 equally", "Because 45 is smaller than 5", "Because apples cannot be divided", "Because 5 is an odd number"],
                 answer: 0,
-                hint: "Division is the opposite of multiplication. Look for the family fact.",
-                explanation: "Knowing that 2 × 9 = 18 tells you that 18 ÷ 2 = 9."
+                hint: "Think about what happens to the total count when you add 1 more to 45.",
+                explanation: "Initially, 45 ÷ 5 = 9 apples per basket. Adding 1 apple makes it 46, which leaves a remainder when divided by 5, breaking the equal distribution."
             },
             {
-                question: "What is 0 ÷ 6?",
-                options: ["0", "6", "1", "Cannot be done"],
-                answer: 0,
-                hint: "If you have 0 items to split among 6 people, how many does everyone get?",
-                explanation: "Zero divided by any number is always 0."
-            },
-            {
-                question: "Tom has 32 markers. He puts them into boxes of 8. How many boxes does he fill?",
-                options: ["3", "4", "5", "6"],
-                answer: 1,
-                hint: "How many times does 8 go into 32?",
-                explanation: "32 ÷ 8 = 4. He will fill exactly 4 boxes."
-            },
-            {
-                question: "What is 56 ÷ 8?",
-                options: ["6", "7", "8", "9"],
-                answer: 1,
-                hint: "8 times what number equals 56?",
-                explanation: "56 ÷ 8 = 7 because 8 × 7 = 56."
-            },
-            {
-                question: "What is 30 ÷ 10?",
-                options: ["2", "3", "5", "10"],
-                answer: 1,
-                hint: "Count by tens: 10, 20, 30...",
-                explanation: "30 divided by 10 is 3."
-            },
-            {
-                question: "Which of these is an example of dividing into 3 equal groups?",
-                options: ["Putting 9 toys into 3 boxes with 3 in each", "Putting 5 toys into 2 boxes", "Adding 3 toys to 3 toys", "Taking away 3 toys"],
-                answer: 0,
-                hint: "Equal groups must have the exact same number in each group.",
-                explanation: "9 toys split into 3 boxes means 3 in each box, which is a perfect division sentence (9 ÷ 3 = 3)."
-            },
-            {
-                question: "What is 42 ÷ 6?",
-                options: ["6", "7", "8", "9"],
-                answer: 1,
-                hint: "If 6 × 6 = 36, add one more group of 6.",
-                explanation: "42 ÷ 6 = 7 because 6 × 7 = 42."
-            },
-            {
-                question: "What is 70 ÷ 7?",
-                options: ["1", "7", "10", "70"],
+                question: "Meera is preparing a dance performance. There are 24 students, and she needs to arrange them in groups. Which of the following grouping choices will leave some students out without a complete group?",
+                options: ["Groups of 3", "Groups of 4", "Groups of 5", "Groups of 6"],
                 answer: 2,
-                hint: "Think about multiplying a number by 10.",
-                explanation: "70 ÷ 7 = 10 because 7 × 10 = 70."
+                hint: "Which number does NOT divide 24 cleanly?",
+                explanation: "24 is divisible by 3, 4, and 6. However, 24 ÷ 5 leaves a remainder of 4, meaning 4 students wouldn't have a complete group."
+            },
+            {
+                question: "Look at this statement: 'There are 8 pencil boxes. Each box holds the same number of pencils. There are 48 pencils in total.' Which question requires division to solve?",
+                options: ["How many pencils are there altogether?", "How many pencils are there in each box?", "How many boxes are there?", "What is the total cost of the pencils?"],
+                answer: 1,
+                hint: "We already know the total and the number of groups. What is missing?",
+                explanation: "Finding the number of items within a single group when the total and number of groups are known requires division (48 ÷ 8)."
+            },
+            {
+                question: "Rahul uses the subtraction chain '12 - 3 = 9', '9 - 3 = 6', '6 - 3 = 3', '3 - 3 = 0' to solve a problem. What problem was he trying to solve?",
+                options: ["12 - 4", "12 ÷ 3", "12 × 3", "3 ÷ 12"],
+                answer: 1,
+                hint: "Count how many times the number 3 was taken away.",
+                explanation: "Rahul subtracted 3 from 12 a total of 4 times until he reached 0. This models the competency operation 12 ÷ 3 = 4."
+            },
+            {
+                question: "Anish has 40 stickers. He wants to give an equal number of stickers to 10 of his classmates. If he wants to use multiplication facts to find the answer, which table should he read?",
+                options: ["Table of 40 up to 10", "Table of 10 up to 40", "Table of 5 up to 10", "Table of 1 up to 40"],
+                answer: 1,
+                hint: "He is distributing across 10 groups. He needs to find 10 × ? = 40.",
+                explanation: "To solve 40 ÷ 10, he can use the table of 10 to find what number multiplied by 10 equals 40 (10 × 4 = 40)."
+            },
+            {
+                question: "A factory packs 32 toy cars into boxes. Each box fits 4 cars. If they sell 3 boxes, how many boxes of toy cars do they have left?",
+                options: ["5 boxes", "8 boxes", "11 boxes", "4 boxes"],
+                answer: 0,
+                hint: "First find the total number of boxes made, then subtract the sold boxes.",
+                explanation: "Total boxes made = 32 ÷ 4 = 8 boxes. If they sell 3 boxes, the remaining boxes = 8 - 3 = 5 boxes."
             }
         ];
 
@@ -207,7 +207,6 @@
             document.getElementById('next-btn').classList.add('hidden');
         }
 
-        // Trigger safe confetti explosion from both sides of the screen
         function triggerConfetti() {
             try {
                 confetti({
@@ -216,7 +215,7 @@
                     origin: { y: 0.7 }
                 });
             } catch (e) {
-                console.log("Confetti script loading error.");
+                console.log("Confetti library unavailable.");
             }
         }
 
@@ -234,7 +233,7 @@
             if(idx === q.answer) {
                 score++;
                 try { document.getElementById('audio-correct').play(); } catch(e){}
-                triggerConfetti(); // Fire confetti explosion!
+                triggerConfetti();
                 fb.innerText = "Correct! " + q.explanation;
                 fb.className = 'feedback-correct';
                 fb.classList.remove('hidden');
@@ -284,7 +283,6 @@
             if (percentage >= 85) {
                 finalMsg.innerText = "🎉 Division Master!";
                 finalMsg.style.color = "var(--success)";
-                // Celebration burst at the very end
                 triggerConfetti();
                 setTimeout(triggerConfetti, 300);
             } else if (percentage >= 60) {
