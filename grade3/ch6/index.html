@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Division Mastery Assessment</title>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <style>
         :root { 
             --primary: #1e3a8a; 
@@ -25,7 +26,7 @@
         .feedback-correct { background-color: #dcfce7; color: var(--success); border-left: 5px solid var(--success); }
         .feedback-wrong { background-color: #fee2e2; color: var(--danger); border-left: 5px solid var(--danger); }
         
-        #next-btn, #restart-btn {
+        #next-btn {
             background-color: var(--primary);
             color: white;
             border: none;
@@ -35,12 +36,12 @@
             cursor: pointer;
             margin-top: 15px;
         }
-        #next-btn:hover, #restart-btn:hover { opacity: 0.9; }
+        #next-btn:hover { opacity: 0.9; }
     </style>
 </head>
 <body>
 
-    <div id="splash"><h2>Division Mastery Assessment</h2></div>
+    <div id="splash"><img src="assets/logo.png" alt="Innovine Logo"></div>
 
     <div class="container">
         <div id="quiz-area">
@@ -56,106 +57,105 @@
         <div id="result-area" class="hidden">
             <h2 id="final-msg"></h2>
             <p id="score-text"></p>
-            <button id="restart-btn" onclick="location.reload()">Restart Assessment</button>
+            <button onclick="location.reload()">Restart Assessment</button>
         </div>
     </div>
 
-    <audio id="audio-correct" src="assets/correct.mp3"></audio>
+    <audio id="audio-correct" src="assets/claps.mp3"></audio>
     <audio id="audio-wrong" src="assets/wrong.mp3"></audio>
 
     <script>
-        // Raw dataset base
+        // Balanced Grade 3 Appropriate Problems (Multiplication limits within 100)
         const masterQuestions = [
             {
-                question: "What is 48 ÷ 6?",
-                options: ["6", "7", "8", "9"],
-                answer: 2, // index of "8" initially
-                hint: "Think about what multiplied by 6 equals 48.",
-                explanation: "48 divided by 6 is 8 because 6 × 8 = 48."
-            },
-            {
-                question: "What is 132 ÷ 11?",
-                options: ["11", "12", "13", "14"],
-                answer: 1,
-                hint: "11 × 10 = 110. Add one more 11 to get 121...",
-                explanation: "132 ÷ 11 = 12 because 11 × 12 = 132."
-            },
-            {
-                question: "What is the quotient of 0 ÷ 7?",
-                options: ["0", "7", "Undefined", "1"],
-                answer: 0,
-                hint: "If you have 0 items to share among 7 people, how many does each person get?",
-                explanation: "Zero divided by any non-zero number is always 0."
-            },
-            {
-                question: "What is 7 ÷ 0?",
-                options: ["0", "7", "Undefined", "70"],
+                question: "What is 15 ÷ 3?",
+                options: ["3", "4", "5", "6"],
                 answer: 2,
-                hint: "Can you divide something into groups of zero items?",
-                explanation: "Division by zero is undefined in mathematics."
+                hint: "Count up by 3s until you reach 15.",
+                explanation: "15 divided by 3 is 5 because 3 × 5 = 15."
             },
             {
-                question: "What is the remainder when 45 is divided by 6?",
-                options: ["1", "3", "5", "0"],
+                question: "What is 24 ÷ 4?",
+                options: ["4", "6", "8", "12"],
                 answer: 1,
-                hint: "Find the closest multiple of 6 that is less than 45.",
-                explanation: "6 × 7 = 42. The difference between 45 and 42 is 3."
+                hint: "What number multiplied by 4 gives you 24?",
+                explanation: "24 ÷ 4 = 6 because 4 × 6 = 24."
             },
             {
-                question: "Solve: 240 ÷ 40",
-                options: ["6", "60", "4", "40"],
+                question: "If you share 12 cookies equally among 2 friends, how many cookies does each friend get?",
+                options: ["4", "5", "6", "8"],
+                answer: 2,
+                hint: "What is half of 12?",
+                explanation: "12 shared equally between 2 groups leaves 6 in each group."
+            },
+            {
+                question: "What is 40 ÷ 5?",
+                options: ["7", "8", "9", "10"],
+                answer: 1,
+                hint: "Think of your 5 times tables: 5, 10, 15, 20...",
+                explanation: "40 ÷ 5 = 8 because 5 × 8 = 40."
+            },
+            {
+                question: "Which multiplication sentence helps you solve 18 ÷ 2 = ?",
+                options: ["2 × 9 = 18", "2 + 9 = 11", "18 - 2 = 16", "18 × 2 = 36"],
                 answer: 0,
-                hint: "You can cancel out the trailing zeros to make it 24 ÷ 4.",
-                explanation: "240 ÷ 40 is equivalent to 24 ÷ 4, which equals 6."
+                hint: "Division is the opposite of multiplication. Look for the family fact.",
+                explanation: "Knowing that 2 × 9 = 18 tells you that 18 ÷ 2 = 9."
             },
             {
-                question: "What is 100 ÷ 0.25?",
-                options: ["25", "40", "250", "400"],
-                answer: 3,
-                hint: "Dividing by 0.25 (or 1/4) is the same as multiplying by 4.",
-                explanation: "There are four 0.25s in every 1 unit, so 100 × 4 = 400."
-            },
-            {
-                question: "If 7 x 9 = 63, which division sentence is also true?",
-                options: ["7 ÷ 63 = 9", "63 ÷ 9 = 7", "9 ÷ 7 = 63", "63 ÷ 63 = 7"],
-                answer: 1,
-                hint: "Division is the inverse operation of multiplication. Total ÷ Factor = Other Factor.",
-                explanation: "Because 7 × 9 = 63, it inversely means 63 ÷ 9 = 7."
-            },
-            {
-                question: "What is 144 ÷ (12 ÷ 3)?",
-                options: ["36", "12", "4", "48"],
+                question: "What is 0 ÷ 6?",
+                options: ["0", "6", "1", "Cannot be done"],
                 answer: 0,
-                hint: "Remember Order of Operations (PEMDAS). Solve the parenthesis first.",
-                explanation: "First solve 12 ÷ 3 = 4. Then calculate 144 ÷ 4 = 36."
+                hint: "If you have 0 items to split among 6 people, how many does everyone get?",
+                explanation: "Zero divided by any number is always 0."
             },
             {
-                question: "A box holds 8 donuts. How many full boxes can be filled with 90 donuts?",
-                options: ["10", "11", "12", "11.25"],
+                question: "Tom has 32 markers. He puts them into boxes of 8. How many boxes does he fill?",
+                options: ["3", "4", "5", "6"],
                 answer: 1,
-                hint: "Divide 90 by 8 and drop the remainder since the question asks for full boxes.",
-                explanation: "90 ÷ 8 = 11 with a remainder of 2. So, 11 full boxes can be filled."
+                hint: "How many times does 8 go into 32?",
+                explanation: "32 ÷ 8 = 4. He will fill exactly 4 boxes."
             },
             {
-                question: "What is 1,212 ÷ 4?",
-                options: ["33", "303", "330", "333"],
+                question: "What is 56 ÷ 8?",
+                options: ["6", "7", "8", "9"],
                 answer: 1,
-                hint: "Break it down: 1,200 ÷ 4 and 12 ÷ 4, then add them together.",
-                explanation: "1200 ÷ 4 = 300, and 12 ÷ 4 = 3. 300 + 3 = 303."
+                hint: "8 times what number equals 56?",
+                explanation: "56 ÷ 8 = 7 because 8 × 7 = 56."
             },
             {
-                question: "Which of the following numbers is perfectly divisible by 3 (no remainder)?",
-                options: ["251", "313", "404", "513"],
-                answer: 3,
-                hint: "A number is divisible by 3 if the sum of its digits is divisible by 3.",
-                explanation: "For 513: 5 + 1 + 3 = 9. Since 9 is divisible by 3, 513 is also divisible by 3."
+                question: "What is 30 ÷ 10?",
+                options: ["2", "3", "5", "10"],
+                answer: 1,
+                hint: "Count by tens: 10, 20, 30...",
+                explanation: "30 divided by 10 is 3."
+            },
+            {
+                question: "Which of these is an example of dividing into 3 equal groups?",
+                options: ["Putting 9 toys into 3 boxes with 3 in each", "Putting 5 toys into 2 boxes", "Adding 3 toys to 3 toys", "Taking away 3 toys"],
+                answer: 0,
+                hint: "Equal groups must have the exact same number in each group.",
+                explanation: "9 toys split into 3 boxes means 3 in each box, which is a perfect division sentence (9 ÷ 3 = 3)."
+            },
+            {
+                question: "What is 42 ÷ 6?",
+                options: ["6", "7", "8", "9"],
+                answer: 1,
+                hint: "If 6 × 6 = 36, add one more group of 6.",
+                explanation: "42 ÷ 6 = 7 because 6 × 7 = 42."
+            },
+            {
+                question: "What is 70 ÷ 7?",
+                options: ["1", "7", "10", "70"],
+                answer: 2,
+                hint: "Think about multiplying a number by 10.",
+                explanation: "70 ÷ 7 = 10 because 7 × 10 = 70."
             }
         ];
 
         let questions = [];
         let currentQ = 0, score = 0, attempts = 0, timeLeft = 60, timer;
 
-        // Helper function to shuffle array items in place
         function shuffle(array) {
             for (let i = array.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
@@ -164,20 +164,15 @@
             return array;
         }
 
-        // Prepares quiz configurations dynamically 
         function setupQuizData() {
-            // Shallow clone and shuffle the core questions
             questions = shuffle([...masterQuestions]);
-
-            // Shuffle the choices inside every isolated question item
             questions.forEach(q => {
-                const correctText = q.options[q.answer]; // Grab string value of correct choice
-                shuffle(q.options);                      // Shuffle options array directly
-                q.answer = q.options.indexOf(correctText); // Recalculate target key location
+                const correctText = q.options[q.answer];
+                shuffle(q.options);
+                q.answer = q.options.indexOf(correctText);
             });
         }
 
-        // Splash screen delay
         setTimeout(() => {
             const splash = document.getElementById('splash');
             splash.style.opacity = 0;
@@ -212,6 +207,19 @@
             document.getElementById('next-btn').classList.add('hidden');
         }
 
+        // Trigger safe confetti explosion from both sides of the screen
+        function triggerConfetti() {
+            try {
+                confetti({
+                    particleCount: 80,
+                    spread: 60,
+                    origin: { y: 0.7 }
+                });
+            } catch (e) {
+                console.log("Confetti script loading error.");
+            }
+        }
+
         function check(idx) {
             const q = questions[currentQ];
             const fb = document.getElementById('feedback');
@@ -226,6 +234,7 @@
             if(idx === q.answer) {
                 score++;
                 try { document.getElementById('audio-correct').play(); } catch(e){}
+                triggerConfetti(); // Fire confetti explosion!
                 fb.innerText = "Correct! " + q.explanation;
                 fb.className = 'feedback-correct';
                 fb.classList.remove('hidden');
@@ -275,6 +284,9 @@
             if (percentage >= 85) {
                 finalMsg.innerText = "🎉 Division Master!";
                 finalMsg.style.color = "var(--success)";
+                // Celebration burst at the very end
+                triggerConfetti();
+                setTimeout(triggerConfetti, 300);
             } else if (percentage >= 60) {
                 finalMsg.innerText = "👍 Good Job!";
                 finalMsg.style.color = "var(--hint)";
@@ -284,7 +296,6 @@
             }
         }
 
-        // Initialize quiz configuration routines
         setupQuizData();
         loadQuestion();
     </script>
