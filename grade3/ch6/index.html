@@ -3,811 +3,290 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Grade 3 – Chapter 6: Division Competency Assessment</title>
+    <title>Division Mastery Assessment</title>
     <style>
-        :root {
-            --primary: #1e3a8a;
-            --primary-hover: #1e40af;
-            --success: #15803d;
-            --danger: #b91c1c;
-            --warning: #a16207;
-            --background: #eff6ff;
-            --surface: #ffffff;
-            --text: #0f172a;
-            --text-secondary: #334155;
-            --border: #cbd5e1;
+        :root { 
+            --primary: #1e3a8a; 
+            --success: #15803d; 
+            --danger: #b91c1c; 
+            --background: #eff6ff; 
+            --hint: #b45309;
         }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-        }
-
-        body {
-            background-color: var(--background);
-            color: var(--text);
-            line-height: 1.5;
-            padding: 2rem 1rem;
-            display: flex;
-            justify-content: center;
-            min-height: 100vh;
-        }
-
-        .container {
-            width: 100%;
-            max-width: 800px;
-            margin: 0 auto;
-            position: relative;
-        }
-
-        #splash-screen {
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: #ffffff;
-            z-index: 9999;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            transition: opacity 0.5s ease-out;
-        }
-
-        .splash-loader {
-            width: 48px;
-            height: 48px;
-            border: 5px solid #dbeafe;
-            border-bottom-color: var(--primary);
-            border-radius: 50%;
-            animation: rotation 1s linear infinite;
-        }
-
-        @keyframes rotation {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        header {
-            background: var(--surface);
-            padding: 2rem;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
-            margin-bottom: 2rem;
-            border: 1px solid var(--border);
-        }
-
-        h1 {
-            font-size: 1.8rem;
-            color: var(--primary);
-            margin-bottom: 0.5rem;
-        }
-
-        .meta-info {
-            color: var(--text-secondary);
-            font-size: 0.95rem;
-        }
-
-        .meta-info ul {
-            margin-top: 0.5rem;
-            margin-left: 1.25rem;
-        }
-
-        .header-meta-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1rem;
-            background: #e2e8f0;
-            padding: 0.75rem 1.2rem;
-            border-radius: 8px;
-            font-weight: 700;
-        }
-
-        .timer-badge {
-            background: #fef9c3;
-            color: #854d0e;
-            padding: 0.25rem 0.75rem;
-            border-radius: 20px;
-        }
-
-        .timer-low {
-            background: #fee2e2;
-            color: var(--danger);
-            animation: pulse 1s infinite alternate;
-        }
-
-        @keyframes pulse {
-            from { opacity: 1; } to { opacity: 0.7; }
-        }
-
-        .progress-container {
-            background: #cbd5e1;
-            height: 8px;
-            border-radius: 4px;
-            margin-bottom: 1.5rem;
-            overflow: hidden;
-        }
-
-        .progress-bar {
-            background: var(--primary);
-            height: 100%;
-            width: 0%;
-            transition: width 0.3s ease;
-        }
-
-        .quiz-card {
-            background: var(--surface);
-            padding: 2rem;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
-            margin-bottom: 1.5rem;
-            border: 1px solid var(--border);
-        }
-
-        .question-number {
-            font-weight: 700;
-            color: var(--primary);
-            text-transform: uppercase;
-            font-size: 0.85rem;
-            letter-spacing: 0.05em;
-            margin-bottom: 0.5rem;
-        }
-
-        .question-text {
-            font-size: 1.15rem;
-            font-weight: 600;
-            margin-bottom: 1.25rem;
-        }
-
-        .svg-container {
-            margin-bottom: 1.5rem;
-            width: 100%;
-            background: #f8fafc;
-            border-radius: 8px;
-            border: 1px dashed var(--border);
-            padding: 15px;
-            display: flex;
-            justify-content: center;
-        }
-
-        .options-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 0.75rem;
-        }
-
-        @media (min-width: 640px) {
-            .options-grid {
-                grid-template-columns: 1fr 1fr;
-            }
-        }
-
-        .option-btn {
-            background: var(--surface);
-            border: 2px solid var(--border);
-            padding: 1rem;
-            border-radius: 8px;
-            text-align: left;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            font-weight: 500;
-            display: flex;
-            align-items: center;
-            width: 100%;
-        }
-
-        .option-btn:hover:not(:disabled) {
-            border-color: var(--primary);
-            background-color: #f0fdfa;
-        }
-
-        .option-btn.selected-correct {
-            border-color: var(--success) !important;
-            background-color: #dcfce7 !important;
-            color: #14532d !important;
-            font-weight: 700;
-        }
-
-        .option-btn.selected-wrong {
-            border-color: var(--danger) !important;
-            background-color: #fee2e2 !important;
-            color: #991b1b !important;
-        }
-
-        .feedback-box {
-            margin-top: 1.25rem;
-            padding: 1rem;
-            border-radius: 8px;
-            font-size: 0.95rem;
-            display: none;
-        }
-
-        .feedback-box.show {
-            display: block;
-        }
-
-        .feedback-box.hint-bg {
-            background-color: #fef9c3;
-            border: 1px solid #fef08a;
-            color: #713f12;
-        }
-
-        .feedback-box.correct-bg {
-            background-color: #f0fdf4;
-            border: 1px solid #bbf7d0;
-            color: #166534;
-        }
-
-        .feedback-box.incorrect-bg {
-            background-color: #fef2f2;
-            border: 1px solid #fecaca;
-            color: #991b1b;
-        }
-
-        .explanation-text {
-            margin-top: 0.25rem;
-            font-weight: 500;
-        }
-
-        .action-container {
-            text-align: center;
-            margin-top: 1.5rem;
-        }
-
-        .action-btn {
+        body { font-family: sans-serif; background: var(--background); display: flex; justify-content: center; padding: 20px; }
+        .container { width: 100%; max-width: 800px; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        #splash { position: fixed; inset: 0; background: white; display: flex; align-items: center; justify-content: center; z-index: 1000; transition: opacity 0.5s ease; }
+        .option-btn { display: block; width: 100%; padding: 15px; margin: 10px 0; border: 2px solid #cbd5e1; border-radius: 8px; cursor: pointer; text-align: left; font-size: 1rem; transition: 0.2s; background: white; }
+        .option-btn:hover:not([disabled]) { background: #f0fdfa; border-color: var(--primary); }
+        .hidden { display: none !important; }
+        #timer { font-weight: bold; color: var(--danger); }
+        
+        /* Styled Feedback Classes */
+        .feedback-hint { background-color: #fef3c7; color: var(--hint); border-left: 5px solid var(--hint); }
+        .feedback-correct { background-color: #dcfce7; color: var(--success); border-left: 5px solid var(--success); }
+        .feedback-wrong { background-color: #fee2e2; color: var(--danger); border-left: 5px solid var(--danger); }
+        
+        #next-btn, #restart-btn {
             background-color: var(--primary);
             color: white;
             border: none;
-            padding: 0.9rem 2.5rem;
-            font-size: 1.05rem;
-            font-weight: 600;
-            border-radius: 8px;
+            padding: 12px 24px;
+            font-size: 1rem;
+            border-radius: 6px;
             cursor: pointer;
-            box-shadow: 0 4px 6px -1px rgb(30 58 138 / 0.2);
-            transition: background-color 0.2s ease;
-            width: 100%;
+            margin-top: 15px;
         }
-
-        .action-btn:hover {
-            background-color: var(--primary-hover);
-        }
-
-        #results-card {
-            background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
-            border: 2px solid #bfdbfe;
-            text-align: center;
-            padding: 3rem 2rem;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
-            margin-bottom: 1.5rem;
-            display: none;
-        }
-
-        .score-display {
-            font-size: 3.5rem;
-            font-weight: 800;
-            color: var(--primary);
-            margin: 1rem 0;
-        }
-
-        .table-container {
-            overflow-x: auto;
-            background: var(--surface);
-            border-radius: 12px;
-            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
-            border: 1px solid var(--border);
-            margin-top: 2rem;
-            padding: 1.5rem;
-        }
-
-        .table-title {
-            font-size: 1.2rem;
-            font-weight: 700;
-            margin-bottom: 1rem;
-            color: var(--text-secondary);
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            text-align: left;
-            font-size: 0.9rem;
-        }
-
-        th, td {
-            padding: 0.75rem 1rem;
-            border-bottom: 1px solid var(--border);
-        }
-
-        th {
-            background-color: #f1f5f9;
-            color: var(--text-secondary);
-            font-weight: 600;
-        }
-
-        .hidden {
-            display: none !important;
-        }
+        #next-btn:hover, #restart-btn:hover { opacity: 0.9; }
     </style>
 </head>
 <body>
 
-<div id="splash-screen">
-    <h1 style="margin-bottom: 10px; color: var(--primary);">Innovine Assessment Engine</h1>
-    <div class="splash-loader"></div>
-    <p style="margin-top: 15px; color: var(--text-secondary); font-weight: 500;">Loading Chapter 6: Division Mastery System...</p>
-</div>
+    <div id="splash"><h2>Division Mastery Assessment</h2></div>
 
-<audio id="audio-correct" src="assets/correct.mp3" preload="auto"></audio>
-<audio id="audio-wrong" src="assets/wrong.mp3" preload="auto"></audio>
-
-<div class="container">
-    <header>
-        <h1>Grade 3 – Chapter 6: Division (Competency Blueprint Edition)</h1>
-        <div class="meta-info">
-            <strong>Active Cognitive Pillars:</strong>
-            <ul>
-                <li>Decomposing items into equal partitioning pools.</li>
-                <li>Auditing long division frameworks for quotient and remainder integrity.</li>
-                <li>Applying base-10 short division rules to speed up multi-digit calculations.</li>
-                <li>Evaluating real-world remainder constraints in logistical planning challenges.</li>
-            </ul>
-        </div>
-    </header>
-
-    <div id="quiz-workspace">
-        <div class="header-meta-row">
-            <div>Progress Matrix: Slot <span id="current-q-label">1</span> / 20</div>
-            <div id="timer-display" class="timer-badge">60s</div>
-        </div>
-        <div class="progress-container">
-            <div id="progress-indicator" class="progress-bar"></div>
-        </div>
-
-        <div class="quiz-card">
-            <div class="question-number" id="q-number-hdr">Question 1</div>
-            <div class="question-text" id="q-text-container">Loading spatial configuration data...</div>
-            
-            <div class="svg-container hidden" id="q-svg-container"></div>
-
-            <div class="options-grid" id="q-options-grid"></div>
-            
-            <div class="feedback-box" id="q-feedback-box"></div>
-            
-            <div class="action-container hidden" id="q-action-container">
-                <button type="button" class="action-btn" id="next-btn" onclick="quizEngine.advanceQuestion()">Commit Vector & Advance</button>
+    <div class="container">
+        <div id="quiz-area">
+            <div style="display:flex; justify-content:space-between;">
+                <div id="q-progress">Question 1/12</div>
+                <div id="timer">60s</div>
             </div>
+            <h2 id="question">Loading...</h2>
+            <div id="options"></div>
+            <div id="feedback" style="padding: 15px; margin-top: 10px; border-radius: 8px;" class="hidden"></div>
+            <button id="next-btn" class="hidden" onclick="nextQuestion()">Next Question</button>
+        </div>
+        <div id="result-area" class="hidden">
+            <h2 id="final-msg"></h2>
+            <p id="score-text"></p>
+            <button id="restart-btn" onclick="location.reload()">Restart Assessment</button>
         </div>
     </div>
 
-    <div id="results-card">
-        <h2>Division Assessment Finished!</h2>
-        <div class="score-display" id="final-score-text">0 / 20</div>
-        <p id="final-percentage-text" style="font-size: 1.2rem; font-weight: 600; color: var(--text-secondary);"></p>
-        <p id="performance-descriptor" style="margin-top: 1rem; font-weight: 500;"></p>
-    </div>
+    <audio id="audio-correct" src="assets/correct.mp3"></audio>
+    <audio id="audio-wrong" src="assets/wrong.mp3"></audio>
 
-    <div class="table-container">
-        <div class="table-title">Quality Mapping Matrix Verification Table</div>
-        <table>
-            <thead>
-                <tr>
-                    <th>Q No.</th>
-                    <th>LO Covered</th>
-                    <th>Question Type</th>
-                    <th>Competency Strategy Tested</th>
-                    <th>Difficulty</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr><td>Q1</td><td>LO 1</td><td>Visual Map</td><td>Translating bounded clusters into core division equations</td><td>Simple Visual</td></tr>
-                <tr><td>Q2</td><td>LO 1</td><td>Visual Map</td><td>Verifying division-by-self rules in distributed pools</td><td>Simple Visual</td></tr>
-                <tr><td>Q3</td><td>LO 2</td><td>Visual Map</td><td>Labeling remainder roles inside long division workflows</td><td>Simple Visual</td></tr>
-                <tr><td>Q4</td><td>LO 4</td><td>Visual Map</td><td>Isolating base-10 remainder loops via item tracking</td><td>Simple Visual</td></tr>
-                <tr><td>Q5</td><td>LO 2</td><td>Visual Map</td><td>Evaluating zero-dividend results across multiple routes</td><td>Simple Visual</td></tr>
-                <tr><td>Q6</td><td>LO 2</td><td>Visual Map</td><td>Completing missing operational values in long division steps</td><td>Simple Visual</td></tr>
-                <tr><td>Q7</td><td>LO 1</td><td>Analytical</td><td>Evaluating the mathematical logic of dividing by 1</td><td>Reasoning</td></tr>
-                <tr><td>Q8</td><td>LO 2</td><td>Error Audit</td><td>Finding errors when remainders are larger than divisors</td><td>Reasoning</td></tr>
-                <tr><td>Q9</td><td>LO 3</td><td>Interpretation</td><td>Using inverse multiplication checks to verify answers</td><td>Reasoning</td></tr>
-                <tr><td>Q10</td><td>LO 2</td><td>Comparative</td><td>Calculating leftover remainders from packing operations</td><td>Reasoning</td></tr>
-                <tr><td>Q11</td><td>LO 4</td><td>Lattice Check</td><td>Applying shortcut base-10 rules to exact zero boundaries</td><td>Reasoning</td></tr>
-                <tr><td>Q12</td><td>LO 3</td><td>Verification</td><td>Breaking down 3-digit dividends into clean place value loops</td><td>Reasoning</td></tr>
-                <tr><td>Q13</td><td>LO 1</td><td>Property Proof</td><td>Proving division identity laws in real farm contexts</td><td>Reasoning</td></tr>
-                <tr><td>Q14</td><td>LO 3</td><td>Analytical</td><td>Executing multi-step 4-digit long division operations</td><td>Reasoning</td></tr>
-                <tr><td>Q15</td><td>LO 5</td><td>Multi-Step Math</td><td>Adjusting shuttle limits based on leftover remainders</td><td>Challenge</td></tr>
-                <tr><td>Q16</td><td>LO 3</td><td>Multi-Step Path</td><td>Finding loose leftover counts from 4-digit operations</td><td>Challenge</td></tr>
-                <tr><td>Q17</td><td>LO 4</td><td>Structural Audit</td><td>Splitting multi-digit quotients and remainders using base-10</td><td>Challenge</td></tr>
-                <tr><td>Q18</td><td>LO 3</td><td>Logical Matrix</td><td>Debugging place-value errors in long division steps</td><td>Challenge</td></tr>
-                <tr><td>Q19</td><td>LO 5</td><td>Spatial Logic</td><td>Isolating loose remainders from layout arrays</td><td>Challenge</td></tr>
-                <tr><td>Q20</td><td>LO 4</td><td>Dimension Scale</td><td>Calculating the extra batches needed to cover a remainder</td><td>Challenge</td></tr>
-            </tbody>
-        </table>
-    </div>
-</div>
-
-<script>
-    const assessmentDataset = [
-        {
-            type: "visual",
-            lo: "LO 1: Cluster Arrays",
-            question: "[Picture: An array of 18 logic tokens divided into 3 equal bounded clusters]. A team distributes 18 network security tokens equally into 3 separate encryption zones. Which mathematical sentence represents this equal grouping?",
-            svg: `<svg viewBox="0 0 500 130" width="100%"><rect width="500" height="130" fill="#f8fafc" rx="8" stroke="#cbd5e1"/><g fill="#1e3a8a" opacity="0.15"><rect x="30" y="20" width="120" height="90" rx="10"/><rect x="190" y="20" width="120" height="90" rx="10"/><rect x="350" y="20" width="120" height="90" rx="10"/></g><g fill="#1e3a8a"><circle cx="50" cy="45" r="8"/><circle cx="85" cy="45" r="8"/><circle cx="120" cy="45" r="8"/><circle cx="50" cy="85" r="8"/><circle cx="85" cy="85" r="8"/><circle cx="120" cy="85" r="8"/><circle cx="210" cy="45" r="8"/><circle cx="245" cy="45" r="8"/><circle cx="280" cy="45" r="8"/><circle cx="210" cy="85" r="8"/><circle cx="245" cy="85" r="8"/><circle cx="280" cy="85" r="8"/><circle cx="370" cy="45" r="8"/><circle cx="405" cy="45" r="8"/><circle cx="440" cy="45" r="8"/><circle cx="370" cy="85" r="8"/><circle cx="405" cy="85" r="8"/><circle cx="440" cy="85" r="8"/></g></svg>`,
-            options: ["a) 18 ÷ 3 = 6", "b) 18 - 3 = 15", "c) 18 × 3 = 54", "d) 18 ÷ 6 = 2"],
-            answer: 0,
-            hint: "Count the total number of items, then count how many identical groups they have been split into.",
-            explanation: "18 tokens divided into 3 groups puts exactly 6 tokens into each cluster. The correct notation is 18 ÷ 3 = 6."
-        },
-        {
-            type: "visual",
-            lo: "LO 1: Uniform Identity Distributions",
-            question: "[Picture: A row of 8 seed packets distributed into 8 separate individual soil beds]. A botanist places 8 rare plant seeds into 8 separate nursery pots, putting an equal number in each. How many seeds does each pot contain?",
-            svg: `<svg viewBox="0 0 500 120" width="100%"><rect width="500" height="120" fill="#f8fafc" rx="8" stroke="#cbd5e1"/><g fill="#15803d" stroke="#15803d" stroke-width="2"><rect x="20" y="40" width="40" height="40" fill="none"/><rect x="80" y="40" width="40" height="40" fill="none"/><rect x="140" y="40" width="40" height="40" fill="none"/><rect x="200" y="40" width="40" height="40" fill="none"/><rect x="260" y="40" width="40" height="40" fill="none"/><rect x="320" y="40" width="40" height="40" fill="none"/><rect x="380" y="40" width="40" height="40" fill="none"/><rect x="440" y="40" width="40" height="40" fill="none"/><circle cx="40" cy="60" r="4"/><circle cx="100" cy="60" r="4"/><circle cx="160" cy="60" r="4"/><circle cx="220" cy="60" r="4"/><circle cx="280" cy="60" r="4"/><circle cx="340" cy="60" r="4"/><circle cx="400" cy="60" r="4"/><circle cx="460" cy="60" r="4"/></g></svg>`,
-            options: ["a) 1 seed", "b) 8 seeds", "c) 0 seeds", "d) 16 seeds"],
-            answer: 0,
-            hint: "When any number is divided by itself, what is the constant result?",
-            explanation: "According to the identity property of division, any non-zero number divided by itself always yields a quotient of 1 (8 ÷ 8 = 1)."
-        },
-        {
-            type: "visual",
-            lo: "LO 2: Framework Labeling",
-            question: "[Picture: A long division workspace dividing 75 by 6, showing a quotient of 12 and a remainder of 3]. Look at this operational record. Which label correctly names the role that the number 3 plays in this division process?",
-            svg: `<svg viewBox="0 0 400 150" width="100%"><rect width="400" height="150" fill="#f8fafc" rx="8" stroke="#cbd5e1"/><text x="140" y="30" font-family="monospace" font-size="18" font-weight="bold">  12</text><text x="110" y="55" font-family="monospace" font-size="18" font-weight="bold">6 ) 75</text><line x1="130" y1="38" x2="180" y2="38" stroke="#000" stroke-width="2"/><text x="140" y="80" font-family="monospace" font-size="18" font-weight="bold">- 6</text><line x1="130" y1="90" x2="180" y2="90" stroke="#000" stroke-width="2"/><text x="140" y="115" font-family="monospace" font-size="18" font-weight="bold">  15</text><text x="140" y="135" font-family="monospace" font-size="18" font-weight="bold">- 12</text><line x1="130" y1="140" x2="180" y2="140" stroke="#000" stroke-width="2"/><text x="160" y="148" font-family="monospace" font-size="18" font-weight="bold" fill="#b91c1c">3</text></svg>`,
-            options: ["a) Remainder", "b) Divisor", "c) Dividend", "d) Quotient"],
-            answer: 0,
-            hint: "Look at the number left over at the very bottom of the division tower after all subtractions are complete.",
-            explanation: "The number left over at the end of long division that is too small to be divided further by the divisor is called the remainder."
-        },
-        {
-            type: "visual",
-            lo: "LO 4: Base-10 Partition Routing",
-            question: "[Picture: 45 solar batteries grouped into boxes of 10, leaving 5 single batteries loose]. A technician groups 45 industrial power cells into standard slots of 10. How many full slots are filled, and how many items are left over?",
-            svg: `<svg viewBox="0 0 450 120" width="100%"><rect width="450" height="120" fill="#f8fafc" rx="8" stroke="#cbd5e1"/><g fill="#a16207" stroke="#a16207" stroke-width="1"><rect x="20" y="20" width="70" height="40" fill="none" stroke-width="2"/><text x="25" y="45" font-size="12" font-weight="bold">10 cells</text><rect x="110" y="20" width="70" height="40" fill="none" stroke-width="2"/><text x="115" y="45" font-size="12" font-weight="bold">10 cells</text><rect x="20" y="70" width="70" height="40" fill="none" stroke-width="2"/><text x="25" y="95" font-size="12" font-weight="bold">10 cells</text><rect x="110" y="70" width="70" height="40" fill="none" stroke-width="2"/><text x="115" y="95" font-size="12" font-weight="bold">10 cells</text><g fill="#b91c1c"><circle cx="230" cy="45" r="6"/><circle cx="260" cy="45" r="6"/><circle cx="290" cy="45" r="6"/><circle cx="320" cy="45" r="6"/><circle cx="350" cy="45" r="6"/><text x="220" y="85" font-size="14" font-weight="bold">Loose: 5</text></g></g></svg>`,
-            options: ["a) 4 slots filled, 5 items left over", "b) 5 slots filled, 4 items left over", "c) 40 slots filled, 5 items left over", "d) 45 slots filled, 0 items left over"],
-            answer: 0,
-            hint: "When dividing by 10, the digit in the ones place becomes your leftover remainder, and the remaining digits form your quotient.",
-            explanation: "45 ÷ 10 yields a quotient of 4 (4 full tens slots) and leaves a remainder of 5 (the ones place value)."
-        },
-        {
-            type: "visual",
-            lo: "LO 2: Zero Dividends",
-            question: "[Picture: A calculation matrix showing 0 packages distributed among 5 delivery trucks]. A warehouse manager has 0 cargo crates to load onto 5 waiting delivery trucks. If the empty cargo space is shared equally, how many crates does each truck receive?",
-            svg: `<svg viewBox="0 0 400 120" width="100%"><rect width="400" height="120" fill="#f8fafc" rx="8" stroke="#cbd5e1"/><g font-size="14" font-weight="bold" fill="#1e3a8a"><text x="50" y="65">Crates: 0</text><text x="160" y="65">➔</text><text x="210" y="40">Truck 1: 0</text><text x="210" y="60">Truck 2: 0</text><text x="210" y="80">... Truck 5: 0</text></g></svg>`,
-            options: ["a) 0 crates", "b) 5 crates", "c) 1 crate", "d) Cannot be calculated"],
-            answer: 0,
-            hint: "If you start with nothing, no matter how many groups you split it into, how much will each group get?",
-            explanation: "Dividing zero by any non-zero number always results in a quotient of zero (0 ÷ 5 = 0)."
-        },
-        {
-            type: "visual",
-            lo: "LO 2: Partial Long Division Process",
-            question: "[Picture: A long division block showing 96 ÷ 4 with the tens division step complete, leaving the ones place step blank]. Complete the missing step in this calculation. What final quotient do you get when you finish dividing 96 items into 4 equal lines?",
-            svg: `<svg viewBox="0 0 400 140" width="100%"><rect width="400" height="140" fill="#f8fafc" rx="8" stroke="#cbd5e1"/><text x="140" y="30" font-family="monospace" font-size="18" font-weight="bold">  2_</text><text x="110" y="55" font-family="monospace" font-size="18" font-weight="bold">4 ) 96</text><line x1="130" y1="38" x2="180" y2="38" stroke="#000" stroke-width="2"/><text x="140" y="80" font-family="monospace" font-size="18" font-weight="bold">- 8</text><line x1="130" y1="90" x2="180" y2="90" stroke="#000" stroke-width="2"/><text x="140" y="115" font-family="monospace" font-size="18" font-weight="bold">  16</text></svg>`,
-            options: ["a) 24", "b) 22", "c) 19", "d) 26"],
-            answer: 0,
-            hint: "First divide 9 tens by 4 (4 × 2 = 8, remainder 1). Bring down the 6 ones to make 16, then divide 16 by 4.",
-            explanation: "96 ÷ 4 = 24. The tens place gives 2, and the remaining 16 ones divided by 4 gives 4 ones."
-        },
-        {
-            type: "text",
-            lo: "LO 1: Analyzing Identity Operations",
-            question: "A student claims: 'If I take any whole number and divide it by 1, the answer will always be 1.' How should you evaluate this statement?",
-            options: ["a) It is incorrect; dividing a number by 1 always gives the original number itself.", "b) It is correct for all whole numbers.", "c) It is only correct if the number is greater than 100.", "d) It is incorrect; dividing by 1 always results in 0."],
-            answer: 0,
-            hint: "Test this claim with a real number. For example, if you have 5 apples and give them all to 1 person, how many apples does that person get?",
-            explanation: "The division property of 1 states that any number divided by 1 equals the number itself (5 ÷ 1 = 5), making the student's statement incorrect."
-        },
-        {
-            type: "text",
-            lo: "LO 2: Remainder Boundary Validation",
-            question: "An apprentice mechanic attempts to divide 87 bolts equally into 4 workshop bins. They write down: 87 ÷ 4 = 20 with a remainder of 7. What structural error did this apprentice make?",
-            options: ["a) The remainder (7) is larger than the divisor (4), meaning another group could have been made.", "b) They should have added 87 and 4 instead of dividing.", "c) The quotient must always be an odd number.", "d) They should have written the remainder as a negative value."],
-            answer: 0,
-            hint: "A remainder can never be equal to or greater than your divisor. If it is larger, you can extract more groups of 4.",
-            explanation: "A remainder must always be strictly less than the divisor. A remainder of 7 means you can make 1 more group of 4, changing the correct answer to 21 with a remainder of 3."
-        },
-        {
-            type: "text",
-            lo: "LO 3: Multi-Digit Verification Formulas",
-            question: "A data server processes 484 files in batches. If it sorts them into 4 identical server cores with no files left over, which equation verifies that the distribution was calculated perfectly?",
-            options: ["a) (4 × 121) + 0 = 484", "b) (4 + 121) × 0 = 484", "c) (484 × 4) + 121 = 4", "d) (121 ÷ 4) + 0 = 484"],
-            answer: 0,
-            hint: "Use the standard verification formula: (Divisor × Quotient) + Remainder = Dividend.",
-            explanation: "Here, the Divisor is 4, the Quotient is 121, and the Remainder is 0. Plugging them into the formula gives: (4 × 121) + 0 = 484, which matches the dividend perfectly."
-        },
-        {
-            type: "text",
-            lo: "LO 2: Loose-Item Extraction",
-            question: "You need to pack 68 dynamic circuit units into safety trays. If each safety tray can hold a maximum of 5 units, what will be the final remainder of ungrouped units left over?",
-            options: ["a) 3 units", "b) 1 unit", "c) 2 units", "d) 0 units"],
-            answer: 0,
-            hint: "Calculate 68 ÷ 5. Find the highest multiple of 5 that is less than or equal to 68.",
-            explanation: "5 × 13 = 65. Subtracting 65 from 68 leaves an ungrouped remainder of 3 units (68 = [5 \u00d7 13] + 3)."
-        },
-        {
-            type: "text",
-            lo: "LO 4: Zero Boundary Shortcut Rules",
-            question: "A shipping center receives 930 smart meters to pack into large boxes. Each box holds exactly 10 meters. How many full boxes are ready to ship?",
-            options: ["a) 93 boxes", "b) 930 boxes", "c) 9 boxes", "d) 30 boxes"],
-            answer: 0,
-            hint: "When dividing a number that ends in 0 by 10, simply remove the zero in the ones place to find your answer.",
-            explanation: "930 ÷ 10 = 93 with a remainder of 0. This means exactly 93 full boxes are packed with no loose meters left over."
-        },
-        {
-            type: "text",
-            lo: "LO 3: Clean Dividend Partitioning",
-            question: "A flight simulator log tracks a pilot who completes 639 simulated landing loops across 3 training phases. If they did the same number of loops in each phase, how many loops did they complete per phase?",
-            options: ["a) 213 loops", "b) 203 loops", "c) 312 loops", "d) 230 loops"],
-            answer: 0,
-            hint: "Break down the dividend by place value: divide 6 hundreds by 3, 3 tens by 3, and 9 ones by 3.",
-            explanation: "Dividing each place value by 3 gives: 600 ÷ 3 = 200, 30 ÷ 3 = 10, and 9 ÷ 3 = 3. Adding these up gives a quotient of 213."
-        },
-        {
-            type: "text",
-            lo: "LO 1: Single-Unit Group Property",
-            question: "A farming cooperative harvests 84 kilograms of organic grain and packs it into 1-kilogram sample bags. How many sample bags can they fill?",
-            options: ["a) 84 bags", "b) 1 bag", "c) 0 bags", "d) 85 bags"],
-            answer: 0,
-            hint: "Any quantity divided into single individual units keeps its original numerical value.",
-            explanation: "Based on the properties of division, dividing any number by 1 gives the original dividend (84 ÷ 1 = 84)."
-        },
-        {
-            type: "text",
-            lo: "LO 3: Algorithm Step Routing",
-            question: "A developer is testing a loop that divides 1,205 lines of code into groups. If the program runs 1,205 ÷ 5, what is the exact quotient returned?",
-            options: ["a) 241", "b) 204", "c) 240", "d) 251"],
-            answer: 0,
-            hint: "Divide the first two digits (12) by 5 to get 2 with a remainder of 2. Bring down 0 to make 20, then divide by 5. Finally, divide the last 5 ones by 5.",
-            explanation: "Long division workflow: 12 ÷ 5 = 2 (remainder 2); bring down 0 to make 20 ÷ 5 = 4; bring down 5 to make 5 ÷ 5 = 1. This results in an exact quotient of 241."
-        },
-        {
-            type: "text",
-            lo: "LO 5: Overcapacity Shuttling Strategy",
-            question: "A field trip requires transporting 75 students. Each security transport shuttle can safely carry a maximum of 8 students. What is the total number of shuttles that must be hired so that no student is left behind?",
-            options: ["a) 10 shuttles", "b) 9 shuttles", "c) 3 shuttles", "d) 8 shuttles"],
-            answer: 0,
-            hint: "Calculate 75 ÷ 8. Think carefully about what to do with the remainder if every single student needs a ride.",
-            explanation: "75 ÷ 8 = 9 with a remainder of 3 students. While 9 shuttles will be completely filled, you still need 1 additional shuttle to carry the 3 leftover students. Total needed: 9 + 1 = 10 shuttles."
-        },
-        {
-            type: "text",
-            lo: "LO 3: High-Capacity Inventory Tracking",
-            question: "A printing house produces 4,826 testing certificates. They pack them into bundles of 6. After making as many full bundles as possible, how many single leftover certificates will remain loose?",
-            options: ["a) 2 certificates", "b) 4 certificates", "c) 0 certificates", "d) 5 certificates"],
-            answer: 0,
-            hint: "Complete the long division for 4,826 ÷ 6 and identify the final value left over at the end.",
-            explanation: "Dividing 4,826 by 6 gives a quotient of 804 (6 \u00d7 804 = 4824) and leaves a remainder of 2. This means 2 certificates will be left over."
-        },
-        {
-            type: "text",
-            lo: "LO 4: Splitting Base-10 Logs",
-            question: "A production line packs 5,678 precision gears into boxes of 10. The system supervisor needs to double-check the packing logs. Which statement accurately details the results?",
-            options: ["a) 567 full boxes are packed, leaving a remainder of 8 loose gears.", "b) 56 full boxes are packed, leaving a remainder of 78 loose gears.", "c) 5,678 full boxes are packed, leaving a remainder of 0 loose gears.", "d) 567 full boxes are packed, leaving a remainder of 0 loose gears."],
-            answer: 0,
-            hint: "Isolate the ones column to instantly find the remainder when dividing by 10. The remaining front digits form your quotient.",
-            explanation: "Dividing 5,678 by 10 separates the ones place (8) as the remainder, while the digits ahead (567) form the quotient. This means you have 567 full boxes and 8 loose gears."
-        },
-        {
-            type: "text",
-            lo: "LO 3: Debugging Place-Value Steps",
-            question: "A technician is auditing a broken software calculation that states: 3,605 ÷ 6 = 60 with a remainder of 5. Why is this calculation incorrect?",
-            options: ["a) The quotient should be 600 instead of 60, because 36 hundreds divided by 6 is 6 hundreds.", "b) The remainder is larger than the divisor.", "c) You cannot divide an odd dividend by an even divisor.", "d) The verification formula shows that 60 is too large."],
-            answer: 0,
-            hint: "Check your place value steps. When you bring down the 0 from the tens place, you must record a 0 in the quotient before moving to the next digit.",
-            explanation: "Dividing 36 hundreds by 6 gives 6 hundreds. Bringing down the 0 tens gives 0 tens in the quotient. Finally, bringing down the 5 ones gives 0 ones and a remainder of 5. The correct quotient is 600, not 60."
-        },
-        {
-            type: "text",
-            lo: "LO 5: Array Layout Trimming",
-            question: "An auditorium manager has 143 dynamic seating pods. They arrange them into uniform rows of 7 pods each. After building as many full rows as possible, they decide to remove all remaining loose pods. How many pods are removed?",
-            options: ["a) 3 pods", "b) 2 pods", "c) 5 pods", "d) 1 pod"],
-            answer: 0,
-            hint: "The pods to be removed are the leftover remainder after calculating 143 ÷ 7.",
-            explanation: "143 ÷ 7 = 20 with a remainder of 3 (7 \u00d7 20 = 140). The 3 loose pods that do not form a complete row are the ones that get removed."
-        },
-        {
-            type: "text",
-            lo: "LO 4: Scaling Extra Batches",
-            question: "A wholesale store sells bundles of 10 micro-screws. A mechanic needs exactly 245 micro-screws for a repair job. What is the minimum number of full bundles they must buy to make sure they have enough screws?",
-            options: ["a) 25 bundles", "b) 24 bundles", "c) 200 bundles", "d) 5 bundles"],
-            answer: 0,
-            hint: "245 ÷ 10 = 24 with a remainder of 5. If they buy only 24 bundles, they will be short by 5 screws.",
-            explanation: "Buying 24 full bundles provides 240 screws, which is not enough. To get the remaining 5 screws needed for the job, they must purchase 1 more entire bundle. Total needed: 24 + 1 = 25 bundles."
-        }
-    ];
-
-    class DivisionQuizEngine {
-        constructor(dataset) {
-            this.dataset = dataset;
-            this.currentIndex = 0;
-            this.score = 0;
-            this.attempts = 0;
-            this.timeLeft = 60;
-            this.timerInterval = null;
-        }
-
-        init() {
-            setTimeout(() => {
-                const splash = document.getElementById('splash-screen');
-                splash.style.opacity = 0;
-                setTimeout(() => splash.classList.add('hidden'), 500);
-                this.loadCurrentQuestion();
-            }, 5000);
-        }
-
-        loadCurrentQuestion() {
-            this.attempts = 0;
-            this.timeLeft = 60;
-            
-            document.getElementById('q-feedback-box').className = "feedback-box";
-            document.getElementById('q-feedback-box').style.display = "none";
-            document.getElementById('q-action-container').classList.add('hidden');
-            
-            const qData = this.dataset[this.currentIndex];
-            
-            document.getElementById('current-q-label').innerText = this.currentIndex + 1;
-            document.getElementById('q-number-hdr').innerText = `Question ${this.currentIndex + 1}`;
-            document.getElementById('q-text-container').innerText = qData.question;
-
-            const progressPercentage = (this.currentIndex / this.dataset.length) * 100;
-            document.getElementById('progress-indicator').style.width = `${progressPercentage}%`;
-
-            const svgBox = document.getElementById('q-svg-container');
-            if (qData.type === "visual" && qData.svg) {
-                svgBox.innerHTML = qData.svg;
-                svgBox.classList.remove('hidden');
-            } else {
-                svgBox.classList.add('hidden');
-                svgBox.innerHTML = '';
+    <script>
+        // Raw dataset base
+        const masterQuestions = [
+            {
+                question: "What is 48 ÷ 6?",
+                options: ["6", "7", "8", "9"],
+                answer: 2, // index of "8" initially
+                hint: "Think about what multiplied by 6 equals 48.",
+                explanation: "48 divided by 6 is 8 because 6 × 8 = 48."
+            },
+            {
+                question: "What is 132 ÷ 11?",
+                options: ["11", "12", "13", "14"],
+                answer: 1,
+                hint: "11 × 10 = 110. Add one more 11 to get 121...",
+                explanation: "132 ÷ 11 = 12 because 11 × 12 = 132."
+            },
+            {
+                question: "What is the quotient of 0 ÷ 7?",
+                options: ["0", "7", "Undefined", "1"],
+                answer: 0,
+                hint: "If you have 0 items to share among 7 people, how many does each person get?",
+                explanation: "Zero divided by any non-zero number is always 0."
+            },
+            {
+                question: "What is 7 ÷ 0?",
+                options: ["0", "7", "Undefined", "70"],
+                answer: 2,
+                hint: "Can you divide something into groups of zero items?",
+                explanation: "Division by zero is undefined in mathematics."
+            },
+            {
+                question: "What is the remainder when 45 is divided by 6?",
+                options: ["1", "3", "5", "0"],
+                answer: 1,
+                hint: "Find the closest multiple of 6 that is less than 45.",
+                explanation: "6 × 7 = 42. The difference between 45 and 42 is 3."
+            },
+            {
+                question: "Solve: 240 ÷ 40",
+                options: ["6", "60", "4", "40"],
+                answer: 0,
+                hint: "You can cancel out the trailing zeros to make it 24 ÷ 4.",
+                explanation: "240 ÷ 40 is equivalent to 24 ÷ 4, which equals 6."
+            },
+            {
+                question: "What is 100 ÷ 0.25?",
+                options: ["25", "40", "250", "400"],
+                answer: 3,
+                hint: "Dividing by 0.25 (or 1/4) is the same as multiplying by 4.",
+                explanation: "There are four 0.25s in every 1 unit, so 100 × 4 = 400."
+            },
+            {
+                question: "If 7 x 9 = 63, which division sentence is also true?",
+                options: ["7 ÷ 63 = 9", "63 ÷ 9 = 7", "9 ÷ 7 = 63", "63 ÷ 63 = 7"],
+                answer: 1,
+                hint: "Division is the inverse operation of multiplication. Total ÷ Factor = Other Factor.",
+                explanation: "Because 7 × 9 = 63, it inversely means 63 ÷ 9 = 7."
+            },
+            {
+                question: "What is 144 ÷ (12 ÷ 3)?",
+                options: ["36", "12", "4", "48"],
+                answer: 0,
+                hint: "Remember Order of Operations (PEMDAS). Solve the parenthesis first.",
+                explanation: "First solve 12 ÷ 3 = 4. Then calculate 144 ÷ 4 = 36."
+            },
+            {
+                question: "A box holds 8 donuts. How many full boxes can be filled with 90 donuts?",
+                options: ["10", "11", "12", "11.25"],
+                answer: 1,
+                hint: "Divide 90 by 8 and drop the remainder since the question asks for full boxes.",
+                explanation: "90 ÷ 8 = 11 with a remainder of 2. So, 11 full boxes can be filled."
+            },
+            {
+                question: "What is 1,212 ÷ 4?",
+                options: ["33", "303", "330", "333"],
+                answer: 1,
+                hint: "Break it down: 1,200 ÷ 4 and 12 ÷ 4, then add them together.",
+                explanation: "1200 ÷ 4 = 300, and 12 ÷ 4 = 3. 300 + 3 = 303."
+            },
+            {
+                question: "Which of the following numbers is perfectly divisible by 3 (no remainder)?",
+                options: ["251", "313", "404", "513"],
+                answer: 3,
+                hint: "A number is divisible by 3 if the sum of its digits is divisible by 3.",
+                explanation: "For 513: 5 + 1 + 3 = 9. Since 9 is divisible by 3, 513 is also divisible by 3."
             }
+        ];
 
-            const optionsGrid = document.getElementById('q-options-grid');
-            optionsGrid.innerHTML = '';
+        let questions = [];
+        let currentQ = 0, score = 0, attempts = 0, timeLeft = 60, timer;
 
-            qData.options.forEach((opt, idx) => {
-                const btn = document.createElement('button');
-                btn.type = "button";
-                btn.className = "option-btn";
-                btn.innerText = opt;
-                btn.onclick = () => this.evaluateSelection(idx, btn);
-                optionsGrid.appendChild(btn);
-            });
-
-            this.launchTimer();
+        // Helper function to shuffle array items in place
+        function shuffle(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
         }
 
-        launchTimer() {
-            clearInterval(this.timerInterval);
-            this.refreshTimerUI();
+        // Prepares quiz configurations dynamically 
+        function setupQuizData() {
+            // Shallow clone and shuffle the core questions
+            questions = shuffle([...masterQuestions]);
 
-            this.timerInterval = setInterval(() => {
-                this.timeLeft--;
-                this.refreshTimerUI();
+            // Shuffle the choices inside every isolated question item
+            questions.forEach(q => {
+                const correctText = q.options[q.answer]; // Grab string value of correct choice
+                shuffle(q.options);                      // Shuffle options array directly
+                q.answer = q.options.indexOf(correctText); // Recalculate target key location
+            });
+        }
 
-                if (this.timeLeft <= 0) {
-                    clearInterval(this.timerInterval);
-                    this.triggerTimeOut();
+        // Splash screen delay
+        setTimeout(() => {
+            const splash = document.getElementById('splash');
+            splash.style.opacity = 0;
+            setTimeout(() => splash.classList.add('hidden'), 500);
+        }, 2000);
+
+        function startTimer() {
+            timeLeft = 60;
+            clearInterval(timer);
+            timer = setInterval(() => {
+                timeLeft--;
+                document.getElementById('timer').innerText = timeLeft + 's';
+                if(timeLeft <= 0) { 
+                    clearInterval(timer); 
+                    handleTimeout(); 
                 }
             }, 1000);
         }
 
-        refreshTimerUI() {
-            const timerBadge = document.getElementById('timer-display');
-            timerBadge.innerText = `${this.timeLeft}s`;
-            if (this.timeLeft <= 15) {
-                timerBadge.classList.add('timer-low');
-            } else {
-                timerBadge.classList.remove('timer-low');
-            }
-        }
-
-        evaluateSelection(selectedIdx, clickedBtn) {
-            const qData = this.dataset[this.currentIndex];
-            this.attempts++;
-
-            if (selectedIdx === qData.answer) {
-                clearInterval(this.timerInterval);
-                this.playAudioFeedback('audio-correct');
-                clickedBtn.classList.add('selected-correct');
-                this.lockOptions();
-                
-                if (this.attempts === 1) {
-                    this.score++;
-                }
-
-                const fb = document.getElementById('q-feedback-box');
-                fb.className = "feedback-box show correct-bg";
-                fb.innerHTML = `<strong>✓ Execution Complete!</strong><div class="explanation-text">${qData.explanation}</div>`;
-                document.getElementById('q-action-container').classList.remove('hidden');
-            } else {
-                this.playAudioFeedback('audio-wrong');
-                clickedBtn.classList.add('selected-wrong');
-                clickedBtn.disabled = true;
-
-                if (this.attempts === 1) {
-                    const fb = document.getElementById('q-feedback-box');
-                    fb.className = "feedback-box show hint-bg";
-                    fb.innerHTML = `<strong>💡 Operational Hint:</strong> <span class="explanation-text">${qData.hint}</span>`;
-                } else {
-                    clearInterval(this.timerInterval);
-                    this.lockOptions();
-                    this.exposeCorrectAnswer();
-                    document.getElementById('q-action-container').classList.remove('hidden');
-                }
-            }
-        }
-
-        triggerTimeOut() {
-            this.lockOptions();
-            this.exposeCorrectAnswer();
-            document.getElementById('q-action-container').classList.remove('hidden');
-        }
-
-        exposeCorrectAnswer() {
-            const qData = this.dataset[this.currentIndex];
-            const buttons = document.getElementsByClassName('option-btn');
-            if (buttons[qData.answer]) {
-                buttons[qData.answer].classList.add('selected-correct');
-            }
-
-            const fb = document.getElementById('q-feedback-box');
-            fb.className = "feedback-box show incorrect-bg";
-            fb.innerHTML = `<strong>⚡ Core Mathematical Breakdown:</strong><div class="explanation-text">${qData.explanation}</div>`;
-        }
-
-        lockOptions() {
-            const buttons = document.getElementsByClassName('option-btn');
-            for (let btn of buttons) {
-                btn.disabled = true;
-            }
-        }
-
-        playAudioFeedback(elementId) {
-            const audio = document.getElementById(elementId);
-            if (audio) {
-                audio.currentTime = 0;
-                audio.play().catch(() => {});
-            }
-        }
-
-        advanceQuestion() {
-            this.currentIndex++;
-            if (this.currentIndex < this.dataset.length) {
-                this.loadCurrentQuestion();
-            } else {
-                this.renderFinalDashboard();
-            }
-        }
-
-        renderFinalDashboard() {
-            document.getElementById('quiz-workspace').classList.add('hidden');
+        function loadQuestion() {
+            attempts = 0;
+            startTimer();
+            const q = questions[currentQ];
+            document.getElementById('q-progress').innerText = `Question ${currentQ + 1}/${questions.length}`;
+            document.getElementById('question').innerText = q.question;
+            document.getElementById('options').innerHTML = q.options.map((opt, i) => 
+                `<button class="option-btn" id="opt-${i}" onclick="check(${i})">${opt}</button>`).join('');
             
-            const resultsCard = document.getElementById('results-card');
-            resultsCard.style.display = "block";
-            
-            document.getElementById('final-score-text').innerText = `${this.score} / ${this.dataset.length}`;
-            const percentage = Math.round((this.score / this.dataset.length) * 100);
-            document.getElementById('final-percentage-text').innerText = `Engine Accuracy Score: ${percentage}%`;
-
-            const desc = document.getElementById('performance-descriptor');
-            if (percentage >= 80) {
-                desc.innerText = "🌟 Division Master Systems Engineer! Your algebraic allocation tracking and algorithmic properties are perfect.";
-                desc.style.color = "#15803d";
-            } else if (percentage >= 50) {
-                desc.innerText = "👍 Qualified Logistics Auditor! Solid grasp of grouping operations. Refine remainder handling models for perfect scores.";
-                desc.style.color = "#a16207";
-            } else {
-                desc.innerText = "🔄 Division Framework Re-Calibration Recommended! Re-examine basic place-value long division strategies and divisor checks.";
-                desc.style.color = "#b91c1c";
-            }
-
-            window.scrollTo({ top: resultsCard.offsetTop - 20, behavior: 'smooth' });
+            const fb = document.getElementById('feedback');
+            fb.classList.add('hidden');
+            fb.className = ''; 
+            document.getElementById('next-btn').classList.add('hidden');
         }
-    }
 
-    const quizEngine = new DivisionQuizEngine(assessmentDataset);
-    window.onload = () => quizEngine.init();
-</script>
+        function check(idx) {
+            const q = questions[currentQ];
+            const fb = document.getElementById('feedback');
+            attempts++;
+            
+            if (idx === q.answer || attempts >= 2) {
+                clearInterval(timer);
+                const buttons = document.querySelectorAll('.option-btn');
+                buttons.forEach(btn => btn.disabled = true);
+            }
+            
+            if(idx === q.answer) {
+                score++;
+                try { document.getElementById('audio-correct').play(); } catch(e){}
+                fb.innerText = "Correct! " + q.explanation;
+                fb.className = 'feedback-correct';
+                fb.classList.remove('hidden');
+                document.getElementById('next-btn').classList.remove('hidden');
+            } else if(attempts < 2) {
+                fb.className = 'feedback-hint';
+                fb.classList.remove('hidden');
+                fb.innerText = "Hint: " + q.hint;
+                document.getElementById(`opt-${idx}`).style.borderColor = "var(--danger)";
+            } else {
+                try { document.getElementById('audio-wrong').play(); } catch(e){}
+                fb.className = 'feedback-wrong';
+                fb.classList.remove('hidden');
+                fb.innerText = "Incorrect. " + q.explanation;
+                document.getElementById('next-btn').classList.remove('hidden');
+            }
+        }
+
+        function handleTimeout() {
+            const q = questions[currentQ];
+            const fb = document.getElementById('feedback');
+            const buttons = document.querySelectorAll('.option-btn');
+            buttons.forEach(btn => btn.disabled = true);
+            
+            fb.className = 'feedback-wrong';
+            fb.classList.remove('hidden');
+            fb.innerText = "Time's up! " + q.explanation;
+            document.getElementById('next-btn').classList.remove('hidden');
+        }
+
+        function nextQuestion() {
+            currentQ++;
+            if(currentQ < questions.length) loadQuestion();
+            else showResults();
+        }
+
+        function showResults() {
+            document.getElementById('quiz-area').classList.add('hidden');
+            document.getElementById('result-area').classList.remove('hidden');
+            
+            const finalMsg = document.getElementById('final-msg');
+            const scoreText = document.getElementById('score-text');
+            const percentage = Math.round((score / questions.length) * 100);
+            
+            scoreText.innerText = `You scored ${score} out of ${questions.length} (${percentage}%).`;
+            
+            if (percentage >= 85) {
+                finalMsg.innerText = "🎉 Division Master!";
+                finalMsg.style.color = "var(--success)";
+            } else if (percentage >= 60) {
+                finalMsg.innerText = "👍 Good Job!";
+                finalMsg.style.color = "var(--hint)";
+            } else {
+                finalMsg.innerText = "📚 Keep Practicing!";
+                finalMsg.style.color = "var(--danger)";
+            }
+        }
+
+        // Initialize quiz configuration routines
+        setupQuizData();
+        loadQuestion();
+    </script>
 </body>
 </html>
