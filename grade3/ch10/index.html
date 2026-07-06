@@ -63,10 +63,19 @@
         /* Logo Screen */
         #logo-screen {
             background: #ffffff;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 100;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
         #logo-screen img {
-            max-width: 250px;
+            max-width: 210px;
             height: auto;
         }
 
@@ -114,7 +123,7 @@
         p.context-text {
             font-size: 16px;
             line-height: 1.5;
-            text-align: center;
+            text-align: left;
             margin-bottom: 20px;
             color: #4A5568;
             background: #F8FAFC;
@@ -122,19 +131,21 @@
             border-radius: 10px;
             border-left: 4px solid var(--primary-color);
             width: 100%;
+            white-space: pre-line;
         }
 
         /* Visual Aids Container */
         .visual-aid {
-            margin: 10px 0 20px 0;
+            margin: 5px 0 15px 0;
             display: flex;
             justify-content: center;
             align-items: center;
             width: 100%;
+            min-height: 70px;
         }
 
         .pizza-img {
-            max-width: 150px;
+            max-width: 130px;
             height: auto;
             object-fit: contain;
             display: block;
@@ -146,7 +157,7 @@
             flex-direction: column;
             gap: 12px;
             width: 100%;
-            margin-top: 10px;
+            margin-top: 5px;
         }
 
         .option-btn {
@@ -185,13 +196,14 @@
 
         /* System Messages / Feedback Box */
         .feedback-box {
-            margin-top: 20px;
+            margin-top: 15px;
             padding: 14px;
             border-radius: 10px;
-            text-align: center;
-            font-weight: 600;
+            text-align: left;
+            font-weight: 500;
             width: 100%;
             display: none;
+            line-height: 1.4;
             animation: popIn 0.3s ease;
         }
 
@@ -199,14 +211,14 @@
             background: #FFF9E6;
             color: #8A6D3B;
             border: 1px dashed var(--secondary-color);
+            text-align: center;
+            font-weight: 600;
         }
 
         .feedback-box.reveal {
             background: #E8F8F0;
             color: #1E7E34;
-            border: 1px solid var(--success-color);
-            font-weight: 500;
-            text-align: left;
+            border-left: 4px solid var(--success-color);
         }
 
         /* Action Buttons */
@@ -220,8 +232,10 @@
             border-radius: 12px;
             cursor: pointer;
             transition: background 0.2s;
-            margin-top: 20px;
+            margin-top: 15px;
             box-shadow: 0 4px 6px rgba(74, 144, 226, 0.2);
+            width: 100%;
+            text-align: center;
         }
 
         .action-btn:hover {
@@ -256,7 +270,7 @@
     <div id="game-container">
         <canvas id="confetti-canvas"></canvas>
 
-        <div id="logo-screen" class="screen active">
+        <div id="logo-screen">
             <img src="assets/logo.png" alt="Innovine Logo" onerror="this.style.display='none'; document.getElementById('logo-fallback').style.display='block';">
             <h1 id="logo-fallback" style="display:none; color: #4A90E2; font-weight: 800; font-size: 32px;">INNOVINE</h1>
         </div>
@@ -305,7 +319,6 @@
     <audio id="audio-wrong" src="assets/wrong.mp3" preload="auto"></audio>
 
     <script>
-        // Master dataset containing the canonical correct answer text
         const masterDatabase = [
             {
                 context: "Mini brings a full round pizza to school. She wants to share it equally with her friend Rohan. Into how many equal parts should she cut the pizza so that both of them get an exact half?",
@@ -350,7 +363,7 @@
             {
                 context: "Arjun wants to show 1/4 of a paper circle. He draws lines to cut it into 4 pieces and colors 1 piece yellow. Look at his shape. What mistake did Arjun make?",
                 visualType: "unequal-circle",
-                options: ["He colored too many parts.", "The 4 parts are not equal in size.", "He should have made only 2 parts.", "He made no mistake."],
+                options: ["He made no mistake.", "The 4 parts are not equal in size.", "He should have made only 2 parts.", "He colored too many parts."],
                 correctText: "The 4 parts are not equal in size.",
                 hint: "Fractions can only show parts of a whole if all the broken parts are completely fair and identical.",
                 explanation: "Fractions must always represent equal parts of a whole. Because Arjun's pieces are different sizes, it cannot represent 1/4."
@@ -394,9 +407,7 @@
             }
         ];
 
-        // Active database instance that gets shuffled and randomized
         let database = [];
-
         let state = {
             currentIdx: 0,
             score: 0,
@@ -407,12 +418,16 @@
 
         window.addEventListener('DOMContentLoaded', () => {
             setTimeout(() => {
-                document.getElementById('logo-screen').classList.remove('active');
-                document.getElementById('intro-screen').classList.add('active');
-            }, 5000);
+                const splash = document.getElementById('logo-screen');
+                splash.style.transition = 'opacity 0.5s ease';
+                splash.style.opacity = '0';
+                setTimeout(() => {
+                    splash.style.display = 'none';
+                    document.getElementById('intro-screen').classList.add('active');
+                }, 500);
+            }, 2000);
         });
 
-        // Fisher-Yates shuffle engine to randomize any target array
         function shuffleArray(arr) {
             for (let i = arr.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
@@ -422,19 +437,16 @@
         }
 
         function prepareQuizData() {
-            // Deep clone master list to ensure fresh state on play-again clicks
             database = masterDatabase.map(item => {
                 return {
                     context: item.context,
                     visualType: item.visualType,
-                    // Randomize order of individual options within the question item
-                    options: shuffleArray([...item.options]),
+                    options: [...item.options],
                     correctText: item.correctText,
                     hint: item.hint,
                     explanation: item.explanation
                 };
             });
-            // Randomize whole question queue sequence layout
             shuffleArray(database);
         }
 
@@ -465,10 +477,10 @@
             aidBox.innerHTML = '';
             
             if(qData.visualType === 'pizza') {
-                aidBox.innerHTML = `<img src="assets/pizza.png" alt="Whole Pizza with Toppings" class="pizza-img">`;
+                aidBox.innerHTML = `<img src="assets/pizza.png" alt="Whole Pizza" class="pizza-img" onerror="this.style.display='none'; this.parentElement.innerHTML='🍕';">`;
             } else if(qData.visualType === 'window') {
                 aidBox.innerHTML = `
-                    <svg width="150" height="150" viewBox="0 0 100 100" style="background:#334155; border-radius:8px; padding:6px;">
+                    <svg width="120" height="120" viewBox="0 0 100 100" style="background:#334155; border-radius:8px; padding:6px;">
                         <rect x="2" y="2" width="46" height="46" fill="#3B82F6" stroke="#0284C7" stroke-width="1"/>
                         <text x="25" y="30" font-size="16" text-anchor="middle">☁️</text>
                         <rect x="52" y="2" width="46" height="46" fill="#3B82F6" stroke="#0284C7" stroke-width="1"/>
@@ -478,7 +490,7 @@
                     </svg>`;
             } else if(qData.visualType === 'chocolate') {
                 aidBox.innerHTML = `
-                    <svg width="220" height="65" viewBox="0 0 160 45" style="filter: drop-shadow(0px 2px 4px rgba(0,0,0,0.15));">
+                    <svg width="180" height="55" viewBox="0 0 160 45" style="filter: drop-shadow(0px 2px 4px rgba(0,0,0,0.15));">
                         <rect x="2" y="2" width="36" height="40" rx="4" fill="#7A431D" stroke="#5C3214" stroke-width="1.5"/>
                         <rect x="7" y="6" width="26" height="32" rx="2" fill="#8B4F26"/>
                         <rect x="41" y="2" width="36" height="40" rx="4" fill="#7A431D" stroke="#5C3214" stroke-width="1.5"/>
@@ -490,11 +502,13 @@
                     </svg>`;
             } else if(qData.visualType === 'unequal-circle') {
                 aidBox.innerHTML = `
-                    <svg width="140" height="140" viewBox="0 0 100 100">
-                        <circle cx="50" cy="50" r="46" fill="#E2E8F0" stroke="#64748B" stroke-width="3"/>
-                        <path d="M 50 50 L 25 50 A 46 46 0 0 1 50 4" fill="#FCD34D" />
-                        <line x1="25" y1="4" x2="25" y2="96" stroke="#64748B" stroke-width="2.5"/>
-                        <line x1="4" y1="50" x2="96" y2="50" stroke="#64748B" stroke-width="2.5"/>
+                    <svg width="140" height="140" viewBox="0 0 100 100" style="overflow: visible;">
+                        <circle cx="50" cy="50" r="44" fill="#EAEFF8" stroke="#52627A" stroke-width="3"/>
+                        
+                        <path d="M 37.5 50 A 44 44 0 0 1 50 6 L 50 50 Z" fill="#FCCA1B" />
+                        
+                        <line x1="37.5" y1="2" x2="37.5" y2="98" stroke="#52627A" stroke-width="3"/>
+                        <line x1="2" y1="50" x2="98" y2="50" stroke="#52627A" stroke-width="3"/>
                     </svg>`;
             }
 
@@ -530,7 +544,6 @@
             const qData = database[state.currentIdx];
             const feedback = document.getElementById('feedback-message');
             
-            // Evaluates text payload directly rather than indexes to stay dynamic
             if(selectedText === qData.correctText) {
                 clearInterval(state.timer);
                 playSound('claps');
@@ -543,6 +556,7 @@
                 
                 document.getElementById('current-score').innerText = state.score;
                 feedback.className = 'feedback-box reveal';
+                feedback.style.borderLeft = '4px solid var(--success-color)';
                 feedback.innerHTML = `<strong>🌟 Correct!</strong> ${qData.explanation}`;
                 feedback.style.display = 'block';
                 document.getElementById('next-btn').style.display = 'inline-block';
@@ -559,6 +573,12 @@
                 } else {
                     clearInterval(state.timer);
                     disableAllOptions();
+                    
+                    const buttons = document.querySelectorAll('.option-btn');
+                    buttons.forEach(b => {
+                        if(b.innerText === qData.correctText) b.classList.add('correct');
+                    });
+
                     feedback.className = 'feedback-box reveal';
                     feedback.style.borderLeft = '4px solid var(--error-color)';
                     feedback.innerHTML = `<strong>Let's learn:</strong> The correct answer is <strong>${qData.correctText}</strong>.<br><br>${qData.explanation}`;
@@ -572,6 +592,12 @@
             disableAllOptions();
             const qData = database[state.currentIdx];
             const feedback = document.getElementById('feedback-message');
+            
+            const buttons = document.querySelectorAll('.option-btn');
+            buttons.forEach(b => {
+                if(b.innerText === qData.correctText) b.classList.add('correct');
+            });
+
             feedback.className = 'feedback-box reveal';
             feedback.style.borderLeft = '4px solid var(--secondary-color)';
             feedback.innerHTML = `<strong>⏰ Time's up!</strong> The correct answer is <strong>${qData.correctText}</strong>.<br><br>${qData.explanation}`;
@@ -614,13 +640,14 @@
 
             if(scorePct >= 75) {
                 emoji.innerText = "🏆";
-                txt.innerText = "Good job!";
+                txt.innerText = "Good job! You are a fractions master!";
+                triggerConfetti();
             } else if(scorePct >= 40) {
                 emoji.innerText = "🔄";
-                txt.innerText = "Review this chapter and try again";
+                txt.innerText = "Review this chapter and try again.";
             } else {
                 emoji.innerText = "📚";
-                txt.innerText = "Let’s practise more";
+                txt.innerText = "Let’s practise more together.";
             }
         }
 
