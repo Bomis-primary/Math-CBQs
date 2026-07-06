@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Grade 3 Maths: Measurement & Estimation Interactive</title>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <style>
         :root {
             --primary: #2b5c8f;
@@ -45,23 +46,22 @@
             overflow: hidden;
         }
 
-        /* Splash Screen styling */
+        /* Fixed Splash Screen styling to match original structure */
         #splash-screen {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
             background: #ffffff;
             display: flex;
-            flex-direction: column;
             justify-content: center;
             align-items: center;
             z-index: 9999;
             transition: opacity 0.5s ease;
         }
 
-        .logo-placeholder {
+        #splash-screen img {
             max-width: 220px;
             height: auto;
-            margin-bottom: 20px;
+            object-fit: contain;
         }
 
         /* Screens Visibility */
@@ -190,14 +190,6 @@
             background: #224a73;
         }
 
-        /* Particle / Sparkle Layer */
-        #particle-canvas {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            pointer-events: none;
-            z-index: 10;
-        }
-
         /* Score screen metrics */
         .score-circle {
             width: 130px;
@@ -224,15 +216,13 @@
 </head>
 <body>
 
-    <canvas id="particle-canvas"></canvas>
-
     <div id="splash-screen">
-        <img src="grade-3/maths/chapter-7/assets/logo.png" alt="Innovine Logo" class="logo-placeholder" onerror="this.style.display='none'; document.getElementById('logo-text').style.display='block';">
+        <img src="assets/logo.png" alt="Innovine Logo" onerror="this.style.display='none'; document.getElementById('logo-text').style.display='block';">
         <h2 id="logo-text" style="display:none; color: var(--primary);">Innovine</h2>
     </div>
 
-    <audio id="audio-correct" src="grade-3/maths/chapter-7/assets/correct.mp3" preload="auto"></audio>
-    <audio id="audio-wrong" src="grade-3/maths/chapter-7/assets/wrong.mp3" preload="auto"></audio>
+    <audio id="audio-correct" src="assets/claps.mp3" preload="auto"></audio>
+    <audio id="audio-wrong" src="assets/wrong.mp3" preload="auto"></audio>
 
     <div class="container">
         
@@ -251,8 +241,7 @@
 
             <div id="question-box">
                 <div class="question-text" id="target-question">Loading text question...</div>
-                <div class="options-container" id="target-options">
-                    </div>
+                <div class="options-container" id="target-options"></div>
             </div>
 
             <div id="hint-feedback" class="feedback-box hint"></div>
@@ -271,7 +260,7 @@
     </div>
 
     <script>
-        // Production Grade 3 Core Database Sequence
+        // High-Quality CBSE Grade 3 Core Database Sequence
         const questionBank = [
             {
                 type: "Scenario-Based MCQ",
@@ -309,8 +298,8 @@
                     "3 centimeters"
                 ],
                 answer: 1,
-                hint: "Remember that every 1 single meter ($1\text{ m}$) contains exactly 100 centimeters ($100\text{ cm}$).",
-                explanation: "Since $1\text{ m} = 100\text{ cm}$, multiplying 3 meters by 100 gives $300\text{ cm}$."
+                hint: "Remember that every 1 single meter (1 m) contains exactly 100 centimeters (100 cm).",
+                explanation: "Since 1 m = 100 cm, multiplying 3 meters by 100 gives 300 cm."
             },
             {
                 type: "Scenario-Based MCQ",
@@ -322,8 +311,8 @@
                     "40,000 meters"
                 ],
                 answer: 2,
-                hint: "Think about basic long-distance conversions: $1\text{ kilometer}$ is equivalent to $1,000\text{ meters}$.",
-                explanation: "Since $1\text{ km} = 1,000\text{ m}$, 4 kilometers translates directly to $4,000\text{ meters}$."
+                hint: "Think about basic long-distance conversions: 1 kilometer is equivalent to 1,000 meters.",
+                explanation: "Since 1 km = 1,000 m, 4 kilometers translates directly to 4,000 meters."
             },
             {
                 type: "Data-Based MCQ",
@@ -375,7 +364,7 @@
                 ],
                 answer: 2,
                 hint: "Review your base metric conversion unit line: 1 kilogram must always equal 1,000 grams.",
-                explanation: "The equation '5 kg = 500 g' is incorrect. It should be 5,000 grams because $5 \times 1,000 = 5,000$."
+                explanation: "The equation '5 kg = 500 g' is incorrect. It should be 5,000 grams because 5 × 1,000 = 5,000."
             },
             {
                 type: "Assertion-Reason MCQ",
@@ -400,12 +389,12 @@
                     "200 milliliters"
                 ],
                 answer: 0,
-                hint: "Convert 3 Liters to milliliters first ($3,000\text{ mL}$) and subtract the $1,200\text{ mL}$ served.",
-                explanation: "3 Liters = $3,000\text{ mL}$. Subtracting $1,200\text{ mL}$ leaves exactly $1,800\text{ mL}$ of soup broth inside the container."
+                hint: "Convert 3 Liters to milliliters first (3,000 mL) and subtract the 1,200 mL served.",
+                explanation: "3 Liters = 3,000 mL. Subtracting 1,200 mL leaves exactly 1,800 mL of soup broth inside the container."
             },
             {
                 type: "Final Challenge (Case Study)",
-                question: "Case Story Part 2: Chef Rohit takes the remaining soup broth ($1,800\text{ mL}$) and wants to split it equally into 2 smaller serving bowls. How much broth will enter each bowl?",
+                question: "Case Story Part 2: Chef Rohit takes the remaining soup broth (1,800 mL) and wants to split it equally into 2 smaller serving bowls. How much broth will enter each bowl?",
                 options: [
                     "800 milliliters",
                     "900 milliliters",
@@ -413,8 +402,8 @@
                     "500 milliliters"
                 ],
                 answer: 1,
-                hint: "Divide the total leftover broth volume ($1,800\text{ mL}$) by 2.",
-                explanation: "Splitting $1,800\text{ mL}$ into two equal portions yields $900\text{ mL}$ per bowl ($1,800 \div 2 = 900$)."
+                hint: "Divide the total leftover broth volume (1,800 mL) by 2.",
+                explanation: "Splitting 1,800 mL into two equal portions yields 900 mL per bowl (1,800 ÷ 2 = 900)."
             },
             {
                 type: "Final Challenge (Problem Solving)",
@@ -426,8 +415,8 @@
                     "500 grams"
                 ],
                 answer: 2,
-                hint: "Add the two numbers together ($400\text{ g} + 600\text{ g} = 1,000\text{ g}$). Convert those grams into kilograms.",
-                explanation: "$400\text{ g} + 600\text{ g} = 1,000\text{ grams}$. Since $1,000\text{ grams}$ equals exactly 1 kilogram, option C is correct."
+                hint: "Add the two numbers together (400 g + 600 g = 1,000 g). Convert those grams into kilograms.",
+                explanation: "400 g + 600 g = 1,000 grams. Since 1,000 grams equals exactly 1 kilogram, option C is correct."
             }
         ];
 
@@ -437,13 +426,15 @@
         let countdownTimer;
         let activeSeconds = 60;
 
-        // Custom Brand Splash Delay Initialization
+        // Brand Splash Loader Routine
         window.addEventListener('DOMContentLoaded', () => {
             setTimeout(() => {
                 const splash = document.getElementById('splash-screen');
-                splash.style.opacity = '0';
-                setTimeout(() => splash.style.display = 'none', 500);
-            }, 5000); // 5 Seconds rule retention
+                if (splash) {
+                    splash.style.opacity = '0';
+                    setTimeout(() => splash.style.display = 'none', 500);
+                }
+            }, 2000); // 2 Seconds splash fade away benchmark
         });
 
         function startInteractive() {
@@ -453,9 +444,8 @@
         }
 
         function displayQuestion() {
-            // Clean dynamic UI structures
             clearInterval(countdownTimer);
-            activeSeconds = 60; // Grade 3 60 seconds minimum benchmark rule
+            activeSeconds = 60;
             attemptTracker = 0;
             
             document.getElementById('timer-counter').innerText = activeSeconds;
@@ -463,7 +453,6 @@
             document.getElementById('explain-feedback').style.display = 'none';
             document.getElementById('next-btn').style.display = 'none';
 
-            // Load configuration
             let qData = questionBank[currentIndex];
             document.getElementById('progress-text').innerText = `Question: ${currentIndex + 1}/${questionBank.length}`;
             document.getElementById('target-question').innerText = `[${qData.type}] ${qData.question}`;
@@ -494,7 +483,6 @@
         }
 
         function lockButtonsOnTimeout() {
-            // Trigger automatic secondary fallback failure route when countdown ends
             let qData = questionBank[currentIndex];
             disableAllOptions();
             const explBox = document.getElementById('explain-feedback');
@@ -504,22 +492,32 @@
             document.getElementById('next-btn').style.display = 'block';
         }
 
+        function triggerConfetti() {
+            try {
+                confetti({
+                    particleCount: 80,
+                    spread: 60,
+                    origin: { y: 0.7 }
+                });
+            } catch (e) {
+                console.log("Confetti script block not found.");
+            }
+        }
+
         function evaluateSelection(selectedBtn, chosenIdx) {
             let qData = questionBank[currentIndex];
             
             if (chosenIdx === qData.answer) {
-                // Correct Path Node
                 clearInterval(countdownTimer);
                 selectedBtn.classList.add('correct');
                 disableAllOptions();
                 
-                // Add points only on first clean attempt
                 if (attemptTracker === 0) {
                     runningScore++;
                     document.getElementById('score-text').innerText = `Score: ${runningScore}`;
                 }
                 
-                triggerSparkles();
+                triggerConfetti();
                 playSound('correct');
                 
                 const explBox = document.getElementById('explain-feedback');
@@ -528,28 +526,23 @@
                 document.getElementById('next-btn').style.display = 'block';
 
             } else {
-                // Incorrect Path Node
                 attemptTracker++;
                 selectedBtn.classList.add('wrong');
-                selectedBtn.disabled = true; // Lock incorrect button choice
+                selectedBtn.disabled = true;
                 playSound('wrong');
 
                 if (attemptTracker === 1) {
-                    // Rule requirement: 1 fallback hint retry opportunity
                     const hintBox = document.getElementById('hint-feedback');
                     hintBox.innerHTML = `<strong>Hint:</strong> ${qData.hint}`;
                     hintBox.style.display = 'block';
                 } else {
-                    // Rule requirement: 2nd consecutive failure reveals terminal path explanation
                     clearInterval(countdownTimer);
                     disableAllOptions();
                     
-                    // Visually highlight correct answer location
                     const optionsList = document.getElementById('target-options').children;
                     optionsList[qData.answer].classList.add('correct');
 
-                    const hintBox = document.getElementById('hint-feedback');
-                    hintBox.style.display = 'none';
+                    document.getElementById('hint-feedback').style.display = 'none';
 
                     const explBox = document.getElementById('explain-feedback');
                     explBox.innerHTML = `<strong>Not quite!</strong> ${qData.explanation}`;
@@ -570,7 +563,7 @@
             const audio = document.getElementById(`audio-${type}`);
             if (audio) {
                 audio.currentTime = 0;
-                audio.play().catch(e => console.log("Audio play blocked until interaction."));
+                audio.play().catch(e => console.log("Audio presentation skipped."));
             }
         }
 
@@ -589,12 +582,13 @@
             
             document.getElementById('final-score-value').innerText = `${runningScore}/${questionBank.length}`;
             
-            // Calculate strict compliance scoring tiers
             let finalPercentage = (runningScore / questionBank.length) * 100;
             let statusText = "";
 
             if (finalPercentage >= 75) {
                 statusText = "Good job!";
+                triggerConfetti();
+                setTimeout(triggerConfetti, 300);
             } else if (finalPercentage >= 40) {
                 statusText = "Review this chapter and try again.";
             } else {
@@ -610,61 +604,6 @@
             document.getElementById('score-text').innerText = `Score: 0`;
             document.getElementById('result-screen').classList.remove('active');
             document.getElementById('welcome-screen').classList.add('active');
-        }
-
-        // Particle System Engine (Confetti Animation on Correct Answer)
-        const canvas = document.getElementById('particle-canvas');
-        const ctx = canvas.getContext('2d');
-        let particles = [];
-
-        function resizeCanvas() {
-            canvas.width = canvas.parentElement.clientWidth;
-            canvas.height = canvas.parentElement.clientHeight;
-        }
-        window.addEventListener('resize', resizeCanvas);
-        resizeCanvas();
-
-        function triggerSparkles() {
-            resizeCanvas();
-            for (let i = 0; i < 40; i++) {
-                particles.push({
-                    x: canvas.width / 2,
-                    y: canvas.height / 2,
-                    radius: Math.random() * 4 + 2,
-                    color: `hsl(${Math.random() * 360}, 80%, 60%)`,
-                    speedX: (Math.random() - 0.5) * 8,
-                    speedY: (Math.random() - 0.5) * 8,
-                    alpha: 1
-                });
-            }
-            renderParticles();
-        }
-
-        function renderParticles() {
-            if (particles.length === 0) return;
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            
-            particles.forEach((p, idx) => {
-                p.x += p.speedX;
-                p.y += p.speedY;
-                p.alpha -= 0.02;
-                
-                ctx.save();
-                ctx.globalAlpha = p.alpha;
-                ctx.beginPath();
-                ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-                ctx.fillStyle = p.color;
-                ctx.fill();
-                ctx.restore();
-
-                if (p.alpha <= 0) particles.splice(idx, 1);
-            });
-
-            if (particles.length > 0) {
-                requestAnimationFrame(renderParticles);
-            } else {
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-            }
         }
     </script>
 </body>
