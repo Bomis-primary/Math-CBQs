@@ -304,7 +304,6 @@
         /*------------------------------------------------------------------
         [4b. NATIVE INTERACTIVE DATA COMPONENTS]
         ------------------------------------------------------------------*/
-        /* Q1 Game List Card Component */
         .game-list-card {
             background-color: #ffffff;
             border: 2px solid #cbd5e1;
@@ -322,9 +321,7 @@
             border-bottom: 1px solid #f1f5f9;
             font-weight: 700;
         }
-        .game-item:last-child {
-            border-bottom: none;
-        }
+        .game-item:last-child { border-bottom: none; }
         .game-count-badge {
             background-color: #e0f2fe;
             color: #0369a1;
@@ -332,7 +329,6 @@
             border-radius: 12px;
         }
 
-        /* Q3 Pictograph Table Component */
         .native-table-view {
             width: 100%;
             max-width: 460px;
@@ -371,7 +367,6 @@
             padding-left: 20px !important;
         }
 
-        /* Q2 Beautiful Tally Graphics Card */
         .tally-card {
             background-color: #ffffff;
             border: 2px solid #cbd5e1;
@@ -429,7 +424,47 @@
             border-radius: 2px;
         }
 
-        /* Options layout system */
+        /* Q4 Bar Graph Native Styles */
+        .native-bar-graph {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-around;
+            width: 100%;
+            max-width: 400px;
+            height: 220px;
+            padding: 10px;
+            position: relative;
+            border-bottom: 3px solid #475569;
+            border-left: 3px solid #475569;
+            background: #ffffff;
+        }
+        .graph-bar-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 60px;
+        }
+        .graph-bar-fill {
+            width: 100%;
+            border-radius: 4px 4px 0 0;
+            transition: height 0.6s ease;
+            display: flex;
+            align-items: transform;
+            justify-content: center;
+        }
+        .graph-bar-value {
+            font-size: 0.85rem;
+            font-weight: 800;
+            color: #ffffff;
+            margin-top: 4px;
+        }
+        .graph-bar-label {
+            font-size: 0.9rem;
+            font-weight: 700;
+            margin-top: 8px;
+            color: var(--neutral-dark);
+        }
+
         .options-grid {
             display: grid;
             grid-template-columns: 1fr;
@@ -471,13 +506,8 @@
             color: #721c24 !important;
         }
 
-        .option-node:disabled {
-            cursor: not-allowed;
-        }
+        .option-node:disabled { cursor: not-allowed; }
 
-        /*------------------------------------------------------------------
-        [5. HINTS AND REVIEWS CONTEXT PANELS]
-        ------------------------------------------------------------------*/
         .feedback-panel {
             border-radius: var(--radius-md);
             padding: 14px 18px;
@@ -500,9 +530,22 @@
             color: #004085;
         }
 
-        /*------------------------------------------------------------------
-        [6. FINAL END-OF-SESSION METRICS VIEW]
-        ------------------------------------------------------------------*/
+        .action-submit-btn {
+            background-color: var(--primary);
+            color: #fff;
+            border: none;
+            width: 100%;
+            padding: 14px;
+            font-size: 1.05rem;
+            font-weight: 700;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            margin-top: 12px;
+            display: none;
+            transition: background-color var(--transition);
+        }
+        .action-submit-btn:hover { background-color: var(--primary-dark); }
+
         .analytics-view {
             text-align: center;
             padding: 40px 20px;
@@ -512,55 +555,14 @@
             animation: fadeIn 0.4s ease-out;
         }
 
-        .analytics-icon {
-            font-size: 3.5rem;
-            margin-bottom: 16px;
-        }
-
-        .analytics-title {
-            font-size: 1.75rem;
-            font-weight: 800;
-            color: var(--neutral-dark);
-            margin-bottom: 8px;
-        }
-
-        .analytics-text {
-            font-size: 1rem;
-            color: var(--neutral-medium);
-            margin-bottom: 24px;
-            max-width: 440px;
-        }
-
-        .metrics-row {
-            display: flex;
-            gap: 16px;
-            width: 100%;
-            max-width: 400px;
-            margin-bottom: 28px;
-        }
-
-        .metric-box {
-            flex: 1;
-            background-color: var(--body-bg);
-            border: 1px solid var(--neutral-light);
-            padding: 14px;
-            border-radius: var(--radius-md);
-        }
-
-        .metric-value {
-            font-size: 1.5rem;
-            font-weight: 800;
-            color: var(--primary-dark);
-        }
-
-        .metric-label {
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            color: var(--neutral-medium);
-            margin-top: 2px;
-            font-weight: 700;
-        }
+        .analytics-icon { font-size: 3.5rem; margin-bottom: 16px; }
+        .analytics-title { font-size: 1.75rem; font-weight: 800; color: var(--neutral-dark); margin-bottom: 8px; }
+        .analytics-text { font-size: 1rem; color: var(--neutral-medium); margin-bottom: 24px; max-width: 440px; }
+        
+        .metrics-row { display: flex; gap: 16px; width: 100%; max-width: 400px; margin-bottom: 28px; }
+        .metric-box { flex: 1; background-color: var(--body-bg); border: 1px solid var(--neutral-light); padding: 14px; border-radius: var(--radius-md); }
+        .metric-value { font-size: 1.5rem; font-weight: 800; color: var(--primary-dark); }
+        .metric-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--neutral-medium); margin-top: 2px; font-weight: 700; }
 
         .restart-action-btn {
             background-color: var(--primary);
@@ -573,30 +575,18 @@
             cursor: pointer;
             transition: background-color var(--transition);
         }
+        .restart-action-btn:hover { background-color: var(--primary-dark); }
 
-        .restart-action-btn:hover {
-            background-color: var(--primary-dark);
-        }
-
-        /*------------------------------------------------------------------
-        [7. RUNTIME EFFECTS & KEYFRAMES ENGINE]
-        ------------------------------------------------------------------*/
-        .confetti-particle {
+        .confetti-canvas {
             position: absolute;
-            width: 8px;
-            height: 8px;
-            z-index: 999;
-            animation: fall linear forwards;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; z-index: 1000;
         }
 
         @keyframes spin { 100% { transform: rotate(360deg); } }
         @keyframes pulse { 50% { opacity: 0.6; } }
         @keyframes slideIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        @keyframes fall {
-            0% { transform: translateY(-10px) rotate(0deg); opacity: 1; }
-            100% { transform: translateY(450px) rotate(360deg); opacity: 0; }
-        }
     </style>
 </head>
 <body>
@@ -625,6 +615,7 @@
     </div>
 
     <main class="quiz-container" id="app-canvas-container" role="application">
+        <canvas class="confetti-canvas" id="canvas-confetti-layer"></canvas>
         <div class="progress-track" aria-hidden="true">
             <div class="progress-fill" id="ui-progress-bar"></div>
         </div>
@@ -643,9 +634,6 @@
     </main>
 
 <script>
-    /**
-     * @fileoverview Comprehensive Chapter 12 Data Handling Matrix Definition Store
-     */
     const DATASET_REGISTRY = [
         {
             uid: "q-ch12-comp-01",
@@ -654,12 +642,7 @@
             durationLimit: 60,
             statement: "Karan wrote down his friends' favorite playground games in the list below. Look at his collected data. Which game did the highest number of friends choose?",
             renderType: "q1_game_list",
-            choices: [
-                "⚽ Football",
-                "🏏 Cricket",
-                "🏸 Badminton",
-                "All games are equal"
-            ],
+            choices: ["⚽ Football", "🏏 Cricket", "🏸 Badminton", "All games are equal"],
             solutionKey: "🏏 Cricket",
             hint: "Find the game in the list that has the biggest number next to it.",
             explanation: "In the list, Cricket has 5 friends, which is the highest number among all the choices."
@@ -671,12 +654,7 @@
             durationLimit: 60,
             statement: "Ananya is counting the number of birds visiting her garden window. She records the birds using the tally block shown below. What is the total number of birds Ananya saw?",
             renderType: "q2_interactive_tally",
-            choices: [
-                "4 birds",
-                "5 birds",
-                "7 birds",
-                "8 birds"
-            ],
+            choices: ["4 birds", "5 birds", "7 birds", "8 birds"],
             solutionKey: "7 birds",
             hint: "Count the closed bundle as 5 first, then add the single vertical blue sticks next to it.",
             explanation: "A crossed group of lines always represents 5 items. Adding the 2 individual lines gives 5 + 2 = 7 birds total."
@@ -736,12 +714,7 @@
             durationLimit: 60,
             statement: "If a bar chart tracking favorite pets shows the 'Cat' bar reaching up to value 18, and the 'Dog' bar reaching up to 10, which option accurately compares these two sets of data?",
             renderType: "text",
-            choices: [
-                "There are 8 more dogs than cats",
-                "There are 8 more cats than dogs",
-                "There are 28 pets altogether in the entire chart",
-                "Cats are less popular than dogs"
-            ],
+            choices: ["There are 8 more dogs than cats", "There are 8 more cats than dogs", "There are 28 pets altogether in the entire chart", "Cats are less popular than dogs"],
             solutionKey: "There are 8 more cats than dogs",
             hint: "Subtract the values to check which bar is taller and find the exact difference.",
             explanation: "The Cat bar (18) is greater than the Dog bar (10) by an offset of 18 - 10 = 8 units."
@@ -808,10 +781,6 @@
         }
     ];
 
-    /**
-     * @class ExecutionStateEngine
-     * Main runtime application controller managing screens, audio channels, and game loops.
-     */
     class ExecutionStateEngine {
         constructor(questionsPayload) {
             this.registry = questionsPayload;
@@ -859,91 +828,260 @@
                     splash.style.display = 'none';
                     document.getElementById('app-title-screen').style.display = 'flex';
                 }, 500);
-            }, 5000);
+            }, 2500);
         }
 
         loadActiveQuestionFrame() {
+            this.attemptCount = 0;
             clearInterval(this.timerRef);
-            this.attemptCount = 0; 
             
-            const currentItem = this.registry[this.currentIndex];
+            const qData = this.registry[this.currentIndex];
+            this.secondsRemaining = qData.durationLimit || 60;
             
-            this.domIndexLabel.textContent = currentItem.displayIndex;
-            this.domScoreLabel.textContent = this.score;
-            this.secondsRemaining = currentItem.durationLimit;
+            // HUD Dashboard Update
+            this.domIndexLabel.textContent = `${this.currentIndex + 1}/${this.registry.length}`;
+            this.domProgressBar.style.width = `${((this.currentIndex) / this.registry.length) * 100}%`;
             this.domTimerLabel.textContent = this.secondsRemaining;
-            this.domTimerContainer.className = 'dashboard-pill';
+            this.domTimerContainer.classList.remove('timer-alert');
 
-            const calculationPercentage = (this.currentIndex / this.registry.length) * 100;
-            this.domProgressBar.style.width = `${calculationPercentage}%`;
+            // Render Core Workspace Layout
+            this.domViewport.innerHTML = `
+                <div class="question-statement">${qData.statement}</div>
+                <div class="graphical-container" id="visual-render-target"></div>
+                <div class="options-grid" id="options-render-target"></div>
+                <div class="feedback-panel type-hint" id="ui-hint-panel">💡 <strong>Hint:</strong> ${qData.hint}</div>
+                <div class="feedback-panel type-solution" id="ui-solution-panel">🎯 <strong>Explanation:</strong> ${qData.explanation}</div>
+                <button class="action-submit-btn" id="ui-action-next-frame">Next Question ➔</button>
+            `;
 
-            this.renderCanvasInterface(currentItem);
-            this.engageChronometerCycle();
+            this.injectVisualMarkup(qData.renderType);
+            this.injectOptionsMarkup(qData.choices, qData.solutionKey);
+            this.startCountdownTimer();
         }
 
-        engageChronometerCycle() {
+        injectVisualMarkup(type) {
+            const container = document.getElementById('visual-render-target');
+            if (type === "q1_game_list") {
+                container.innerHTML = `
+                    <div class="game-list-card">
+                        <div class="game-item"><span>⚽ Football</span><span class="game-count-badge">3 Friends</span></div>
+                        <div class="game-item"><span>🏏 Cricket</span><span class="game-count-badge">5 Friends</span></div>
+                        <div class="game-item"><span>🏸 Badminton</span><span class="game-count-badge">2 Friends</span></div>
+                    </div>`;
+            } else if (type === "q2_interactive_tally") {
+                container.innerHTML = `
+                    <div class="tally-card">
+                        <span class="tally-card-title">Birds Counted:</span>
+                        <div class="tally-graphic-bundle">
+                            <div class="tally-stick"></div>
+                            <div class="tally-stick"></div>
+                            <div class="tally-stick"></div>
+                            <div class="tally-stick"></div>
+                            <div class="tally-stick diagonal-slash"></div>
+                        </div>
+                        <div class="tally-extra-sticks">
+                            <div class="tally-single-stick"></div>
+                            <div class="tally-single-stick"></div>
+                        </div>
+                    </div>`;
+            } else if (type === "q3_pictograph") {
+                container.innerHTML = `
+                    <table class="native-table-view">
+                        <thead>
+                            <tr><th>Flavor</th><th>Cupcakes Sold</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>🧁 Chocolate</td><td class="pictograph-row-symbols">🧁 🧁</td></tr>
+                            <tr><td>🍓 Strawberry</td><td class="pictograph-row-symbols">🧁 🧁 🧁</td></tr>
+                            <tr><td colspan="2" class="table-key-callout">🔑 Key: 1 🧁 = 5 cupcakes</td></tr>
+                        </tbody>
+                    </table>`;
+            } else if (type === "q4_vertical_graph") {
+                container.innerHTML = `
+                    <div class="native-bar-graph">
+                        <div class="graph-bar-wrapper">
+                            <div class="graph-bar-fill" style="height: 100px; background-color: #ef4444;"><span class="graph-bar-value">25</span></div>
+                            <div class="graph-bar-label">Red</div>
+                        </div>
+                        <div class="graph-bar-wrapper">
+                            <div class="graph-bar-fill" style="height: 180px; background-color: #1d4ed8;"><span class="graph-bar-value">45</span></div>
+                            <div class="graph-bar-label">Blue</div>
+                        </div>
+                        <div class="graph-bar-wrapper">
+                            <div class="graph-bar-fill" style="height: 140px; background-color: #eab308;"><span class="graph-bar-value">35</span></div>
+                            <div class="graph-bar-label">Yellow</div>
+                        </div>
+                    </div>`;
+            } else {
+                container.style.display = "none";
+            }
+        }
+
+        injectOptionsMarkup(choices, solutionKey) {
+            const target = document.getElementById('options-render-target');
+            choices.forEach(text => {
+                const button = document.createElement('button');
+                button.className = 'option-node';
+                button.textContent = text;
+                button.addEventListener('click', () => this.handleEvaluation(button, text, solutionKey));
+                target.appendChild(button);
+            });
+        }
+
+        startCountdownTimer() {
             this.timerRef = setInterval(() => {
                 this.secondsRemaining--;
                 this.domTimerLabel.textContent = this.secondsRemaining;
-
+                
                 if (this.secondsRemaining <= 10) {
                     this.domTimerContainer.classList.add('timer-alert');
                 }
 
                 if (this.secondsRemaining <= 0) {
                     clearInterval(this.timerRef);
-                    this.evaluateSubmissionSequence(null, true); 
+                    this.forceTimeoutInterruption();
                 }
             }, 1000);
         }
 
-        renderCanvasInterface(item) {
-            let graphicalPayloadHTML = '';
+        handleEvaluation(selectedNode, textValue, solutionKey) {
+            this.attemptCount++;
+            const isCorrect = (textValue === solutionKey);
+
+            if (isCorrect) {
+                clearInterval(this.timerRef);
+                selectedNode.classList.add('state-correct');
+                this.playAudioEvent('success');
+                this.triggerConfettiShower();
+                this.score += (this.attemptCount === 1) ? 2 : 1;
+                this.domScoreLabel.textContent = this.score;
+                this.concludeQuestionFrame();
+            } else {
+                selectedNode.classList.add('state-incorrect');
+                selectedNode.disabled = true;
+                this.playAudioEvent('failure');
+
+                if (this.attemptCount === 1) {
+                    document.getElementById('ui-hint-panel').style.display = 'block';
+                } else {
+                    clearInterval(this.timerRef);
+                    this.revealCorrectNode(solutionKey);
+                    this.concludeQuestionFrame();
+                }
+            }
+        }
+
+        forceTimeoutInterruption() {
+            const qData = this.registry[this.currentIndex];
+            this.playAudioEvent('failure');
+            this.revealCorrectNode(qData.solutionKey);
+            this.concludeQuestionFrame();
+        }
+
+        revealCorrectNode(solutionKey) {
+            const nodes = document.querySelectorAll('.option-node');
+            nodes.forEach(node => {
+                node.disabled = true;
+                if (node.textContent === solutionKey) {
+                    node.classList.add('state-correct');
+                }
+            });
+        }
+
+        concludeQuestionFrame() {
+            const nodes = document.querySelectorAll('.option-node');
+            nodes.forEach(n => n.disabled = true);
+
+            document.getElementById('ui-solution-panel').style.display = 'block';
+            const nextBtn = document.getElementById('ui-action-next-frame');
+            nextBtn.style.display = 'block';
             
-            if (item.renderType === 'q1_game_list') {
-                graphicalPayloadHTML = `
-                    <div class="graphical-container">
-                        <div class="game-list-card">
-                            <div class="game-item"><span>⚽ Football</span> <span class="game-count-badge">3 Friends</span></div>
-                            <div class="game-item"><span>🏏 Cricket</span> <span class="game-count-badge">5 Friends</span></div>
-                            <div class="game-item"><span>🏸 Badminton</span> <span class="game-count-badge">2 Friends</span></div>
-                        </div>
+            nextBtn.addEventListener('click', () => {
+                this.currentIndex++;
+                if (this.currentIndex < this.registry.length) {
+                    this.loadActiveQuestionFrame();
+                } else {
+                    this.loadPerformanceAnalytics();
+                }
+            });
+        }
+
+        playAudioEvent(type) {
+            if (this.isMuted) return;
+            if (type === 'success') {
+                this.audioSuccess.currentTime = 0;
+                this.audioSuccess.play().catch(() => {});
+            } else {
+                this.audioFailure.currentTime = 0;
+                this.audioFailure.play().catch(() => {});
+            }
+        }
+
+        loadPerformanceAnalytics() {
+            this.domProgressBar.style.width = '100%';
+            const maxCalculatedPoints = this.registry.length * 2;
+            const standardPercentage = Math.round((this.score / maxCalculatedPoints) * 100);
+            
+            let icon = "⭐";
+            let statusMessage = "Excellent Work! You've completely mastered Data Handling!";
+            if (standardPercentage < 50) { icon = "📚"; statusMessage = "Keep practicing! You will get better next time."; }
+            else if (standardPercentage < 80) { icon = "✨"; statusMessage = "Great job! Let's try again for a perfect score."; }
+
+            if (standardPercentage >= 80) this.triggerConfettiShower();
+
+            this.domViewport.innerHTML = `
+                <div class="analytics-view">
+                    <div class="analytics-icon">${icon}</div>
+                    <h2 class="analytics-title">Quest Complete!</h2>
+                    <p class="analytics-text">${statusMessage}</p>
+                    <div class="metrics-row">
+                        <div class="metric-box"><div class="metric-value">${this.score}/${maxCalculatedPoints}</div><div class="metric-label">Points</div></div>
+                        <div class="metric-box"><div class="metric-value">${standardPercentage}%</div><div class="metric-label">Accuracy</div></div>
                     </div>
-                `;
-            } else if (item.renderType === 'q3_pictograph') {
-                graphicalPayloadHTML = `
-                    <div class="graphical-container">
-                        <table class="native-table-view">
-                            <thead>
-                                <tr>
-                                    <th>Cupcake Flavor</th>
-                                    <th>Cupcakes Sold</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>🍫 Chocolate</td>
-                                    <td class="pictograph-row-symbols">🧁 🧁</td>
-                                </tr>
-                                <tr>
-                                    <td>🍓 Strawberry</td>
-                                    <td class="pictograph-row-symbols">🧁 🧁 🧁</td>
-                                </tr>
-                                <tr class="table-key-callout">
-                                    <td colspan="2">🔑 Key Rule: Each 🧁 symbol = 5 real cupcakes</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                `;
-            } else if (item.renderType === 'q2_interactive_tally') {
-                graphicalPayloadHTML = `
-                    <div class="graphical-container">
-                        <div class="tally-card">
-                            <span class="tally-card-title">Garden Birds:</span>
-                            <div class="tally-graphic-bundle">
-                                <div class="tally-stick"></div>
-                                <div class="tally-stick"></div>
-                                <div class="tally-stick"></div>
-                                <div class="tally-stick"></div>
-                                <div
+                    <button class="restart-action-btn" onclick="window.location.reload()">Restart Challenge</button>
+                </div>
+            `;
+        }
+
+        triggerConfettiShower() {
+            const canvas = document.getElementById('canvas-confetti-layer');
+            const ctx = canvas.getContext('2d');
+            canvas.width = canvas.parentElement.clientWidth;
+            canvas.height = canvas.parentElement.clientHeight;
+
+            let particles = Array.from({ length: 45 }, () => ({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height - canvas.height,
+                radius: Math.random() * 5 + 3,
+                density: Math.random() * canvas.height,
+                color: `hsl(${Math.random() * 360}, 85%, 60%)`,
+                angle: Math.random() * 8 - 4,
+                angleSpeed: Math.random() * 0.05 + 0.02
+            }));
+
+            function render() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                let clearLayer = true;
+                particles.forEach(p => {
+                    p.y += (Math.cos(p.density) + 3 + p.radius / 2) / 2;
+                    p.x += Math.sin(p.angle);
+                    if (p.y <= canvas.height) clearLayer = false;
+
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                    ctx.fillStyle = p.color;
+                    ctx.fill();
+                });
+                if (!clearLayer) requestAnimationFrame(render);
+            }
+            render();
+        }
+    }
+
+    // Initialize application core on state load
+    document.addEventListener("DOMContentLoaded", () => {
+        window.ModuleEngineInstance = new ExecutionStateEngine(DATASET_REGISTRY);
+    });
+</script>
+</body>
+</html>
