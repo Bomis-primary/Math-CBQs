@@ -47,15 +47,18 @@
             min-height: 480px;
         }
 
-        /* 5-second Splash Overlay using logo.png */
+        /* 5-second Splash Overlay using logo.png with absolute positioning and correct z-index */
         #splash {
             position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%;
             background: #ffffff;
             display: flex;
             align-items: center;
             justify-content: center;
-            z-index: 100;
+            z-index: 999;
             opacity: 1;
             transition: opacity 1s ease-out;
         }
@@ -229,7 +232,7 @@
 <body>
 
     <div class="container">
-        <!-- Splash screen with logo.png displayed for 5 seconds -->
+        <!-- Splash screen with logo.png properly displayed for 5 seconds on top -->
         <div id="splash">
             <img src="logo.png" alt="Logo" onerror="this.style.display='none'; this.parentElement.innerHTML='<h1 style=\'color:#1f4e79;\'>Innovine Learning</h1>';">
         </div>
