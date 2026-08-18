@@ -100,10 +100,11 @@
 
         /* Question View Element */
         .question {
-            font-size: 1.2rem;
+            font-size: 1.15rem;
             font-weight: bold;
             margin-bottom: 20px;
             color: var(--text-main);
+            line-height: 1.4;
         }
 
         /* Options Interactive Interface (Single Column Optimization) */
@@ -119,7 +120,7 @@
             border-radius: 12px;
             border: 2px solid var(--primary);
             background: var(--card-bg);
-            font-size: 1rem;
+            font-size: 0.95rem;
             font-weight: 600;
             text-align: left;
             cursor: pointer;
@@ -222,7 +223,7 @@
 
         <div id="game" class="screen active">
             <div class="top">
-                <div class="box">Q: <span id="qno">1</span>/<span id="qtotal">17</span></div>
+                <div class="box">Q: <span id="qno">1</span>/<span id="qtotal">10</span></div>
                 <div class="box">Score: <span id="score">0</span></div>
                 <div class="box">Time: <span id="time">60</span>s</div>
             </div>
@@ -247,25 +248,58 @@
     <audio id="wrong" src="assets/wrong.mp3" preload="auto"></audio>
 
     <script>
-        // STATIC BASELINE DATASET
+        // HIGH-QUALITY COMPETENCY-BASED QUESTIONS (CBQs) ON MEASUREMENTS
         const questionsDatabase = [
-            { q: "12 cm pencil vs 10 cm crayon?", a: ["Yes", "No", "Equal", "Crayon longer"], c: 0 },
-            { q: "Which measures length?", a: ["Scale", "Ruler", "Cup", "Spoon"], c: 1 },
-            { q: "Weight measured using ruler?", a: ["Correct", "Wrong", "Same", "Unknown"], c: 1 },
-            { q: "15 cm ribbon vs need 12 cm?", a: ["Longer", "Shorter", "Exact", "Less"], c: 0 },
-            { q: "Which is heavier?", a: ["Book", "Pencil", "Same", "Pencil"], c: 0 },
-            { q: "2 kg vs 1 kg bag?", a: ["First heavier", "Second", "Same", "Both 1kg"], c: 0 },
-            { q: "1 kg > 2 kg?", a: ["Wrong", "Correct", "Equal", "True"], c: 0 },
-            { q: "A=2kg, B=1kg lighter?", a: ["A", "B", "Same", "A lighter"], c: 1 },
-            { q: "Which holds more water?", a: ["Cup", "Jug", "Same", "Bottle"], c: 1 },
-            { q: "NOT weight tool?", a: ["Ruler", "Scale", "Balance", "Weights"], c: 0 },
-            { q: "Cup vs jug?", a: ["Cup", "Jug", "Same", "Cup more"], c: 1 },
-            { q: "Stone vs feather?", a: ["Stone", "Feather", "Same", "Feather"], c: 0 },
-            { q: "3L - 1L - 1L = ?", a: ["1L", "2L", "0L", "3L"], c: 0 },
-            { q: "5L bucket, 2L used > half left?", a: ["Yes", "No", "Half", "Less"], c: 0 },
-            { q: "Is 3L left?", a: ["Yes", "No", "More", "Less"], c: 0 },
-            { q: "20cm - 5cm - 5cm > 10cm?", a: ["Yes", "No", "15cm", "5cm"], c: 1 },
-            { q: "4L + 6L = ?", a: ["10L", "8L", "12L", "14L"], c: 0 }
+            { 
+                q: "Ria wants to measure the length of her classroom whiteboard. Which standard tool should she choose for the most accurate result?", 
+                a: ["A short 15 cm plastic scale", "A long measuring tape", "A standard hand span", "A wooden pencil"], 
+                c: 1 
+            },
+            { 
+                q: "A tailor needs to measure around a customer's chest to stitch a shirt. Which instrument is ideal for this?", 
+                a: ["A flexible cloth measuring tape", "A heavy iron weighing scale", "A rigid metre rod", "A 30 cm desk ruler"], 
+                c: 0 
+            },
+            { 
+                q: "Amit buys a watermelon from the market. Which unit is best suited to express the weight of the watermelon?", 
+                a: ["Grams (g)", "Kilograms (kg)", "Millilitres (ml)", "Centimetres (cm)"], 
+                c: 1 
+            },
+            { 
+                q: "A recipe for making fruit punch requires 2 litres of orange juice and 1 litre of apple juice. What is the total volume of juice in the punch?", 
+                a: ["1 litre", "2 litres", "3 litres", "4 litres"], 
+                c: 2 
+            },
+            { 
+                q: "Look at the given objects: A feather, a textbook, a paperclip, and an eraser. Which among these is expected to have the maximum weight?", 
+                a: ["A feather", "A textbook", "A paperclip", "An eraser"], 
+                c: 1 
+            },
+            { 
+                q: "Sanya has a piece of ribbon that is 45 cm long. She cuts off 15 cm to pack a gift. What length of ribbon is left with her?", 
+                a: ["20 cm", "30 cm", "60 cm", "45 cm"], 
+                c: 1 
+            },
+            { 
+                q: "Which of the following containers typically holds the largest amount of liquid?", 
+                a: ["A medicine teaspoon", "A drinking glass", "A water bucket", "An ink dropper"], 
+                c: 2 
+            },
+            { 
+                q: "Deepak weighs two school bags. Bag X weighs 4 kg and Bag Y weighs 7 kg. What is the difference in weight between the two bags?", 
+                a: ["2 kg", "3 kg", "11 kg", "4 kg"], 
+                c: 1 
+            },
+            { 
+                q: "Assertion (A): Capacity refers to the amount of liquid a container can hold. Reason (R): Liquids are generally measured in units like litres and millilitres. Which option is correct?", 
+                a: ["Both A and R are correct and R explains A", "Both A and R are correct but R does not explain A", "A is correct, R is incorrect", "Both A and R are incorrect"], 
+                c: 0 
+            },
+            { 
+                q: "A jug holds 10 cups of water. If Kabir pours out 4 cups of water to fill glasses, how many cups of water are left in the jug?", 
+                a: ["4 cups", "6 cups", "10 cups", "14 cups"], 
+                c: 1 
+            }
         ];
 
         let runtimeQuestions = [];
