@@ -1,358 +1,524 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CBQ - Grade 2 Numbers</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grade 2 Maths - Number System Upto 500</title>
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-hover: #4338ca;
+            --success: #16a34a;
+            --error: #dc2626;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+        }
 
-<style>
-*{box-sizing:border-box;margin:0;padding:0;font-family:Arial}
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
 
-body{
-  background:#f4f7ff;
-  color:#1f2937;
-}
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 16px;
+        }
 
-/* SPLASH */
-#splash{
-  position:fixed;
-  inset:0;
-  background:#fff;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  z-index:10;
-}
+        .container {
+            width: 100%;
+            max-width: 650px;
+            background: var(--card-bg);
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            padding: 24px;
+            position: relative;
+            overflow: hidden;
+        }
 
-#splash img{
-  width:300px;
-}
+        /* Splash Screen / Logo Loader */
+        #splash-screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #ffffff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+            transition: opacity 0.5s ease;
+        }
 
-/* MAIN */
-.screen{
-  display:none;
-  padding:16px;
-  min-height:100vh;
-}
+        #splash-screen img {
+            max-width: 150px;
+            margin-bottom: 16px;
+        }
 
-.screen.active{
-  display:block;
-}
+        /* Header Controls */
+        .app-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #e2e8f0;
+            padding-bottom: 12px;
+        }
 
-.card{
-  max-width:900px;
-  margin:auto;
-  background:#fff;
-  border-radius:20px;
-  padding:20px;
-  box-shadow:0 10px 25px rgba(0,0,0,0.1);
-}
+        .progress-indicator {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-muted);
+        }
 
-.top{
-  display:grid;
-  grid-template-columns:1fr 1fr 1fr;
-  gap:10px;
-  margin-bottom:15px;
-  text-align:center;
-  font-weight:bold;
-}
+        .timer-badge {
+            background: #e0e7ff;
+            color: var(--primary);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 14px;
+        }
 
-.box{
-  background:#e8f0ff;
-  padding:10px;
-  border-radius:12px;
-}
+        .audio-btn {
+            background: none;
+            border: 1px solid #cbd5e1;
+            padding: 6px 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+        }
 
-.question{
-  font-size:20px;
-  margin:15px 0;
-  font-weight:bold;
-}
+        /* Question Layout */
+        .question-box {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            line-height: 1.4;
+        }
 
-.options{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:12px;
-}
+        .options-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
 
-.btn{
-  padding:14px;
-  border-radius:12px;
-  border:2px solid #1f4e79;
-  background:#fff;
-  font-size:16px;
-  cursor:pointer;
-  min-height:60px;
-}
+        .option-btn {
+            background: #ffffff;
+            border: 2px solid #cbd5e1;
+            padding: 14px 16px;
+            border-radius: 10px;
+            font-size: 16px;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: var(--text-main);
+        }
 
-.btn:hover{background:#eef5ff}
+        .option-btn:hover:not(:disabled) {
+            border-color: var(--primary);
+            background: #f1f5f9;
+        }
 
-.correct{background:#c8f7d5 !important}
-.wrong{background:#ffd6d6 !important}
+        .option-btn.correct {
+            background: #dcfce7 !important;
+            border-color: var(--success) !important;
+            color: #166534;
+        }
 
-.controls{
-  margin-top:15px;
-  text-align:center;
-}
+        .option-btn.incorrect {
+            background: #fee2e2 !important;
+            border-color: var(--error) !important;
+            color: #991b1b;
+        }
 
-button.next{
-  padding:12px 20px;
-  border:none;
-  background:#1f4e79;
-  color:#fff;
-  border-radius:10px;
-  cursor:pointer;
-}
+        /* Feedback Area */
+        .feedback-area {
+            min-height: 40px;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
 
-.result{
-  text-align:center;
-  font-size:22px;
-  font-weight:bold;
-}
-</style>
+        .footer-nav {
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .action-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .action-btn:hover {
+            background: var(--primary-hover);
+        }
+
+        .action-btn:disabled {
+            background: #94a3b8;
+            cursor: not-allowed;
+        }
+
+        /* Results Screen */
+        .result-screen {
+            text-align: center;
+            display: none;
+        }
+
+        .result-screen h2 {
+            font-size: 24px;
+            margin-bottom: 12px;
+        }
+
+        .score-display {
+            font-size: 48px;
+            font-weight: bold;
+            color: var(--primary);
+            margin-bottom: 16px;
+        }
+
+        .result-message {
+            font-size: 16px;
+            color: var(--text-muted);
+            margin-bottom: 24px;
+        }
+    </style>
 </head>
-
 <body>
 
-<div id="splash">
-  <img src="assets/logo.png" alt="Logo">
-</div>
+    <div class="container">
+        <!-- Splash Screen with Logo -->
+        <div id="splash-screen">
+            <img src="assets/logo.png" alt="Innovine Logo" onerror="this.style.display='none'">
+            <h2>Grade 2 | Mathematics</h2>
+            <p style="color: #64748b; margin-top: 8px;">Chapter 1: Number System Upto 500</p>
+        </div>
 
-<div id="game" class="screen">
-  <div class="card">
+        <!-- Quiz Interface -->
+        <div id="quiz-app" style="display: none;">
+            <div class="app-header">
+                <span class="progress-indicator" id="progress-text">Question 1 of 10</span>
+                <span class="timer-badge" id="timer-text">⏳ 60s</span>
+                <button class="audio-btn" id="audio-toggle" onclick="toggleAudio()">🔊 Sound: ON</button>
+            </div>
 
-    <div class="top">
-      <div class="box">Q: <span id="qno">1</span>/18</div>
-      <div class="box">Score: <span id="score">0</span></div>
-      <div class="box">Time: <span id="time">60</span></div>
+            <div class="question-box" id="question-text">Loading question...</div>
+
+            <div class="options-grid" id="options-container">
+                <!-- Dynamic options injected here -->
+            </div>
+
+            <div class="feedback-area" id="feedback-text"></div>
+
+            <div class="footer-nav">
+                <button class="action-btn" id="next-btn" onclick="handleNext()" disabled>Next Question</button>
+            </div>
+        </div>
+
+        <!-- Result Screen -->
+        <div id="result-screen" class="result-screen">
+            <h2>Activity Completed!</h2>
+            <div class="score-display" id="final-score">0/10</div>
+            <div class="result-message" id="result-message-text">Evaluating performance...</div>
+            <button class="action-btn" onclick="restartQuiz()">Try Again</button>
+        </div>
     </div>
 
-    <div class="question" id="question"></div>
-    <div class="options" id="options"></div>
+    <!-- Audio elements -->
+    <audio id="sound-correct" src="assets/correct.mp3"></audio>
+    <audio id="sound-wrong" src="assets/wrong.mp3"></audio>
 
-    <div class="controls">
-      <button class="next" onclick="nextQ()" id="nextBtn">Next</button>
-    </div>
+    <script>
+        const questions = [
+            {
+                question: "A library has a book with the page number 314. How is this number read in words?",
+                options: [
+                    "Three hundred forty-one",
+                    "Three hundred fourteen",
+                    "Three hundred four",
+                    "Thirteen-fourteen"
+                ],
+                correct: 1,
+                hint: "Remember to read the hundreds place first, followed by the tens and ones digits together."
+            },
+            {
+                question: "Amit represented the number 273 on an abacus as: Hundreds = 2, Tens = 3, Ones = 7. What mistake did he make?",
+                options: [
+                    "He swapped the tens and ones places",
+                    "He wrote the hundreds place incorrectly",
+                    "He added an extra bead to the hundreds",
+                    "No mistake was made"
+                ],
+                correct: 0,
+                hint: "Check the bead counts carefully: tens should be 7 and ones should be 3."
+            },
+            {
+                question: "In the number 478, what is the face value and place value of the digit 4?",
+                options: [
+                    "Face value is 4, Place value is 40",
+                    "Face value is 400, Place value is 4",
+                    "Face value is 4, Place value is 400",
+                    "Face value is 78, Place value is 400"
+                ],
+                correct: 2,
+                hint: "Face value is the digit itself, while place value depends on its position (Hundreds place)."
+            },
+            {
+                question: "Which of the following statements is incorrect regarding numbers just before and after?",
+                options: [
+                    "The number just before 450 is 449",
+                    "The number just after 340 is 341",
+                    "The number just before 231 is 230",
+                    "The number just after 136 is 135"
+                ],
+                correct: 3,
+                hint: "The number *after* 136 should be 137, not 135."
+            },
+            {
+                question: "Assertion: The expanded form of 459 is written as 400 + 50 + 9. Reason: Each digit's place value is added together to form the number.",
+                options: [
+                    "Both are correct and reason explains assertion",
+                    "Both are correct but reason does not explain",
+                    "Assertion is correct, reason is wrong",
+                    "Both are wrong"
+                ],
+                correct: 0,
+                hint: "Expanded form represents a number as the sum of the place values of its digits."
+            },
+            {
+                question: "Riya has 332 beads and Aman has 411 beads. Who has more beads and which comparison symbol is correct?",
+                options: [
+                    "Riya, 332 > 411",
+                    "Aman, 332 < 411",
+                    "Aman, 332 > 411",
+                    "Both have equal beads, 332 = 411"
+                ],
+                correct: 1,
+                hint: "Compare the hundreds place first: 4 is greater than 3, so 411 is greater than 332."
+            },
+            {
+                question: "A teacher asks students to arrange these scores in ascending order: 238, 78, 147, 318, 409. Which sequence is correct?",
+                options: [
+                    "409, 318, 238, 147, 78",
+                    "78, 147, 238, 318, 409",
+                    "78, 238, 147, 318, 409",
+                    "147, 78, 238, 318, 409"
+                ],
+                correct: 1,
+                hint: "Ascending order means arranging numbers from smallest to largest."
+            },
+            {
+                question: "Four students collect cards: Tina (421), Sam (178), John (440), and Maya (325). If they arrange themselves from highest to lowest score, who comes first?",
+                options: [
+                    "Tina",
+                    "John",
+                    "Maya",
+                    "Sam"
+                ],
+                correct: 1,
+                hint: "Compare the hundreds and tens of 421 and 440 to find the highest score."
+            },
+            {
+                question: "Rahul classified the numbers 431, 246, 183, 354 into even and odd. Which number did he misclassify?",
+                options: [
+                    "431 is even",
+                    "246 is odd",
+                    "354 is even",
+                    "183 is odd"
+                ],
+                correct: 1,
+                hint: "Numbers ending in 0, 2, 4, 6, 8 are even. 246 ends in 6, so it is even."
+            },
+            {
+                question: "Look at the skip counting pattern: 5, 10, 15, ___, 25, ___. What are the missing numbers?",
+                options: [
+                    "18 and 28",
+                    "20 and 30",
+                    "20 and 35",
+                    "12 and 22"
+                ],
+                correct: 1,
+                hint: "Count forward by fives: 15 + 5 = 20, and 25 + 5 = 30."
+            }
+        ];
 
-  </div>
-</div>
+        let currentQuestion = 0;
+        let score = 0;
+        let attempts = 0;
+        let timer;
+        let timeLeft = 60;
+        let soundEnabled = true;
 
-<div id="result" class="screen">
-  <div class="card result" id="resultText"></div>
-</div>
+        // Splash screen dismissal after 5 seconds
+        window.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                const splash = document.getElementById('splash-screen');
+                splash.style.opacity = '0';
+                setTimeout(() => {
+                    splash.style.display = 'none';
+                    document.getElementById('quiz-app').style.display = 'block';
+                    loadQuestion();
+                }, 500);
+            }, 5000);
+        });
 
-<audio id="correct" src="assets/correct.mp3"></audio>
-<audio id="wrong" src="assets/wrong.mp3"></audio>
+        function toggleAudio() {
+            soundEnabled = !soundEnabled;
+            document.getElementById('audio-toggle').innerText = soundEnabled ? "🔊 Sound: ON" : "🔇 Sound: OFF";
+        }
 
-<script>
-let timerInterval;
+        function playSound(type) {
+            if (!soundEnabled) return;
+            const audio = document.getElementById(type === 'correct' ? 'sound-correct' : 'sound-wrong');
+            if (audio) {
+                audio.currentTime = 0;
+                audio.play().catch(e => console.log("Audio play blocked", e));
+            }
+        }
 
-// Hide Splash Screen and Start Game after 5 seconds
-setTimeout(()=>{
-  document.getElementById("splash").style.display="none";
-  document.getElementById("game").classList.add("active");
-  startTimer();
-},5000);
+        function startTimer() {
+            clearInterval(timer);
+            timeLeft = 60;
+            document.getElementById('timer-text').innerText = `⏳ ${timeLeft}s`;
+            
+            timer = setInterval(() => {
+                timeLeft--;
+                document.getElementById('timer-text').innerText = `⏳ ${timeLeft}s`;
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    handleTimeout();
+                }
+            }, 1000);
+        }
 
-const rawQuestions = [
-{
-q:"Which number is greater than 229?",
-a:["202","219","220","291"],
-c:3
-},
-{
-q:"Value of 5 in 352?",
-a:["5","50","500","15"],
-c:1
-},
-{
-q:"Which number is 3 hundreds 2 tens 5 ones?",
-a:["235","325","352","523"],
-c:1
-},
-{
-q:"Which number has 7 tens?",
-a:["70","17","700","107"],
-c:0
-},
-{
-q:"Which is greater?",
-a:["609","690","Both","600"],
-c:1
-},
-{
-q:"300 + 40 + 5 = ?",
-a:["345","305","350","400"],
-c:0
-},
-{
-q:"Value of 3 in 135?",
-a:["3","30","300","13"],
-c:1
-},
-{
-q:"Which is NOT a 3-digit number?",
-a:["345","567","89","901"],
-c:2
-},
-{
-q:"Number after 159?",
-a:["158","160","150","170"],
-c:1
-},
-{
-q:"Which is closest to 400?",
-a:["398","420","450","470"],
-c:0
-},
-{
-q:"Is 248 + 100 more than 300?",
-a:["Yes","No","Exact","Less"],
-c:0
-},
-{
-q:"Rahul counts backwards from 202. What is the next number?",
-a:["203","201","200","199"],
-c:1
-},
-{
-q:"Which number is 4 hundreds 5 tens 5 ones?",
-a:["455","450","405","500"],
-c:0
-},
-{
-q:"Value of 7 in 372?",
-a:["7","70","700","17"],
-c:1
-},
-{
-q:"372 is greater than 350?",
-a:["Yes","No","Equal","Less"],
-c:0
-},
-{
-q:"5 hundreds 0 tens 8 ones = ?",
-a:["508","580","500","800"],
-c:0
-},
-{
-q:"What comes before 100?",
-a:["99","101","98","90"],
-c:0
-},
-{
-q:"18 + 11 = ?",
-a:["28","29","30","31"],
-c:1
-}
-];
+        function loadQuestion() {
+            attempts = 0;
+            const q = questions[currentQuestion];
+            document.getElementById('progress-text').innerText = `Question ${currentQuestion + 1} of ${questions.length}`;
+            document.getElementById('question-text').innerText = q.question;
+            document.getElementById('feedback-text').innerText = "";
+            document.getElementById('next-btn').disabled = true;
 
-// Shuffle questions and their options
-const questions = rawQuestions.map(item => {
-  const originalCorrectAnswer = item.a[item.c];
-  let indexedOptions = item.a.map((opt, idx) => ({ opt, isCorrect: idx === item.c }));
-  
-  // Shuffle options
-  for (let j = indexedOptions.length - 1; j > 0; j--) {
-    const k = Math.floor(Math.random() * (j + 1));
-    [indexedOptions[j], indexedOptions[k]] = [indexedOptions[k], indexedOptions[j]];
-  }
+            const optionsContainer = document.getElementById('options-container');
+            optionsContainer.innerHTML = '';
 
-  const newOptions = indexedOptions.map(io => io.opt);
-  const newCorrectIndex = indexedOptions.findIndex(io => io.isCorrect);
+            q.options.forEach((opt, index) => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.innerText = opt;
+                btn.onclick = () => selectOption(index, btn);
+                optionsContainer.appendChild(btn);
+            });
 
-  return {
-    q: item.q,
-    a: newOptions,
-    c: newCorrectIndex
-  };
-});
+            startTimer();
+        }
 
-// Shuffle question order
-for (let i = questions.length - 1; i > 0; i--) {
-  const j = Math.floor(Math.random() * (i + 1));
-  [questions[i], questions[j]] = [questions[j], questions[i]];
-}
+        function selectOption(index, btn) {
+            clearInterval(timer);
+            const q = questions[currentQuestion];
+            const options = document.querySelectorAll('.option-btn');
 
-let i=0,score=0,time=60,attempt=0,locked=false;
+            if (index === q.correct) {
+                btn.classList.add('correct');
+                playSound('correct');
+                options.forEach(b => b.disabled = true);
+                
+                if (attempts === 0) {
+                    score++;
+                }
 
-function loadQ(){
-  let q=questions[i];
-  document.getElementById("qno").innerText=i+1;
-  document.getElementById("question").innerText=q.q;
+                document.getElementById('feedback-text').style.color = "var(--success)";
+                document.getElementById('feedback-text').innerText = "Correct! Great job.";
+                document.getElementById('next-btn').disabled = false;
+            } else {
+                attempts++;
+                if (attempts === 1) {
+                    playSound('wrong');
+                    btn.classList.add('incorrect');
+                    btn.disabled = true;
+                    document.getElementById('feedback-text').style.color = "var(--error)";
+                    document.getElementById('feedback-text').innerText = `Incorrect. Hint: ${q.hint} (1 retry left)`;
+                    startTimer(); // Resume timer for retry
+                } else {
+                    playSound('wrong');
+                    btn.classList.add('incorrect');
+                    options.forEach((b, idx) => {
+                        b.disabled = true;
+                        if (idx === q.correct) b.classList.add('correct');
+                    });
+                    document.getElementById('feedback-text').style.color = "var(--error)";
+                    document.getElementById('feedback-text').innerText = `Incorrect. The correct answer is highlighted.`;
+                    document.getElementById('next-btn').disabled = false;
+                }
+            }
+        }
 
-  let opt="";
-  q.a.forEach((o,idx)=>{
-    opt+=`<button class="btn" onclick="check(this,${idx})">${o}</button>`;
-  });
+        function handleTimeout() {
+            const q = questions[currentQuestion];
+            const options = document.querySelectorAll('.option-btn');
+            options.forEach((b, idx) => {
+                b.disabled = true;
+                if (idx === q.correct) b.classList.add('correct');
+            });
+            playSound('wrong');
+            document.getElementById('feedback-text').style.color = "var(--error)";
+            document.getElementById('feedback-text').innerText = "Time's up! Moving to next step.";
+            document.getElementById('next-btn').disabled = false;
+        }
 
-  document.getElementById("options").innerHTML=opt;
-  document.getElementById("nextBtn").style.display="none";
-  attempt=0;
-  locked=false;
-}
+        function handleNext() {
+            currentQuestion++;
+            if (currentQuestion < questions.length) {
+                loadQuestion();
+            } else {
+                showResults();
+            }
+        }
 
-function check(btn,ans){
-  if(locked) return;
+        function showResults() {
+            document.getElementById('quiz-app').style.display = 'none';
+            const resultScreen = document.getElementById('result-screen');
+            resultScreen.style.display = 'block';
 
-  if(ans==questions[i].c){
-    btn.classList.add("correct");
-    try { document.getElementById("correct").play(); } catch(e){}
-    score++;
-    document.getElementById("score").innerText=score;
-    locked=true;
-    document.getElementById("nextBtn").style.display="inline-block";
-  } else {
-    attempt++;
-    btn.classList.add("wrong");
-    try { document.getElementById("wrong").play(); } catch(e){}
+            const percentage = (score / questions.length) * 100;
+            document.getElementById('final-score').innerText = `${score}/${questions.length}`;
 
-    if(attempt>=2){
-      locked=true;
-      document.getElementById("nextBtn").style.display="inline-block";
-    }
-  }
-}
+            const msgText = document.getElementById('result-message-text');
+            if (percentage >= 75) {
+                msgText.innerText = "Good job!";
+            } else if (percentage >= 40) {
+                msgText.innerText = "Review this chapter and try again.";
+            } else {
+                msgText.innerText = "Let’s practise more.";
+            }
+        }
 
-function nextQ(){
-  i++;
-  if(i<questions.length){
-    loadQ();
-  } else {
-    showResult();
-  }
-}
-
-function showResult(){
-  clearInterval(timerInterval);
-  document.getElementById("game").classList.remove("active");
-  document.getElementById("game").style.display="none";
-  document.getElementById("result").style.display="block";
-
-  let percent = (score/questions.length)*100;
-
-  let msg="";
-  if(percent>=75) msg="Good job 🎉";
-  else if(percent>=40) msg="Review this chapter and try again 🙂";
-  else msg="Let’s practise more 📘";
-
-  document.getElementById("resultText").innerText =
-    `${msg}\nScore: ${score}/${questions.length}`;
-}
-
-function startTimer() {
-  timerInterval = setInterval(()=>{
-    if(time>0){
-      time--;
-      document.getElementById("time").innerText=time;
-    } else {
-      showResult();
-    }
-  },1000);
-}
-
-loadQ();
-</script>
-
+        function restartQuiz() {
+            currentQuestion = 0;
+            score = 0;
+            document.getElementById('result-screen').style.display = 'none';
+            document.getElementById('quiz-app').style.display = 'block';
+            loadQuestion();
+        }
+    </script>
 </body>
 </html>
