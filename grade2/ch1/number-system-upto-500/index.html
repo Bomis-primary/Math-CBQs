@@ -62,8 +62,10 @@
         }
 
         #splash-screen img {
-            max-width: 150px;
-            margin-bottom: 16px;
+            max-width: 220px;
+            height: auto;
+            object-fit: contain;
+            margin-bottom: 20px;
         }
 
         /* Header Controls */
@@ -457,7 +459,7 @@
                     btn.disabled = true;
                     document.getElementById('feedback-text').style.color = "var(--error)";
                     document.getElementById('feedback-text').innerText = `Incorrect. Hint: ${q.hint} (1 retry left)`;
-                    startTimer(); // Resume timer for retry
+                    startTimer();
                 } else {
                     playSound('wrong');
                     btn.classList.add('incorrect');
