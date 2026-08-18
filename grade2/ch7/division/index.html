@@ -1,1 +1,416 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grade 2 Maths - Division Quiz</title>
+    <style>
+        :root {
+            --primary-color: #4f46e5;
+            --primary-hover: #4338ca;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-color: #1e293b;
+            --border-color: #e2e8f0;
+            --success-color: #22c55e;
+            --error-color: #ef4444;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        /* Splash Screen - Blank white screen showing only the logo */
+        #splash-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease;
+        }
+
+        #splash-screen img {
+            max-width: 280px;
+            height: auto;
+            display: block;
+        }
+
+        .quiz-container {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 600px;
+            padding: 30px;
+            display: none;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 15px;
+        }
+
+        .timer {
+            font-weight: bold;
+            color: var(--primary-color);
+            background: #eef2ff;
+            padding: 6px 12px;
+            border-radius: 20px;
+        }
+
+        .progress {
+            font-size: 14px;
+            color: #64748b;
+        }
+
+        .question-box {
+            margin-bottom: 20px;
+        }
+
+        .question-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .options-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .option-item {
+            padding: 12px 16px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background-color: #fff;
+        }
+
+        .option-item:hover {
+            border-color: var(--primary-color);
+            background-color: #f1f5f9;
+        }
+
+        .option-item.correct {
+            border-color: var(--success-color);
+            background-color: #f0fdf4;
+            color: #166534;
+        }
+
+        .option-item.incorrect {
+            border-color: var(--error-color);
+            background-color: #fef2f2;
+            color: #991b1b;
+        }
+
+        .feedback-box {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 6px;
+            font-size: 14px;
+            display: none;
+        }
+
+        .feedback-box.hint {
+            background-color: #fefce8;
+            color: #854d0e;
+            border: 1px solid #fef08a;
+            display: block;
+        }
+
+        .footer {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 25px;
+        }
+
+        .btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .btn:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .btn:disabled {
+            background-color: #cbd5e1;
+            cursor: not-allowed;
+        }
+
+        .results-container {
+            text-align: center;
+            display: none;
+        }
+
+        .results-container h2 {
+            margin-bottom: 15px;
+            font-size: 24px;
+        }
+
+        .results-score {
+            font-size: 48px;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Splash Screen: Blank screen showing only the logo from the assets folder -->
+    <div id="splash-screen">
+        <img src="assets/logo.png" alt="Innovine Logo">
+    </div>
+
+    <!-- Quiz Container -->
+    <div class="quiz-container" id="quiz-container">
+        <div class="header">
+            <span class="progress" id="progress">Question 1 of 12</span>
+            <span class="timer" id="timer">60s</span>
+        </div>
+        
+        <div class="question-box" id="question-box">
+            <h3 class="question-title" id="question-title"></h3>
+            <ul class="options-list" id="options-list"></ul>
+            <div class="feedback-box" id="feedback-box"></div>
+        </div>
+
+        <div class="footer">
+            <button class="btn" id="next-btn" onclick="handleNext()" disabled>Next</button>
+        </div>
+    </div>
+
+    <!-- Results Container -->
+    <div class="quiz-container results-container" id="results-container">
+        <h2>Quiz Completed!</h2>
+        <p>Your Final Score:</p>
+        <div class="results-score" id="final-score">0 / 12</div>
+        <button class="btn" onclick="restartQuiz()">Restart Quiz</button>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                question: "Riya has 12 chocolates and wants to distribute them equally among 3 children. How many chocolates will each child get?",
+                options: ["a) 3 chocolates", "b) 4 chocolates", "c) 5 chocolates", "d) 6 chocolates"],
+                correct: 1,
+                hint: "Think about dividing 12 into 3 equal groups (12 ÷ 3)."
+            },
+            {
+                question: "Karan has 12 bones and gives 4 bones to each puppy until none are left. How many puppies receive bones?",
+                options: ["a) 2 puppies", "b) 3 puppies", "c) 4 puppies", "d) 6 puppies"],
+                correct: 1,
+                hint: "Count how many times you subtract 4 from 12."
+            },
+            {
+                question: "A teacher has 9 storybooks and gives all of them to 1 single student. How many books does the student receive?",
+                options: ["a) 0 books", "b) 1 book", "c) 9 books", "d) 10 books"],
+                correct: 2,
+                hint: "Any number divided by 1 gives the number itself as the quotient."
+            },
+            {
+                question: "7 children share 7 pencils equally among themselves. How many pencils does each child get?",
+                options: ["a) 0 pencils", "b) 1 pencil", "c) 7 pencils", "d) 14 pencils"],
+                correct: 1,
+                hint: "When a number is divided by itself, the quotient is always 1."
+            },
+            {
+                question: "Aman has 0 marbles in his bag and decides to divide them equally among 4 friends. How many marbles does each friend get?",
+                options: ["a) 0 marbles", "b) 1 marble", "c) 4 marbles", "d) Cannot be divided"],
+                correct: 0,
+                hint: "When zero is divided by any number, the quotient is always zero."
+            },
+            {
+                question: "A florist makes 4 flower bunches, each containing 5 flowers, giving a total of 20 flowers. If she wants to repack all 20 flowers equally into 5 bunches, how many flowers will be in each bunch?",
+                options: ["a) 3 flowers", "b) 4 flowers", "c) 5 flowers", "d) 20 flowers"],
+                correct: 1,
+                hint: "Use the multiplication and division fact family (20 ÷ 5)."
+            },
+            {
+                question: "48 mangoes are packed equally into 8 baskets. How many mangoes are there in each basket?",
+                options: ["a) 6 mangoes", "b) 7 mangoes", "c) 8 mangoes", "d) 9 mangoes"],
+                correct: 0,
+                hint: "Recall the multiplication table of 8."
+            },
+            {
+                question: "Teena has 9 strawberries and distributes them equally among 4 friends. How many strawberries are left undistributed (remainder)?",
+                options: ["a) 0 strawberries", "b) 1 strawberry", "c) 2 strawberries", "d) 3 strawberries"],
+                correct: 1,
+                hint: "Find the closest product to 9 in the 4 times table."
+            },
+            {
+                question: "Rahul solved 58 ÷ 7 and wrote: Quotient = 8, Remainder = 5. Why is his answer incorrect?",
+                options: ["a) The quotient should be 7 instead of 8.", "b) The product 7 × 8 is 56, leaving a remainder of 2, not 5.", "c) Division cannot have a remainder.", "d) No mistake was made."],
+                correct: 1,
+                hint: "Check the subtraction step: 58 - (7 × 8)."
+            },
+            {
+                question: "In the division problem 337 ÷ 8 = 42 with a remainder of 1, which of the following terms does not belong to the parts of this division expression?",
+                options: ["a) Divisor (8)", "b) Dividend (337)", "c) Product (24)", "d) Quotient (42)"],
+                correct: 2,
+                hint: "Recall the four primary terms associated with division."
+            },
+            {
+                question: "Sarah has 18 crayons. She puts an equal number of crayons into 3 boxes. How many crayons are there in each box?",
+                options: ["a) 4 crayons", "b) 5 crayons", "c) 6 crayons", "d) 9 crayons"],
+                correct: 2,
+                hint: "Divide the total number of crayons by the number of boxes (18 ÷ 3)."
+            },
+            {
+                question: "A gardener has 24 flowers and plants them in rows of 6 flowers each. How many rows of flowers does he make?",
+                options: ["a) 3 rows", "b) 4 rows", "c) 6 rows", "d) 8 rows"],
+                correct: 1,
+                hint: "Count how many groups of 6 fit into 24 (24 ÷ 6)."
+            }
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+        let attempts = 0;
+        let timer;
+        let timeLeft = 60;
+
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                const splash = document.getElementById('splash-screen');
+                const quiz = document.getElementById('quiz-container');
+                splash.style.opacity = '0';
+                setTimeout(() => {
+                    splash.style.display = 'none';
+                    quiz.style.display = 'block';
+                    loadQuestion();
+                }, 500);
+            }, 3000); // Set splash screen display duration to 3 seconds
+        });
+
+        function startTimer() {
+            clearInterval(timer);
+            timeLeft = 60;
+            document.getElementById('timer').innerText = timeLeft + 's';
+            timer = setInterval(() => {
+                timeLeft--;
+                document.getElementById('timer').innerText = timeLeft + 's';
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    handleTimeout();
+                }
+            }, 1000);
+        }
+
+        function loadQuestion() {
+            startTimer();
+            attempts = 0;
+            const q = questions[currentQuestion];
+            document.getElementById('progress').innerText = `Question ${currentQuestion + 1} of ${questions.length}`;
+            document.getElementById('question-title').innerText = q.question;
+            
+            const optionsList = document.getElementById('options-list');
+            optionsList.innerHTML = '';
+            
+            q.options.forEach((opt, index) => {
+                const li = document.createElement('li');
+                li.className = 'option-item';
+                li.innerText = opt;
+                li.onclick = () => selectOption(index);
+                optionsList.appendChild(li);
+            });
+
+            document.getElementById('feedback-box').style.display = 'none';
+            document.getElementById('next-btn').disabled = true;
+        }
+
+        function selectOption(index) {
+            const q = questions[currentQuestion];
+            const optionItems = document.querySelectorAll('.option-item');
+            const feedbackBox = document.getElementById('feedback-box');
+
+            if (index === q.correct) {
+                clearInterval(timer);
+                optionItems[index].classList.add('correct');
+                optionItems.forEach(item => item.onclick = null);
+                if (attempts === 0) score++;
+                feedbackBox.style.display = 'none';
+                document.getElementById('next-btn').disabled = false;
+            } else {
+                attempts++;
+                if (attempts === 1) {
+                    optionItems[index].classList.add('incorrect');
+                    optionItems[index].onclick = null;
+                    feedbackBox.className = 'feedback-box hint';
+                    feedbackBox.innerText = `Hint: ${q.hint}`;
+                    feedbackBox.style.display = 'block';
+                } else {
+                    clearInterval(timer);
+                    optionItems[index].classList.add('incorrect');
+                    optionItems[q.correct].classList.add('correct');
+                    optionItems.forEach(item => item.onclick = null);
+                    feedbackBox.style.display = 'none';
+                    document.getElementById('next-btn').disabled = false;
+                }
+            }
+        }
+
+        function handleTimeout() {
+            const q = questions[currentQuestion];
+            const optionItems = document.querySelectorAll('.option-item');
+            optionItems[q.correct].classList.add('correct');
+            optionItems.forEach(item => item.onclick = null);
+            document.getElementById('next-btn').disabled = false;
+        }
+
+        function handleNext() {
+            currentQuestion++;
+            if (currentQuestion < questions.length) {
+                loadQuestion();
+            } else {
+                clearInterval(timer);
+                document.getElementById('quiz-container').style.display = 'none';
+                document.getElementById('results-container').style.display = 'block';
+                document.getElementById('final-score').innerText = `${score} / ${questions.length}`;
+            }
+        }
+
+        function restartQuiz() {
+            currentQuestion = 0;
+            score = 0;
+            document.getElementById('results-container').style.display = 'none';
+            document.getElementById('quiz-container').style.display = 'block';
+            loadQuestion();
+        }
+    </script>
+</body>
+</html>
