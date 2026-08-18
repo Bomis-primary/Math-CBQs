@@ -2,435 +2,470 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>CBQ - Money Challenge</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grade 2 - Chapter 10: Money Quiz</title>
     <style>
         :root {
-            --primary: #1f4e79;
-            --primary-hover: #153a5c;
-            --success: #16a34a;
-            --error: #dc2626;
-            --background: #f4f7ff;
+            --primary: #4f46e5;
+            --primary-hover: #4338ca;
+            --bg-color: #f8fafc;
             --card-bg: #ffffff;
-            --text-main: #1f2937;
-            --border: #e2e8f0;
+            --text-color: #1e293b;
+            --accent-green: #22c55e;
+            --accent-red: #ef4444;
         }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            -webkit-tap-highlight-color: transparent;
-            font-family: Arial, sans-serif;
-        }
-
         body {
-            background: var(--background);
-            color: var(--text-main);
-            line-height: 1.5;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            padding: 16px;
         }
-
         .container {
             width: 100%;
-            max-width: 600px;
+            max-width: 650px;
             background: var(--card-bg);
-            border-radius: 20px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-            overflow: hidden;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
             position: relative;
-            min-height: 480px;
         }
-
-        /* 5-second Splash Overlay Frame */
-        #splash {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: #ffffff;
+        .logo-container {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .logo-placeholder {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--primary);
+            background: #e0e7ff;
+            display: inline-block;
+            padding: 8px 20px;
+            border-radius: 8px;
+        }
+        .timer-bar {
+            height: 6px;
+            width: 100%;
+            background: #e2e8f0;
+            border-radius: 3px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+        .timer-fill {
+            height: 100%;
+            background: var(--primary);
+            width: 100%;
+            transition: width 1s linear;
+        }
+        .question-header {
             display: flex;
+            justify-content: space-between;
             align-items: center;
-            justify-content: center;
-            z-index: 100;
-            opacity: 1;
-            transition: opacity 1s ease-out;
+            margin-bottom: 15px;
+            font-size: 14px;
+            color: #64748b;
+            font-weight: 600;
         }
-
-        #splash.fade-out {
-            opacity: 0;
-            pointer-events: none;
+        .question-text {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            line-height: 1.4;
         }
-
-        #splash img {
-            max-width: 240px;
-            height: auto;
-        }
-
-        /* View Layout System */
-        .screen {
-            display: none;
-            padding: 24px;
-        }
-
-        .screen.active {
+        .options-list {
             display: flex;
             flex-direction: column;
-        }
-
-        /* Top HUD Panel */
-        .top {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 10px;
-            margin-bottom: 20px;
-            text-align: center;
-            font-weight: bold;
-        }
-
-        .box {
-            background: #e8f0ff;
-            padding: 10px;
-            border-radius: 12px;
-            font-size: 0.95rem;
-        }
-
-        /* Question View Element */
-        .question {
-            font-size: 1.2rem;
-            font-weight: bold;
-            margin-bottom: 20px;
-            color: var(--text-main);
-        }
-
-        /* Options Interactive Interface */
-        .options {
-            display: grid;
-            grid-template-columns: 1fr;
             gap: 12px;
             margin-bottom: 20px;
         }
-
-        .btn {
-            padding: 14px 16px;
-            border-radius: 12px;
-            border: 2px solid var(--primary);
-            background: var(--card-bg);
-            font-size: 1rem;
-            font-weight: 600;
+        .option-btn {
+            background: #f1f5f9;
+            border: 2px solid #e2e8f0;
+            padding: 12px 16px;
+            border-radius: 10px;
+            font-size: 16px;
             text-align: left;
             cursor: pointer;
             transition: all 0.2s ease;
-            color: var(--text-main);
-            width: 100%;
-            min-height: 56px;
         }
-
-        .btn:hover:not(:disabled) {
-            background: #eef5ff;
+        .option-btn:hover:not(:disabled) {
+            background: #e0e7ff;
+            border-color: var(--primary);
         }
-
-        .btn:disabled {
-            cursor: not-allowed;
-            opacity: 0.75;
+        .option-btn.correct {
+            background: #dcfce7 !important;
+            border-color: var(--accent-green) !important;
+            color: #166534;
         }
-
-        .btn.correct {
-            background: #c8f7d5 !important;
-            border-color: var(--success) !important;
-            color: #14532d !important;
-            font-weight: 700;
+        .option-btn.wrong {
+            background: #fee2e2 !important;
+            border-color: var(--accent-red) !important;
+            color: #991b1b;
         }
-
-        .btn.wrong {
-            background: #ffd6d6 !important;
-            border-color: var(--error) !important;
-            color: #7f1d1d !important;
-        }
-
-        /* Control Button Container */
-        .action-container {
-            display: flex;
-            justify-content: flex-end;
-        }
-
-        .next {
-            padding: 12px 24px;
-            background: var(--primary);
-            color: #fff;
-            border: none;
-            border-radius: 10px;
-            font-weight: 700;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: background 0.2s;
+        .feedback {
+            margin-top: 15px;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 15px;
             display: none;
         }
-
-        .next:hover {
+        .feedback.show {
+            display: block;
+        }
+        .feedback.hint {
+            background: #fef3c7;
+            color: #92400e;
+            border: 1px solid #fcd34d;
+        }
+        .feedback.explanation {
+            background: #f0fdf4;
+            color: #166534;
+            border: 1px solid #bbf7d0;
+        }
+        .next-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            float: right;
+            margin-top: 20px;
+            display: none;
+        }
+        .next-btn:hover {
             background: var(--primary-hover);
         }
-
-        /* Summary Panel Formatting */
-        .result-card {
+        .score-card {
             text-align: center;
-            padding: 40px 0;
-            align-items: center;
-            justify-content: center;
+            display: none;
         }
-
-        .score-display {
-            font-size: 3rem;
-            font-weight: 800;
+        .score-card h2 {
+            font-size: 28px;
             color: var(--primary);
-            margin: 20px 0;
+            margin-bottom: 10px;
         }
-
-        .result-msg {
-            font-size: 1.3rem;
-            font-weight: 700;
-            margin-bottom: 30px;
-            white-space: pre-line;
+        .score-card p {
+            font-size: 18px;
+            margin-bottom: 20px;
         }
-
         .restart-btn {
             background: var(--primary);
             color: white;
             border: none;
-            padding: 14px 28px;
-            font-size: 1.1rem;
-            font-weight: 700;
-            border-radius: 10px;
+            padding: 12px 24px;
+            font-size: 16px;
+            border-radius: 8px;
             cursor: pointer;
-            transition: background 0.2s;
-        }
-        
-        .restart-btn:hover {
-            background: var(--primary-hover);
         }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <div id="splash">
-            <img src="assets/logo.png" onerror="this.style.display='none'">
+<div class="container">
+    <div id="quiz-view">
+        <div class="logo-container">
+            <div class="logo-placeholder">Innovine Learning</div>
         </div>
-
-        <div id="game" class="screen active">
-            <div class="top">
-                <div class="box">Q: <span id="qno">1</span>/<span id="qtotal">18</span></div>
-                <div class="box">Score: <span id="score">0</span></div>
-                <div class="box">Time: <span id="time">60</span>s</div>
-            </div>
-
-            <div class="question" id="question"></div>
-            <div class="options" id="options"></div>
-
-            <div class="action-container">
-                <button class="next" onclick="nextQ()" id="nextBtn">Next</button>
-            </div>
+        <div class="timer-bar">
+            <div class="timer-fill" id="timer-fill"></div>
         </div>
-
-        <div id="result" class="screen result-card">
-            <h2>Chapter Complete!</h2>
-            <div class="score-display" id="final-score">0%</div>
-            <div class="result-msg" id="resultText">Performance Review</div>
-            <button class="restart-btn" onclick="window.location.reload()">Play Again</button>
+        <div class="question-header">
+            <span id="question-counter">Question 1 of 12</span>
+            <span id="timer-text">Time left: 60s</span>
         </div>
+        <div class="question-text" id="question-text">Loading question...</div>
+        <div class="options-list" id="options-list"></div>
+        <div class="feedback" id="feedback"></div>
+        <button class="next-btn" id="next-btn" onclick="nextQuestion()">Next Question</button>
     </div>
 
-    <audio id="correct" src="assets/claps.mp3" preload="auto"></audio>
-    <audio id="wrong" src="assets/wrong.mp3" preload="auto"></audio>
+    <div class="score-card" id="score-card">
+        <h2>Quiz Completed! 🎉</h2>
+        <p id="final-score">You scored X out of 12</p>
+        <button class="restart-btn" onclick="restartQuiz()">Restart Quiz</button>
+    </div>
+</div>
 
-    <script>
-        // MASTER Reference Database
-        const questionsDatabase = [
-            { q: "Who has more money: ₹20 or ₹15?", a: ["₹20", "₹15", "Equal", "None"], c: 0 },
-            { q: "What is money used for?", a: ["Buy things", "Measure length", "Weigh objects", "Draw"], c: 0 },
-            { q: "₹10 > ₹20?", a: ["Wrong", "Correct", "Equal", "Unknown"], c: 0 },
-            { q: "Can ₹30 buy ₹25 toy?", a: ["Yes", "No", "Exact", "Cannot"], c: 0 },
-            { q: "Which is greater?", a: ["₹10", "₹50", "₹5", "₹2"], c: 1 },
-            { q: "Which costs more?", a: ["Book ₹20", "Pencil ₹5", "Equal", "Both cheap"], c: 0 },
-            { q: "Money measures length?", a: ["Wrong", "Correct", "Both", "Sometimes"], c: 0 },
-            { q: "Which is cheaper?", a: ["Pen ₹10", "Eraser ₹5", "Equal", "Both"], c: 1 },
-            { q: "₹10 - ₹5 = ?", a: ["₹5", "₹10", "₹15", "₹2"], c: 0 },
-            { q: "₹40 - ₹35 = ?", a: ["₹5", "₹10", "₹15", "₹0"], c: 0 },
-            { q: "NOT money?", a: ["Ruler", "₹10", "₹20", "₹50"], c: 0 },
-            { q: "Highest coin?", a: ["₹1", "₹2", "₹5", "All equal"], c: 2 },
-            { q: "₹10+₹10 vs ₹5+₹5+₹5", a: ["Equal", "A more", "B more", "None"], c: 1 },
-            { q: "₹50 - ₹20 - ₹10 = ?", a: ["₹20", "₹10", "₹30", "₹40"], c: 0 },
-            { q: "₹30 - ₹20 = ?", a: ["₹10", "₹5", "₹20", "₹15"], c: 0 },
-            { q: "₹100 - ₹40 - ₹30 = ?", a: ["₹30", "₹20", "₹10", "₹40"], c: 0 },
-            { q: "₹25 toy + ₹25 toy = ?", a: ["₹50", "₹40", "₹30", "₹60"], c: 0 },
-            { q: "₹20 + ₹15 vs ₹50", a: ["Less", "More", "Equal", "Cannot"], c: 0 }
-        ];
-
-        let runtimeQuestions = [];
-        let i = 0, score = 0, time = 60, attempt = 0, lock = false, currentCorrectIndex = null, timerInterval = null;
-
-        // FISHER-YATES UNBIASED SHUFFLE UTILITY
-        function shuffleArray(array) {
-            for (let idx = array.length - 1; idx > 0; idx--) {
-                const j = Math.floor(Math.random() * (idx + 1));
-                [array[idx], array[j]] = [array[j], array[idx]];
-            }
-            return array;
+<script>
+    const questions = [
+        {
+            q: "Ranu wants to buy a notebook that costs ₹ 40. Which combination of notes and coins should she pick to pay the exact amount without needing any change?",
+            options: [
+                "One ₹ 20 note and two ₹ 10 notes",
+                "One ₹ 50 note and one ₹ 10 note",
+                "Four ₹ 5 notes",
+                "Two ₹ 20 notes and two ₹ 5 notes"
+            ],
+            answer: 0,
+            hint: "Count the total value: ₹ 20 + ₹ 10 + ₹ 10 = ₹ 40.",
+            explanation: "One ₹ 20 note and two ₹ 10 notes add up precisely to ₹ 40 (20 + 10 + 10 = 40)."
+        },
+        {
+            q: "Look at the amount written in figures: ₹ 252. How is this amount correctly written in words?",
+            options: [
+                "Two hundred twenty-five rupees",
+                "Two hundred fifty-two rupees",
+                "Five hundred twenty-two rupees",
+                "Two hundred fifty rupees"
+            ],
+            answer: 1,
+            hint: "Look closely at the tens and ones digits (5 tens and 2 ones).",
+            explanation: "The number ₹ 252 is read and written in words as 'Two hundred fifty-two rupees'."
+        },
+        {
+            q: "Amit wants to exchange one ₹ 500 note into smaller notes of ₹ 100. How many ₹ 100 notes will he get?",
+            options: [
+                "2 notes",
+                "4 notes",
+                "5 notes",
+                "10 notes"
+            ],
+            answer: 2,
+            hint: "Think about how many hundreds make five hundred (100 × 5 = 500).",
+            explanation: "Five ₹ 100 notes equal one ₹ 500 note (100 + 100 + 100 + 100 + 100 = 500)."
+        },
+        {
+            q: "Renuka buys a mango for ₹ 45 and a papaya for ₹ 32. How much money does Renuka spend in all?",
+            options: [
+                "₹ 67",
+                "₹ 77",
+                "₹ 87",
+                "₹ 75"
+            ],
+            answer: 1,
+            hint: "Add the ones column first (5 + 2), then the tens column (4 + 3).",
+            explanation: "Adding ₹ 45 and ₹ 32 gives ₹ 77 in total (45 + 32 = 77)."
+        },
+        {
+            q: "Shridhar had a ₹ 100 note. He purchased stationery items worth ₹ 77. How much money does the shopkeeper need to return?",
+            options: [
+                "₹ 23",
+                "₹ 33",
+                "₹ 25",
+                "₹ 13"
+            ],
+            answer: 0,
+            hint: "Subtract ₹ 77 from ₹ 100 by borrowing across columns (100 - 77).",
+            explanation: "The remaining balance is found by subtracting the spent amount from the given amount: 100 - 77 = 23."
+        },
+        {
+            q: "Using item values: Doll = ₹ 70, Toy car = ₹ 30, Toy plane = ₹ 25, Candy = ₹ 6. Which item from the list is the most expensive?",
+            options: [
+                "Toy car",
+                "Toy plane",
+                "Doll",
+                "Candy"
+            ],
+            answer: 2,
+            hint: "Compare the numbers 70, 30, 25, and 6. The largest number represents the highest cost.",
+            explanation: "The Doll costs ₹ 70, which is the highest value among the choices."
+        },
+        {
+            q: "Rahul solved an addition problem: ₹ 48 + ₹ 41 = ₹ 89. Amit solved: ₹ 30 + ₹ 19 = ₹ 49. Which of the following statements is true regarding their solutions?",
+            options: [
+                "Both Rahul's and Amit's solutions are correct",
+                "Only Rahul's solution is correct",
+                "Only Amit's solution is correct",
+                "Both solutions are wrong"
+            ],
+            answer: 0,
+            hint: "Check 48 + 41 (8+1=9, 4+4=8) and 30 + 19 (0+9=9, 3+1=4).",
+            explanation: "Both addition sums have been correctly calculated (48 + 41 = 89 and 30 + 19 = 49)."
+        },
+        {
+            q: "Assertion: Exchanging a ₹ 50-rupee note for five 10-rupee notes gives the exact same value.
+Reason: Five tens make fifty (10 × 5 = 50).",
+            options: [
+                "Both are correct and reason explains assertion",
+                "Both are correct but reason does not explain",
+                "Assertion is correct, reason is wrong",
+                "Both are wrong"
+            ],
+            answer: 0,
+            hint: "Check if 10 + 10 + 10 + 10 + 10 equals 50.",
+            explanation: "Exchanging larger notes for smaller ones requires equivalent value, which is verified by multiplication/addition (10 × 5 = 50)."
+        },
+        {
+            q: "Swati bought sweets worth ₹ 42 and savouries worth ₹ 29. How much did she spend in total?",
+            options: [
+                "₹ 61",
+                "₹ 71",
+                "₹ 81",
+                "₹ 70"
+            ],
+            answer: 1,
+            hint: "Add the cost of sweets and savouries together (42 + 29).",
+            explanation: "42 + 29 = 71 rupees spent in all."
+        },
+        {
+            q: "The cost of a book in shop X is ₹ 40 and in shop Y is ₹ 45. What is the difference between the cost of the book in the two shops?",
+            options: [
+                "₹ 3",
+                "₹ 5",
+                "₹ 10",
+                "₹ 85"
+            ],
+            answer: 1,
+            hint: "Find the difference by subtracting the smaller price from the larger price (45 - 40).",
+            explanation: "The difference in price is 45 - 40 = 5 rupees."
+        },
+        {
+            q: "Shaurya has ₹ 50 with him. He wants to buy a toy worth ₹ 89. How much more money does he need to buy the toy?",
+            options: [
+                "₹ 29",
+                "₹ 39",
+                "₹ 49",
+                "₹ 139"
+            ],
+            answer: 1,
+            hint: "Subtract the money he has from the cost of the toy (89 - 50).",
+            explanation: "89 - 50 = 39 rupees more are needed to complete the purchase."
+        },
+        {
+            q: "Priyanka saved ₹ 79, while her brother Rahul saved ₹ 97 more than Priyanka from their pocket money. How much money did they save together?",
+            options: [
+                "₹ 176",
+                "₹ 255",
+                "₹ 245",
+                "₹ 166"
+            ],
+            answer: 1,
+            hint: "First, find Rahul's savings (79 + 97 = 176). Then, add Priyanka's savings to Rahul's savings.",
+            explanation: "Rahul saved 79 + 97 = 176. Together, Priyanka and Rahul saved 79 + 176 = 255 rupees."
         }
+    ];
 
-        // DEEP COPY AND TRANSLATION BOOTSTRAP
-        function bootstrapQuizData() {
-            runtimeQuestions = questionsDatabase.map(item => {
-                const originalAnswers = [...item.a];
-                const trueAnswerValue = originalAnswers[item.c];
-                
-                const shuffledAnswers = shuffleArray(originalAnswers);
-                const dynamicCorrectIdx = shuffledAnswers.indexOf(trueAnswerValue);
-                
-                return {
-                    q: item.q,
-                    a: shuffledAnswers,
-                    c: dynamicCorrectIdx
-                };
-            });
+    let currentQuestion = 0;
+    let score = 0;
+    let attempts = 0;
+    let timer;
+    let timeLeft = 60;
 
-            shuffleArray(runtimeQuestions);
-            document.getElementById("qtotal").innerText = runtimeQuestions.length;
-        }
+    function shuffleArray(array) {
+        // Shuffle helper if randomization rule is applied across options, but keep original indices mapped.
+    }
 
-        const appEngine = {
-            init() {
-                setTimeout(() => {
-                    const splash = document.getElementById("splash");
-                    if (splash) {
-                        splash.classList.add("fade-out");
-                        splash.addEventListener('transitionend', () => {
-                            splash.style.display = "none";
-                        });
-                    }
-                }, 5000);
-                
-                bootstrapQuizData();
-                load();
-            }
-        };
-
-        function load() {
-            if (i >= runtimeQuestions.length) {
-                showResult();
-                return;
-            }
-
-            let q = runtimeQuestions[i];
-            currentCorrectIndex = q.c;
-
-            document.getElementById("qno").innerText = i + 1;
-            document.getElementById("question").innerText = q.q;
-
-            let html = "";
-            q.a.forEach((o, idx) => {
-                html += `<button class="btn" onclick="check(this,${idx})">${o}</button>`;
-            });
-
-            document.getElementById("options").innerHTML = html;
-            document.getElementById("nextBtn").style.display = "none";
-
-            attempt = 0;
-            lock = false;
+    function startTimer() {
+        timeLeft = 60;
+        document.getElementById('timer-text').innerText = `Time left: ${timeLeft}s`;
+        document.getElementById('timer-fill').style.width = '100%';
+        
+        clearInterval(timer);
+        timer = setInterval(() => {
+            timeLeft--;
+            document.getElementById('timer-text').innerText = `Time left: ${timeLeft}s`;
+            document.getElementById('timer-fill').style.width = `${(timeLeft / 60) * 100}%`;
             
-            time = 60;
-            document.getElementById("time").innerText = time;
-            startCountdown();
-        }
-
-        function startCountdown() {
-            clearInterval(timerInterval);
-            timerInterval = setInterval(() => {
-                if (time > 0) {
-                    time--;
-                    document.getElementById("time").innerText = time;
-                } else {
-                    clearInterval(timerInterval);
-                    autoRevealCorrect();
-                }
-            }, 1000);
-        }
-
-        function check(btn, ans) {
-            if (lock) return;
-
-            if (ans == currentCorrectIndex) {
-                clearInterval(timerInterval);
-                btn.classList.add("correct");
-                safePlayAudio("correct");
-                score++;
-                document.getElementById("score").innerText = score;
-                lock = true;
-                document.getElementById("nextBtn").style.display = "inline-block";
-            } else {
-                attempt++;
-                btn.classList.add("wrong");
-                btn.disabled = true;
-                safePlayAudio("wrong");
-
-                if (attempt >= 2) {
-                    clearInterval(timerInterval);
-                    autoRevealCorrect();
-                }
+            if (timeLeft <= 0) {
+                clearInterval(timer);
+                handleTimeout();
             }
-        }
+        }, 1000);
+    }
 
-        function autoRevealCorrect() {
-            lock = true;
-            const buttons = document.querySelectorAll(".options .btn");
-            
-            buttons.forEach((btn, idx) => {
-                btn.disabled = true;
-                if (idx == currentCorrectIndex) {
-                    btn.classList.add("correct");
-                }
-            });
-            
-            document.getElementById("nextBtn").style.display = "inline-block";
-        }
-
-        function nextQ() {
-            i++;
-            load();
-        }
-
-        function showResult() {
-            clearInterval(timerInterval);
-            document.getElementById("game").classList.remove("active");
-            const resultScreen = document.getElementById("result");
-            resultScreen.style.display = "flex";
-            resultScreen.classList.add("active");
-
-            let percent = Math.round((score / runtimeQuestions.length) * 100);
-            document.getElementById("final-score").innerText = `${percent}%`;
-
-            let msg = "";
-            if (percent >= 75) msg = "Good job 🎉";
-            else if (percent >= 40) msg = "Review this chapter 🙂";
-            else msg = "Let’s practise more 📘";
-
-            document.getElementById("resultText").innerText = `${msg}\nScore: ${score}/${runtimeQuestions.length}`;
-        }
-
-        function safePlayAudio(id) {
-            const audio = document.getElementById(id);
-            if (audio) {
-                audio.currentTime = 0;
-                audio.play().catch(() => {});
-            }
-        }
-
-        // Reliable startup call
-        document.addEventListener("DOMContentLoaded", () => {
-            appEngine.init();
+    function loadQuestion() {
+        attempts = 0;
+        const q = questions[currentQuestion];
+        document.getElementById('question-counter').innerText = `Question ${currentQuestion + 1} of ${questions.length}`;
+        document.getElementById('question-text').innerText = q.q;
+        
+        const optionsList = document.getElementById('options-list');
+        optionsList.innerHTML = '';
+        
+        q.options.forEach((opt, index) => {
+            const btn = document.createElement('button');
+            btn.className = 'option-btn';
+            btn.innerText = opt;
+            btn.onclick = () => selectOption(index);
+            optionsList.appendChild(btn);
         });
-    </script>
+
+        const feedback = document.getElementById('feedback');
+        feedback.className = 'feedback';
+        feedback.innerText = '';
+        document.getElementById('next-btn').style.display = 'none';
+
+        startTimer();
+    }
+
+    function selectOption(index) {
+        clearInterval(timer);
+        const q = questions[currentQuestion];
+        const buttons = document.querySelectorAll('.option-btn');
+        const feedback = document.getElementById('feedback');
+
+        buttons.forEach(b => b.disabled = true);
+
+        if (index === q.answer) {
+            buttons[index].classList.add('correct');
+            feedback.className = 'feedback show explanation';
+            feedback.innerHTML = `<strong>Correct!</strong> ${q.explanation}`;
+            if (attempts === 0) score++;
+            document.getElementById('next-btn').style.display = 'block';
+        } else {
+            buttons[index].classList.add('wrong');
+            attempts++;
+            if (attempts === 1) {
+                feedback.className = 'feedback show hint';
+                feedback.innerHTML = `<strong>Hint:</strong> ${q.hint} <br><em>You have 1 retry left. Try again!</em>`;
+                // Re-enable buttons for second attempt
+                buttons.forEach((b, i) => {
+                    if (i !== index) b.disabled = false;
+                });
+                startTimer(); // Restart timer for retry
+            } else {
+                buttons[q.answer].classList.add('correct');
+                feedback.className = 'feedback show explanation';
+                feedback.innerHTML = `<strong>Incorrect.</strong> The correct answer is: ${q.options[q.answer]}.<br>${q.explanation}`;
+                document.getElementById('next-btn').style.display = 'block';
+            }
+        }
+    }
+
+    function handleTimeout() {
+        const q = questions[currentQuestion];
+        const buttons = document.querySelectorAll('.option-btn');
+        const feedback = document.getElementById('feedback');
+
+        buttons.forEach(b => b.disabled = true);
+        buttons[q.answer].classList.add('correct');
+        feedback.className = 'feedback show explanation';
+        feedback.innerHTML = `<strong>Time's up!</strong> The correct answer is: ${q.options[q.answer]}.<br>${q.explanation}`;
+        document.getElementById('next-btn').style.display = 'block';
+    }
+
+    function nextQuestion() {
+        currentQuestion++;
+        if (currentQuestion < questions.length) {
+            loadQuestion();
+        } else {
+            showScoreCard();
+        }
+    }
+
+    function showScoreCard() {
+        document.getElementById('quiz-view').style.display = 'none';
+        document.getElementById('score-card').style.display = 'block';
+        document.getElementById('final-score').innerText = `You scored ${score} out of ${questions.length}`;
+    }
+
+    function restartQuiz() {
+        currentQuestion = 0;
+        score = 0;
+        document.getElementById('score-card').style.display = 'none';
+        document.getElementById('quiz-view').style.display = 'block';
+        loadQuestion();
+    }
+
+    // Initialize first question
+    loadQuestion();
+</script>
+
 </body>
 </html>
