@@ -34,18 +34,44 @@
             box-shadow: 0 10px 25px rgba(0,0,0,0.05);
             position: relative;
         }
+        /* Splash Screen Styling */
+        #splash-screen {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 40px 20px;
+            min-height: 300px;
+        }
+        #splash-screen img {
+            max-height: 100px;
+            object-fit: contain;
+            margin-bottom: 25px;
+            animation: pulse 1.5s infinite ease-in-out;
+        }
+        #splash-screen h1 {
+            font-size: 24px;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+        #splash-screen p {
+            color: #64748b;
+            font-size: 16px;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
         .logo-container {
             text-align: center;
             margin-bottom: 20px;
         }
-        .logo-placeholder {
-            font-size: 20px;
-            font-weight: bold;
-            color: var(--primary);
-            background: #e0e7ff;
-            display: inline-block;
-            padding: 8px 20px;
-            border-radius: 8px;
+        .logo-container img {
+            max-height: 55px;
+            object-fit: contain;
         }
         .timer-bar {
             height: 6px;
@@ -167,10 +193,23 @@
 </head>
 <body>
 
+<!-- Audio elements for correct/wrong sounds from assets folder -->
+<audio id="claps-sound" src="assets/claps.mp3" preload="auto"></audio>
+<audio id="wrong-sound" src="assets/wrong.mp3" preload="auto"></audio>
+
 <div class="container">
-    <div id="quiz-view">
+    <!-- Splash Screen -->
+    <div id="splash-screen">
+        <img src="assets/logo.png" alt="Innovine Learning Logo" onerror="this.onerror=null; this.src='logo.png';">
+        <h1>Innovine Learning</h1>
+        <p>Grade 2 Math - Chapter 10: Money Quiz</p>
+        <p style="font-size: 13px; margin-top: 15px; color: #94a3b8;">Loading in <span id="splash-countdown">5</span>s...</p>
+    </div>
+
+    <!-- Quiz View (Hidden initially) -->
+    <div id="quiz-view" style="display: none;">
         <div class="logo-container">
-            <div class="logo-placeholder">Innovine Learning - Grade 2 Math</div>
+            <img src="assets/logo.png" alt="Innovine Learning Logo" onerror="this.onerror=null; this.src='logo.png';">
         </div>
         <div class="timer-bar">
             <div class="timer-fill" id="timer-fill"></div>
@@ -326,18 +365,6 @@
             hint: "Subtract the money he has from the cost of the toy (89 - 50).",
             explanation: "89 - 50 = 39 rupees more are needed to complete the purchase."
         },
-        {
-            q: "Priyanka saved ₹ 79, while her brother Rahul saved ₹ 97 more than Priyanka from their pocket money. How much money did they save together?",
-            options: [
-                "₹ 176",
-                "₹ 255",
-                "₹ 245",
-                "₹ 166"
-            ],
-            answer: 1,
-            hint: "First, find Rahul's savings (79 + 97 = 176). Then, add Priyanka's savings to Rahul's savings.",
-            explanation: "Rahul saved 79 + 97 = 176. Together, Priyanka and Rahul saved 79 + 176 = 255 rupees."
-        }
     ];
 
     let currentQuestion = 0;
@@ -345,6 +372,35 @@
     let attempts = 0;
     let timer;
     let timeLeft = 60;
+
+    // Splash Screen Timer Logic (5 seconds)
+    let splashTimeLeft = 5;
+    const splashCountdown = document.getElementById('splash-countdown');
+    
+    const splashTimer = setInterval(() => {
+        splashTimeLeft--;
+        if (splashCountdown) {
+            splashCountdown.innerText = splashTimeLeft;
+        }
+        if (splashTimeLeft <= 0) {
+            clearInterval(splashTimer);
+            document.getElementById('splash-screen').style.display = 'none';
+            document.getElementById('quiz-view').style.display = 'block';
+            loadQuestion();
+        }
+    }, 1000);
+
+    function playSound(type) {
+        try {
+            const audio = document.getElementById(type === 'correct' ? 'claps-sound' : 'wrong-sound');
+            if (audio) {
+                audio.currentTime = 0;
+                audio.play().catch(e => console.log("Audio play prevented:", e));
+            }
+        } catch(err) {
+            console.log("Audio error:", err);
+        }
+    }
 
     function startTimer() {
         timeLeft = 60;
@@ -399,12 +455,14 @@
 
         if (index === q.answer) {
             buttons[index].classList.add('correct');
+            playSound('correct');
             feedback.className = 'feedback show explanation';
             feedback.innerHTML = `<strong>Correct!</strong> ${q.explanation}`;
             if (attempts === 0) score++;
             document.getElementById('next-btn').style.display = 'block';
         } else {
             buttons[index].classList.add('wrong');
+            playSound('wrong');
             attempts++;
             if (attempts === 1) {
                 feedback.className = 'feedback show hint';
@@ -429,6 +487,7 @@
 
         buttons.forEach(b => b.disabled = true);
         buttons[q.answer].classList.add('correct');
+        playSound('wrong');
         feedback.className = 'feedback show explanation';
         feedback.innerHTML = `<strong>Time's up!</strong> The correct answer is: ${q.options[q.answer]}.<br>${q.explanation}`;
         document.getElementById('next-btn').style.display = 'block';
@@ -447,6 +506,7 @@
         document.getElementById('quiz-view').style.display = 'none';
         document.getElementById('score-card').style.display = 'block';
         document.getElementById('final-score').innerText = `You scored ${score} out of ${questions.length}`;
+        playSound('correct');
     }
 
     function restartQuiz() {
@@ -456,9 +516,8 @@
         document.getElementById('quiz-view').style.display = 'block';
         loadQuestion();
     }
-
-    loadQuestion();
 </script>
 
 </body>
 </html>
+```[cite: 8]
