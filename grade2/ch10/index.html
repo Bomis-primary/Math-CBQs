@@ -38,14 +38,9 @@
             text-align: center;
             margin-bottom: 20px;
         }
-        .logo-placeholder {
-            font-size: 24px;
-            font-weight: bold;
-            color: var(--primary);
-            background: #e0e7ff;
-            display: inline-block;
-            padding: 8px 20px;
-            border-radius: 8px;
+        .logo-container img {
+            max-height: 50px;
+            object-fit: contain;
         }
         .timer-bar {
             height: 6px;
@@ -170,7 +165,7 @@
 <div class="container">
     <div id="quiz-view">
         <div class="logo-container">
-            <div class="logo-placeholder">Innovine Learning</div>
+            <img src="logo.png" alt="Innovine Learning Logo">
         </div>
         <div class="timer-bar">
             <div class="timer-fill" id="timer-fill"></div>
@@ -279,8 +274,7 @@
             explanation: "Both addition sums have been correctly calculated (48 + 41 = 89 and 30 + 19 = 49)."
         },
         {
-            q: "Assertion: Exchanging a ₹ 50-rupee note for five 10-rupee notes gives the exact same value.
-Reason: Five tens make fifty (10 × 5 = 50).",
+            q: "Assertion: Exchanging a ₹ 50-rupee note for five 10-rupee notes gives the exact same value.\nReason: Five tens make fifty (10 × 5 = 50).",
             options: [
                 "Both are correct and reason explains assertion",
                 "Both are correct but reason does not explain",
@@ -347,10 +341,6 @@ Reason: Five tens make fifty (10 × 5 = 50).",
     let timer;
     let timeLeft = 60;
 
-    function shuffleArray(array) {
-        // Shuffle helper if randomization rule is applied across options, but keep original indices mapped.
-    }
-
     function startTimer() {
         timeLeft = 60;
         document.getElementById('timer-text').innerText = `Time left: ${timeLeft}s`;
@@ -414,11 +404,10 @@ Reason: Five tens make fifty (10 × 5 = 50).",
             if (attempts === 1) {
                 feedback.className = 'feedback show hint';
                 feedback.innerHTML = `<strong>Hint:</strong> ${q.hint} <br><em>You have 1 retry left. Try again!</em>`;
-                // Re-enable buttons for second attempt
                 buttons.forEach((b, i) => {
                     if (i !== index) b.disabled = false;
                 });
-                startTimer(); // Restart timer for retry
+                startTimer();
             } else {
                 buttons[q.answer].classList.add('correct');
                 feedback.className = 'feedback show explanation';
@@ -463,7 +452,6 @@ Reason: Five tens make fifty (10 × 5 = 50).",
         loadQuestion();
     }
 
-    // Initialize first question
     loadQuestion();
 </script>
 
