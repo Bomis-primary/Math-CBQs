@@ -46,21 +46,17 @@
             min-height: 480px;
         }
 
-        /* 5-second Splash Overlay Frame */
+        /* 5-second Splash / Logo Screen */
         #splash {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
             background: #ffffff;
             display: flex;
-            flex-direction: column;
             align-items: center;
             justify-content: center;
-            gap: 16px;
             z-index: 100;
             opacity: 1;
             transition: opacity 1s ease-out;
-            padding: 24px;
-            text-align: center;
         }
 
         #splash.fade-out {
@@ -73,10 +69,45 @@
             height: auto;
         }
 
-        #splash h1 {
-            font-size: 1.5rem;
+        /* Title Screen View (Appears after 5 seconds) */
+        #title-screen {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--card-bg);
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            text-align: center;
+            z-index: 90;
+        }
+
+        #title-screen.active {
+            display: flex;
+        }
+
+        #title-screen h1 {
+            font-size: 1.8rem;
             color: var(--primary);
             font-weight: 800;
+            margin-bottom: 30px;
+        }
+
+        .start-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 16px 36px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .start-btn:hover {
+            background: var(--primary-hover);
         }
 
         /* View Layout System */
@@ -224,12 +255,18 @@
 <body>
 
     <div class="container">
+        <!-- Pure 5-second logo screen -->
         <div id="splash">
             <img src="assets/logo.png" onerror="this.style.display='none'">
-            <h1>Shapes and Patterns Challenge</h1>
         </div>
 
-        <div id="game" class="screen active">
+        <!-- Title screen appearing after 5 seconds -->
+        <div id="title-screen">
+            <h1>Shapes and Patterns Challenge</h1>
+            <button class="start-btn" onclick="startGame()">Start Quiz</button>
+        </div>
+
+        <div id="game" class="screen">
             <div class="top">
                 <div class="box">Q: <span id="qno">1</span>/<span id="qtotal">18</span></div>
                 <div class="box">Score: <span id="score">0</span></div>
@@ -311,19 +348,26 @@
 
         const appEngine = {
             init() {
+                // Wait for exactly 5 seconds, then fade out logo and show title screen
                 setTimeout(() => {
                     const splash = document.getElementById("splash");
                     splash.classList.add("fade-out");
                     
                     splash.addEventListener('transitionend', () => {
                         splash.style.display = "none";
+                        document.getElementById("title-screen").classList.add("active");
                     });
                 }, 5000);
                 
                 bootstrapQuizData();
-                load();
             }
         };
+
+        function startGame() {
+            document.getElementById("title-screen").classList.remove("active");
+            document.getElementById("game").classList.add("active");
+            load();
+        }
 
         function load() {
             if (i >= runtimeQuestions.length) {
