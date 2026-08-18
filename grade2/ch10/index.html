@@ -105,7 +105,7 @@
             color: var(--text-main);
         }
 
-        /* Options Interactive Interface (Single Column Layout) */
+        /* Options Interactive Interface */
         .options {
             display: grid;
             grid-template-columns: 1fr;
@@ -178,6 +178,7 @@
             text-align: center;
             padding: 40px 0;
             align-items: center;
+            justify-content: center;
         }
 
         .score-display {
@@ -303,11 +304,12 @@
             init() {
                 setTimeout(() => {
                     const splash = document.getElementById("splash");
-                    splash.classList.add("fade-out");
-                    
-                    splash.addEventListener('transitionend', () => {
-                        splash.style.display = "none";
-                    });
+                    if (splash) {
+                        splash.classList.add("fade-out");
+                        splash.addEventListener('transitionend', () => {
+                            splash.style.display = "none";
+                        });
+                    }
                 }, 5000);
                 
                 bootstrapQuizData();
@@ -401,8 +403,10 @@
 
         function showResult() {
             clearInterval(timerInterval);
-            document.getElementById("game").style.display = "none";
-            document.getElementById("result").style.display = "flex";
+            document.getElementById("game").classList.remove("active");
+            const resultScreen = document.getElementById("result");
+            resultScreen.style.display = "flex";
+            resultScreen.classList.add("active");
 
             let percent = Math.round((score / runtimeQuestions.length) * 100);
             document.getElementById("final-score").innerText = `${percent}%`;
@@ -423,7 +427,10 @@
             }
         }
 
-        window.onload = () => appEngine.init();
+        // Reliable startup call
+        document.addEventListener("DOMContentLoaded", () => {
+            appEngine.init();
+        });
     </script>
 </body>
 </html>
