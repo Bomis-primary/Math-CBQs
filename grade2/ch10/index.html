@@ -45,19 +45,9 @@
             min-height: 300px;
         }
         #splash-screen img {
-            max-height: 100px;
+            max-height: 120px;
             object-fit: contain;
-            margin-bottom: 25px;
             animation: pulse 1.5s infinite ease-in-out;
-        }
-        #splash-screen h1 {
-            font-size: 24px;
-            color: var(--primary);
-            margin-bottom: 10px;
-        }
-        #splash-screen p {
-            color: #64748b;
-            font-size: 16px;
         }
         @keyframes pulse {
             0% { transform: scale(1); }
@@ -198,12 +188,9 @@
 <audio id="wrong-sound" src="assets/wrong.mp3" preload="auto"></audio>
 
 <div class="container">
-    <!-- Splash Screen -->
+    <!-- Splash Screen (Logo only) -->
     <div id="splash-screen">
         <img src="assets/logo.png" alt="Innovine Learning Logo" onerror="this.onerror=null; this.src='logo.png';">
-        <h1>Innovine Learning</h1>
-        <p>Grade 2 Math - Chapter 10: Money Quiz</p>
-        <p style="font-size: 13px; margin-top: 15px; color: #94a3b8;">Loading in <span id="splash-countdown">5</span>s...</p>
     </div>
 
     <!-- Quiz View (Hidden initially) -->
@@ -373,15 +360,11 @@
     let timer;
     let timeLeft = 60;
 
-    // Splash Screen Timer Logic (5 seconds)
+    // Splash Screen Timer Logic (5 seconds, logo only)
     let splashTimeLeft = 5;
-    const splashCountdown = document.getElementById('splash-countdown');
     
     const splashTimer = setInterval(() => {
         splashTimeLeft--;
-        if (splashCountdown) {
-            splashCountdown.innerText = splashTimeLeft;
-        }
         if (splashTimeLeft <= 0) {
             clearInterval(splashTimer);
             document.getElementById('splash-screen').style.display = 'none';
@@ -520,4 +503,3 @@
 
 </body>
 </html>
-```[cite: 8]
