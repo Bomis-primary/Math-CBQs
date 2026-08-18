@@ -354,15 +354,15 @@
                 hint: "Compare the hundreds and tens of 421 and 440 to find the highest score."
             },
             {
-                question: "Rahul classified the numbers 431, 246, 183, 354 into even and odd. Which number did he misclassify?",
+                question: "Rahul classified the numbers 431, 246, 183, 354 into even and odd. Which numbers did he misclassify?",
                 options: [
-                    "431 is even",
+                    "183 is odd",
                     "246 is odd",
                     "354 is even",
-                    "183 is odd"
+                    "431 is even"
                 ],
-                correct: 1,
-                hint: "Numbers ending in 0, 2, 4, 6, 8 are even. 246 ends in 6, so it is even."
+                correct: [1, 3], // Multiple correct answers (Options 2 and 4)
+                hint: "Check both 246 (ends in 6, so it's even) and 431 (ends in 1, so it's odd)."
             },
             {
                 question: "Look at the skip counting pattern: 5, 10, 15, ___, 25, ___. What are the missing numbers?",
@@ -384,6 +384,7 @@
         let timer;
         let timeLeft = 60;
         let soundEnabled = true;
+        let selectedOptions = []; // Tracks multiple selections for multi-answer questions
 
         function shuffleArray(array) {
             for (let i = array.length - 1; i > 0; i--) {
@@ -395,16 +396,21 @@
 
         function initQuizData() {
             let clonedQuestions = JSON.parse(JSON.stringify(rawQuestions));
-            questions = shuffleArray(clonedQuestions).map(q => {
-                const correctText = q.options[q.correct];
+            questions = clonedQuestions.map(q => {
+                // Handle single or multiple correct answers during shuffling
+                let originalCorrects = Array.isArray(q.correct) ? q.correct : [q.correct];
+                let correctTexts = originalCorrects.map(idx => q.options[idx]);
+                
                 let shuffledOptions = shuffleArray([...q.options]);
-                const newCorrectIndex = shuffledOptions.indexOf(correctText);
+                let newCorrectIndices = correctTexts.map(text => shuffledOptions.indexOf(text));
+
                 return {
                     ...q,
                     options: shuffledOptions,
-                    correct: newCorrectIndex
+                    correct: Array.isArray(q.correct) ? newCorrectIndices : newCorrectIndices[0]
                 };
             });
+            questions = shuffleArray(questions);
         }
 
         window.addEventListener('DOMContentLoaded', () => {
@@ -451,6 +457,7 @@
 
         function loadQuestion() {
             attempts = 0;
+            selectedOptions = [];
             const q = questions[currentQuestion];
             document.getElementById('progress-text').innerText = `Question ${currentQuestion + 1} of ${questions.length}`;
             document.getElementById('question-text').innerText = q.question;
@@ -484,8 +491,33 @@
         }
 
         function selectOption(index, btn) {
-            clearInterval(timer);
             const q = questions[currentQuestion];
+            const isMulti = Array.isArray(q.correct);
+
+            if (isMulti) {
+                // Multi-select behavior
+                if (btn.disabled) return;
+                
+                if (selectedOptions.includes(index)) {
+                    selectedOptions = selectedOptions.filter(i => i !== index);
+                    btn.classList.remove('option-selected');
+                    btn.style.borderColor = '#cbd5e1';
+                    btn.style.background = '#ffffff';
+                } else {
+                    selectedOptions.push(index);
+                    btn.style.borderColor = 'var(--primary)';
+                    btn.style.background = '#eef2ff';
+                }
+
+                // Enable next button only if at least one selection is made, or automatically validate
+                if (selectedOptions.length > 0) {
+                    validateMultiAnswer();
+                }
+                return;
+            }
+
+            // Single select behavior (existing logic)
+            clearInterval(timer);
             const options = document.querySelectorAll('.option-btn');
 
             if (index === q.correct) {
@@ -523,12 +555,50 @@
             }
         }
 
+        function validateMultiAnswer() {
+            const q = questions[currentQuestion];
+            const options = document.querySelectorAll('.option-btn');
+            
+            // Check if user selected all correct options and no incorrect ones
+            const correctSet = new Set(q.correct);
+            const userSet = new Set(selectedOptions);
+
+            // If user selected the exact right number of options
+            if (selectedOptions.length === q.correct.length) {
+                clearInterval(timer);
+                let allCorrect = q.correct.every(idx => selectedOptions.includes(idx));
+
+                options.forEach((b, idx) => {
+                    b.disabled = true;
+                    if (q.correct.includes(idx)) {
+                        b.classList.add('correct');
+                    } else if (selectedOptions.includes(idx)) {
+                        b.classList.add('incorrect');
+                    }
+                });
+
+                if (allCorrect) {
+                    playSound('correct');
+                    if (attempts === 0) score++;
+                    document.getElementById('feedback-text').style.color = "var(--success)";
+                    document.getElementById('feedback-text').innerText = "Correct! Great job.";
+                } else {
+                    playSound('wrong');
+                    document.getElementById('feedback-text').style.color = "var(--error)";
+                    document.getElementById('feedback-text').innerText = `Incorrect. The correct answers are highlighted.`;
+                }
+                document.getElementById('next-btn').disabled = false;
+            }
+        }
+
         function handleTimeout() {
             const q = questions[currentQuestion];
             const options = document.querySelectorAll('.option-btn');
+            const corrects = Array.isArray(q.correct) ? q.correct : [q.correct];
+            
             options.forEach((b, idx) => {
                 b.disabled = true;
-                if (idx === q.correct) b.classList.add('correct');
+                if (corrects.includes(idx)) b.classList.add('correct');
             });
             playSound('wrong');
             document.getElementById('feedback-text').style.color = "var(--error)";
