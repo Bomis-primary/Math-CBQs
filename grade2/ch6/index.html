@@ -10,14 +10,9 @@
 
     <div class="bg-white shadow-xl rounded-2xl p-8 max-w-lg w-full m-4 border border-indigo-100">
         
-        <!-- ================= 1. BRANDING SCREEN (Logo for 5s) ================= -->
-        <div id="screen-logo" class="text-center py-8">
-            <img src="assets/logo.png" alt="Innovine Logo" class="w-24 h-24 object-contain mx-auto mb-4" onerror="this.src='https://via.placeholder.com/96?text=Innovine'">
-            <h1 class="text-2xl font-bold text-indigo-900 mb-2">Innovine Learning</h1>
-            <p class="text-gray-500 text-sm">Loading your adventure...</p>
-            <div class="w-32 bg-gray-200 h-2 rounded-full mx-auto mt-6 overflow-hidden">
-                <div id="loading-bar" class="bg-indigo-600 h-full w-0 transition-all duration-5000"></div>
-            </div>
+        <!-- ================= 1. BRANDING SCREEN (Logo only for 5s) ================= -->
+        <div id="screen-logo" class="text-center py-12">
+            <img src="assets/logo.png" alt="Innovine Logo" class="w-32 h-32 object-contain mx-auto" onerror="this.src='https://via.placeholder.com/128?text=Innovine'">
         </div>
 
         <!-- ================= 2. INSTRUCTIONS SCREEN ================= -->
@@ -66,7 +61,6 @@
     <audio id="wrong-audio" src="assets/wrong.mp3"></audio>
 
     <script>
-        // Grade 2 level verified multiplication questions
         const quizData = [
             {
                 question: "Rhea plants flowers in 4 rows, with 5 flowers in each row. Which number sentence shows the total?",
@@ -128,7 +122,6 @@
         const screenInstructions = document.getElementById("screen-instructions");
         const screenQuiz = document.getElementById("screen-quiz");
         const screenComplete = document.getElementById("screen-complete");
-        const loadingBar = document.getElementById("loading-bar");
 
         const questionText = document.getElementById("question-text");
         const optionsContainer = document.getElementById("options-container");
@@ -140,10 +133,6 @@
 
         // 1. Logo Sequence timer (5 seconds)
         window.onload = () => {
-            setTimeout(() => {
-                loadingBar.style.width = "100%";
-            }, 100);
-
             setTimeout(() => {
                 screenLogo.classList.add("hidden");
                 screenInstructions.classList.remove("hidden");
