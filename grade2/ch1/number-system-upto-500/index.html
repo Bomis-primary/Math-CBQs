@@ -45,7 +45,7 @@
             overflow: hidden;
         }
 
-        /* Splash Screen / Logo Loader */
+        /* Splash Screen / Logo Loader Fix */
         #splash-screen {
             position: absolute;
             top: 0;
@@ -59,12 +59,14 @@
             justify-content: center;
             z-index: 10;
             transition: opacity 0.5s ease;
+            padding: 20px;
+            box-sizing: border-box;
         }
 
         #splash-screen img {
-            width: 200px;
+            max-width: 160px;
+            width: 100%;
             height: auto;
-            max-width: 80%;
             object-fit: contain;
             display: block;
             margin-bottom: 20px;
@@ -105,6 +107,15 @@
         }
 
         /* Question Layout */
+        .question-image {
+            width: 100%;
+            max-height: 220px;
+            object-fit: contain;
+            border-radius: 12px;
+            margin-bottom: 16px;
+            background: #f1f5f9;
+        }
+
         .question-box {
             font-size: 18px;
             font-weight: 600;
@@ -332,6 +343,7 @@
             },
             {
                 question: "Four students collect cards: Tina (421), Sam (178), John (440), and Maya (325). If they arrange themselves from highest to lowest score, who comes first?",
+                image: "assets/ordering-numbers.png",
                 options: [
                     "Tina",
                     "John",
@@ -342,9 +354,9 @@
                 hint: "Compare the hundreds and tens of 421 and 440 to find the highest score."
             },
             {
-                question: "Rahul classified the numbers 431, 246, 183, 354 into even and odd. Which number did he classify incorrectly?",
+                question: "Rahul classified the numbers 431, 246, 183, 354 into even and odd. Which number did he misclassify?",
                 options: [
-                    "431 is odd",
+                    "431 is even",
                     "246 is odd",
                     "354 is even",
                     "183 is odd"
@@ -373,7 +385,6 @@
         let timeLeft = 60;
         let soundEnabled = true;
 
-        // Shuffle function (Fisher-Yates)
         function shuffleArray(array) {
             for (let i = array.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
@@ -382,15 +393,11 @@
             return array;
         }
 
-        // Initialize and randomize questions and their options
         function initQuizData() {
-            // Shuffle question order
             let clonedQuestions = JSON.parse(JSON.stringify(rawQuestions));
             questions = shuffleArray(clonedQuestions).map(q => {
                 const correctText = q.options[q.correct];
-                // Shuffle options
                 let shuffledOptions = shuffleArray([...q.options]);
-                // Find new index of the correct answer
                 const newCorrectIndex = shuffledOptions.indexOf(correctText);
                 return {
                     ...q,
@@ -400,7 +407,6 @@
             });
         }
 
-        // Splash screen dismissal after 5 seconds
         window.addEventListener('DOMContentLoaded', () => {
             initQuizData();
             setTimeout(() => {
@@ -450,6 +456,18 @@
             document.getElementById('question-text').innerText = q.question;
             document.getElementById('feedback-text').innerText = "";
             document.getElementById('next-btn').disabled = true;
+
+            const questionBox = document.getElementById('question-text');
+            const existingImg = document.getElementById('dynamic-question-img');
+            if (existingImg) existingImg.remove();
+
+            if (q.image) {
+                const img = document.createElement('img');
+                img.src = q.image;
+                img.id = 'dynamic-question-img';
+                img.className = 'question-image';
+                questionBox.parentNode.insertBefore(img, questionBox);
+            }
 
             const optionsContainer = document.getElementById('options-container');
             optionsContainer.innerHTML = '';
@@ -548,7 +566,7 @@
         function restartQuiz() {
             currentQuestion = 0;
             score = 0;
-            initQuizData(); // Re-randomize on restart
+            initQuizData();
             document.getElementById('result-screen').style.display = 'none';
             document.getElementById('quiz-app').style.display = 'block';
             loadQuestion();
