@@ -33,7 +33,7 @@
             padding: 20px;
         }
 
-        /* Splash Screen - Blank white screen showing only the logo */
+        /* Splash Screen - Strictly only the logo on a blank white screen */
         #splash-screen {
             position: fixed;
             top: 0;
@@ -190,9 +190,9 @@
 </head>
 <body>
 
-    <!-- Splash Screen: Blank screen showing only the logo from the assets folder -->
+    <!-- Splash Screen with correct local path -->
     <div id="splash-screen">
-        <img src="assets/logo.png" alt="Innovine Logo">
+        <img src="assets/logo.png" alt="Logo">
     </div>
 
     <!-- Quiz Container -->
@@ -313,7 +313,7 @@
                     quiz.style.display = 'block';
                     loadQuestion();
                 }, 500);
-            }, 3000); // Set splash screen display duration to 3 seconds
+            }, 3000); // 3 seconds splash screen display
         });
 
         function startTimer() {
