@@ -47,19 +47,17 @@
             min-height: 480px;
         }
 
-        /* 5-second Splash Overlay with fallback text styling if logo asset is missing */
+        /* 5-second Splash Overlay using logo.png */
         #splash {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
             background: #ffffff;
             display: flex;
-            flex-direction: column;
             align-items: center;
             justify-content: center;
             z-index: 100;
             opacity: 1;
             transition: opacity 1s ease-out;
-            gap: 12px;
         }
 
         #splash.fade-out {
@@ -68,21 +66,9 @@
         }
 
         #splash img {
-            max-width: 240px;
+            max-width: 260px;
             height: auto;
-        }
-
-        .splash-title {
-            font-size: 1.8rem;
-            font-weight: 800;
-            color: var(--primary);
-            letter-spacing: 0.5px;
-        }
-
-        .splash-subtitle {
-            font-size: 1rem;
-            color: var(--text-muted);
-            font-weight: 600;
+            object-fit: contain;
         }
 
         /* Views Configuration */
@@ -243,11 +229,9 @@
 <body>
 
     <div class="container">
-        <!-- Branding Rule: Innovine logo (with styled fallback branding) visible on the first screen for 5 seconds -->
+        <!-- Splash screen with logo.png displayed for 5 seconds -->
         <div id="splash">
-            <img src="assets/innovine-logo.png" onerror="this.style.display='none'; document.getElementById('fallback-logo').style.display='block';">
-            <div id="fallback-logo" class="splash-title" style="display:none;">Innovine Learning</div>
-            <div class="splash-subtitle">Addition & Subtraction (CBQ)</div>
+            <img src="logo.png" alt="Logo" onerror="this.style.display='none'; this.parentElement.innerHTML='<h1 style=\'color:#1f4e79;\'>Innovine Learning</h1>';">
         </div>
 
         <div id="game" class="screen active">
