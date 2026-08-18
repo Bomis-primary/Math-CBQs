@@ -38,9 +38,14 @@
             text-align: center;
             margin-bottom: 20px;
         }
-        .logo-container img {
-            max-height: 50px;
-            object-fit: contain;
+        .logo-placeholder {
+            font-size: 20px;
+            font-weight: bold;
+            color: var(--primary);
+            background: #e0e7ff;
+            display: inline-block;
+            padding: 8px 20px;
+            border-radius: 8px;
         }
         .timer-bar {
             height: 6px;
@@ -165,7 +170,7 @@
 <div class="container">
     <div id="quiz-view">
         <div class="logo-container">
-            <img src="logo.png" alt="Innovine Learning Logo">
+            <div class="logo-placeholder">Innovine Learning - Grade 2 Math</div>
         </div>
         <div class="timer-bar">
             <div class="timer-fill" id="timer-fill"></div>
@@ -274,7 +279,7 @@
             explanation: "Both addition sums have been correctly calculated (48 + 41 = 89 and 30 + 19 = 49)."
         },
         {
-            q: "Assertion: Exchanging a ₹ 50-rupee note for five 10-rupee notes gives the exact same value.\nReason: Five tens make fifty (10 × 5 = 50).",
+            q: "Assertion: Exchanging a ₹ 50-rupee note for five 10-rupee notes gives the exact same value. Reason: Five tens make fifty (10 × 5 = 50).",
             options: [
                 "Both are correct and reason explains assertion",
                 "Both are correct but reason does not explain",
