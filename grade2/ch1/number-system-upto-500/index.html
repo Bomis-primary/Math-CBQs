@@ -154,11 +154,11 @@ setTimeout(()=>{
   startTimer();
 },5000);
 
-const questions = [
+const rawQuestions = [
 {
-q:"Which number is greater: 345 or 354?",
-a:["345","354","Both","300"],
-c:1
+q:"Which number is greater than 229?",
+a:["202","219","220","291"],
+c:3
 },
 {
 q:"Value of 5 in 352?",
@@ -246,6 +246,33 @@ a:["28","29","30","31"],
 c:1
 }
 ];
+
+// Shuffle questions and their options
+const questions = rawQuestions.map(item => {
+  const originalCorrectAnswer = item.a[item.c];
+  let indexedOptions = item.a.map((opt, idx) => ({ opt, isCorrect: idx === item.c }));
+  
+  // Shuffle options
+  for (let j = indexedOptions.length - 1; j > 0; j--) {
+    const k = Math.floor(Math.random() * (j + 1));
+    [indexedOptions[j], indexedOptions[k]] = [indexedOptions[k], indexedOptions[j]];
+  }
+
+  const newOptions = indexedOptions.map(io => io.opt);
+  const newCorrectIndex = indexedOptions.findIndex(io => io.isCorrect);
+
+  return {
+    q: item.q,
+    a: newOptions,
+    c: newCorrectIndex
+  };
+});
+
+// Shuffle question order
+for (let i = questions.length - 1; i > 0; i--) {
+  const j = Math.floor(Math.random() * (i + 1));
+  [questions[i], questions[j]] = [questions[j], questions[i]];
+}
 
 let i=0,score=0,time=60,attempt=0,locked=false;
 
