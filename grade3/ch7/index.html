@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Grade 3 Maths: Measurement & Estimation Interactive</title>
+    <title>Grade 3 Maths: Measurement & Estimation CBQ Interactive</title>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <style>
         :root {
@@ -206,7 +206,6 @@
             border: 4px solid var(--secondary);
         }
 
-        /* Mobile specific spacing */
         @media (max-width: 480px) {
             .container { padding: 16px; }
             .question-text { font-size: 1.05rem; }
@@ -227,9 +226,9 @@
     <div class="container">
         
         <div id="welcome-screen" class="screen active">
-            <h1>Measurement & Estimation</h1>
-            <p class="description">Test your real-world understanding of tool selection, weight, capacity, length estimation, and problem-solving through this interactive math challenge!</p>
-            <button class="action-btn" onclick="startInteractive()">Start Challenge</button>
+            <h1>Competency-Based Challenge</h1>
+            <p class="description">Test your deep conceptual understanding of Measurement & Estimation through 12 real-world competency-based questions!</p>
+            <button class="action-btn" onclick="startInteractive()">Start CBQ Challenge</button>
         </div>
 
         <div id="game-screen" class="screen">
@@ -262,160 +261,160 @@
     <script>
         const questionBank = [
             {
-                type: "Scenario-Based MCQ",
-                question: "Kabir wants to measure how long his school notebook is. Which tool is the most appropriate for him to use?",
+                type: "Competency Skill: Critical Tool Selection",
+                question: "Riya wants to measure the perimeter of her classroom's rectangular whiteboard to frame it with colorful tape. Which tool should she pick?",
                 options: [
-                    "A long measuring tape used for houses",
-                    "A standard 15-centimeter plastic pocket ruler",
-                    "A kitchen measuring cup",
-                    "A weighing balance scale"
+                    "A short 15-centimeter pencil box ruler",
+                    "A long flexible measuring tape or meter rod",
+                    "A digital kitchen weighing scale",
+                    "A graduated glass measuring cylinder"
                 ],
                 answer: 1,
-                hint: "Think about which small straight tool easily fits in your pencil box to measure paper.",
-                explanation: "A standard 15-cm pocket ruler is best because a notebook is small, flat, and its length can be easily measured in centimeters."
+                hint: "A whiteboard is large, so a small ruler would need to be moved many times. Think of longer measuring instruments.",
+                explanation: "A long measuring tape or meter rod is ideal for measuring larger objects like whiteboards efficiently without repetitive adjustments."
             },
             {
-                type: "Scenario-Based MCQ",
-                question: "Ananya needs to measure the exact amount of water required to bake a batch of vanilla cupcakes. What unit should she look for?",
+                type: "Competency Skill: Real-World Estimation",
+                question: "If you lift a full, unopened medium-sized water bottle intended for personal daily sports use, what is its actual capacity usually measured as?",
                 options: [
-                    "Kilograms (kg)",
-                    "Meters (m)",
-                    "Milliliters (mL)",
-                    "Kilometers (km)"
-                ],
-                answer: 2,
-                hint: "Water is a fluid item found in small culinary recipes. Look for liquid capacity units.",
-                explanation: "Milliliters (mL) are explicitly used to track accurate small values of liquid capacity like water or milk in cooking."
-            },
-            {
-                type: "Scenario-Based MCQ",
-                question: "Aarav has a long piece of decorative ribbon that measures 3 meters. He needs to rewrite its length in centimeters to cut it accurately. What is the value?",
-                options: [
-                    "30 centimeters",
-                    "300 centimeters",
-                    "3,000 centimeters",
-                    "3 centimeters"
-                ],
-                answer: 1,
-                hint: "Remember that every 1 single meter (1 m) contains exactly 100 centimeters (100 cm).",
-                explanation: "Since 1 m = 100 cm, multiplying 3 meters by 100 gives 300 cm."
-            },
-            {
-                type: "Scenario-Based MCQ",
-                question: "A delivery driver drives a vehicle exactly 4 kilometers from the distribution hub straight to Rohan's building. How many meters did the driver travel?",
-                options: [
-                    "40 meters",
-                    "400 meters",
-                    "4,000 meters",
-                    "40,000 meters"
-                ],
-                answer: 2,
-                hint: "Think about basic long-distance conversions: 1 kilometer is equivalent to 1,000 meters.",
-                explanation: "Since 1 km = 1,000 m, 4 kilometers translates directly to 4,000 meters."
-            },
-            {
-                type: "Data-Based MCQ",
-                question: "Sania checks four items on a kitchen storage shelf. Which item's real-world weight is most likely close to 1 kilogram?",
-                options: [
-                    "A tiny single metal paperclip",
-                    "A large sack containing a heavy family pack of rice",
-                    "A standard full packet of table salt",
-                    "A massive wooden dining room table"
-                ],
-                answer: 2,
-                hint: "1 kilogram isn't ultra-light like paper, but it can easily be picked up in one hand.",
-                explanation: "A packet of table salt standardly weighs around 1 kg. A paperclip is much lighter (grams), while a table or heavy rice bag weighs much more."
-            },
-            {
-                type: "Estimation MCQ",
-                question: "Meera is filling up an empty household plastic bucket using a water tap to wash her bicycle. What is the best estimation of this bucket's capacity?",
-                options: [
-                    "About 10 milliliters",
-                    "About 10 liters",
-                    "About 500 liters",
-                    "About 10 meters"
-                ],
-                answer: 1,
-                hint: "A spoonful is roughly 5 mL, and a large overhead water tank holds 500 liters. Choose the logical middle value.",
-                explanation: "A typical home utility washing bucket holds roughly 10 Liters of volume. 10 mL is a drop, and 500 L is a massive industrial tank storage."
-            },
-            {
-                type: "Estimation MCQ",
-                question: "Look at your typical classroom door. What is the most reasonable estimate for the physical height of a standard room doorway?",
-                options: [
-                    "About 2 centimeters",
-                    "About 2 meters",
-                    "About 20 kilometers",
-                    "About 200 meters"
-                ],
-                answer: 1,
-                hint: "An adult person can stand upright safely inside a doorway. Adults are generally between 1.5 to 1.8 meters tall.",
-                explanation: "A standard doorway is roughly 2 meters tall. 2 cm is too tiny to notice, and 200 meters matches skyscraper proportions."
-            },
-            {
-                type: "Error Detection MCQ",
-                question: "Rahul writes down these weight conversion calculations in his notebook. Which equation contains a major math error?",
-                options: [
-                    "1 kg = 1,000 g",
-                    "2 kg = 2,000 g",
-                    "5 kg = 500 g",
-                    "3 kg = 3,000 g"
-                ],
-                answer: 2,
-                hint: "Review your base metric conversion unit line: 1 kilogram must always equal 1,000 grams.",
-                explanation: "The equation '5 kg = 500 g' is incorrect. It should be 5,000 grams because 5 × 1,000 = 5,000."
-            },
-            {
-                type: "Assertion-Reason MCQ",
-                question: "Assertion: A large glass jar of honey is measured using a kitchen weighing scale in Grams/Kilograms instead of using a long ruler.\nReason: Honey is an item that has weight, and scales find how heavy an object is.",
-                options: [
-                    "Both Assertion and Reason are correct, and the Reason perfectly explains the Assertion.",
-                    "Both Assertion and Reason are correct, but the Reason does not explain the Assertion.",
-                    "The Assertion is correct, but the Reason is completely false.",
-                    "Both the Assertion and the Reason are completely false."
+                    "1 liter",
+                    "1 milimeter",
+                    "100 meters",
+                    "50 kilograms"
                 ],
                 answer: 0,
-                hint: "Are rulers used to check the weight of jars? Think about what metric parameter scales analyze.",
-                explanation: "Both statements are correct. A weighing scale is designed specifically to calculate how heavy an object is, which is why we use mass metrics rather than lengths."
+                hint: "Think about how much fluid satisfies a person during sports play. Milliliters and liters are capacity units.",
+                explanation: "A standard personal sports water bottle typically holds 1 liter of liquid."
             },
             {
-                type: "Final Challenge (Case Study)",
-                question: "Case Story Part 1: Chef Rohit has a large container containing 3 Liters of soup broth. During the lunch rush, he pours out exactly 1,200 milliliters to serve customers. How many milliliters of broth are still left in his container?",
+                type: "Competency Skill: Unit Conversion Application",
+                question: "Kabir's toy train track is 2 meters and 50 centimeters long. How can he express this entire length purely in centimeters?",
                 options: [
-                    "1,800 milliliters",
-                    "2,800 milliliters",
-                    "800 milliliters",
-                    "200 milliliters"
-                ],
-                answer: 0,
-                hint: "Convert 3 Liters to milliliters first (3,000 mL) and subtract the 1,200 mL served.",
-                explanation: "3 Liters = 3,000 mL. Subtracting 1,200 mL leaves exactly 1,800 mL of soup broth inside the container."
-            },
-            {
-                type: "Final Challenge (Case Study)",
-                question: "Case Story Part 2: Chef Rohit takes the remaining soup broth (1,800 mL) and wants to split it equally into 2 smaller serving bowls. How much broth will enter each bowl?",
-                options: [
-                    "800 milliliters",
-                    "900 milliliters",
-                    "1,000 milliliters",
-                    "500 milliliters"
+                    "205 centimeters",
+                    "250 centimeters",
+                    "2,500 centimeters",
+                    "520 centimeters"
                 ],
                 answer: 1,
-                hint: "Divide the total leftover broth volume (1,800 mL) by 2.",
-                explanation: "Splitting 1,800 mL into two equal portions yields 900 mL per bowl (1,800 ÷ 2 = 900)."
+                hint: "Convert the meters part to centimeters first (2 meters = 200 cm), then add the leftover 50 cm.",
+                explanation: "Since 1 meter = 100 cm, 2 meters = 200 cm. Adding 200 cm to 50 cm gives 250 centimeters."
             },
             {
-                type: "Final Challenge (Problem Solving)",
-                question: "Case Story Part 3: To prepare a fresh vegetable dessert dish later, Chef Rohit purchases 400 grams of green grapes and 600 grams of red apples. What is the combined weight of his purchased fruits?",
+                type: "Competency Skill: Analytical Reasoning",
+                question: "Three children estimate the length of a classroom desk:\n- Tina: 10 meters\n- Sam: 1 meter\n- John: 10 centimeters\nWho made the most reasonable estimation?",
                 options: [
-                    "100 grams",
-                    "1,000 kilograms",
-                    "1 kilogram",
-                    "500 grams"
+                    "Tina, because desks are very long.",
+                    "Sam, because a standard desk is roughly around an arm's span or meter long.",
+                    "John, because desks are tiny like notebooks.",
+                    "None of them are close."
+                ],
+                answer: 1,
+                hint: "10 meters is as long as a large bus! Think about how long a regular classroom table is.",
+                explanation: "Sam's estimate of 1 meter is the most reasonable. 10 meters is way too long, and 10 centimeters is too short."
+            },
+            {
+                type: "Competency Skill: Logical Problem Solving",
+                question: "A fruit vendor weighs a bunch of bananas and the scale pointer stops exactly at 1 kg 500 g. How many total grams is that?",
+                options: [
+                    "150 grams",
+                    "1,005 grams",
+                    "1,500 grams",
+                    "15,000 grams"
                 ],
                 answer: 2,
-                hint: "Add the two numbers together (400 g + 600 g = 1,000 g). Convert those grams into kilograms.",
-                explanation: "400 g + 600 g = 1,000 grams. Since 1,000 grams equals exactly 1 kilogram, option C is correct."
+                hint: "1 kilogram = 1,000 grams. Combine 1,000 g with the extra 500 g.",
+                explanation: "1 kg is equal to 1,000 g. Adding the extra 500 g gives 1,500 grams in total."
+            },
+            {
+                type: "Competency Skill: Comparative Judgment",
+                question: "Which of the following animals or objects has a mass closest to 1 kilogram?",
+                options: [
+                    "A tiny newborn house mouse",
+                    "A standard school hardcover textbook",
+                    "A heavy motorcycle",
+                    "A single plastic drinking straw"
+                ],
+                answer: 1,
+                hint: "Think of an object you carry daily in your school bag that feels moderately heavy.",
+                explanation: "A standard thick hardcover school textbook generally weighs close to 1 kilogram."
+            },
+            {
+                type: "Competency Skill: Everyday Contextual Math",
+                question: "A juice carton contains 500 mL of apple juice. Priya drinks 200 mL of it. How much juice is left inside the carton?",
+                options: [
+                    "700 milliliters",
+                    "300 milliliters",
+                    "3 liters",
+                    "50 milliliters"
+                ],
+                answer: 1,
+                hint: "Subtract the volume consumed (200 mL) from the initial quantity (500 mL).",
+                explanation: "500 mL minus 200 mL leaves exactly 300 milliliters of juice remaining."
+            },
+            {
+                type: "Competency Skill: Multi-Step Word Problem",
+                question: "Anu walks 400 meters from her house to the park, and then walks another 600 meters from the park to the grocery store. What is her total distance covered in kilometers?",
+                options: [
+                    "1,000 kilometers",
+                    "10 kilometers",
+                    "1 kilometer",
+                    "100 kilometers"
+                ],
+                answer: 2,
+                hint: "First find total meters (400 + 600), then remember how many meters make 1 kilometer.",
+                explanation: "400 m + 600 m = 1,000 meters. Since 1,000 meters = 1 kilometer, she traveled 1 km."
+            },
+            {
+                type: "Competency Skill: Error Analysis",
+                question: "A teacher asks the class to identify the incorrect statement about units of measurement. Which option should the students point out?",
+                options: [
+                    "Liquid medicine is measured in milliliters.",
+                    "The distance between two cities is measured in kilometers.",
+                    "The mass of a heavy elephant is measured in grams.",
+                    "The length of a pencil is measured in centimeters."
+                ],
+                answer: 2,
+                hint: "Elephants are massive animals. Would grams be an appropriate unit for their weight?",
+                explanation: "Measuring an elephant in grams is incorrect because grams are meant for light objects; heavy animals like elephants use kilograms or tonnes."
+            },
+            {
+                type: "Competency Skill: Conceptual Application",
+                question: "If you want to bake a cake and the recipe asks for 2 kg of flour, but your kitchen scale only measures in grams, how many grams should you measure out?",
+                options: [
+                    "200 grams",
+                    "2,000 grams",
+                    "20,000 grams",
+                    "2 grams"
+                ],
+                answer: 1,
+                hint: "Multiply 2 by the conversion factor between kilograms and grams (1 kg = 1,000 g).",
+                explanation: "Since 1 kg = 1,000 g, 2 kilograms is equal to 2 × 1,000 = 2,000 grams."
+            },
+            {
+                type: "Competency Skill: Real-World Scenario",
+                question: "A swimming pool contains 5,000 liters of water. If a family uses buckets to drain out 2,000 liters, how many liters of water remain in the pool?",
+                options: [
+                    "3,000 liters",
+                    "7,000 liters",
+                    "300 liters",
+                    "5,000 liters"
+                ],
+                answer: 0,
+                hint: "Perform a simple subtraction: Initial amount minus the amount removed.",
+                explanation: "5,000 liters minus 2,000 liters leaves 3,000 liters of water in the pool."
+            },
+            {
+                type: "Competency Skill: Synthesis & Reasoning",
+                question: "Look at the pattern: 1 meter = 100 cm. 2 meters = 200 cm. Following this rule, what would 7 meters and 80 centimeters equal in total centimeters?",
+                options: [
+                    "78 centimeters",
+                    "780 centimeters",
+                    "7,800 centimeters",
+                    "870 centimeters"
+                ],
+                answer: 1,
+                hint: "7 meters turns into 700 cm. Now add the 80 cm to it.",
+                explanation: "7 meters = 700 cm. Adding the extra 80 cm gives 780 centimeters."
             }
         ];
 
@@ -584,13 +583,13 @@
             let statusText = "";
 
             if (finalPercentage >= 75) {
-                statusText = "Good job!";
+                statusText = "Excellent competency mastery!";
                 triggerConfetti();
                 setTimeout(triggerConfetti, 300);
             } else if (finalPercentage >= 40) {
-                statusText = "Review this chapter and try again.";
+                statusText = "Good effort! Review the tricky word problems and try again.";
             } else {
-                statusText = "Let’s practise more.";
+                statusText = "Let’s practise more measurement concepts.";
             }
             
             document.getElementById('final-status-msg').innerText = statusText;
