@@ -84,6 +84,25 @@
             100% { transform: rotate(360deg); }
         }
 
+        /* Title Screen */
+        #title-screen {
+            padding: 40px 25px;
+            text-align: center;
+        }
+
+        #title-screen h1 {
+            font-size: 1.8rem;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+
+        #title-screen p {
+            font-size: 1.05rem;
+            color: #4a5568;
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+
         /* Top Header Utilities */
         .quiz-header {
             display: flex;
@@ -323,7 +342,13 @@
         <p style="color:#718096; font-size:0.95rem; font-weight:500;">Loading Interactive Challenge...</p>
     </div>
 
-    <div id="quiz-workspace">
+    <div id="title-screen">
+        <h1>Addition up to 9999</h1>
+        <p>Welcome to the interactive challenge! Test your understanding of addition word problems, error detection, and mathematical reasoning.</p>
+        <button type="button" class="primary-btn" onclick="quizEngine.startQuiz()">Start Challenge ➔</button>
+    </div>
+
+    <div id="quiz-workspace" class="hidden">
         <div class="quiz-header">
             <div class="tracker-text">Question <span id="current-q-label">1</span> of 12</div>
             <div id="timer-display" class="timer-badge">60s</div>
@@ -367,7 +392,6 @@
     const assessmentDataset = [
         {
             type: "text",
-            lo: "Addition Logic",
             question: "Riya has 125 stickers. She wants to collect 150 stickers in total. Her brother gives her 23 more stickers. Does she reach her targeted goal?",
             options: [
                 "a) Yes, she has more than 150 stickers",
@@ -381,7 +405,6 @@
         },
         {
             type: "text",
-            lo: "Addition Logic",
             question: "A class teacher has 132 books on her reading shelf. She buys a bundle of new books and now she has 150 books in total. How many books were inside the new bundle?",
             options: ["a) 12 books", "b) 18 books", "c) 20 books", "d) 28 books"],
             answer: 1,
@@ -390,7 +413,6 @@
         },
         {
             type: "text",
-            lo: "Addition Logic",
             question: "A gift shop sold 210 custom notebooks during the morning shift. By the end of the afternoon shift, total notebook sales reached 255. How many notebooks were sold specifically during the afternoon?",
             options: ["a) 35 notebooks", "b) 40 notebooks", "c) 45 notebooks", "d) 50 notebooks"],
             answer: 2,
@@ -399,7 +421,6 @@
         },
         {
             type: "text",
-            lo: "Subtraction Logic",
             question: "A school store sold 120 blue ink pens and 80 graphite pencils. How many more pens than pencils were sold by the school store?",
             options: ["a) 20 more pens", "b) 30 more pens", "c) 40 more pens", "d) 50 more pens"],
             answer: 2,
@@ -408,7 +429,6 @@
         },
         {
             type: "text",
-            lo: "Addition Logic",
             question: "Class A collected 145 books for a donation drive, and Class B collected 155 books. Which comparison statement is entirely correct?",
             options: [
                 "a) Class A collected more books than Class B",
@@ -422,9 +442,8 @@
         },
         {
             type: "visual",
-            lo: "Error Detection",
             question: "Aarav solved an column addition task as shown below. What specific positional mistake did Aarav make?",
-            svg: `<svg viewBox="0 0 200 90" width="180" height="90"><text x="30" y="25" font-family="monospace" font-size="16" fill="#2d3748">  1 2 0</text><text x="30" y="45" font-family="monospace" font-size="16" fill="#2d3748">+   2 5</text><line x1="25" y1="55" x2="110" y2="55" stroke="#2d3748" stroke-width="2"/><text x="30" y="75" font-family="monospace" font-size="16" fill="#e53e3e">  1 3 5</text></svg>`,
+            svg: `<svg viewBox="0 0 200 90" width="180" height="90"><text x="30" y="25" font-family="monospace" font-size="16" fill="#2d3748">&nbsp; 1 2 0</text><text x="30" y="45" font-family="monospace" font-size="16" fill="#2d3748">+&nbsp; &nbsp;2 5</text><line x1="25" y1="55" x2="110" y2="55" stroke="#2d3748" stroke-width="2"/><text x="30" y="75" font-family="monospace" font-size="16" fill="#e53e3e">&nbsp; 1 3 5</text></svg>`,
             options: [
                 "a) He added the ones column numbers incorrectly.",
                 "b) He added the tens column numbers incorrectly.",
@@ -437,9 +456,8 @@
         },
         {
             type: "visual",
-            lo: "Error Detection",
             question: "Meera solved the mathematical column sum shown in the image box. Which analytical statement below fits her answer?",
-            svg: `<svg viewBox="0 0 200 90" width="180" height="90"><text x="30" y="25" font-family="monospace" font-size="16" fill="#2d3748">  1 4 5</text><text x="30" y="45" font-family="monospace" font-size="16" fill="#2d3748">+   3 2</text><line x1="25" y1="55" x2="110" y2="55" stroke="#2d3748" stroke-width="2"/><text x="30" y="75" font-family="monospace" font-size="16" fill="#38a169">  1 7 7</text></svg>`,
+            svg: `<svg viewBox="0 0 200 90" width="180" height="90"><text x="30" y="25" font-family="monospace" font-size="16" fill="#2d3748">&nbsp; 1 4 5</text><text x="30" y="45" font-family="monospace" font-size="16" fill="#2d3748">+&nbsp; &nbsp;3 2</text><line x1="25" y1="55" x2="110" y2="55" stroke="#2d3748" stroke-width="2"/><text x="30" y="75" font-family="monospace" font-size="16" fill="#38a169">&nbsp; 1 7 7</text></svg>`,
             options: [
                 "a) The ones column digits were added incorrectly.",
                 "b) The tens column digits were added incorrectly.",
@@ -452,7 +470,6 @@
         },
         {
             type: "text",
-            lo: "Error Detection",
             question: "Rohan calculates a solution on his notepad: 230 + 40 = 240. Why is this calculation incorrect?",
             options: [
                 "a) The tens column values were not combined correctly",
@@ -466,7 +483,6 @@
         },
         {
             type: "text",
-            lo: "Assertion & Reason",
             question: "Assertion: 40 + 30 = 70. Reason: We add place value tens digits directly to tens digits. Choose the best evaluation statement:",
             options: [
                 "a) Both Assertion and Reason are true, and the Reason correctly explains the Assertion.",
@@ -480,7 +496,6 @@
         },
         {
             type: "text",
-            lo: "Assertion & Reason",
             question: "Assertion: 125 + 25 = 150. Reason: Adding 25 always increases any starting base number by exactly 25. Choose the best evaluation statement:",
             options: [
                 "a) Both Assertion and Reason are true, and the Reason correctly explains the Assertion.",
@@ -494,7 +509,6 @@
         },
         {
             type: "text",
-            lo: "Problem-Solving",
             question: "A school library needs 300 books. They collect 145 books on Day 1 and 155 books on Day 2. Then, they donate 20 books to another local community workspace. Do they still have enough books left for their library?",
             options: [
                 "a) Yes, they have exactly enough books",
@@ -508,7 +522,6 @@
         },
         {
             type: "text",
-            lo: "Problem-Solving",
             question: "Riya brings 135 books and Ameya brings 145 books to the storage shelves. The library room already had 120 books resting inside. If the teacher arranges all books into full balanced groups of 100, how many complete groups of 100 can she make?",
             options: ["a) 3 full groups", "b) 4 full groups", "c) 5 full groups", "d) 6 full groups"],
             answer: 1,
@@ -528,6 +541,7 @@
 
             // DOM Element Caching
             this.splashScreen = document.getElementById('splash-screen');
+            this.titleScreen = document.getElementById('title-screen');
             this.currentQLabel = document.getElementById('current-q-label');
             this.timerDisplay = document.getElementById('timer-display');
             this.progressIndicator = document.getElementById('progress-indicator');
@@ -552,7 +566,11 @@
                 this.splashScreen.style.opacity = '0';
                 setTimeout(() => this.splashScreen.classList.add('hidden'), 500);
             }, 5000);
+        }
 
+        startQuiz() {
+            this.titleScreen.classList.add('hidden');
+            this.quizWorkspace.classList.remove('hidden');
             this.loadQuestionState();
         }
 
@@ -570,7 +588,7 @@
             const activeData = this.dataset[this.currentIndex];
             
             this.currentQLabel.textContent = this.currentIndex + 1;
-            this.qNumberHdr.textContent = `Question ${this.currentIndex + 1} (${activeData.lo})`;
+            this.qNumberHdr.textContent = `Question ${this.currentIndex + 1}`;
             this.qTextContainer.textContent = activeData.question;
             
             const progressPct = (this.currentIndex / this.dataset.length) * 100;
