@@ -46,7 +46,7 @@
             overflow: hidden;
         }
 
-        /* Fixed Splash Screen styling to match original structure */
+        /* Splash Screen - Logo Only */
         #splash-screen {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -216,9 +216,9 @@
 </head>
 <body>
 
+    <!-- Splash Screen with Only the Logo -->
     <div id="splash-screen">
-        <img src="assets/logo.png" alt="Innovine Logo" onerror="this.style.display='none'; document.getElementById('logo-text').style.display='block';">
-        <h2 id="logo-text" style="display:none; color: var(--primary);">Innovine</h2>
+        <img src="assets/logo.png" alt="Innovine Logo" onerror="this.style.display='none';">
     </div>
 
     <audio id="audio-correct" src="assets/claps.mp3" preload="auto"></audio>
@@ -260,7 +260,6 @@
     </div>
 
     <script>
-        // High-Quality CBSE Grade 3 Core Database Sequence
         const questionBank = [
             {
                 type: "Scenario-Based MCQ",
@@ -426,7 +425,6 @@
         let countdownTimer;
         let activeSeconds = 60;
 
-        // Brand Splash Loader Routine
         window.addEventListener('DOMContentLoaded', () => {
             setTimeout(() => {
                 const splash = document.getElementById('splash-screen');
@@ -434,7 +432,7 @@
                     splash.style.opacity = '0';
                     setTimeout(() => splash.style.display = 'none', 500);
                 }
-            }, 2000); // 2 Seconds splash fade away benchmark
+            }, 2000);
         });
 
         function startInteractive() {
