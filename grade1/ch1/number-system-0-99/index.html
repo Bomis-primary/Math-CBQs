@@ -43,7 +43,6 @@ body {
   box-shadow: 0 4px 12px rgba(0,0,0,0.06);
 }
 
-/* TOP RIGHT TIMER STYLING */
 .timer-badge {
   position: absolute;
   top: 20px;
@@ -79,7 +78,7 @@ body {
   font-size: 22px;
   font-weight: 700;
   line-height: 1.4;
-  padding-right: 90px; /* Space for the top-right timer */
+  padding-right: 90px;
 }
 
 .q-img {
@@ -180,7 +179,6 @@ body {
 <div class="game hidden" id="game">
 
   <div class="card" id="quiz">
-    <!-- TOP RIGHT TIMER BADGE -->
     <div class="timer-badge" id="timerBadge">
       ⏱️ <span id="timerText">60s</span>
     </div>
@@ -203,21 +201,18 @@ body {
 const bank = [
   { q: "Count the ice cream cups shown below:", img: "assets/icecream.png", options: ["6 cups","8 cups","5 cups","9 cups"], answer: 0, hint: "Count carefully row by row", exp: "There are 6 cups arranged in two rows of 3." },
   { q: "What number is represented by 4 bundles of tens and 2 ones?", img: "assets/sticks.png", options: ["42","24","40","44"], answer: 0, hint: "4 tens = 40", exp: "40 + 2 = 42" },
-  { q: "Which number is correct for 50 + 7?", img: "", options: ["75","57","507","65"], answer: 1, hint: "Combine tens and ones", exp: "50 + 7 = 57" },
-  { q: "What number does the jump land on?", img: "assets/numberline.png", options: ["29","30","31","32"], answer: 1, hint: "Move 2 steps forward from 28", exp: "28 + 2 = 30" },
-  { q: "Which comparison statement is correct?", img: "", options: ["45 < 40","45 > 40","40 = 45","45 = 50"], answer: 1, hint: "Compare tens place first", exp: "45 is greater than 40 (45 > 40)" },
-  { q: "How many apples are there in total across all 3 bags?", img: "assets/apple-bags.png", options: ["8 apples","15 apples","10 apples","12 apples"], answer: 1, hint: "Multiply 3 × 5", exp: "3 groups of 5 apples = 15 apples" },
-  
-  // FIXED QUESTION: Option set now contains three evens and one odd
-  { q: "Find the odd one out in this set:", img: "", options: ["12","18","20","19"], answer: 3, hint: "Think about even vs odd numbers", exp: "19 is the only odd number in this set." },
-  
+  { q: "What is the number 'seventy-four' written in figures?", img: "", options: ["74","47","704","70"], answer: 0, hint: "Seventy means 7 tens and four means 4 ones", exp: "Seventy-four is written as 74." },
+  { q: "What number comes directly BEFORE 60 on a number line?", img: "assets/numberline.png", options: ["59","61","50","69"], answer: 0, hint: "Count backward by 1 from 60.", exp: "59 comes directly before 60." },
+  { q: "Which comparison statement is correct?", img: "", options: ["45 > 40","45 < 40","40 = 45","45 = 50"], answer: 0, hint: "Compare tens place first", exp: "45 is greater than 40 (45 > 40)" },
+  { q: "How many apples are there in total across all 3 bags?", img: "assets/apple-bags.png", options: ["15 apples","8 apples","10 apples","12 apples"], answer: 0, hint: "3 bags with 5 apples in each bag", exp: "3 groups of 5 apples = 15 apples" },
+  { q: "Find the odd one out in this set:", img: "", options: ["19","12","18","20"], answer: 0, hint: "Think about even vs odd numbers", exp: "19 is the only odd number in this set." },
   { q: "What number is displayed on the abacus?", img: "assets/abacus.png", options: ["36","63","33","60"], answer: 0, hint: "3 tens + 6 ones", exp: "3 tens (30) + 6 ones (6) = 36" },
-  { q: "Which number comes directly after 49?", img: "", options: ["50","48","51","60"], answer: 0, hint: "Add 1 to 49", exp: "49 + 1 = 50" },
+  { q: "Which number comes directly after 49?", img: "", options: ["50","48","51","60"], answer: 0, hint: "Count forward by 1 from 49", exp: "49 + 1 = 50" },
   { q: "How many stars are in 2 groups of 10?", img: "assets/stars.png", options: ["20","10","2","12"], answer: 0, hint: "Calculate 10 + 10", exp: "2 tens equal 20 stars" },
-  { q: "Identify the mistake: 30 + 20 = 60", img: "", options: ["Correct","Wrong, answer is 50","Wrong, answer is 40","Wrong, answer is 70"], answer: 1, hint: "Add the tens digit (3 + 2)", exp: "30 + 20 = 50" },
-  { q: "How many birds are there in total?", img: "assets/birds.png", options: ["8","7","6","9"], answer: 0, hint: "Add 5 + 3", exp: "5 + 3 = 8 birds" },
-  { q: "Arrange from smallest to largest: 32, 23, 45", img: "", options: ["23, 32, 45","45, 32, 23","32, 45, 23","23, 45, 32"], answer: 0, hint: "Compare tens place digits", exp: "23 is smallest, followed by 32, then 45" },
-  { q: "Check the place value alignment on this abacus:", img: "assets/missing.png", options: ["Correct position","Wrong placement","No change","Ignore beads"], answer: 1, hint: "Check tens vs ones place columns", exp: "Beads are incorrectly placed on the columns" }
+  { q: "You have 7 individual blocks. How many more blocks do you need to make 1 full bundle of 10?", img: "", options: ["3 blocks","2 blocks","7 blocks","10 blocks"], answer: 0, hint: "Count up from 7 to 10", exp: "7 + 3 = 10, so you need 3 more blocks to complete 1 ten." },
+  { q: "Find the missing number in the sequence: 46, 47, __, 49, 50", img: "", options: ["48","45","51","44"], answer: 0, hint: "Count forward one by one from 47", exp: "The sequence counts up by 1s: 46, 47, 48, 49, 50." },
+  { q: "Which set of numbers is arranged from the SMALLEST to the GREATEST?", img: "", options: ["34, 43, 61, 82","82, 61, 43, 34","43, 34, 82, 61","61, 82, 34, 43"], answer: 0, hint: "Compare the tens digit first", exp: "34 is the smallest and 82 is the greatest. The correct order is 34, 43, 61, 82." },
+  { q: "Which set of numbers is arranged in ASCENDING order (smallest to greatest)?", img: "", options: ["19, 35, 52, 78","78, 52, 35, 19","35, 19, 78, 52","52, 35, 78, 19"], answer: 0, hint: "Ascending means going up: start with the smallest tens value.", exp: "19 < 35 < 52 < 78. They go from smallest to greatest." }
 ];
 
 let questions = [];
@@ -227,7 +222,6 @@ let firstTry = 0;
 let attempt = 0;
 let answered = false;
 
-// TIMER VARIABLES
 let timeLeft = 60;
 let timerInterval = null;
 
@@ -322,7 +316,6 @@ function loadQ() {
   const optContainer = document.getElementById("options");
   optContainer.innerHTML = "";
 
-  // Map and shuffle options per question
   let mappedOptions = q.options.map((optText, i) => ({
     text: optText,
     isCorrect: i === q.answer
@@ -343,7 +336,6 @@ function loadQ() {
   fb.className = "feedback";
   document.getElementById("nextBtn").classList.add("hidden");
 
-  // Start 60s countdown
   startTimer();
 }
 
