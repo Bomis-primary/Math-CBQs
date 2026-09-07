@@ -6,112 +6,156 @@
 <title>CBQ Master Engine</title>
 
 <style>
-body{
-  margin:0;
-  font-family: Arial, sans-serif;
-  background:#f4f7fb;
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: #f4f7fb;
+  color: #1f2937;
 }
 
-.logo-screen{
-  position:fixed;
-  inset:0;
-  background:white;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  z-index:999;
+.logo-screen {
+  position: fixed;
+  inset: 0;
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
 }
 
-.logo-screen img{
-  width:220px;
+.logo-screen img {
+  width: 220px;
+  max-width: 80%;
 }
 
-.game{
-  max-width:760px;
-  margin:auto;
-  padding:16px;
+.game {
+  max-width: 760px;
+  margin: 20px auto;
+  padding: 16px;
 }
 
-.card{
-  background:white;
-  padding:18px;
-  border-radius:16px;
-  box-shadow:0 2px 10px rgba(0,0,0,0.08);
+.card {
+  background: #ffffff;
+  padding: 24px;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
 }
 
-.hidden{display:none}
+.hidden { display: none !important; }
 
-.question{
-  font-size:22px;
-  font-weight:bold;
+.question {
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1.4;
 }
 
-.options{
-  display:grid;
-  gap:12px;
-  margin-top:12px;
+.q-img {
+  width: 100%;
+  max-height: 300px;
+  object-fit: contain;
+  margin-top: 14px;
+  border-radius: 12px;
+  background: #f8fafc;
 }
 
-.option{
-  padding:14px;
-  border:2px solid #ccc;
-  border-radius:12px;
-  background:#f9fafb;
-  cursor:pointer;
-  text-align:left;
+.options {
+  display: grid;
+  gap: 12px;
+  margin-top: 20px;
 }
 
-.option:active{
-  transform:scale(0.98);
+.option {
+  padding: 16px;
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  background: #f8fafc;
+  cursor: pointer;
+  text-align: left;
+  font-size: 16px;
+  font-weight: 600;
+  transition: background 0.2s, border-color 0.2s, transform 0.1s;
 }
 
-.correct{background:#dcfce7;border-color:#16a34a}
-.wrong{background:#fee2e2;border-color:#dc2626}
-
-.feedback{
-  margin-top:10px;
-  font-weight:bold;
-  min-height:30px;
+.option:hover:not(:disabled) {
+  border-color: #cbd5e1;
+  background: #f1f5f9;
 }
 
-.next-btn{
-  margin-top:14px;
-  width:100%;
-  padding:14px;
-  background:#2563eb;
-  color:white;
-  border:none;
-  border-radius:12px;
-  font-size:18px;
+.option:active:not(:disabled) {
+  transform: scale(0.99);
 }
 
-.result{
-  text-align:center;
-  font-size:20px;
+.option:disabled {
+  cursor: default;
 }
 
+.correct {
+  background: #dcfce7 !important;
+  border-color: #16a34a !important;
+  color: #14532d;
+}
+
+.wrong {
+  background: #fee2e2 !important;
+  border-color: #dc2626 !important;
+  color: #7f1d1d;
+}
+
+.feedback {
+  margin-top: 16px;
+  font-weight: 600;
+  min-height: 28px;
+  font-size: 16px;
+}
+
+.feedback.success { color: #15803d; }
+.feedback.warning { color: #b45309; }
+.feedback.error { color: #b91c1c; }
+
+.next-btn {
+  margin-top: 20px;
+  width: 100%;
+  padding: 16px;
+  background: #2563eb;
+  color: #ffffff;
+  border: none;
+  border-radius: 12px;
+  font-size: 18px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.next-btn:hover { background: #1d4ed8; }
+
+.result {
+  text-align: center;
+  font-size: 20px;
+}
 </style>
 </head>
 
 <body>
 
+<audio id="soundCorrect" src="assets/correct.mp3" preload="auto"></audio>
+<audio id="soundWrong" src="assets/wrong.mp3" preload="auto"></audio>
+
 <div class="logo-screen" id="logo">
-  <img src="assets/logo.png">
+  <img src="assets/logo.png" alt="CBQ Logo" onerror="this.style.display='none'; document.getElementById('logo-fallback').style.display='block';">
+  <h1 id="logo-fallback" style="display:none; color:#2563eb;">CBQ Engine</h1>
 </div>
 
 <div class="game hidden" id="game">
 
   <div class="card" id="quiz">
-
     <div id="qText" class="question"></div>
-    <img id="qImg" style="width:100%;margin-top:10px;border-radius:12px;display:none">
+    <img id="qImg" class="q-img" style="display:none" alt="Question visual">
 
     <div class="options" id="options"></div>
 
     <div class="feedback" id="feedback"></div>
 
-    <button class="next-btn hidden" id="nextBtn" onclick="nextQ()">Next</button>
-
+    <button class="next-btn hidden" id="nextBtn" onclick="nextQ()">Next Question</button>
   </div>
 
   <div class="card hidden result" id="result"></div>
@@ -119,274 +163,167 @@ body{
 </div>
 
 <script>
-
-/* ---------------------------
-MASTER QUESTION BANK (14 Q)
-12–15 required (we use 14)
-----------------------------*/
-
 const bank = [
-{
-q:"[Picture: 6 ice cream cups in 2 rows of 3]",
-img:"assets/icecream.png",
-options:["6 cups","8 cups","5 cups","9 cups"],
-answer:0,
-hint:"Count carefully row by row",
-exp:"There are 6 cups arranged in two rows of 3."
-},
-
-{
-q:"[Picture: 4 bundles of tens and 2 ones]",
-img:"assets/sticks.png",
-options:["42","24","40","44"],
-answer:0,
-hint:"4 tens = 40",
-exp:"40 + 2 = 42"
-},
-
-{
-q:"Which number is correct for 50 + 7?",
-img:"",
-options:["75","57","507","65"],
-answer:1,
-hint:"Combine tens and ones",
-exp:"50 + 7 = 57"
-},
-
-{
-q:"[Picture: number line jump from 28 → ?]",
-img:"assets/numberline.png",
-options:["29","30","31","32"],
-answer:1,
-hint:"Move 2 steps forward",
-exp:"28 + 2 = 30"
-},
-
-{
-q:"Which is correct?",
-img:"",
-options:["45 < 40","45 > 40","40 = 45","45 = 50"],
-answer:1,
-hint:"Compare tens first",
-exp:"45 is greater than 40"
-},
-
-{
-q:"[Picture: 3 boxes with 5 apples each]",
-img:"assets/apples.png",
-options:["8 apples","15 apples","10 apples","12 apples"],
-answer:1,
-hint:"3 × 5",
-exp:"3 groups of 5 = 15"
-},
-
-{
-q:"Find the odd one out",
-img:"",
-options:["12","18","21","19"],
-answer:3,
-hint:"Think even/odd pattern",
-exp:"19 is not in same pattern group"
-},
-
-{
-q:"[Picture: abacus showing 3 tens and 6 ones]",
-img:"assets/abacus.png",
-options:["36","63","33","60"],
-answer:0,
-hint:"3 tens + 6 ones",
-exp:"36"
-},
-
-{
-q:"Which number comes after 49?",
-img:"",
-options:["50","48","51","60"],
-answer:0,
-hint:"Next number rule",
-exp:"After 49 comes 50"
-},
-
-{
-q:"[Picture: 2 groups of 10 stars]",
-img:"assets/stars.png",
-options:["20","10","2","12"],
-answer:0,
-hint:"10 + 10",
-exp:"2 tens = 20"
-},
-
-{
-q:"Error check: 30 + 20 = 60",
-img:"",
-options:["Correct","Wrong, answer is 50","Wrong, answer is 40","Wrong, answer is 70"],
-answer:1,
-hint:"Add tens carefully",
-exp:"30 + 20 = 50"
-},
-
-{
-q:"[Picture: 5 birds + 3 birds]",
-img:"assets/birds.png",
-options:["8","7","6","9"],
-answer:0,
-hint:"Count all",
-exp:"5 + 3 = 8"
-},
-
-{
-q:"Arrange smallest to largest: 32, 23, 45",
-img:"",
-options:["23, 32, 45","45, 32, 23","32, 45, 23","23, 45, 32"],
-answer:0,
-hint:"Compare tens",
-exp:"23 < 32 < 45"
-},
-
-{
-q:"[Picture: missing beads in abacus]",
-img:"assets/missing.png",
-options:["Correct position","Wrong placement","No change","Ignore beads"],
-answer:1,
-hint:"Check place value",
-exp:"Beads are incorrectly placed"
-}
+  { q: "Count the ice cream cups shown below:", img: "assets/icecream.png", options: ["6 cups","8 cups","5 cups","9 cups"], answer: 0, hint: "Count carefully row by row", exp: "There are 6 cups arranged in two rows of 3." },
+  { q: "What number is represented by 4 bundles of tens and 2 ones?", img: "assets/sticks.png", options: ["42","24","40","44"], answer: 0, hint: "4 tens = 40", exp: "40 + 2 = 42" },
+  { q: "Which number is correct for 50 + 7?", img: "", options: ["75","57","507","65"], answer: 1, hint: "Combine tens and ones", exp: "50 + 7 = 57" },
+  { q: "What number does the jump land on?", img: "assets/numberline.png", options: ["29","30","31","32"], answer: 1, hint: "Move 2 steps forward from 28", exp: "28 + 2 = 30" },
+  { q: "Which comparison statement is correct?", img: "", options: ["45 < 40","45 > 40","40 = 45","45 = 50"], answer: 1, hint: "Compare tens place first", exp: "45 is greater than 40 (45 > 40)" },
+  { q: "How many apples are there in total across all 3 bags?", img: "assets/apple-bags.png", options: ["8 apples","15 apples","10 apples","12 apples"], answer: 1, hint: "Multiply 3 × 5", exp: "3 groups of 5 apples = 15 apples" },
+  { q: "Find the odd one out in this set:", img: "", options: ["12","18","21","19"], answer: 3, hint: "Think about even vs odd numbers", exp: "19 is an odd prime number in this set" },
+  { q: "What number is displayed on the abacus?", img: "assets/abacus.png", options: ["36","63","33","60"], answer: 0, hint: "3 tens + 6 ones", exp: "3 tens (30) + 6 ones (6) = 36" },
+  { q: "Which number comes directly after 49?", img: "", options: ["50","48","51","60"], answer: 0, hint: "Add 1 to 49", exp: "49 + 1 = 50" },
+  { q: "How many stars are in 2 groups of 10?", img: "assets/stars.png", options: ["20","10","2","12"], answer: 0, hint: "Calculate 10 + 10", exp: "2 tens equal 20 stars" },
+  { q: "Identify the mistake: 30 + 20 = 60", img: "", options: ["Correct","Wrong, answer is 50","Wrong, answer is 40","Wrong, answer is 70"], answer: 1, hint: "Add the tens digit (3 + 2)", exp: "30 + 20 = 50" },
+  { q: "How many birds are there in total?", img: "assets/birds.png", options: ["8","7","6","9"], answer: 0, hint: "Add 5 + 3", exp: "5 + 3 = 8 birds" },
+  { q: "Arrange from smallest to largest: 32, 23, 45", img: "", options: ["23, 32, 45","45, 32, 23","32, 45, 23","23, 45, 32"], answer: 0, hint: "Compare tens place digits", exp: "23 is smallest, followed by 32, then 45" },
+  { q: "Check the place value alignment on this abacus:", img: "assets/missing.png", options: ["Correct position","Wrong placement","No change","Ignore beads"], answer: 1, hint: "Check tens vs ones place columns", exp: "Beads are incorrectly placed on the columns" }
 ];
 
-/* ---------------------------
-RANDOMIZATION ENGINE
-----------------------------*/
 let questions = [];
-let index=0;
-let score=0;
-let firstTry=0;
-let attempt=0;
-let answered=false;
+let index = 0;
+let score = 0;
+let firstTry = 0;
+let attempt = 0;
+let answered = false;
 
-function shuffle(arr){
-  return arr.sort(()=>Math.random()-0.5);
+function playSound(id) {
+  const audio = document.getElementById(id);
+  if (audio) {
+    audio.currentTime = 0;
+    audio.play().catch(() => {});
+  }
 }
 
-/* ---------------------------
-START
-----------------------------*/
+function shuffle(array) {
+  let m = array.length, t, i;
+  while (m) {
+    i = Math.floor(Math.random() * m--);
+    t = array[m];
+    array[m] = array[i];
+    array[i] = t;
+  }
+  return array;
+}
 
-setTimeout(()=>{
-  document.getElementById("logo").style.display="none";
+setTimeout(() => {
+  document.getElementById("logo").style.display = "none";
   document.getElementById("game").classList.remove("hidden");
   start();
-},2000);
+}, 1500);
 
-function start(){
-  questions = shuffle([...bank]).slice(0,12); // 12–15 rule
-  index=0;score=0;firstTry=0;
+function start() {
+  questions = shuffle([...bank]).slice(0, 12);
+  index = 0; 
+  score = 0; 
+  firstTry = 0;
   loadQ();
 }
 
-/* ---------------------------
-LOAD QUESTION
-----------------------------*/
+function loadQ() {
+  attempt = 0;
+  answered = false;
+  const q = questions[index];
 
-function loadQ(){
-  attempt=0;
-  answered=false;
-  const q=questions[index];
+  document.getElementById("qText").innerText = q.q;
+  const img = document.getElementById("qImg");
 
-  document.getElementById("qText").innerText=q.q;
-  const img=document.getElementById("qImg");
-
-  if(q.img){
-    img.src=q.img;
-    img.style.display="block";
-  }else{
-    img.style.display="none";
+  if (q.img) {
+    img.src = q.img;
+    img.style.display = "block";
+    img.onerror = () => { img.style.display = "none"; };
+  } else {
+    img.style.display = "none";
   }
 
-  const opt=document.getElementById("options");
-  opt.innerHTML="";
+  const optContainer = document.getElementById("options");
+  optContainer.innerHTML = "";
 
-  q.options.forEach((o,i)=>{
-    const b=document.createElement("button");
-    b.className="option";
-    b.innerText=o;
-    b.onclick=()=>check(i,b);
-    opt.appendChild(b);
+  q.options.forEach((optText, i) => {
+    const btn = document.createElement("button");
+    btn.className = "option";
+    btn.innerText = optText;
+    btn.onclick = () => check(i, btn);
+    optContainer.appendChild(btn);
   });
 
-  document.getElementById("feedback").innerText="";
+  const fb = document.getElementById("feedback");
+  fb.innerText = "";
+  fb.className = "feedback";
   document.getElementById("nextBtn").classList.add("hidden");
 }
 
-/* ---------------------------
-CHECK ANSWER
-----------------------------*/
+function check(i, btn) {
+  if (answered) return;
 
-function check(i,b){
-  if(answered) return;
+  const q = questions[index];
+  const fb = document.getElementById("feedback");
 
-  const q=questions[index];
-
-  if(i===q.answer){
-    answered=true;
+  if (i === q.answer) {
+    answered = true;
     score++;
+    if (attempt === 0) firstTry++;
 
-    if(attempt===0) firstTry++;
+    playSound("soundCorrect");
+    btn.classList.add("correct");
+    disableOptions();
 
-    b.classList.add("correct");
-    document.getElementById("feedback").innerText="Correct! "+q.exp;
+    fb.innerText = "✓ Correct! " + q.exp;
+    fb.className = "feedback success";
     document.getElementById("nextBtn").classList.remove("hidden");
-  }else{
+  } else {
     attempt++;
-    b.classList.add("wrong");
+    playSound("soundWrong");
+    btn.classList.add("wrong");
+    btn.disabled = true;
 
-    if(attempt<2){
-      document.getElementById("feedback").innerText="Try again! Hint: "+q.hint;
-    }else{
-      answered=true;
-      document.getElementById("feedback").innerText="Incorrect. "+q.exp;
+    if (attempt < 2) {
+      fb.innerText = "Try again! Hint: " + q.hint;
+      fb.className = "feedback warning";
+    } else {
+      answered = true;
+      disableOptions();
+      fb.innerText = "✗ Incorrect. " + q.exp;
+      fb.className = "feedback error";
       document.getElementById("nextBtn").classList.remove("hidden");
     }
   }
 }
 
-/* ---------------------------
-NEXT QUESTION
-----------------------------*/
+function disableOptions() {
+  const btns = document.querySelectorAll(".option");
+  btns.forEach(b => b.disabled = true);
+}
 
-function nextQ(){
+function nextQ() {
   index++;
-  if(index<questions.length){
+  if (index < questions.length) {
     loadQ();
-  }else{
+  } else {
     showResult();
   }
 }
 
-/* ---------------------------
-RESULT ENGINE (HONEST FEEDBACK)
-----------------------------*/
-
-function showResult(){
+function showResult() {
   document.getElementById("quiz").classList.add("hidden");
-  const r=document.getElementById("result");
+  const r = document.getElementById("result");
   r.classList.remove("hidden");
 
-  const percent=Math.round((firstTry/questions.length)*100);
+  const percent = Math.round((firstTry / questions.length) * 100);
 
-  let msg="";
-  if(percent>=80) msg="🌟 Excellent First Try Thinking!";
-  else if(percent>=60) msg="👍 Good Thinking Skills!";
-  else if(percent>=40) msg="📘 Keep Practising!";
-  else msg="💪 Needs More Practice!";
+  let msg = "";
+  if (percent >= 80) msg = "🌟 Excellent First-Try Thinking!";
+  else if (percent >= 60) msg = "👍 Good Thinking Skills!";
+  else if (percent >= 40) msg = "📘 Keep Practicing!";
+  else msg = "💪 Needs More Practice!";
 
-  r.innerHTML=`
+  r.innerHTML = `
     <h2>${msg}</h2>
-    <p>First Try Accuracy: ${firstTry}/${questions.length} (${percent}%)</p>
-    <p>Total Score: ${score}/${questions.length}</p>
-    <button class="next-btn" onclick="location.reload()">Play Again</button>
+    <p><strong>First-Try Accuracy:</strong> ${firstTry}/${questions.length} (${percent}%)</p>
+    <p><strong>Total Score:</strong> ${score}/${questions.length}</p>
+    <button class="next-btn" onclick="start(); document.getElementById('result').classList.add('hidden'); document.getElementById('quiz').classList.remove('hidden');">Play Again</button>
   `;
 }
-
 </script>
 
 </body>
