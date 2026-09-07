@@ -43,6 +43,7 @@ body {
   box-shadow: 0 4px 12px rgba(0,0,0,0.06);
 }
 
+/* TOP RIGHT TIMER STYLING */
 .timer-badge {
   position: absolute;
   top: 20px;
@@ -78,7 +79,7 @@ body {
   font-size: 22px;
   font-weight: 700;
   line-height: 1.4;
-  padding-right: 90px;
+  padding-right: 90px; /* Space for the top-right timer */
 }
 
 .q-img {
@@ -179,6 +180,7 @@ body {
 <div class="game hidden" id="game">
 
   <div class="card" id="quiz">
+    <!-- TOP RIGHT TIMER BADGE -->
     <div class="timer-badge" id="timerBadge">
       ⏱️ <span id="timerText">60s</span>
     </div>
@@ -212,7 +214,7 @@ const bank = [
   { q: "You have 7 individual blocks. How many more blocks do you need to make 1 full bundle of 10?", img: "", options: ["3 blocks","2 blocks","7 blocks","10 blocks"], answer: 0, hint: "Count up from 7 to 10", exp: "7 + 3 = 10, so you need 3 more blocks to complete 1 ten." },
   { q: "Find the missing number in the sequence: 46, 47, __, 49, 50", img: "", options: ["48","45","51","44"], answer: 0, hint: "Count forward one by one from 47", exp: "The sequence counts up by 1s: 46, 47, 48, 49, 50." },
   { q: "Which set of numbers is arranged from the SMALLEST to the GREATEST?", img: "", options: ["34, 43, 61, 82","82, 61, 43, 34","43, 34, 82, 61","61, 82, 34, 43"], answer: 0, hint: "Compare the tens digit first", exp: "34 is the smallest and 82 is the greatest. The correct order is 34, 43, 61, 82." },
-  { q: "Which set of numbers is arranged in ASCENDING order (smallest to greatest)?", img: "", options: ["19, 35, 52, 78","78, 52, 35, 19","35, 19, 78, 52","52, 35, 78, 19"], answer: 0, hint: "Ascending means going up: start with the smallest tens value.", exp: "19 < 35 < 52 < 78. They go from smallest to greatest." }
+  { q: "What number is shown on this abacus?", img: "assets/missing.png", options: ["6","60","16","66"], answer: 0, hint: "Count the beads on the Ones (O) rod. There are no beads on Tens (T).", exp: "0 tens and 6 ones make the number 6." }
 ];
 
 let questions = [];
