@@ -36,10 +36,41 @@ body {
 }
 
 .card {
+  position: relative;
   background: #ffffff;
   padding: 24px;
   border-radius: 16px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+}
+
+/* TOP RIGHT TIMER STYLING */
+.timer-badge {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: #eff6ff;
+  border: 2px solid #2563eb;
+  color: #1d4ed8;
+  font-weight: 700;
+  font-size: 16px;
+  padding: 6px 14px;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.timer-badge.warning {
+  background: #fef2f2;
+  border-color: #dc2626;
+  color: #b91c1c;
+  animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
 }
 
 .hidden { display: none !important; }
@@ -48,6 +79,7 @@ body {
   font-size: 22px;
   font-weight: 700;
   line-height: 1.4;
+  padding-right: 90px; /* Space for the top-right timer */
 }
 
 .q-img {
@@ -148,6 +180,11 @@ body {
 <div class="game hidden" id="game">
 
   <div class="card" id="quiz">
+    <!-- TOP RIGHT TIMER BADGE -->
+    <div class="timer-badge" id="timerBadge">
+      ⏱️ <span id="timerText">60s</span>
+    </div>
+
     <div id="qText" class="question"></div>
     <img id="qImg" class="q-img" style="display:none" alt="Question visual">
 
@@ -170,7 +207,10 @@ const bank = [
   { q: "What number does the jump land on?", img: "assets/numberline.png", options: ["29","30","31","32"], answer: 1, hint: "Move 2 steps forward from 28", exp: "28 + 2 = 30" },
   { q: "Which comparison statement is correct?", img: "", options: ["45 < 40","45 > 40","40 = 45","45 = 50"], answer: 1, hint: "Compare tens place first", exp: "45 is greater than 40 (45 > 40)" },
   { q: "How many apples are there in total across all 3 bags?", img: "assets/apple-bags.png", options: ["8 apples","15 apples","10 apples","12 apples"], answer: 1, hint: "Multiply 3 × 5", exp: "3 groups of 5 apples = 15 apples" },
-  { q: "Find the odd one out in this set:", img: "", options: ["12","18","21","19"], answer: 3, hint: "Think about even vs odd numbers", exp: "19 is an odd prime number in this set" },
+  
+  // FIXED QUESTION: Option set now contains three evens and one odd
+  { q: "Find the odd one out in this set:", img: "", options: ["12","18","20","19"], answer: 3, hint: "Think about even vs odd numbers", exp: "19 is the only odd number in this set." },
+  
   { q: "What number is displayed on the abacus?", img: "assets/abacus.png", options: ["36","63","33","60"], answer: 0, hint: "3 tens + 6 ones", exp: "3 tens (30) + 6 ones (6) = 36" },
   { q: "Which number comes directly after 49?", img: "", options: ["50","48","51","60"], answer: 0, hint: "Add 1 to 49", exp: "49 + 1 = 50" },
   { q: "How many stars are in 2 groups of 10?", img: "assets/stars.png", options: ["20","10","2","12"], answer: 0, hint: "Calculate 10 + 10", exp: "2 tens equal 20 stars" },
@@ -186,6 +226,10 @@ let score = 0;
 let firstTry = 0;
 let attempt = 0;
 let answered = false;
+
+// TIMER VARIABLES
+let timeLeft = 60;
+let timerInterval = null;
 
 function playSound(id) {
   const audio = document.getElementById(id);
@@ -220,6 +264,45 @@ function start() {
   loadQ();
 }
 
+function startTimer() {
+  clearInterval(timerInterval);
+  timeLeft = 60;
+  
+  const badge = document.getElementById("timerBadge");
+  const text = document.getElementById("timerText");
+  
+  badge.classList.remove("warning");
+  text.innerText = timeLeft + "s";
+
+  timerInterval = setInterval(() => {
+    timeLeft--;
+    text.innerText = timeLeft + "s";
+
+    if (timeLeft <= 10) {
+      badge.classList.add("warning");
+    }
+
+    if (timeLeft <= 0) {
+      clearInterval(timerInterval);
+      handleTimeout();
+    }
+  }, 1000);
+}
+
+function handleTimeout() {
+  if (answered) return;
+  answered = true;
+  disableOptions();
+  playSound("soundWrong");
+
+  const q = questions[index];
+  const fb = document.getElementById("feedback");
+  
+  fb.innerText = "⏰ Time's up! " + q.exp;
+  fb.className = "feedback error";
+  document.getElementById("nextBtn").classList.remove("hidden");
+}
+
 function loadQ() {
   attempt = 0;
   answered = false;
@@ -239,11 +322,19 @@ function loadQ() {
   const optContainer = document.getElementById("options");
   optContainer.innerHTML = "";
 
-  q.options.forEach((optText, i) => {
+  // Map and shuffle options per question
+  let mappedOptions = q.options.map((optText, i) => ({
+    text: optText,
+    isCorrect: i === q.answer
+  }));
+
+  mappedOptions = shuffle(mappedOptions);
+
+  mappedOptions.forEach((optObj) => {
     const btn = document.createElement("button");
     btn.className = "option";
-    btn.innerText = optText;
-    btn.onclick = () => check(i, btn);
+    btn.innerText = optObj.text;
+    btn.onclick = () => check(optObj.isCorrect, btn);
     optContainer.appendChild(btn);
   });
 
@@ -251,15 +342,19 @@ function loadQ() {
   fb.innerText = "";
   fb.className = "feedback";
   document.getElementById("nextBtn").classList.add("hidden");
+
+  // Start 60s countdown
+  startTimer();
 }
 
-function check(i, btn) {
+function check(isCorrect, btn) {
   if (answered) return;
 
   const q = questions[index];
   const fb = document.getElementById("feedback");
 
-  if (i === q.answer) {
+  if (isCorrect) {
+    clearInterval(timerInterval);
     answered = true;
     score++;
     if (attempt === 0) firstTry++;
@@ -281,6 +376,7 @@ function check(i, btn) {
       fb.innerText = "Try again! Hint: " + q.hint;
       fb.className = "feedback warning";
     } else {
+      clearInterval(timerInterval);
       answered = true;
       disableOptions();
       fb.innerText = "✗ Incorrect. " + q.exp;
@@ -305,6 +401,7 @@ function nextQ() {
 }
 
 function showResult() {
+  clearInterval(timerInterval);
   document.getElementById("quiz").classList.add("hidden");
   const r = document.getElementById("result");
   r.classList.remove("hidden");
