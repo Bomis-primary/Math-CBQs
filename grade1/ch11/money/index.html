@@ -3,49 +3,55 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>CBQ Interactive - Time</title>
+<title>CBQ Interactive - Grade 1 Money</title>
 
 <style>
 *{box-sizing:border-box}
 body{margin:0;font-family:Arial,sans-serif;background:#eef6ff;color:#1f2937}
 .screen{display:none;min-height:100vh;padding:16px}
-.screen.active{display:flex;align-items:center;justify-content:center}
-#logoScreen{background:white}
-.logo{max-width:420px;width:80%}
-.card{width:100%;max-width:820px;background:white;border-radius:20px;padding:18px;box-shadow:0 8px 24px rgba(0,0,0,.15)}
+.screen.active{display:flex;align-items:center;justify-content:center;flex-direction:column}
+#logoScreen{background:white;text-align:center}
+.logo-box{max-width:420px;width:90%;padding:20px;border-radius:20px;background:#f0f9ff;border:3px solid #0284c7;box-shadow:0 10px 25px rgba(0,0,0,0.1)}
+.logo-title{font-size:32px;font-weight:bold;color:#0369a1;margin-bottom:8px}
+.logo-subtitle{font-size:18px;color:#0284c7;font-weight:bold}
+.card{width:100%;max-width:820px;background:white;border-radius:20px;padding:20px;box-shadow:0 8px 24px rgba(0,0,0,.15)}
 .topbar{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-bottom:14px}
-.badge,.sound-btn{background:#e0f2fe;color:#0f3f5f;padding:9px 12px;border-radius:12px;font-weight:bold;font-size:16px}
-.sound-btn{border:none;cursor:pointer}
-.visual-box{background:#fefce8;border:2px solid #facc15;border-radius:18px;padding:16px;margin-bottom:14px;text-align:center;min-height:150px}
-.visual{font-size:68px;margin-bottom:8px}
-.clock-face{width:135px;height:135px;border:8px solid #1f4e79;border-radius:50%;margin:0 auto 8px;position:relative;background:white}
-.clock-face::before{content:"12";position:absolute;top:5px;left:50%;transform:translateX(-50%);font-weight:bold}
-.clock-face::after{content:"6";position:absolute;bottom:5px;left:50%;transform:translateX(-50%);font-weight:bold}
-.num3{position:absolute;right:8px;top:50%;transform:translateY(-50%);font-weight:bold}
-.num9{position:absolute;left:8px;top:50%;transform:translateY(-50%);font-weight:bold}
-.hand-hour{position:absolute;width:6px;height:38px;background:#111827;left:50%;top:50%;transform-origin:bottom center;border-radius:5px}
-.hand-minute{position:absolute;width:4px;height:50px;background:#dc2626;left:50%;top:50%;transform-origin:bottom center;border-radius:5px}
-.center-dot{position:absolute;width:12px;height:12px;background:#111827;border-radius:50%;left:50%;top:50%;transform:translate(-50%,-50%)}
-.question{font-size:23px;font-weight:bold;line-height:1.35;margin:14px 0}
+.badge,.sound-btn{background:#e0f2fe;color:#0f3f5f;padding:9px 14px;border-radius:12px;font-weight:bold;font-size:16px}
+.sound-btn{border:none;cursor:pointer;transition:0.2s}
+.sound-btn:hover{background:#bae6fd}
+.visual-box{background:#fefce8;border:2px solid #facc15;border-radius:18px;padding:16px;margin-bottom:14px;text-align:center;min-height:150px;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.visual{font-size:58px;margin-bottom:8px}
+.money-container{display:flex;gap:10px;justify-content:center;align-items:center;flex-wrap:wrap;margin-bottom:8px}
+.note{background:#86efac;border:2px solid #16a34a;color:#14532d;padding:8px 16px;border-radius:8px;font-weight:bold;font-size:20px;box-shadow:2px 3px 0px #15803d;display:inline-block}
+.note-10{background:#fde047;border-color:#ca8a04;color:#713f12;box-shadow:2px 3px 0px #a16207}
+.note-20{background:#f9a8d4;border-color:#db2777;color:#831843;box-shadow:2px 3px 0px #be185d}
+.note-50{background:#93c5fd;border-color:#2563eb;color:#1e3a8a;box-shadow:2px 3px 0px #1d4ed8}
+.note-100{background:#c084fc;border-color:#9333ea;color:#581c87;box-shadow:2px 3px 0px #7e22ce}
+.coin{background:#e2e8f0;border:3px solid #64748b;color:#334155;width:48px;height:48px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-weight:bold;font-size:18px;box-shadow:inset -2px -2px 0px #94a3b8}
+.coin-gold{background:#fef08a;border-color:#ca8a04;color:#854d0e}
+.item-tag{background:white;border:2px solid #cbd5e1;padding:8px 14px;border-radius:12px;display:inline-flex;align-items:center;gap:8px;font-size:20px;font-weight:bold;margin:4px}
+.question{font-size:22px;font-weight:bold;line-height:1.35;margin:14px 0;color:#0f172a}
 .options{display:grid;gap:12px}
-.option{font-size:19px;padding:15px;border:2px solid #1f4e79;background:white;color:#111827;border-radius:14px;cursor:pointer;text-align:left;min-height:56px}
-.option.correct{background:#d1fae5;border-color:#047857}
-.option.wrong{background:#fee2e2;border-color:#b91c1c}
+.option{font-size:18px;padding:14px;border:2px solid #1f4e79;background:white;color:#111827;border-radius:14px;cursor:pointer;text-align:left;min-height:56px;font-weight:600;transition:all 0.2s}
+.option:hover:not(:disabled){background:#f0f9ff;border-color:#0284c7}
+.option:focus-visible{outline:3px solid #0284c7}
+.option.correct{background:#d1fae5!important;border-color:#047857!important;color:#065f46!important}
+.option.wrong{background:#fee2e2!important;border-color:#b91c1c!important;color:#991b1b!important}
 .feedback{min-height:32px;margin-top:12px;font-size:18px;font-weight:bold}
-.controls{margin-top:14px}
-.primary{background:#1f4e79;color:white;border:none;border-radius:14px;padding:13px 22px;font-size:18px;font-weight:bold;cursor:pointer}
+.controls{margin-top:14px;display:flex;justify-content:flex-end}
+.primary{background:#1f4e79;color:white;border:none;border-radius:14px;padding:13px 26px;font-size:18px;font-weight:bold;cursor:pointer;transition:0.2s}
+.primary:hover{background:#0f3f5f}
 #nextBtn{display:none}
-.result-title{font-size:32px;font-weight:bold;text-align:center;margin-bottom:14px}
-.result-score{font-size:22px;text-align:center;margin-bottom:18px}
-.confetti{position:fixed;width:10px;height:10px;top:-10px;animation:fall 1.2s linear forwards;pointer-events:none}
+.result-title{font-size:32px;font-weight:bold;text-align:center;margin-bottom:14px;color:#1e3a8a}
+.result-score{font-size:22px;text-align:center;margin-bottom:18px;color:#334155}
+.confetti{position:fixed;width:10px;height:10px;top:-10px;animation:fall 1.2s linear forwards;pointer-events:none;z-index:99}
 @keyframes fall{to{transform:translateY(110vh) rotate(360deg);opacity:0}}
 @media(max-width:600px){
 .card{padding:14px}
-.question{font-size:20px}
-.option{font-size:17px;padding:13px}
-.visual{font-size:54px}
-.clock-face{width:115px;height:115px}
-.badge,.sound-btn{font-size:14px}
+.question{font-size:19px}
+.option{font-size:16px;padding:12px}
+.visual{font-size:46px}
+.badge,.sound-btn{font-size:13px;padding:7px 10px}
 .primary{width:100%}
 }
 </style>
@@ -54,7 +60,10 @@ body{margin:0;font-family:Arial,sans-serif;background:#eef6ff;color:#1f2937}
 <body>
 
 <div id="logoScreen" class="screen active">
-  <img src="assets/logo.png" alt="Innovine Solutions Logo" class="logo" />
+  <div class="logo-box">
+    <div class="logo-title">Grade 1 Math</div>
+    <div class="logo-subtitle">Chapter 11: Money - CBQ Quiz</div>
+  </div>
 </div>
 
 <div id="quizScreen" class="screen">
@@ -62,243 +71,391 @@ body{margin:0;font-family:Arial,sans-serif;background:#eef6ff;color:#1f2937}
     <div class="topbar">
       <div class="badge">Question <span id="qNo">1</span>/12</div>
       <div class="badge">Score: <span id="score">0</span></div>
-      <div class="badge">Time: <span id="timer">60</span>s</div>
+      <div class="badge" role="timer">Time: <span id="timer">60</span>s</div>
       <button class="sound-btn" onclick="toggleMute()" id="muteBtn">🔊 Sound On</button>
     </div>
 
     <div class="visual-box" id="visualBox"></div>
     <div class="question" id="questionText"></div>
     <div class="options" id="optionsBox"></div>
-    <div class="feedback" id="feedback"></div>
+    <div class="feedback" id="feedback" aria-live="polite"></div>
 
     <div class="controls">
-      <button class="primary" id="nextBtn" onclick="nextQuestion()">Next</button>
+      <button class="primary" id="nextBtn" onclick="nextQuestion()">Next Question</button>
     </div>
   </div>
 </div>
 
 <div id="resultScreen" class="screen">
-  <div class="card">
+  <div class="card" style="text-align: center;">
     <div class="result-title" id="resultMessage"></div>
     <div class="result-score" id="finalScore"></div>
     <button class="primary" onclick="restartQuiz()">Play Again</button>
   </div>
 </div>
 
-<audio id="correctSound" src="assets/correct.mp3"></audio>
-<audio id="wrongSound" src="assets/wrong.mp3"></audio>
-<audio id="clapSound" src="assets/freesound_community-claps-44774.mp3"></audio>
-
 <script>
-const questions=[
-{q:"Which of these activities usually takes the most time?",visual:"🍱",visualText:"Think about how long daily activities take.",options:["Blinking your eyes","Eating your lunch","Sneezing","Writing your name"],answer:1},
-{q:"On an analog clock, the short hand points to the:",visual:"clock",visualText:"Short hand = hour hand",hourDeg:90,minuteDeg:0,options:["Minutes","Seconds","Hours","Days"],answer:2},
-{q:"If the hour hand is on 3 and the minute hand is on 12, what time is it?",visual:"clock",visualText:"Look at the clock carefully.",hourDeg:90,minuteDeg:0,options:["12:03","3:00","3:12","6:00"],answer:1},
-{q:"Which of these shows a digital clock time?",visual:"digital",visualText:"10:30",options:["A circle with numbers 1 to 12","A long hand and a short hand","10:30","A sun dial"],answer:2},
-{q:"If today is Tuesday, what day was yesterday?",visual:"days",visualText:"Monday → Tuesday → Wednesday",options:["Wednesday","Monday","Sunday","Thursday"],answer:1},
-{q:"If today is Friday, what day will it be tomorrow?",visual:"days",visualText:"Thursday → Friday → Saturday",options:["Saturday","Thursday","Sunday","Monday"],answer:0},
-{q:"How many days are there in a full week?",visual:"calendar",visualText:"A week has seven days.",options:["5","6","7","12"],answer:2},
-{q:"Which month comes immediately after June?",visual:"months",visualText:"May → June → July → August",options:["May","August","July","January"],answer:2},
-{q:"Which activity do we usually do in the morning?",visual:"🌅",visualText:"Morning routine",options:["Going to sleep for the night","Seeing the stars","Brushing our teeth after waking up","Having dinner"],answer:2},
-{q:"How many months are there in one year?",visual:"months",visualText:"January to December",options:["7","10","12","30"],answer:2},
-{q:"Which day comes between Wednesday and Friday?",visual:"days",visualText:"Wednesday → ? → Friday",options:["Tuesday","Thursday","Saturday","Monday"],answer:1},
-{q:"When both the long hand and the short hand are pointing at 12, the time is:",visual:"clock",visualText:"Both hands are on 12.",hourDeg:0,minuteDeg:0,options:["6:00","12:00","12:12","1:12"],answer:1}
+const originalQuestions = [
+  {
+    q: "If you have ₹70, can you buy a book that costs ₹75?",
+    visual: "evaluate_book",
+    visualText: "Book: ₹75 | You have: ₹70",
+    options: ["Yes, and you will have ₹5 left.", "No, you need ₹5 more.", "Yes, exactly.", "No, you need ₹10 more."],
+    answer: 1
+  },
+  {
+    q: "Rohan has one ₹10 note, one ₹5 coin, and one ₹2 coin. How much total money does Rohan have?",
+    visual: "money_sum1",
+    visualText: "₹10 + ₹5 + ₹2",
+    options: ["₹15", "₹16", "₹17", "₹20"],
+    answer: 2
+  },
+  {
+    q: "Complete the relation: How many paise equal 1 Rupee (₹1)?",
+    visual: "rupee_paise",
+    visualText: "₹1 = _____ paise",
+    options: ["10 paise", "50 paise", "100 paise", "500 paise"],
+    answer: 2
+  },
+  {
+    q: "Which denomination is available in BOTH a note and a coin in India?",
+    visual: "coin_note",
+    visualText: "Note or Coin?",
+    options: ["₹10", "₹50", "₹100", "₹200"],
+    answer: 0
+  },
+  {
+    q: "Ria buys an eraser for ₹5 and a pencil for ₹4. What is the total cost of both items?",
+    visual: "items_sum",
+    items: [{name:"Eraser", price:"₹5", icon:"✏️"}, {name:"Pencil", price:"₹4", icon:"✏️"}],
+    visualText: "Total cost = ?",
+    options: ["₹8", "₹9", "₹10", "₹12"],
+    answer: 1
+  },
+  {
+    q: "A toy cap costs ₹55, a stacking tower costs ₹48, and an eraser box costs ₹70. Which item costs the LEAST?",
+    visual: "compare_items",
+    items: [{name:"Cap", price:"₹55", icon:"🧢"}, {name:"Tower", price:"₹48", icon:"🗼"}, {name:"Box", price:"₹70", icon:"📦"}],
+    visualText: "Compare prices: ₹55, ₹48, ₹70",
+    options: ["Toy Cap (₹55)", "Stacking Tower (₹48)", "Eraser Box (₹70)", "All cost the same"],
+    answer: 1
+  },
+  {
+    q: "A burger costs ₹60 and a cookie costs ₹45. Which statement is correct?",
+    visual: "compare_food",
+    items: [{name:"Burger", price:"₹60", icon:"🍔"}, {name:"Cookie", price:"₹45", icon:"🍪"}],
+    visualText: "Burger ₹60 vs Cookie ₹45",
+    options: ["The cookie costs more than the burger", "The burger costs more than the cookie", "Both cost the exact same amount", "The cookie costs ₹60"],
+    answer: 1
+  },
+  {
+    q: "Mala has ₹20 in her piggy bank. Her father gives her ₹15 more. How much money does Mala have now?",
+    visual: "add_story",
+    visualText: "₹20 + ₹15",
+    options: ["₹25", "₹30", "₹35", "₹40"],
+    answer: 2
+  },
+  {
+    q: "Grace has ₹90. She gives ₹32 to her classmate to buy a notebook. How much money does Grace have left?",
+    visual: "sub_story",
+    visualText: "₹90 - ₹32",
+    options: ["₹58", "₹62", "₹52", "₹48"],
+    answer: 0
+  },
+  {
+    q: "Stella buys a paper clip for ₹20. She pays the cashier with a ₹50 note. How much change will she get back?",
+    visual: "change_story",
+    visualText: "Paid: ₹50 - Item: ₹20",
+    options: ["₹20", "₹30", "₹40", "₹10"],
+    answer: 1
+  },
+  {
+    q: "How many ₹10 notes are needed to make a total value of ₹20?",
+    visual: "make_20",
+    visualText: "_____ x ₹10 notes = ₹20",
+    options: ["1 note", "2 notes", "3 notes", "5 notes"],
+    answer: 1
+  },
+  {
+    q: "To pay an exact amount of ₹17, which combination of notes and coins is correct?",
+    visual: "comb_17",
+    visualText: "Combination for ₹17",
+    options: ["One ₹10 note + One ₹5 coin + One ₹2 coin", "Two ₹10 notes", "Three ₹5 coins", "One ₹10 note + Two ₹5 coins"],
+    answer: 0
+  }
 ];
 
-let current=0,score=0,attempts=0,answered=false,timeLeft=60,timerInterval,muted=false;
+let questions = [], current = 0, score = 0, attempts = 0, answered = false, timeLeft = 60, timerInterval, muted = false, audioContext;
 
-const logoScreen=document.getElementById("logoScreen");
-const quizScreen=document.getElementById("quizScreen");
-const resultScreen=document.getElementById("resultScreen");
-const qNo=document.getElementById("qNo");
-const scoreBox=document.getElementById("score");
-const timerBox=document.getElementById("timer");
-const visualBox=document.getElementById("visualBox");
-const questionText=document.getElementById("questionText");
-const optionsBox=document.getElementById("optionsBox");
-const feedback=document.getElementById("feedback");
-const nextBtn=document.getElementById("nextBtn");
-const correctSound=document.getElementById("correctSound");
-const wrongSound=document.getElementById("wrongSound");
-const clapSound=document.getElementById("clapSound");
+const logoScreen = document.getElementById("logoScreen");
+const quizScreen = document.getElementById("quizScreen");
+const resultScreen = document.getElementById("resultScreen");
+const qNo = document.getElementById("qNo");
+const scoreBox = document.getElementById("score");
+const timerBox = document.getElementById("timer");
+const visualBox = document.getElementById("visualBox");
+const questionText = document.getElementById("questionText");
+const optionsBox = document.getElementById("optionsBox");
+const feedback = document.getElementById("feedback");
+const nextBtn = document.getElementById("nextBtn");
 
-setTimeout(()=>{
+setTimeout(() => {
   logoScreen.classList.remove("active");
   quizScreen.classList.add("active");
   startQuiz();
-},5000);
+}, 3000);
 
-function startQuiz(){
-  current=0;
-  score=0;
-  timeLeft=60;
-  scoreBox.textContent=score;
-  timerBox.textContent=timeLeft;
+function shuffle(array) {
+  let arr = [...array];
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
+function prepareRandomizedQuestions() {
+  let shuffledQ = shuffle(originalQuestions);
+  return shuffledQ.map(item => {
+    let originalAnswerText = item.options[item.answer];
+    let shuffledOptions = shuffle(item.options);
+    let newAnswerIndex = shuffledOptions.indexOf(originalAnswerText);
+    return {
+      ...item,
+      options: shuffledOptions,
+      answer: newAnswerIndex
+    };
+  });
+}
+
+function initAudio() {
+  if (!audioContext) {
+    audioContext = new (window.AudioContext || window.webkitAudioContext)();
+  }
+}
+
+function startQuiz() {
+  questions = prepareRandomizedQuestions();
+  current = 0;
+  score = 0;
+  timeLeft = 60;
+  scoreBox.textContent = score;
+  timerBox.textContent = timeLeft;
   loadQuestion();
   startTimer();
 }
 
-function startTimer(){
+function startTimer() {
   clearInterval(timerInterval);
-  timerInterval=setInterval(()=>{
+  timerInterval = setInterval(() => {
     timeLeft--;
-    timerBox.textContent=timeLeft;
-    if(timeLeft<=0){
+    timerBox.textContent = timeLeft;
+    if (timeLeft <= 0) {
       clearInterval(timerInterval);
       showResult();
     }
-  },1000);
+  }, 1000);
 }
 
-function loadQuestion(){
-  attempts=0;
-  answered=false;
-  feedback.textContent="";
-  nextBtn.style.display="none";
+function loadQuestion() {
+  attempts = 0;
+  answered = false;
+  feedback.textContent = "";
+  nextBtn.style.display = "none";
 
-  const item=questions[current];
-  qNo.textContent=current+1;
-  questionText.textContent=item.q;
-  optionsBox.innerHTML="";
+  const item = questions[current];
+  qNo.textContent = current + 1;
+  questionText.textContent = item.q;
+  optionsBox.innerHTML = "";
   renderVisual(item);
 
-  item.options.forEach((option,index)=>{
-    const btn=document.createElement("button");
-    btn.className="option";
-    btn.textContent=option;
-    btn.onclick=()=>checkAnswer(btn,index);
+  item.options.forEach((option, index) => {
+    const btn = document.createElement("button");
+    btn.className = "option";
+    btn.textContent = option;
+    btn.onclick = () => checkAnswer(btn, index);
     optionsBox.appendChild(btn);
   });
 }
 
-function renderVisual(item){
-  if(item.visual==="clock"){
-    visualBox.innerHTML=`
-      <div class="clock-face">
-        <div class="num3">3</div>
-        <div class="num9">9</div>
-        <div class="hand-hour" style="transform:translate(-50%,-100%) rotate(${item.hourDeg}deg);"></div>
-        <div class="hand-minute" style="transform:translate(-50%,-100%) rotate(${item.minuteDeg}deg);"></div>
-        <div class="center-dot"></div>
+function renderVisual(item) {
+  if (item.visual === "money_sum1" || item.visual === "comb_17") {
+    visualBox.innerHTML = `
+      <div class="money-container">
+        <span class="note note-10">₹10</span> + 
+        <span class="coin coin-gold">₹5</span> + 
+        <span class="coin">₹2</span>
       </div>
       <strong>${item.visualText}</strong>`;
-  }else if(item.visual==="digital"){
-    visualBox.innerHTML=`
-      <div style="font-size:54px;font-weight:bold;background:#111827;color:white;display:inline-block;padding:14px 24px;border-radius:12px;">
-        ${item.visualText}
+  } else if (item.visual === "evaluate_book") {
+    visualBox.innerHTML = `
+      <div class="money-container">
+        <span class="item-tag">📖 Book: ₹75</span>
+        <span class="note note-50">₹50</span> + <span class="note note-20">₹20</span>
       </div>
-      <div style="margin-top:10px;"><strong>Digital clock time</strong></div>`;
-  }else if(item.visual==="days"){
-    visualBox.innerHTML=`<div class="visual">📅</div><strong>${item.visualText}</strong>`;
-  }else if(item.visual==="calendar"){
-    visualBox.innerHTML=`<div class="visual">🗓️</div><strong>${item.visualText}</strong>`;
-  }else if(item.visual==="months"){
-    visualBox.innerHTML=`<div class="visual">🌦️</div><strong>${item.visualText}</strong>`;
-  }else{
-    visualBox.innerHTML=`<div class="visual">${item.visual}</div><strong>${item.visualText}</strong>`;
+      <strong>${item.visualText}</strong>`;
+  } else if (item.visual === "rupee_paise") {
+    visualBox.innerHTML = `
+      <div class="money-container">
+        <span class="coin coin-gold" style="width:60px;height:60px;font-size:22px;">₹1</span>
+      </div>
+      <strong>${item.visualText}</strong>`;
+  } else if (item.visual === "coin_note") {
+    visualBox.innerHTML = `
+      <div class="money-container">
+        <span class="note note-10">₹10</span>
+        <span class="coin coin-gold">₹10</span>
+      </div>
+      <strong>${item.visualText}</strong>`;
+  } else if (item.visual === "items_sum" || item.visual === "compare_items" || item.visual === "compare_food") {
+    let itemsHTML = item.items.map(i => `<div class="item-tag">${i.icon} ${i.name}: <span style="color:#0284c7;">${i.price}</span></div>`).join('');
+    visualBox.innerHTML = `
+      <div class="money-container">${itemsHTML}</div>
+      <strong>${item.visualText}</strong>`;
+  } else if (item.visual === "add_story") {
+    visualBox.innerHTML = `
+      <div class="money-container">
+        <span class="note note-20">₹20</span> + <span class="note">₹15</span>
+      </div>
+      <strong>${item.visualText}</strong>`;
+  } else if (item.visual === "sub_story") {
+    visualBox.innerHTML = `
+      <div class="money-container">
+        <span class="note note-50">₹50</span> <span class="note note-20">₹20</span> <span class="note note-20">₹20</span>
+      </div>
+      <strong>${item.visualText}</strong>`;
+  } else if (item.visual === "change_story") {
+    visualBox.innerHTML = `
+      <div class="money-container">
+        <span class="note note-50">Paid: ₹50</span> - <span class="item-tag">📎 Clip: ₹20</span>
+      </div>
+      <strong>${item.visualText}</strong>`;
+  } else if (item.visual === "make_20") {
+    visualBox.innerHTML = `
+      <div class="money-container">
+        <span class="note note-20">Total = ₹20</span>
+      </div>
+      <strong>${item.visualText}</strong>`;
+  } else {
+    visualBox.innerHTML = `<div class="visual">🛒</div><strong>${item.visualText}</strong>`;
   }
 }
 
-function checkAnswer(button,selected){
-  if(answered)return;
-  const correctIndex=questions[current].answer;
+function checkAnswer(button, selected) {
+  initAudio();
+  if (answered || timeLeft <= 0) return;
+  const correctIndex = questions[current].answer;
 
-  if(selected===correctIndex){
-    answered=true;
+  if (selected === correctIndex) {
+    answered = true;
     score++;
-    scoreBox.textContent=score;
+    scoreBox.textContent = score;
     button.classList.add("correct");
-    feedback.textContent="Correct!";
-    playSound(correctSound);
+    feedback.textContent = "Correct!";
+    feedback.style.color = "#047857";
+    playBeep(600, 0.15);
     launchConfetti();
     disableOptions();
-    nextBtn.style.display="inline-block";
-  }else{
+    nextBtn.style.display = "inline-block";
+  } else {
     attempts++;
     button.classList.add("wrong");
-    playSound(wrongSound);
+    playBeep(220, 0.2);
 
-    if(attempts===1){
-      feedback.textContent="Try again.";
-      button.disabled=true;
-    }else{
-      answered=true;
-      feedback.textContent="Incorrect. The correct answer is highlighted.";
+    if (attempts === 1) {
+      feedback.textContent = "Try again.";
+      feedback.style.color = "#b91c1c";
+      button.disabled = true;
+    } else {
+      answered = true;
+      feedback.textContent = "Incorrect. The correct answer is highlighted.";
+      feedback.style.color = "#b91c1c";
       showCorrectAnswer();
       disableOptions();
-      nextBtn.style.display="inline-block";
+      nextBtn.style.display = "inline-block";
     }
   }
 }
 
-function showCorrectAnswer(){
-  const correctIndex=questions[current].answer;
-  const allOptions=document.querySelectorAll(".option");
-  allOptions[correctIndex].classList.add("correct");
+function showCorrectAnswer() {
+  const correctIndex = questions[current].answer;
+  const allOptions = document.querySelectorAll(".option");
+  if (allOptions[correctIndex]) {
+    allOptions[correctIndex].classList.add("correct");
+  }
 }
 
-function disableOptions(){
-  document.querySelectorAll(".option").forEach(btn=>btn.disabled=true);
+function disableOptions() {
+  document.querySelectorAll(".option").forEach(btn => btn.disabled = true);
 }
 
-function nextQuestion(){
+function nextQuestion() {
   current++;
-  if(current<questions.length){
+  if (current < questions.length) {
     loadQuestion();
-  }else{
+  } else {
     showResult();
   }
 }
 
-function showResult(){
+function showResult() {
   clearInterval(timerInterval);
   quizScreen.classList.remove("active");
   resultScreen.classList.add("active");
 
-  const percentage=(score/questions.length)*100;
-  let message="";
+  const percentage = (score / questions.length) * 100;
+  let message = "";
 
-  if(percentage>=75){
-    message="Good job";
+  if (percentage >= 75) {
+    message = "🎉 Excellent Job!";
     launchConfetti();
-    playSound(clapSound);
-  }else if(percentage>=40){
-    message="Review this chapter and try again";
-  }else{
-    message="Let’s practise more";
+    playBeep(800, 0.4);
+  } else if (percentage >= 40) {
+    message = "👍 Good Effort! Review the chapter and try again.";
+  } else {
+    message = "📖 Let’s practise more about money!";
   }
 
-  document.getElementById("resultMessage").textContent=message;
-  document.getElementById("finalScore").textContent="Your Score: "+score+" out of "+questions.length;
+  document.getElementById("resultMessage").textContent = message;
+  document.getElementById("finalScore").textContent = "Your Score: " + score + " out of " + questions.length;
 }
 
-function restartQuiz(){
+function restartQuiz() {
   resultScreen.classList.remove("active");
   quizScreen.classList.add("active");
   startQuiz();
 }
 
-function toggleMute(){
-  muted=!muted;
-  document.getElementById("muteBtn").textContent=muted?"🔇 Sound Off":"🔊 Sound On";
+function toggleMute() {
+  muted = !muted;
+  document.getElementById("muteBtn").textContent = muted ? "🔇 Sound Off" : "🔊 Sound On";
 }
 
-function playSound(sound){
-  if(muted)return;
-  sound.currentTime=0;
-  sound.play().catch(()=>{});
+function playBeep(freq, duration) {
+  if (muted || !audioContext) return;
+  try {
+    const osc = audioContext.createOscillator();
+    const gain = audioContext.createGain();
+    osc.type = "sine";
+    osc.frequency.value = freq;
+    gain.gain.value = 0.1;
+    osc.connect(gain);
+    gain.connect(audioContext.destination);
+    osc.start();
+    osc.stop(audioContext.currentTime + duration);
+  } catch (e) {}
 }
 
-function launchConfetti(){
-  const colors=["#f59e0b","#10b981","#3b82f6","#ef4444","#8b5cf6"];
-  for(let i=0;i<30;i++){
-    const piece=document.createElement("div");
-    piece.className="confetti";
-    piece.style.left=Math.random()*100+"vw";
-    piece.style.background=colors[Math.floor(Math.random()*colors.length)];
-    piece.style.animationDuration=(Math.random()*.8+.8)+"s";
+function launchConfetti() {
+  const colors = ["#f59e0b", "#10b981", "#3b82f6", "#ef4444", "#8b5cf6"];
+  for (let i = 0; i < 30; i++) {
+    const piece = document.createElement("div");
+    piece.className = "confetti";
+    piece.style.left = Math.random() * 100 + "vw";
+    piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+    piece.style.animationDuration = (Math.random() * .8 + .8) + "s";
     document.body.appendChild(piece);
-    setTimeout(()=>piece.remove(),1500);
+    setTimeout(() => piece.remove(), 1500);
   }
 }
 </script>
