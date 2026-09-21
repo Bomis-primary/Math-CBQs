@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Subtraction Upto 100</title>
+<title>Grade 1 - Measurement</title>
 
 <style>
 *{box-sizing:border-box}
@@ -136,8 +136,8 @@ body{margin:0;font-family:Arial,sans-serif;background:#f3f8ff;color:#1f2937;min-
 
 <div id="introScreen" class="screen">
   <div class="card" style="text-align:center">
-    <h2>Subtraction up to 100</h2>
-    <p>Test your understanding through real-life scenarios, challenges, and puzzles!</p>
+    <h2>Chapter 8: Measurement</h2>
+    <p>Explore length, weight, capacity, and comparison challenges!</p>
     <button class="primary" onclick="startQuiz()">Start Challenge</button>
   </div>
 </div>
@@ -145,10 +145,10 @@ body{margin:0;font-family:Arial,sans-serif;background:#f3f8ff;color:#1f2937;min-
 <div id="quizScreen" class="screen">
   <div class="card">
     <div class="topbar">
-      <div class="badge"><span id="qTypeBadge">Flow</span>: <span id="qNo">1</span>/<span id="totalQuestions">12</span></div>
+      <div class="badge"><span id="qTypeBadge">Flow</span>: <span id="qNo">1</span>/<span id="totalQuestions">20</span></div>
       <div class="badge">Score <span id="score">0</span></div>
       <div class="badge">Time <span id="timer">60</span>s</div>
-      <div class="badge">Subtraction</div>
+      <div class="badge">Measurement</div>
     </div>
 
     <div class="question" id="questionText"></div>
@@ -175,99 +175,163 @@ body{margin:0;font-family:Arial,sans-serif;background:#f3f8ff;color:#1f2937;min-
 const questionPool = [
   {
     type: "Flow",
-    q: "Diya has 50 candies. She gives 20 to her friend. How many candies are left?",
-    options: ["20 candies", "30 candies", "40 candies", "50 candies"],
-    answer: "30 candies",
-    hint: "Subtract 2 tens from 5 tens: 50 − 20.",
-    explain: "50 minus 20 leaves 30 candies."
+    q: "A pencil is 5 paper clips long. A crayon is 3 paper clips long. Which statement is true?",
+    options: ["The crayon is longer than the pencil.", "The pencil is longer than the crayon.", "They are the same length.", "The pencil is shorter than the crayon."],
+    answer: "The pencil is longer than the crayon.",
+    hint: "Compare 5 paper clips to 3 paper clips.",
+    explain: "5 units is more than 3 units, so the pencil has a greater length."
   },
   {
     type: "Flow",
-    q: "A shop has 87 balloons. 32 balloons are sold. How many remain?",
-    options: ["45 balloons", "52 balloons", "55 balloons", "65 balloons"],
-    answer: "55 balloons",
-    hint: "Subtract the ones first (7 − 2 = 5), then subtract the tens (80 − 30 = 50).",
-    explain: "87 minus 32 equals 55 balloons remaining."
+    q: "Which of the following is a non-standard unit of measurement?",
+    options: ["A ruler", "A handspan", "A weighing scale", "A measuring tape"],
+    answer: "A handspan",
+    hint: "Think about which unit uses a body part or everyday object.",
+    explain: "Non-standard units are everyday objects or body parts (like hands or feet) used to measure things."
   },
   {
     type: "Flow",
-    q: "Which number should be subtracted from 60 to get 40?",
-    options: ["10", "20", "30", "40"],
-    answer: "20",
-    hint: "Think: 60 − ? = 40.",
-    explain: "60 minus 20 equals 40."
+    q: "Look at a feather and a brick. Which one is lighter?",
+    options: ["The brick", "The feather", "They weigh the same", "Neither"],
+    answer: "The feather",
+    hint: "Think about which one is easier to lift.",
+    explain: "A feather is very light and easy to lift, while a brick is heavy."
   },
   {
     type: "Flow",
-    q: "Sam has 45 marbles. He loses 15 marbles. How many are left?",
-    options: ["25", "30", "35", "40"],
-    answer: "30",
-    hint: "Subtract 5 ones first (45 − 5 = 40), then 10 tens (40 − 10).",
-    explain: "45 minus 15 leaves 30 marbles."
+    q: "Capacity is the word we use to describe:",
+    options: ["How long a table is.", "How much a container can hold.", "How heavy a bag is.", "How fast a car goes."],
+    answer: "How much a container can hold.",
+    hint: "Capacity relates to containers and liquids.",
+    explain: "Capacity refers to the maximum amount of liquid or substance a container can contain."
   },
   {
     type: "Flow",
-    q: "A bus has 38 children. 14 children get down at the first stop. How many children are left in the bus?",
-    options: ["18 children", "22 children", "24 children", "28 children"],
-    answer: "24 children",
-    hint: "Subtract 4 from 8 ones (8 − 4 = 4) and 1 ten from 3 tens (30 − 10 = 20).",
-    explain: "38 minus 14 equals 24 children remaining on the bus."
+    q: "A bucket can hold 10 mugs of water. A jug can hold 3 mugs of water. Which has more capacity?",
+    options: ["The jug", "The mug", "The bucket", "They are the same"],
+    answer: "The bucket",
+    hint: "Compare 10 mugs to 3 mugs.",
+    explain: "The bucket holds more units (10) than the jug (3)."
   },
   {
     type: "Flow",
-    q: "Rehan needs 70 paper cups for a party. He already has 40 cups. How many more cups does he need to buy?",
-    options: ["20 cups", "30 cups", "40 cups", "50 cups"],
-    answer: "30 cups",
-    hint: "Find the difference between target and current: 70 − 40.",
-    explain: "70 minus 40 means Rehan needs 30 more cups."
+    q: "If an eraser is 'shorter than' a pen, then the pen is ________ the eraser.",
+    options: ["Shorter than", "Lighter than", "Longer than", "As long as"],
+    answer: "Longer than",
+    hint: "What is the opposite of 'shorter than'?",
+    explain: "'Longer than' is the opposite of 'shorter than.'"
   },
   {
     type: "Flow",
-    q: "A book has 96 pages. Isha has read 52 pages. How many pages are left for her to read?",
-    options: ["34 pages", "42 pages", "44 pages", "54 pages"],
-    answer: "44 pages",
-    hint: "Subtract the ones (6 − 2 = 4) and then the tens (90 − 50 = 40).",
-    explain: "96 minus 52 leaves 44 pages to read."
+    q: "Which of these would you use to measure the weight of a book using non-standard units?",
+    options: ["A spoon", "Marbles or blocks", "A piece of string", "A cup of water"],
+    answer: "Marbles or blocks",
+    hint: "Choose small objects with steady weight that can balance a scale.",
+    explain: "We can use several small, equal-weight items like blocks to see how many it takes to balance the weight of a book."
   },
   {
     type: "Flow",
-    q: "Tina had 65 craft sticks for her art project. She used 25 sticks to make a house model. How many craft sticks are left?",
-    options: ["45 craft sticks", "40 craft sticks", "35 craft sticks", "30 craft sticks"],
-    answer: "40 craft sticks",
-    hint: "Subtract 5 ones (65 − 5 = 60), then 20 tens (60 − 20).",
-    explain: "65 minus 25 leaves 40 craft sticks."
+    q: "Which object is likely the heaviest?",
+    options: ["An empty school bag", "A school bag full of books", "A single notebook", "A pencil box"],
+    answer: "A school bag full of books",
+    hint: "Think about which object contains the most items inside.",
+    explain: "Adding more items (books) increases the total weight of the bag."
   },
   {
     type: "Flow",
-    q: "Kabir has 89 blocks. He uses 36 blocks to build a tower. How many unused blocks does he have left?",
-    options: ["43 blocks", "51 blocks", "53 blocks", "63 blocks"],
-    answer: "53 blocks",
-    hint: "Subtract ones from ones (9 − 6 = 3) and tens from tens (80 − 30 = 50).",
-    explain: "89 minus 36 leaves 53 unused blocks."
+    q: "To measure the length of your classroom door, which non-standard unit would be most practical?",
+    options: ["Paper clips", "Finger widths", "Arm spans", "Grains of rice"],
+    answer: "Arm spans",
+    hint: "Choose a larger unit so you don't have to count hundreds of tiny things.",
+    explain: "Arm spans are larger units, making it faster and easier to measure a large object like a door."
   },
   {
     type: "Flow",
-    q: "A fruit seller has 75 apples. He finds that 15 apples are spoiled and throws them away. How many good apples are left?",
-    options: ["50 apples", "55 apples", "60 apples", "65 apples"],
-    answer: "60 apples",
-    hint: "Take away 15 from 75.",
-    explain: "75 minus 15 leaves 60 good apples."
+    q: "A teapot fills 5 teacups. A water bottle fills 8 teacups. Which statement is correct?",
+    options: ["The teapot holds more than the bottle.", "The bottle holds less than the teapot.", "The teapot holds less than the bottle.", "They have the same capacity."],
+    answer: "The teapot holds less than the bottle.",
+    hint: "Compare 5 cups to 8 cups.",
+    explain: "5 cups is a smaller amount than 8 cups."
   },
   {
     type: "Flow",
-    q: "Rohan has 40 colored pencils. Shreya has 20 colored pencils. How many more pencils does Rohan have than Shreya?",
-    options: ["10 pencils", "20 pencils", "30 pencils", "40 pencils"],
-    answer: "20 pencils",
-    hint: "Compare their amounts by subtracting: 40 − 20.",
-    explain: "40 minus 20 means Rohan has 20 more pencils."
+    q: "What happens to the water level in a glass if you pour more water into it?",
+    options: ["It goes down.", "It stays the same.", "It goes up.", "The glass gets longer."],
+    answer: "It goes up.",
+    hint: "When you add more liquid, does the height of the liquid rise or fall?",
+    explain: "Adding more liquid increases the volume inside the container."
+  },
+  {
+    type: "Flow",
+    q: "If a watermelon is heavier than a mango, then the mango is ________ the watermelon.",
+    options: ["Heavier than", "Lighter than", "Larger than", "As heavy as"],
+    answer: "Lighter than",
+    hint: "What is the opposite of 'heavier than'?",
+    explain: "If one object is heavier, the other must be lighter."
+  },
+  {
+    type: "Flow",
+    q: "Which of these is the shortest?",
+    options: ["A walking stick", "A cricket bat", "A matchstick", "A flute"],
+    answer: "A matchstick",
+    hint: "Which object fits in the palm of your hand?",
+    explain: "Compared to the others, a matchstick has the smallest length."
+  },
+  {
+    type: "Flow",
+    q: "To measure how much juice is in a bowl, we can use:",
+    options: ["A ruler", "A small spoon", "A weighing balance", "A piece of yarn"],
+    answer: "A small spoon",
+    hint: "Which tool can scoop liquid to measure capacity?",
+    explain: "We measure capacity by seeing how many smaller containers (like spoons or cups) can be filled."
+  },
+  {
+    type: "Flow",
+    q: "Why do we need to measure things?",
+    options: ["To compare them accurately.", "To make them change shape.", "To make them disappear.", "To count how many there are."],
+    answer: "To compare them accurately.",
+    hint: "Think about how measurement helps us know exact lengths or weights.",
+    explain: "Measurement helps us know exactly how much longer, heavier, or larger one thing is compared to another."
+  },
+  {
+    type: "Flow",
+    q: "You have three ribbons: Red (10 cm), Blue (15 cm), and Green (12 cm). Which ribbon is the longest?",
+    options: ["Red", "Blue", "Green", "They are all equal"],
+    answer: "Blue",
+    hint: "Look for the biggest number: 10, 15, or 12.",
+    explain: "15 is the highest number among the lengths given."
+  },
+  {
+    type: "Flow",
+    q: "If a balloon and a ball are the same size, are they always the same weight?",
+    options: ["Yes, always.", "No, the ball is usually heavier.", "No, the balloon is usually heavier.", "Yes, because they look the same."],
+    answer: "No, the ball is usually heavier.",
+    hint: "Think about what is inside a balloon versus a ball.",
+    explain: "Size does not always determine weight. A ball is solid/dense, while a balloon is filled with light air."
+  },
+  {
+    type: "Flow",
+    q: "Which container has the least capacity?",
+    options: ["A bathtub", "A swimming pool", "A coffee mug", "A water tank"],
+    answer: "A coffee mug",
+    hint: "Find the smallest container that holds the smallest amount of liquid.",
+    explain: "A mug is the smallest container listed and holds the smallest amount of liquid."
   },
   {
     type: "Challenge",
-    q: "A bakery made 95 cupcakes in the morning. By evening, 65 cupcakes were sold. How many cupcakes are left unsold?",
-    options: ["20 cupcakes", "25 cupcakes", "30 cupcakes", "35 cupcakes"],
-    answer: "30 cupcakes",
-    hint: "Subtract 65 from 95: 95 − 5 = 90, 90 − 60 = 30.",
-    explain: "95 minus 65 leaves 30 cupcakes unsold."
+    q: "If you measure a table using your handspan and your teacher measures it using their handspan, will the number be the same?",
+    options: ["Yes, because the table doesn't change.", "No, because the teacher's hand is likely larger.", "Yes, because handspans are standard units.", "No, because the table grows."],
+    answer: "No, because the teacher's hand is likely larger.",
+    hint: "Are your hands the same size as an adult's hands?",
+    explain: "Since handspans are non-standard and vary in size, the count will be different."
+  },
+  {
+    type: "Challenge",
+    q: "An empty glass is ________ a glass full of milk.",
+    options: ["Heavier than", "Lighter than", "Longer than", "Shorter than"],
+    answer: "Lighter than",
+    hint: "Does adding milk make the glass heavier or lighter?",
+    explain: "The milk adds weight to the glass, so the empty one is lighter."
   }
 ];
 
