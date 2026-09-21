@@ -81,7 +81,7 @@ body{margin:0;font-family:Arial,sans-serif;background:#f3f8ff;color:#1f2937;min-
   line-height: 1.2;
 }
 
-/* FIXED IMAGE SIZING CONTRAINTS */
+/* FIXED IMAGE SIZING CONSTRAINTS */
 .visual-box img {
   max-width: 100%; 
   max-height: 220px; 
@@ -201,7 +201,7 @@ body{margin:0;font-family:Arial,sans-serif;background:#f3f8ff;color:#1f2937;min-
 
 <script>
 /* ---------------- QUESTIONS COLLECTION ---------------- */
-const questions = [
+const questionsData = [
   {
     type: "Flow",
     q: "A baker baked 19 cupcakes. He has 4 left. How many did he sell?",
@@ -301,11 +301,22 @@ const questions = [
 
 /* ---------------- CONTROLLER ENGINE ---------------- */
 
+let questions = [];
 let current = 0;
 let score = 0;
 let timer = 60;
 let interval;
 let attemptsLeft = 2;
+
+// Utility function: Fisher-Yates Shuffle
+function shuffleArray(array) {
+  const arr = [...array];
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
 
 function changeScreen(fromId, toId) {
   const fromScreen = document.getElementById(fromId);
@@ -321,6 +332,12 @@ function init() {
 }
 
 function startQuiz() {
+  // Randomize question order and shuffle options for each question
+  questions = shuffleArray(questionsData).map(q => ({
+    ...q,
+    shuffledOptions: shuffleArray(q.options)
+  }));
+  
   changeScreen("introScreen", "quizScreen");
   loadQuestion();
 }
@@ -379,7 +396,7 @@ function loadQuestion() {
   let box = document.getElementById("optionsBox");
   box.innerHTML = "";
 
-  q.options.forEach(opt => {
+  q.shuffledOptions.forEach(opt => {
     let btn = document.createElement("button");
     btn.className = "option";
     btn.innerText = opt;
