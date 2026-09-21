@@ -177,73 +177,97 @@ const questionPool = [
     type: "Flow",
     q: "Diya has 50 candies. She gives 20 to her friend. How many candies are left?",
     options: ["20 candies", "30 candies", "40 candies", "50 candies"],
-    answer: 1
+    answer: "30 candies",
+    hint: "Subtract 2 tens from 5 tens: 50 − 20.",
+    explain: "50 minus 20 leaves 30 candies."
   },
   {
     type: "Flow",
     q: "A shop has 80 balloons. 30 balloons are sold. How many remain?",
     options: ["40 balloons", "50 balloons", "60 balloons", "70 balloons"],
-    answer: 1
+    answer: "50 balloons",
+    hint: "Count backward 30 from 80.",
+    explain: "80 minus 30 equals 50 balloons remaining."
   },
   {
     type: "Flow",
     q: "Which number should be subtracted from 60 to get 40?",
     options: ["10", "20", "30", "40"],
-    answer: 1
+    answer: "20",
+    hint: "Think: 60 − ? = 40.",
+    explain: "60 minus 20 equals 40."
   },
   {
     type: "Flow",
     q: "Sam has 45 marbles. He loses 15 marbles. How many are left?",
     options: ["25", "30", "35", "40"],
-    answer: 1
+    answer: "30",
+    hint: "Subtract 5 ones first (45 − 5 = 40), then 10 tens (40 − 10).",
+    explain: "45 minus 15 leaves 30 marbles."
   },
   {
     type: "Flow",
     q: "A bus has 35 children. 10 children get down at the first stop. How many children are left in the bus?",
     options: ["15 children", "20 children", "25 children", "30 children"],
-    answer: 2
+    answer: "25 children",
+    hint: "Subtract 1 ten from 3 tens: 35 − 10.",
+    explain: "35 minus 10 equals 25 children remaining on the bus."
   },
   {
     type: "Flow",
     q: "Rehan needs 70 paper cups for a party. He already has 40 cups. How many more cups does he need to buy?",
     options: ["20 cups", "30 cups", "40 cups", "50 cups"],
-    answer: 1
+    answer: "30 cups",
+    hint: "Find the difference between target and current: 70 − 40.",
+    explain: "70 minus 40 means Rehan needs 30 more cups."
   },
   {
     type: "Flow",
     q: "A book has 90 pages. Isha has read 50 pages. How many pages are left for her to read?",
     options: ["30 pages", "40 pages", "50 pages", "60 pages"],
-    answer: 1
+    answer: "40 pages",
+    hint: "Subtract the pages read from total pages: 90 − 50.",
+    explain: "90 minus 50 leaves 40 pages to read."
   },
   {
     type: "Flow",
     q: "Tina had 65 craft sticks for her art project. She used 25 sticks to make a house model. How many craft sticks are left?",
     options: ["45 craft sticks", "40 craft sticks", "35 craft sticks", "30 craft sticks"],
-    answer: 1
+    answer: "40 craft sticks",
+    hint: "Subtract 5 ones (65 − 5 = 60), then 20 tens (60 − 20).",
+    explain: "65 minus 25 leaves 40 craft sticks."
   },
   {
     type: "Flow",
     q: "Kabir has 85 blocks. He uses 35 blocks to build a tower. How many unused blocks does he have left?",
     options: ["40 blocks", "50 blocks", "60 blocks", "70 blocks"],
-    answer: 1
+    answer: "50 blocks",
+    hint: "Subtract 35 from 85: 85 − 5 = 80, 80 − 30 = 50.",
+    explain: "85 minus 35 leaves 50 unused blocks."
   },
   {
     type: "Flow",
     q: "A fruit seller has 75 apples. He finds that 15 apples are spoiled and throws them away. How many good apples are left?",
     options: ["50 apples", "55 apples", "60 apples", "65 apples"],
-    answer: 2
+    answer: "60 apples",
+    hint: "Take away 15 from 75.",
+    explain: "75 minus 15 leaves 60 good apples."
   },
   {
     type: "Flow",
     q: "Rohan has 40 colored pencils. Shreya has 20 colored pencils. How many more pencils does Rohan have than Shreya?",
     options: ["10 pencils", "20 pencils", "30 pencils", "40 pencils"],
-    answer: 1
+    answer: "20 pencils",
+    hint: "Compare their amounts by subtracting: 40 − 20.",
+    explain: "40 minus 20 means Rohan has 20 more pencils."
   },
   {
     type: "Challenge",
     q: "A bakery made 95 cupcakes in the morning. By evening, 65 cupcakes were sold. How many cupcakes are left unsold?",
     options: ["20 cupcakes", "25 cupcakes", "30 cupcakes", "35 cupcakes"],
-    answer: 2
+    answer: "30 cupcakes",
+    hint: "Subtract 65 from 95: 95 − 5 = 90, 90 − 60 = 30.",
+    explain: "95 minus 65 leaves 30 cupcakes unsold."
   }
 ];
 
@@ -255,6 +279,15 @@ let answered = false;
 let attempts = 0;
 let interval;
 let timeLeft = 60;
+
+function shuffleArray(array) {
+  const arr = [...array];
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
 
 function changeScreen(fromId, toId) {
   const fromScreen = document.getElementById(fromId);
@@ -270,7 +303,10 @@ function init() {
 }
 
 function startQuiz() {
-  questions = [...questionPool].sort(() => Math.random() - 0.5);
+  questions = shuffleArray(questionPool).map(q => ({
+    ...q,
+    shuffledOptions: shuffleArray(q.options)
+  }));
   current = 0;
   score = 0;
   document.getElementById("totalQuestions").innerText = questions.length;
@@ -291,7 +327,7 @@ function startTimer() {
       clearInterval(interval);
       playAudio(false);
       disableOptions();
-      document.getElementById("feedback").innerText = "Time's up!";
+      document.getElementById("feedback").innerText = "Time's up! " + questions[current].explain;
       document.getElementById("feedback").style.color = "#b91c1c";
       document.getElementById("nextBtn").style.display = "inline-block";
     }
@@ -327,9 +363,7 @@ function loadQuestion() {
   let box = document.getElementById("optionsBox");
   box.innerHTML = "";
 
-  let shuffled = [...q.options].sort(() => Math.random() - 0.5);
-
-  shuffled.forEach(opt => {
+  q.shuffledOptions.forEach(opt => {
     let btn = document.createElement("button");
     btn.className = "option";
     btn.innerText = opt;
@@ -341,13 +375,13 @@ function loadQuestion() {
 function checkAnswer(selectedBtn, selectedValue, qObj) {
   if (answered) return;
 
-  if (selectedValue === qObj.options[qObj.answer]) {
+  if (selectedValue === qObj.answer) {
     clearInterval(interval);
     selectedBtn.classList.add("correct");
     playAudio(true);
     score++;
     document.getElementById("score").innerText = score;
-    document.getElementById("feedback").innerText = "🎉 Correct ✔";
+    document.getElementById("feedback").innerText = "🎉 Correct! " + qObj.explain;
     document.getElementById("feedback").style.color = "#047857";
     disableOptions();
     document.getElementById("nextBtn").style.display = "inline-block";
@@ -359,17 +393,17 @@ function checkAnswer(selectedBtn, selectedValue, qObj) {
     playAudio(false);
 
     if (attempts < 2) {
-      document.getElementById("feedback").innerText = "💡 Try again";
+      document.getElementById("feedback").innerText = "💡 Hint: " + qObj.hint;
       document.getElementById("feedback").style.color = "#1f4e79";
     } else {
       clearInterval(interval);
       disableOptions();
-      document.getElementById("feedback").innerText = "Unsuccessful.";
+      document.getElementById("feedback").innerText = "Unsuccessful. Correct answer: " + qObj.answer + ". " + qObj.explain;
       document.getElementById("feedback").style.color = "#b91c1c";
       
       const buttons = document.querySelectorAll(".option");
       buttons.forEach(b => {
-        if(b.innerText === qObj.options[qObj.answer]) b.classList.add("correct");
+        if(b.innerText === qObj.answer) b.classList.add("correct");
       });
       
       document.getElementById("nextBtn").style.display = "inline-block";
