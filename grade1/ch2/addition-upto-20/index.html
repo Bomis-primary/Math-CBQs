@@ -51,10 +51,11 @@ body {
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
   padding: 20px 16px;
   margin: auto;
+  position: relative;
 }
 
 /* =======================
-   STATUS BAR (TOP PILLS)
+   STATUS BAR
 ======================= */
 .status {
   display: grid;
@@ -80,7 +81,7 @@ body {
 }
 
 /* =======================
-   QUESTION HEADER
+   QUESTION HEADER & TEXT
 ======================= */
 .question-header {
   background: #fff3e6;
@@ -96,9 +97,6 @@ body {
   color: #c2410c;
 }
 
-/* =======================
-   QUESTION TEXT
-======================= */
 .question {
   font-size: 18px;
   font-weight: 600;
@@ -113,7 +111,7 @@ body {
 }
 
 /* =======================
-   IMAGE & FALLBACK
+   IMAGE WRAPPER
 ======================= */
 .img-wrapper {
   width: 100%;
@@ -182,9 +180,6 @@ img.question-img {
   transform: scale(0.98);
 }
 
-/* =======================
-   FEEDBACK STATES
-======================= */
 .correct {
   background: #22c55e !important;
   color: white !important;
@@ -195,6 +190,60 @@ img.question-img {
   background: #ef4444 !important;
   color: white !important;
   border-color: #dc2626 !important;
+  opacity: 0.6;
+}
+
+/* =======================
+   EXPLANATION MODAL
+======================= */
+.explanation-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(4px);
+  z-index: 100;
+  justify-content: center;
+  align-items: center;
+  padding: 16px;
+}
+
+.explanation-card {
+  background: white;
+  width: 100%;
+  max-width: 550px;
+  border-radius: 20px;
+  padding: 24px;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+  animation: popIn 0.25s ease-out;
+}
+
+@keyframes popIn {
+  from { transform: scale(0.9); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+.explanation-title {
+  font-size: 20px;
+  font-weight: 800;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.explanation-body {
+  font-size: 16px;
+  line-height: 1.6;
+  color: #334155;
+  background: #f8fafc;
+  border-left: 4px solid #3b82f6;
+  padding: 14px 16px;
+  border-radius: 0 12px 12px 0;
+  margin-bottom: 20px;
 }
 
 /* =======================
@@ -209,7 +258,8 @@ button.primary-btn {
   background: #2563eb;
   color: white;
   cursor: pointer;
-  margin-top: 16px;
+  margin-top: 10px;
+  width: 100%;
   box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
   touch-action: manipulation;
 }
@@ -246,7 +296,7 @@ button.primary-btn:active {
   <div class="game-container" style="text-align: center;">
     <h2 style="font-size: 26px; color: #1e3a8a; margin-bottom: 10px;">Addition Up To 20</h2>
     <p style="font-size: 16px; color: #475569; margin-bottom: 20px; line-height: 1.5;">
-      Read each question carefully and choose the correct answer.
+      Read each question carefully and choose the correct answer. You get 2 attempts per question!
     </p>
     <button class="primary-btn" onclick="startGame()">Start Game</button>
   </div>
@@ -283,6 +333,15 @@ button.primary-btn:active {
   </div>
 </div>
 
+<!-- EXPLANATION MODAL -->
+<div id="explanationModal" class="explanation-overlay">
+  <div class="explanation-card">
+    <div id="explanationTitle" class="explanation-title">💡 Explanation</div>
+    <div id="explanationText" class="explanation-body"></div>
+    <button class="primary-btn" onclick="closeExplanation()">Continue ➔</button>
+  </div>
+</div>
+
 <!-- SCORE SCREEN -->
 <div id="scoreScreen" class="screen">
   <div class="game-container" style="text-align: center;">
@@ -300,68 +359,80 @@ const questions = [
   {
     q: "Rohan has 8 pencils. His teacher gives him 1 more pencil. Rohan says he now has 10 pencils. Is he correct?",
     options: ["No, he has 9 pencils.", "No, he has 12 pencils", "No, he has 13 pencils", "Yes, he has 10 pencils"],
-    a: 0
+    a: 0,
+    exp: "Addition combines quantities: 8 + 1 = 9. Adding 1 to any number gives the very next counting number. The number after 8 is 9, not 10."
   },
   {
-    q: "A teacher has 10 sticks in one box and 8 sticks in another box. There are 18 students. Does she have enough stick for each student?",
-    options: ["Yes, she has enough sticks", "No, she has 1 stick less", "No, she has 2 sticks less", "Yes, she has more than needed"],
-    a: 0
+    q: "A teacher has 10 sticks in one box and 8 sticks in another box. There are 18 students. Does she have enough sticks?",
+    options: ["Yes, she has enough", "No, she has 1 stick less", "No, she has 2 sticks less", "Yes, she has more than needed"],
+    a: 0,
+    exp: "Total sticks = 10 + 8 = 18 sticks. Since there are 18 students and 18 sticks, every student gets exactly one stick."
   },
   {
     q: "Juhi uses 5 white shells and the same number of yellow shells to make a necklace. How many shells did she use?",
     options: ["7", "8", "9", "10"],
     a: 3,
     img: "assets/shells.png",
-    altFallback: "🐚 Shells Visual"
+    altFallback: "🐚 Shells Visual",
+    exp: "'The same number' means there are also 5 yellow shells. Total shells used = 5 + 5 = 10."
   },
   {
     q: "A frog is on number 7 on a number line. How many jumps forward are needed to land on 10?",
     options: ["3", "4", "1", "2"],
     a: 0,
     img: "assets/frog.png",
-    altFallback: "🐸 Frog on Number Line"
+    altFallback: "🐸 Frog on Number Line",
+    exp: "To go from 7 to 10 on a number line: Jump 1 (7→8), Jump 2 (8→9), Jump 3 (9→10). You need 3 jumps (10 - 7 = 3)."
   },
   {
     q: "There is a 1-digit number more than 4 but less than 6. Sonam says the number is 6. Is she correct?",
     options: ["Yes, 6 fits the rule", "No, the number is 5", "No, the number is 4", "Yes, the number can be 6 or 5"],
-    a: 1
+    a: 1,
+    exp: "The only whole number greater than 4 and less than 6 is 5. Sonam is wrong because 6 is not less than 6."
   },
   {
     q: "Maya adds 12 + 3 and writes the answer as 14. What mistake did she make?",
     options: ["She added 3 tens instead of 3 ones", "She counted one less in the ones place", "She subtracted instead of adding", "The answer is correct"],
-    a: 1
+    a: 1,
+    exp: "12 + 3 = 15. Maya wrote 14, which has 4 in the ones place instead of 5. She counted 1 less in the ones place."
   },
   {
     q: "Who brought the same number of pebbles?",
     options: ["Noor and Vinu", "Vinu and Sid", "Sid and Romi", "Romi and Noor"],
     a: 1,
     img: "assets/pebbles.png",
-    altFallback: "🪨 Pebbles Visual"
+    altFallback: "🪨 Pebbles Visual",
+    exp: "When counting the pebbles in the picture, Vinu and Sid both have equal counts."
   },
   {
     q: "Team A scored 5 + 5 points. Team B scored 4 + 6 points. Which statement is true?",
     options: ["Team A scored more", "Team B scored more", "Both teams scored equal points", "Team A scored 1 more point"],
-    a: 2
+    a: 2,
+    exp: "Team A scored 5 + 5 = 10 points. Team B scored 4 + 6 = 10 points. Both teams scored equal points (10 = 10)."
   },
   {
     q: "Which sum does NOT equal 15?",
     options: ["10 + 5", "12 + 3", "14 + 1", "10 + 2"],
-    a: 3
+    a: 3,
+    exp: "10 + 5 = 15, 12 + 3 = 15, and 14 + 1 = 15. But 10 + 2 = 12, so 10 + 2 does NOT equal 15."
   },
   {
     q: "12 children are already on the bus. 7 more children get in. The bus can carry 20 children. Is the driver correct that everyone gets a seat?",
     options: ["Yes, because 12 + 7 = 19", "Yes, because the bus can carry 12 children", "No, because 7 children are too many", "No, because 12 + 7 = 21"],
-    a: 0
+    a: 0,
+    exp: "12 + 7 = 19 total children. Since 19 is less than the 20 seat capacity, everyone gets a seat!"
   },
   {
     q: "Ali has 11 balloons. His sister gives him 5 more and he finds 3 more. Does he have enough balloons to make 20?",
     options: ["Yes, exactly 20", "No, he has 19 balloons", "No, he has 16 balloons", "Yes, he has more than 20"],
-    a: 1
+    a: 1,
+    exp: "Total balloons = 11 + 5 + 3 = 19 balloons. He needs 20, so he does not have enough (he is 1 short)."
   },
   {
     q: "Ronak and Risha are putting laddoos in baskets to make groups of 10. Which group is the odd one out?",
     options: ["7 laddoos + 3 laddoos", "6 laddoos + 4 laddoos", "8 laddoos + 2 laddoos", "5 laddoos + 3 laddoos"],
-    a: 3
+    a: 3,
+    exp: "7+3=10, 6+4=10, and 8+2=10. However, 5 + 3 = 8, so it is the odd one out because it does not equal 10."
   }
 ];
 
@@ -369,7 +440,7 @@ let i = 0;
 let score = 0;
 let timer = 60;
 let interval;
-let canAnswer = true;
+let attempts = 0;
 
 setTimeout(() => {
   document.getElementById("logoScreen").classList.remove("active");
@@ -385,7 +456,7 @@ function startGame() {
 function loadQ() {
   clearInterval(interval);
   timer = 60;
-  canAnswer = true;
+  attempts = 0;
 
   window.scrollTo({ top: 0, behavior: 'smooth' });
 
@@ -397,7 +468,6 @@ function loadQ() {
   document.getElementById("question").innerText = q.q;
 
   let imgContainer = document.getElementById("imgContainer");
-  let img = document.getElementById("img");
 
   if (q.img) {
     imgContainer.style.display = "flex";
@@ -435,33 +505,69 @@ function startTimer() {
 
     if (timer <= 0) {
       clearInterval(interval);
-      next();
+      showExplanation(false, "Time expired for this question!");
     }
   }, 1000);
 }
 
 function check(idx, b) {
-  if (!canAnswer) return;
-  canAnswer = false;
-  clearInterval(interval);
-
   let q = questions[i];
   let buttons = document.querySelectorAll(".option-btn");
-  buttons.forEach(btn => btn.style.pointerEvents = "none");
 
   if (idx === q.a) {
+    clearInterval(interval);
     b.classList.add("correct");
     let snd = document.getElementById("correctSound");
     if (snd) snd.play().catch(() => {});
-    score++;
-    setTimeout(next, 1200);
+    
+    // Add point if answered on first attempt
+    if (attempts === 0) score++;
+    document.getElementById("score").innerText = `Score: ${score}`;
+
+    buttons.forEach(btn => btn.style.pointerEvents = "none");
+    setTimeout(() => showExplanation(true), 600);
   } else {
+    attempts++;
     b.classList.add("wrong");
-    if (buttons[q.a]) buttons[q.a].classList.add("correct");
+    b.style.pointerEvents = "none";
+    
     let snd = document.getElementById("wrongSound");
     if (snd) snd.play().catch(() => {});
-    setTimeout(next, 1800);
+
+    if (attempts >= 2) {
+      // Failed twice: highlight correct answer and show explanation
+      clearInterval(interval);
+      buttons.forEach(btn => btn.style.pointerEvents = "none");
+      if (buttons[q.a]) buttons[q.a].classList.add("correct");
+      setTimeout(() => showExplanation(false), 800);
+    }
   }
+}
+
+function showExplanation(isCorrect, customTitle) {
+  let q = questions[i];
+  let modal = document.getElementById("explanationModal");
+  let title = document.getElementById("explanationTitle");
+  let text = document.getElementById("explanationText");
+
+  if (customTitle) {
+    title.innerHTML = `⚠️ ${customTitle}`;
+    title.style.color = "#dc2626";
+  } else if (isCorrect) {
+    title.innerHTML = `🎉 Correct! Great Job!`;
+    title.style.color = "#16a34a";
+  } else {
+    title.innerHTML = `❌ Better Luck Next Time!`;
+    title.style.color = "#dc2626";
+  }
+
+  text.innerText = q.exp;
+  modal.style.display = "flex";
+}
+
+function closeExplanation() {
+  document.getElementById("explanationModal").style.display = "none";
+  next();
 }
 
 function next() {
