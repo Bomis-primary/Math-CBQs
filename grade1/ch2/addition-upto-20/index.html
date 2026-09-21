@@ -2,186 +2,258 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Addition Up To 20</title>
 
 <style>
-
 /* =======================
    BASE LAYOUT
 ======================= */
-body{
-  margin:0;
-  font-family:Arial;
-  background:#f4f8ff;
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
 }
 
-.screen{
-  display:none;
-  min-height:100vh;
-  justify-content:center;
-  align-items:center;
-  flex-direction:column;
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', Arial, sans-serif;
+  background: #f4f8ff;
+  color: #1e293b;
+  min-height: 100vh;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 
-.active{
-  display:flex;
+.screen {
+  display: none;
+  width: 100%;
+  min-height: 100vh;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  padding: 16px;
+}
+
+.active {
+  display: flex !important;
 }
 
 /* =======================
    GAME CARD
 ======================= */
-.game-container{
-  width:95%;
-  max-width:950px;
-  background:white;
-  border-radius:24px;
-  box-shadow:0 10px 30px rgba(0,0,0,0.08);
-  padding:20px;
+.game-container {
+  width: 100%;
+  max-width: 800px;
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  padding: 20px 16px;
+  margin: auto;
 }
 
 /* =======================
    STATUS BAR (TOP PILLS)
 ======================= */
-.status{
-  display:flex;
-  justify-content:space-between;
-  gap:10px;
-  flex-wrap:wrap;
-  margin-bottom:18px;
+.status {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+  margin-bottom: 16px;
 }
 
-.status div{
-  background:#e8f3ff;
-  padding:10px 14px;
-  border-radius:14px;
-  font-weight:600;
-  color:#1e4d7a;
-  min-width:120px;
-  text-align:center;
+@media (min-width: 480px) {
+  .status {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.status div {
+  background: #e8f3ff;
+  padding: 10px 8px;
+  border-radius: 12px;
+  font-weight: 700;
+  color: #1e4d7a;
+  font-size: 14px;
+  text-align: center;
 }
 
 /* =======================
    QUESTION HEADER
 ======================= */
-.question-header{
-  background:#fff3e6;
-  border:2px solid #ffa94d;
-  padding:16px;
-  border-radius:16px;
-  font-size:26px;
-  font-weight:700;
-  margin-bottom:12px;
-  display:flex;
-  align-items:center;
-  gap:10px;
+.question-header {
+  background: #fff3e6;
+  border: 2px solid #ffa94d;
+  padding: 12px 16px;
+  border-radius: 14px;
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #c2410c;
 }
 
 /* =======================
    QUESTION TEXT
 ======================= */
-.question{
-  font-size:22px;
-  font-weight:600;
-  color:#222;
-  margin:15px 0;
-  line-height:1.5;
-  border:3px solid #1e88e5;
-  padding:16px;
-  border-radius:16px;
-  background:#f7fbff;
+.question {
+  font-size: 18px;
+  font-weight: 600;
+  color: #1e293b;
+  margin: 12px 0;
+  line-height: 1.5;
+  border: 2px solid #3b82f6;
+  padding: 14px;
+  border-radius: 14px;
+  background: #f0f9ff;
+  word-break: break-word;
 }
 
 /* =======================
-   IMAGE
+   IMAGE & FALLBACK
 ======================= */
-img{
-  max-width:300px;
-  margin:10px auto;
-  display:block;
+.img-wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 12px 0;
+}
+
+img.question-img {
+  max-width: 100%;
+  max-height: 220px;
+  object-fit: contain;
+  border-radius: 12px;
+}
+
+.image-fallback-badge {
+  background: #e2e8f0;
+  color: #475569;
+  padding: 12px 20px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  border: 2px dashed #94a3b8;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
 }
 
 /* =======================
-   OPTIONS GRID (2 x 2)
+   OPTIONS GRID
 ======================= */
-.options{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:16px;
-  margin-top:20px;
+.options {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 16px;
 }
 
-.option-btn{
-  border:2px solid #1e4d7a;
-  background:white;
-  border-radius:14px;
-  padding:18px;
-  font-size:18px;
-  font-weight:600;
-  cursor:pointer;
-  transition:0.2s;
+@media (min-width: 550px) {
+  .options {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
 }
 
-.option-btn:hover{
-  background:#eaf4ff;
-  transform:scale(1.02);
+.option-btn {
+  border: 2px solid #cbd5e1;
+  background: white;
+  border-radius: 14px;
+  padding: 14px 16px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #1e293b;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+  min-height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  touch-action: manipulation;
+}
+
+.option-btn:active {
+  transform: scale(0.98);
 }
 
 /* =======================
    FEEDBACK STATES
 ======================= */
-.correct{
-  background:#2ecc71 !important;
-  color:white !important;
-  border:none;
+.correct {
+  background: #22c55e !important;
+  color: white !important;
+  border-color: #16a34a !important;
 }
 
-.wrong{
-  background:#e74c3c !important;
-  color:white !important;
-  border:none;
+.wrong {
+  background: #ef4444 !important;
+  color: white !important;
+  border-color: #dc2626 !important;
 }
 
 /* =======================
-   BUTTON
+   BUTTONS
 ======================= */
-button{
-  padding:14px 24px;
-  font-size:18px;
-  border:none;
-  border-radius:12px;
-  background:#0077e6;
-  color:white;
-  cursor:pointer;
-  margin-top:10px;
+button.primary-btn {
+  padding: 14px 28px;
+  font-size: 18px;
+  font-weight: 700;
+  border: none;
+  border-radius: 14px;
+  background: #2563eb;
+  color: white;
+  cursor: pointer;
+  margin-top: 16px;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+  touch-action: manipulation;
 }
 
+button.primary-btn:active {
+  transform: scale(0.97);
+}
+
+.logo-fallback {
+  width: 100px;
+  height: 100px;
+  background: #2563eb;
+  color: white;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 48px;
+  font-weight: 800;
+}
 </style>
 </head>
 
 <body>
 
-<!-- =======================
-     LOGO SCREEN
-======================= -->
+<!-- LOGO SCREEN -->
 <div id="logoScreen" class="screen active">
-  <img src="assets/logo.png" width="180">
+  <img src="assets/logo.png" style="max-width: 180px;" onerror="this.style.display='none'; document.getElementById('logoFallback').style.display='flex';">
+  <div id="logoFallback" class="logo-fallback" style="display:none;">➕</div>
 </div>
 
-<!-- =======================
-     INSTRUCTIONS
-======================= -->
+<!-- INSTRUCTIONS -->
 <div id="instructionScreen" class="screen">
-  <h2>Addition Up To 20</h2>
-  <p>Read each question carefully and choose the correct answer.</p>
-  <button onclick="startGame()">Start</button>
+  <div class="game-container" style="text-align: center;">
+    <h2 style="font-size: 26px; color: #1e3a8a; margin-bottom: 10px;">Addition Up To 20</h2>
+    <p style="font-size: 16px; color: #475569; margin-bottom: 20px; line-height: 1.5;">
+      Read each question carefully and choose the correct answer.
+    </p>
+    <button class="primary-btn" onclick="startGame()">Start Game</button>
+  </div>
 </div>
 
-<!-- =======================
-     GAME SCREEN
-======================= -->
+<!-- GAME SCREEN -->
 <div id="gameScreen" class="screen">
-
   <div class="game-container">
 
     <!-- STATUS BAR -->
@@ -200,8 +272,10 @@ button{
     <!-- QUESTION -->
     <div id="question" class="question"></div>
 
-    <!-- IMAGE -->
-    <img id="img" style="display:none;">
+    <!-- IMAGE WRAPPER -->
+    <div class="img-wrapper" id="imgContainer" style="display:none;">
+      <img id="img" class="question-img" alt="Question visual">
+    </div>
 
     <!-- OPTIONS -->
     <div class="options" id="options"></div>
@@ -209,200 +283,209 @@ button{
   </div>
 </div>
 
-<!-- =======================
-     SCORE SCREEN
-======================= -->
+<!-- SCORE SCREEN -->
 <div id="scoreScreen" class="screen">
-  <h1>Great Job!</h1>
-  <h2 id="finalScore"></h2>
-  <button onclick="restart()">Play Again</button>
+  <div class="game-container" style="text-align: center;">
+    <h1 style="font-size: 32px; color: #1e3a8a;">Great Job! 🎉</h1>
+    <h2 id="finalScore" style="font-size: 24px; color: #0284c7; margin: 20px 0;"></h2>
+    <button class="primary-btn" onclick="restart()">Play Again</button>
+  </div>
 </div>
 
-<audio id="correctSound" src="assets/claps.mp3"></audio>
-<audio id="wrongSound" src="assets/wrong.mp3"></audio>
+<audio id="correctSound" src="assets/claps.mp3" preload="auto"></audio>
+<audio id="wrongSound" src="assets/wrong.mp3" preload="auto"></audio>
 
 <script>
-
-/* =======================
-   CBQ QUESTIONS (UNCHANGED)
-======================= */
 const questions = [
   {
-    q:"Rohan has 8 pencils. His teacher gives him 1 more pencil. Rohan says he now has 10 pencils. Is he correct?",
-    options:["No, he has 9 pencils.","No, he has 12 pencils","No, he has 13 pencils","Yes, he has 10 pencils"],
-    a:0
+    q: "Rohan has 8 pencils. His teacher gives him 1 more pencil. Rohan says he now has 10 pencils. Is he correct?",
+    options: ["No, he has 9 pencils.", "No, he has 12 pencils", "No, he has 13 pencils", "Yes, he has 10 pencils"],
+    a: 0
   },
   {
-    q:"A teacher has 10 sticks in one box and 8 sticks in another box. There are 18 students. Does she have enough sticks?",
-    options:["Yes, she has enough","No, she has 1 stick less","No, she has 2 sticks less","Yes, she has more than needed"],
-    a:0
+    q: "A teacher has 10 sticks in one box and 8 sticks in another box. There are 18 students. Does she have enough sticks?",
+    options: ["Yes, she has enough", "No, she has 1 stick less", "No, she has 2 sticks less", "Yes, she has more than needed"],
+    a: 0
   },
   {
-    q:"Juhi uses 5 white shells and the same number of yellow shells to make a necklace. How many shells did she use?",
-    options:["7","8","9","10"],
-    a:3,
-    img:"assets/shells.png"
+    q: "Juhi uses 5 white shells and the same number of yellow shells to make a necklace. How many shells did she use?",
+    options: ["7", "8", "9", "10"],
+    a: 3,
+    img: "assets/shells.png",
+    altFallback: "🐚 Shells Visual"
   },
   {
-    q:"A frog is on number 7 on a number line. How many jumps forward are needed to land on 10?",
-    options:["3","4","1","2"],
-    a:0,
-    img:"assets/frog.png"
+    q: "A frog is on number 7 on a number line. How many jumps forward are needed to land on 10?",
+    options: ["3", "4", "1", "2"],
+    a: 0,
+    img: "assets/frog.png",
+    altFallback: "🐸 Frog on Number Line"
   },
   {
-    q:"There is a 1-digit number more than 4 but less than 6. Sonam says the number is 6. Is she correct?",
-    options:["Yes, 6 fits the rule","No, the number is 5","No, the number is 4","Yes, the number can be 6 or 5"],
-    a:1
+    q: "There is a 1-digit number more than 4 but less than 6. Sonam says the number is 6. Is she correct?",
+    options: ["Yes, 6 fits the rule", "No, the number is 5", "No, the number is 4", "Yes, the number can be 6 or 5"],
+    a: 1
   },
   {
-    q:"Maya adds 12 + 3 and writes the answer as 14. What mistake did she make?",
-    options:["She added 3 tens instead of 3 ones","She counted one less in the ones place","She subtracted instead of adding","The answer is correct"],
-    a:1
+    q: "Maya adds 12 + 3 and writes the answer as 14. What mistake did she make?",
+    options: ["She added 3 tens instead of 3 ones", "She counted one less in the ones place", "She subtracted instead of adding", "The answer is correct"],
+    a: 1
   },
   {
-    q:"Who brought the same number of pebbles?",
-    options:["Noor and Vinu","Vinu and Sid","Sid and Romi","Romi and Noor"],
-    a:1,
-    img:"assets/pebbles.png"
+    q: "Who brought the same number of pebbles?",
+    options: ["Noor and Vinu", "Vinu and Sid", "Sid and Romi", "Romi and Noor"],
+    a: 1,
+    img: "assets/pebbles.png",
+    altFallback: "🪨 Pebbles Visual"
   },
   {
-    q:"Team A scored 5 + 5 points. Team B scored 4 + 6 points. Which statement is true?",
-    options:["Team A scored more","Team B scored more","Both teams scored equal points","Team A scored 1 more point"],
-    a:2
+    q: "Team A scored 5 + 5 points. Team B scored 4 + 6 points. Which statement is true?",
+    options: ["Team A scored more", "Team B scored more", "Both teams scored equal points", "Team A scored 1 more point"],
+    a: 2
   },
   {
-    q:"Which sum does NOT equal 15?",
-    options:["10 + 5","12 + 3","14 + 1","10 + 2"],
-    a:3
+    q: "Which sum does NOT equal 15?",
+    options: ["10 + 5", "12 + 3", "14 + 1", "10 + 2"],
+    a: 3
   },
   {
-    q:"12 children are already on the bus. 7 more children get in. The bus can carry 20 children. Is the driver correct that everyone gets a seat?",
-    options:["Yes, because 12 + 7 = 19","Yes, because the bus can carry 12 children","No, because 7 children are too many","No, because 12 + 7 = 21"],
-    a:0
+    q: "12 children are already on the bus. 7 more children get in. The bus can carry 20 children. Is the driver correct that everyone gets a seat?",
+    options: ["Yes, because 12 + 7 = 19", "Yes, because the bus can carry 12 children", "No, because 7 children are too many", "No, because 12 + 7 = 21"],
+    a: 0
   },
   {
-    q:"Ali has 11 balloons. His sister gives him 5 more and he finds 3 more. Does he have enough balloons to make 20?",
-    options:["Yes, exactly 20","No, he has 19 balloons","No, he has 16 balloons","Yes, he has more than 20"],
-    a:1
+    q: "Ali has 11 balloons. His sister gives him 5 more and he finds 3 more. Does he have enough balloons to make 20?",
+    options: ["Yes, exactly 20", "No, he has 19 balloons", "No, he has 16 balloons", "Yes, he has more than 20"],
+    a: 1
   },
   {
-    q:"Ronak and Risha are putting laddoos in baskets to make groups of 10. Which group is the odd one out?",
-    options:["7 laddoos + 3 laddoos","6 laddoos + 4 laddoos","8 laddoos + 2 laddoos","5 laddoos + 3 laddoos"],
-    a:3
+    q: "Ronak and Risha are putting laddoos in baskets to make groups of 10. Which group is the odd one out?",
+    options: ["7 laddoos + 3 laddoos", "6 laddoos + 4 laddoos", "8 laddoos + 2 laddoos", "5 laddoos + 3 laddoos"],
+    a: 3
   }
 ];
 
-let i=0;
-let score=0;
-let timer=60;
+let i = 0;
+let score = 0;
+let timer = 60;
 let interval;
+let canAnswer = true;
 
-/* =======================
-   START FLOW
-======================= */
-setTimeout(()=>{
+setTimeout(() => {
   document.getElementById("logoScreen").classList.remove("active");
   document.getElementById("instructionScreen").classList.add("active");
-},5000);
+}, 3000);
 
-function startGame(){
+function startGame() {
   document.getElementById("instructionScreen").classList.remove("active");
   document.getElementById("gameScreen").classList.add("active");
   loadQ();
 }
 
-/* =======================
-   LOAD QUESTION
-======================= */
-function loadQ(){
-
+function loadQ() {
   clearInterval(interval);
-  timer=60;
+  timer = 60;
+  canAnswer = true;
 
-  let q=questions[i];
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 
-  document.getElementById("flow").innerText=`Flow: ${i+1}/12`;
-  document.getElementById("score").innerText=`Score: ${score}`;
+  let q = questions[i];
 
-  document.getElementById("question").innerText=q.q;
+  document.getElementById("flow").innerText = `Flow: ${i + 1}/${questions.length}`;
+  document.getElementById("score").innerText = `Score: ${score}`;
+  document.getElementById("timer").innerText = `Time: ${timer}s`;
+  document.getElementById("question").innerText = q.q;
 
-  let img=document.getElementById("img");
-  if(q.img){
-    img.src=q.img;
-    img.style.display="block";
-  }else img.style.display="none";
+  let imgContainer = document.getElementById("imgContainer");
+  let img = document.getElementById("img");
 
-  let opt=document.getElementById("options");
-  opt.innerHTML="";
+  if (q.img) {
+    imgContainer.style.display = "flex";
+    imgContainer.innerHTML = `<img id="img" class="question-img" src="${q.img}" alt="Question Image" onerror="handleImageError(this, '${q.altFallback || '🖼️ Visual Question'}')">`;
+  } else {
+    imgContainer.style.display = "none";
+    imgContainer.innerHTML = '';
+  }
 
-  q.options.forEach((o,idx)=>{
-    let b=document.createElement("button");
-    b.className="option-btn";
-    b.innerText=o;
-    b.onclick=()=>check(idx,b);
+  let opt = document.getElementById("options");
+  opt.innerHTML = "";
+
+  q.options.forEach((o, idx) => {
+    let b = document.createElement("button");
+    b.className = "option-btn";
+    b.innerText = o;
+    b.onclick = () => check(idx, b);
     opt.appendChild(b);
   });
 
   startTimer();
 }
 
-/* =======================
-   TIMER
-======================= */
-function startTimer(){
-  interval=setInterval(()=>{
-    timer--;
-    document.getElementById("timer").innerText=`Time: ${timer}s`;
-
-    if(timer<=0){
-      next();
-    }
-  },1000);
-}
-
-/* =======================
-   CHECK ANSWER
-======================= */
-function check(idx,b){
-  let q=questions[i];
-  let buttons=document.querySelectorAll(".option-btn");
-
-  if(idx===q.a){
-    b.classList.add("correct");
-    document.getElementById("correctSound").play();
-    score++;
-    setTimeout(next,800);
-  }else{
-    b.classList.add("wrong");
-    document.getElementById("wrongSound").play();
+function handleImageError(imgElement, fallbackText) {
+  const parent = imgElement.parentElement;
+  if (parent) {
+    parent.innerHTML = `<div class="image-fallback-badge">📌 ${fallbackText}</div>`;
   }
 }
 
-/* =======================
-   NEXT QUESTION
-======================= */
-function next(){
-  i++;
-  if(i<questions.length) loadQ();
-  else end();
+function startTimer() {
+  interval = setInterval(() => {
+    timer--;
+    document.getElementById("timer").innerText = `Time: ${timer}s`;
+
+    if (timer <= 0) {
+      clearInterval(interval);
+      next();
+    }
+  }, 1000);
 }
 
-/* =======================
-   END SCREEN
-======================= */
-function end(){
+function check(idx, b) {
+  if (!canAnswer) return;
+  canAnswer = false;
+  clearInterval(interval);
+
+  let q = questions[i];
+  let buttons = document.querySelectorAll(".option-btn");
+  buttons.forEach(btn => btn.style.pointerEvents = "none");
+
+  if (idx === q.a) {
+    b.classList.add("correct");
+    let snd = document.getElementById("correctSound");
+    if (snd) snd.play().catch(() => {});
+    score++;
+    setTimeout(next, 1200);
+  } else {
+    b.classList.add("wrong");
+    if (buttons[q.a]) buttons[q.a].classList.add("correct");
+    let snd = document.getElementById("wrongSound");
+    if (snd) snd.play().catch(() => {});
+    setTimeout(next, 1800);
+  }
+}
+
+function next() {
+  i++;
+  if (i < questions.length) {
+    loadQ();
+  } else {
+    end();
+  }
+}
+
+function end() {
   document.getElementById("gameScreen").classList.remove("active");
   document.getElementById("scoreScreen").classList.add("active");
-  document.getElementById("finalScore").innerText=`Score: ${score}/${questions.length}`;
+  document.getElementById("finalScore").innerText = `Score: ${score} / ${questions.length}`;
 }
 
-/* =======================
-   RESTART
-======================= */
-function restart(){
-  location.reload();
+function restart() {
+  i = 0;
+  score = 0;
+  document.getElementById("scoreScreen").classList.remove("active");
+  document.getElementById("gameScreen").classList.add("active");
+  loadQ();
 }
-
 </script>
 
 </body>
