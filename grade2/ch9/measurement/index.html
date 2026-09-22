@@ -43,7 +43,9 @@
             box-shadow: 0 10px 25px rgba(0,0,0,0.1);
             overflow: hidden;
             position: relative;
-            min-height: 480px;
+            min-height: 520px;
+            display: flex;
+            flex-direction: column;
         }
 
         /* 5-second Splash Overlay Frame (Logo only) */
@@ -74,11 +76,13 @@
         .screen {
             display: none;
             padding: 24px;
+            height: 100%;
+            flex-direction: column;
+            justify-content: space-between;
         }
 
         .screen.active {
             display: flex;
-            flex-direction: column;
         }
 
         /* Top HUD Panel */
@@ -96,27 +100,28 @@
             padding: 10px;
             border-radius: 12px;
             font-size: 0.95rem;
+            color: var(--primary);
         }
 
         /* Question View Element */
         .question {
-            font-size: 1.15rem;
+            font-size: 1.1rem;
             font-weight: bold;
-            margin-bottom: 20px;
+            margin-bottom: 16px;
             color: var(--text-main);
             line-height: 1.4;
         }
 
-        /* Options Interactive Interface (Single Column Optimization) */
+        /* Options Interactive Interface */
         .options {
             display: grid;
             grid-template-columns: 1fr;
-            gap: 12px;
-            margin-bottom: 20px;
+            gap: 10px;
+            margin-bottom: 16px;
         }
 
         .btn {
-            padding: 14px 16px;
+            padding: 12px 16px;
             border-radius: 12px;
             border: 2px solid var(--primary);
             background: var(--card-bg);
@@ -127,7 +132,7 @@
             transition: all 0.2s ease;
             color: var(--text-main);
             width: 100%;
-            min-height: 56px;
+            min-height: 50px;
         }
 
         .btn:hover:not(:disabled) {
@@ -136,7 +141,7 @@
 
         .btn:disabled {
             cursor: not-allowed;
-            opacity: 0.75;
+            opacity: 0.8;
         }
 
         .btn.correct {
@@ -152,10 +157,33 @@
             color: #7f1d1d !important;
         }
 
+        /* Feedback Cards (Hint & Explanation) */
+        .feedback-box {
+            padding: 12px 14px;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            margin-bottom: 16px;
+            display: none;
+            line-height: 1.4;
+        }
+
+        .feedback-box.hint {
+            background-color: #fefce8;
+            border-left: 4px solid #eab308;
+            color: #854d0e;
+        }
+
+        .feedback-box.explanation {
+            background-color: #f8fafc;
+            border-left: 4px solid #64748b;
+            color: #1e293b;
+        }
+
         /* Control Button Container */
         .action-container {
             display: flex;
             justify-content: flex-end;
+            margin-top: auto;
         }
 
         .next {
@@ -178,8 +206,12 @@
         /* Summary Panel Formatting */
         .result-card {
             text-align: center;
-            padding: 40px 0;
+            padding: 40px 24px;
+            display: flex;
+            flex-direction: column;
             align-items: center;
+            justify-content: center;
+            my-auto;
         }
 
         .score-display {
@@ -190,7 +222,7 @@
         }
 
         .result-msg {
-            font-size: 1.3rem;
+            font-size: 1.2rem;
             font-weight: 700;
             margin-bottom: 30px;
             white-space: pre-line;
@@ -207,7 +239,7 @@
             cursor: pointer;
             transition: background 0.2s;
         }
-        
+
         .restart-btn:hover {
             background: var(--primary-hover);
         }
@@ -218,87 +250,115 @@
     <div class="container">
         <!-- 5-Second Splash Screen with logo only -->
         <div id="splash">
-            <img src="assets/logo.png" alt="Logo" onerror="this.onerror=null; this.src='assets/innovine-logo.png';">
+            <img src="assets/logo.png" alt="Innovine Logo" onerror="this.onerror=null; this.src='assets/innovine-logo.png';">
         </div>
 
+        <!-- Quiz Gameplay Screen -->
         <div id="game" class="screen active">
-            <div class="top">
-                <div class="box">Q: <span id="qno">1</span>/<span id="qtotal">10</span></div>
-                <div class="box">Score: <span id="score">0</span></div>
-                <div class="box">Time: <span id="time">60</span>s</div>
-            </div>
+            <div>
+                <div class="top">
+                    <div class="box">Q: <span id="qno">1</span>/<span id="qtotal">10</span></div>
+                    <div class="box">Score: <span id="score">0</span></div>
+                    <div class="box">Time: <span id="time">60</span>s</div>
+                </div>
 
-            <div class="question" id="question"></div>
-            <div class="options" id="options"></div>
+                <div class="question" id="question"></div>
+                <div class="options" id="options"></div>
+
+                <!-- Hint and Explanation Cards -->
+                <div id="feedbackBox" class="feedback-box"></div>
+            </div>
 
             <div class="action-container">
-                <button class="next" onclick="nextQ()" id="nextBtn">Next</button>
+                <button class="next" onclick="nextQ()" id="nextBtn">Continue ➔</button>
             </div>
         </div>
 
+        <!-- Completion Screen -->
         <div id="result" class="screen result-card">
-            <h2>Chapter Complete!</h2>
+            <h2>Challenge Complete! 🎉</h2>
             <div class="score-display" id="final-score">0%</div>
             <div class="result-msg" id="resultText">Performance Review</div>
-            <button class="restart-btn" onclick="window.location.reload()">Play Again</button>
+            <button class="restart-btn" onclick="window.location.reload()">Play Again 🔄</button>
         </div>
     </div>
 
+    <!-- Audio Elements -->
     <audio id="correct" src="assets/claps.mp3" preload="auto"></audio>
     <audio id="wrong" src="assets/wrong.mp3" preload="auto"></audio>
 
     <script>
-        // HIGH-QUALITY COMPETENCY-BASED QUESTIONS (CBQs) ON MEASUREMENTS
+        // COMPETENCY-BASED QUESTIONS (CBQs) WITH HINTS AND EXPLANATIONS
         const questionsDatabase = [
             { 
                 q: "Ria wants to measure the length of her classroom whiteboard. Which standard tool should she choose for the most accurate result?", 
                 a: ["A short 15 cm plastic scale", "A long measuring tape", "A standard hand span", "A wooden pencil"], 
-                c: 1 
+                c: 1,
+                hint: "Think about which tool can measure a long distance in a single stretch without non-standard estimates.",
+                explanation: "A long measuring tape is a standard tool designed to accurately measure longer distances like whiteboards."
             },
             { 
                 q: "A tailor needs to measure around a customer's chest to stitch a shirt. Which instrument is ideal for this?", 
                 a: ["A flexible cloth measuring tape", "A heavy iron weighing scale", "A rigid metre rod", "A 30 cm desk ruler"], 
-                c: 0 
+                c: 0,
+                hint: "The body has curves, so the measuring tool must easily wrap around standard shapes.",
+                explanation: "A flexible cloth measuring tape easily bends around body curves for precise clothing measurements."
             },
             { 
                 q: "Amit buys a watermelon from the market. Which unit is best suited to express the weight of the watermelon?", 
                 a: ["Grams (g)", "Kilograms (kg)", "Millilitres (ml)", "Centimetres (cm)"], 
-                c: 1 
+                c: 1,
+                hint: "Watermelons are heavy items. Think about standard mass units for heavy produce.",
+                explanation: "Heavy items like watermelons are measured in kilograms (kg), whereas lighter items use grams (g)."
             },
             { 
                 q: "A recipe for making fruit punch requires 2 litres of orange juice and 1 litre of apple juice. What is the total volume of juice in the punch?", 
                 a: ["1 litre", "2 litres", "3 litres", "4 litres"], 
-                c: 2 
+                c: 2,
+                hint: "Add the capacities of both liquids together (2 L + 1 L).",
+                explanation: "Combining 2 litres of orange juice and 1 litre of apple juice gives a total volume of 2 + 1 = 3 litres."
             },
             { 
                 q: "Look at the given objects: A feather, a textbook, a paperclip, and an eraser. Which among these is expected to have the maximum weight?", 
                 a: ["A feather", "A textbook", "A paperclip", "An eraser"], 
-                c: 1 
+                c: 1,
+                hint: "Consider which object takes the most force or effort to lift off a desk.",
+                explanation: "A textbook contains many heavy paper pages, making it much heavier than a feather, paperclip, or eraser."
             },
             { 
                 q: "Sanya has a piece of ribbon that is 45 cm long. She cuts off 15 cm to pack a gift. What length of ribbon is left with her?", 
                 a: ["20 cm", "30 cm", "60 cm", "45 cm"], 
-                c: 1 
+                c: 1,
+                hint: "Subtract the length cut off from the total length (45 cm - 15 cm).",
+                explanation: "Cutting off ribbon means subtraction: 45 cm - 15 cm = 30 cm remaining."
             },
             { 
                 q: "Which of the following containers typically holds the largest amount of liquid?", 
                 a: ["A medicine teaspoon", "A drinking glass", "A water bucket", "An ink dropper"], 
-                c: 2 
+                c: 2,
+                hint: "Compare the sizes of the containers you use for cleaning vs. drinking.",
+                explanation: "A water bucket has a much larger capacity (usually 10-15 litres) than a glass, teaspoon, or dropper."
             },
             { 
                 q: "Deepak weighs two school bags. Bag X weighs 4 kg and Bag Y weighs 7 kg. What is the difference in weight between the two bags?", 
                 a: ["2 kg", "3 kg", "11 kg", "4 kg"], 
-                c: 1 
+                c: 1,
+                hint: "Find the difference by subtracting the smaller weight from the larger weight (7 kg - 4 kg).",
+                explanation: "The difference in weight is calculated by subtracting 4 kg from 7 kg: 7 - 4 = 3 kg."
             },
             { 
                 q: "Assertion (A): Capacity refers to the amount of liquid a container can hold. Reason (R): Liquids are generally measured in units like litres and millilitres. Which option is correct?", 
                 a: ["Both A and R are correct and R explains A", "Both A and R are correct but R does not explain A", "A is correct, R is incorrect", "Both A and R are incorrect"], 
-                c: 0 
+                c: 0,
+                hint: "Check if both statements are true and if measuring liquid amounts relates to capacity.",
+                explanation: "Both statements are true. Litres and millilitres measure liquid volume, which defines a container's capacity."
             },
             { 
                 q: "A jug holds 10 cups of water. If Kabir pours out 4 cups of water to fill glasses, how many cups of water are left in the jug?", 
                 a: ["4 cups", "6 cups", "10 cups", "14 cups"], 
-                c: 1 
+                c: 1,
+                hint: "Subtract the poured amount from the initial total capacity (10 - 4).",
+                explanation: "Starting with 10 cups and removing 4 cups leaves 10 - 4 = 6 cups in the jug."
             }
         ];
 
@@ -307,11 +367,12 @@
 
         // FISHER-YATES UNBIASED ARRAY SHUFFLE UTILITY
         function shuffleArray(array) {
-            for (let idx = array.length - 1; idx > 0; idx--) {
+            const arr = [...array];
+            for (let idx = arr.length - 1; idx > 0; idx--) {
                 const j = Math.floor(Math.random() * (idx + 1));
-                [array[idx], array[j]] = [array[j], array[idx]];
+                [arr[idx], arr[j]] = [arr[j], arr[idx]];
             }
-            return array;
+            return arr;
         }
 
         // DEEP COPY AND BOOTSTRAP AUTOMATION
@@ -326,16 +387,19 @@
                 return {
                     q: item.q,
                     a: shuffledAnswers,
-                    c: dynamicCorrectIdx
+                    c: dynamicCorrectIdx,
+                    hint: item.hint,
+                    explanation: item.explanation
                 };
             });
 
-            shuffleArray(runtimeQuestions);
+            runtimeQuestions = shuffleArray(runtimeQuestions);
             document.getElementById("qtotal").innerText = runtimeQuestions.length;
         }
 
         const appEngine = {
             init() {
+                // Keep splash visible for exactly 5 seconds
                 setTimeout(() => {
                     const splash = document.getElementById("splash");
                     splash.classList.add("fade-out");
@@ -362,6 +426,12 @@
             document.getElementById("qno").innerText = i + 1;
             document.getElementById("question").innerText = q.q;
 
+            // Clear feedback container
+            const feedbackBox = document.getElementById("feedbackBox");
+            feedbackBox.style.display = "none";
+            feedbackBox.className = "feedback-box";
+            feedbackBox.innerHTML = "";
+
             let html = "";
             q.a.forEach((o, idx) => {
                 html += `<button class="btn" onclick="check(this,${idx})">${o}</button>`;
@@ -386,7 +456,7 @@
                     document.getElementById("time").innerText = time;
                 } else {
                     clearInterval(timerInterval);
-                    autoRevealCorrect();
+                    autoRevealCorrect("Time's up! ");
                 }
             }, 1000);
         }
@@ -394,13 +464,23 @@
         function check(btn, ans) {
             if (lock) return;
 
+            const q = runtimeQuestions[i];
+            const feedbackBox = document.getElementById("feedbackBox");
+
             if (ans == currentCorrectIndex) {
                 clearInterval(timerInterval);
                 btn.classList.add("correct");
                 safePlayAudio("correct");
+                
                 score++;
                 document.getElementById("score").innerText = score;
                 lock = true;
+
+                // Show Explanation on correct answer
+                feedbackBox.innerHTML = `<strong>🎉 Excellent!</strong> ${q.explanation}`;
+                feedbackBox.className = "feedback-box explanation";
+                feedbackBox.style.display = "block";
+
                 document.getElementById("nextBtn").style.display = "inline-block";
             } else {
                 attempt++;
@@ -408,16 +488,23 @@
                 btn.disabled = true;
                 safePlayAudio("wrong");
 
-                if (attempt >= 2) {
+                if (attempt === 1) {
+                    // Show hint on first failed attempt
+                    feedbackBox.innerHTML = `💡 <strong>Hint:</strong> ${q.hint}`;
+                    feedbackBox.className = "feedback-box hint";
+                    feedbackBox.style.display = "block";
+                } else if (attempt >= 2) {
                     clearInterval(timerInterval);
-                    autoRevealCorrect();
+                    autoRevealCorrect("Out of attempts! ");
                 }
             }
         }
 
-        function autoRevealCorrect() {
+        function autoRevealCorrect(prefix = "") {
             lock = true;
+            const q = runtimeQuestions[i];
             const buttons = document.querySelectorAll(".options .btn");
+            const feedbackBox = document.getElementById("feedbackBox");
             
             buttons.forEach((btn, idx) => {
                 btn.disabled = true;
@@ -425,6 +512,10 @@
                     btn.classList.add("correct");
                 }
             });
+
+            feedbackBox.innerHTML = `<strong>${prefix}</strong>${q.explanation}`;
+            feedbackBox.className = "feedback-box explanation";
+            feedbackBox.style.display = "block";
             
             document.getElementById("nextBtn").style.display = "inline-block";
         }
@@ -443,9 +534,9 @@
             document.getElementById("final-score").innerText = `${percent}%`;
 
             let msg = "";
-            if (percent >= 75) msg = "Good job 🎉";
-            else if (percent >= 40) msg = "Review this chapter 🙂";
-            else msg = "Let’s practise more 📘";
+            if (percent >= 75) msg = "Great job! You are a Measurement Master! 🎉";
+            else if (percent >= 40) msg = "Good effort! Review this chapter to sharpen your skills. 🙂";
+            else msg = "Let’s practise more! 📘";
 
             document.getElementById("resultText").innerText = `${msg}\nScore: ${score}/${runtimeQuestions.length}`;
         }
@@ -454,8 +545,38 @@
             const audio = document.getElementById(id);
             if (audio) {
                 audio.currentTime = 0;
-                audio.play().catch(() => {});
+                audio.play().catch(() => playSynthFallback(id));
+            } else {
+                playSynthFallback(id);
             }
+        }
+
+        // Web Audio API Synthetic Fallback for guaranteed sound playback
+        function playSynthFallback(type) {
+            try {
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+
+                if (type === "correct") {
+                    osc.frequency.setValueAtTime(523.25, ctx.currentTime);
+                    osc.frequency.setValueAtTime(659.25, ctx.currentTime + 0.1);
+                    gain.gain.setValueAtTime(0.2, ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.3);
+                    osc.start();
+                    osc.stop(ctx.currentTime + 0.3);
+                } else {
+                    osc.type = "sawtooth";
+                    osc.frequency.setValueAtTime(220, ctx.currentTime);
+                    osc.frequency.setValueAtTime(140, ctx.currentTime + 0.15);
+                    gain.gain.setValueAtTime(0.2, ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.3);
+                    osc.start();
+                    osc.stop(ctx.currentTime + 0.3);
+                }
+            } catch (e) {}
         }
 
         window.onload = () => appEngine.init();
