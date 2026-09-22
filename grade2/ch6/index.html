@@ -2,121 +2,248 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Grade 2 Multiplication Challenge</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <style>
+        .feedback-hint {
+            background-color: #eff6ff;
+            border-left: 4px solid #3b82f6;
+            color: #1d4ed8;
+        }
+        .feedback-explanation {
+            background-color: #f8fafc;
+            border-left: 4px solid #64748b;
+            color: #1e293b;
+        }
+        #fx-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 50;
+        }
+    </style>
 </head>
-<body class="bg-indigo-50 flex items-center justify-center min-h-screen">
+<body class="bg-indigo-50 flex items-center justify-center min-h-screen p-4">
 
-    <div class="bg-white shadow-xl rounded-2xl p-8 max-w-lg w-full m-4 border border-indigo-100">
-        
-        <!-- ================= 1. BRANDING SCREEN (Logo only for 5s) ================= -->
-        <div id="screen-logo" class="text-center py-12">
-            <img src="assets/logo.png" alt="Innovine Logo" class="w-32 h-32 object-contain mx-auto" onerror="this.src='https://via.placeholder.com/128?text=Innovine'">
+    <div class="bg-white shadow-xl rounded-2xl p-6 sm:p-8 max-w-lg w-full relative overflow-hidden border border-indigo-100 min-h-[520px] flex flex-col justify-between">
+        <canvas id="fx-canvas"></canvas>
+
+        <!-- ================= 1. BRANDING SCREEN (Logo Splash) ================= -->
+        <div id="screen-logo" class="flex flex-col items-center justify-center my-auto py-12 text-center">
+            <img src="assets/logo.png" alt="Innovine Logo" class="w-36 h-36 object-contain mx-auto" onerror="this.style.display='none'">
+            <h1 class="text-2xl font-bold text-indigo-900 mt-4">Innovine Learning</h1>
         </div>
 
         <!-- ================= 2. INSTRUCTIONS SCREEN ================= -->
-        <div id="screen-instructions" class="hidden text-center py-4">
-            <h1 class="text-2xl font-bold text-indigo-900 mb-3">Multiplication Quest!</h1>
-            <p class="text-gray-600 mb-6 text-sm">Welcome to Grade 2 Multiplication! Read each question carefully, look at the groups or numbers, and pick the best option. Earn points and have fun!</p>
-            <button onclick="startQuiz()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-3 rounded-xl transition duration-200 shadow-md">
-                Start Game 🚀
+        <div id="screen-instructions" class="hidden my-auto text-center py-4">
+            <h1 class="text-2xl font-bold text-indigo-900 mb-3">Multiplication Quest! 🚀</h1>
+            <p class="text-gray-600 mb-6 text-sm sm:text-base leading-relaxed">
+                Welcome to Grade 2 Multiplication! Read each question carefully and choose the correct answer.
+            </p>
+            
+            <div class="bg-indigo-50/70 p-4 rounded-xl text-left text-sm mb-6 border border-indigo-100 space-y-2">
+                <p class="font-semibold text-indigo-900">Game Rules:</p>
+                <ul class="list-disc list-inside text-gray-700 space-y-1">
+                    <li>There are <strong>16 questions</strong> in total.</li>
+                    <li>You have <strong>60 seconds</strong> for each question.</li>
+                    <li>If your 1st attempt is wrong, you'll receive a <strong>helpful hint</strong>!</li>
+                    <li>You get <strong>2 attempts</strong> per question before the full explanation is shown.</li>
+                </ul>
+            </div>
+
+            <button onclick="startQuiz()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3.5 rounded-xl transition duration-200 shadow-md cursor-pointer">
+                Start Challenge 🌟
             </button>
         </div>
 
         <!-- ================= 3. QUIZ GAMEPLAY SCREEN ================= -->
-        <div id="screen-quiz" class="hidden">
-            <!-- Header / Progress -->
-            <div class="flex items-center justify-between mb-6 pb-4 border-b border-gray-100">
-                <h1 class="text-lg font-bold text-indigo-900">Multiplication Quest!</h1>
-                <span id="progress-badge" class="text-xs bg-indigo-100 text-indigo-700 font-semibold px-3 py-1 rounded-full">Question 1 of 10</span>
+        <div id="screen-quiz" class="hidden flex-col h-full justify-between">
+            <div>
+                <!-- Header / HUD -->
+                <div class="flex items-center justify-between mb-4 pb-3 border-b border-gray-100">
+                    <span id="progress-badge" class="text-xs bg-indigo-100 text-indigo-800 font-semibold px-3 py-1.5 rounded-full">Question 1 of 16</span>
+                    <div class="flex items-center gap-2">
+                        <span id="timer-badge" class="text-xs bg-amber-100 text-amber-800 font-bold px-3 py-1.5 rounded-full">⏱️ 60s</span>
+                        <button id="mute-btn" onclick="toggleMute()" class="text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold px-2.5 py-1.5 rounded-lg transition cursor-pointer">🔊 Sound</button>
+                    </div>
+                    <span id="score-badge" class="text-xs bg-emerald-100 text-emerald-800 font-bold px-3 py-1.5 rounded-full">Score: 0</span>
+                </div>
+
+                <!-- Quiz Container -->
+                <div id="quiz-container">
+                    <h2 id="question-text" class="text-base sm:text-lg font-bold text-gray-800 mb-4 leading-snug"></h2>
+                    <div id="options-container" class="space-y-2.5"></div>
+                </div>
+
+                <!-- Feedback Section -->
+                <div id="feedback-section" class="mt-4 p-3.5 rounded-xl text-sm font-medium hidden">
+                    <p id="feedback-text" class="leading-relaxed"></p>
+                </div>
             </div>
 
-            <!-- Quiz Container -->
-            <div id="quiz-container">
-                <h2 id="question-text" class="text-lg font-medium text-gray-800 mb-4"></h2>
-                <div id="options-container" class="space-y-3"></div>
-            </div>
-
-            <!-- Feedback & Next Button -->
-            <div id="feedback-section" class="mt-6 hidden">
-                <p id="feedback-text" class="font-semibold text-center mb-4"></p>
-                <button id="next-btn" onclick="nextQuestion()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2.5 rounded-xl transition duration-200 shadow-md">
-                    Next Question
+            <!-- Next Button -->
+            <div class="mt-6">
+                <button id="next-btn" onclick="nextQuestion()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-xl transition duration-200 shadow-md hidden cursor-pointer">
+                    Continue ➔
                 </button>
             </div>
         </div>
 
         <!-- ================= 4. COMPLETION SCREEN ================= -->
-        <div id="screen-complete" class="hidden text-center py-6">
-            <h2 class="text-2xl font-bold text-indigo-900 mb-2">Quiz Completed! 🌟</h2>
-            <p id="final-score-text" class="text-gray-600 mb-6"></p>
-            <button onclick="restartQuiz()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-medium px-6 py-2.5 rounded-xl shadow-md transition">Play Again</button>
+        <div id="screen-complete" class="hidden my-auto text-center py-6">
+            <h2 class="text-2xl font-bold text-indigo-900 mb-2">Quest Completed! 🎉</h2>
+            <div id="final-score-text" class="text-4xl font-extrabold text-indigo-600 my-4">0%</div>
+            <p id="final-msg" class="text-gray-600 mb-6 font-medium text-sm sm:text-base"></p>
+            <button onclick="restartQuiz()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3.5 rounded-xl shadow-md transition cursor-pointer">
+                Play Again 🔄
+            </button>
         </div>
-
     </div>
 
     <!-- Audio Elements -->
-    <audio id="claps-audio" src="assets/claps.mp3"></audio>
-    <audio id="wrong-audio" src="assets/wrong.mp3"></audio>
+    <audio id="claps-audio" src="assets/claps.mp3" preload="auto"></audio>
+    <audio id="wrong-audio" src="assets/wrong.mp3" preload="auto"></audio>
 
     <script>
-        const quizData = [
+        const quizDatabase = [
+            // Original 10 Questions
             {
                 question: "Rhea plants flowers in 4 rows, with 5 flowers in each row. Which number sentence shows the total?",
                 options: ["4 + 5 = 9", "4 × 5 = 20", "5 + 5 + 5 = 15", "4 + 4 + 4 + 4 = 16"],
-                correct: 1
+                correctText: "4 × 5 = 20",
+                hint: "Think about 4 equal groups of 5 objects each (5 + 5 + 5 + 5).",
+                explanation: "4 rows with 5 flowers each means 4 groups of 5, which is written as 4 × 5 = 20."
             },
             {
                 question: "What is 3 groups of 2 apples written as a multiplication sentence?",
                 options: ["3 + 2 = 5", "3 × 2 = 6", "2 × 2 × 2 = 8", "3 × 3 = 9"],
-                correct: 1
+                correctText: "3 × 2 = 6",
+                hint: "Add 2 apples three times: 2 + 2 + 2.",
+                explanation: "3 groups of 2 apples is written as 3 × 2, which equals 6."
             },
             {
                 question: "Teacher Anu asked her class to solve 7 × 0. What is the correct answer?",
                 options: ["7", "1", "0", "14"],
-                correct: 2
+                correctText: "0",
+                hint: "Remember the Zero Property of Multiplication: Anything multiplied by 0 equals...?",
+                explanation: "Any number multiplied by 0 always equals 0."
             },
             {
                 question: "What is the product of any number and 1? (Example: 9 × 1)",
                 options: ["0", "1", "The number itself (9)", "10"],
-                correct: 2
+                correctText: "The number itself (9)",
+                hint: "1 group of 9 items gives you how many items in total?",
+                explanation: "The Identity Property of Multiplication states that any number multiplied by 1 equals the number itself."
             },
             {
                 question: "If 3 × 5 = 15, what is the value of 5 × 3 according to the order property?",
                 options: ["8", "12", "15", "18"],
-                correct: 2
+                correctText: "15",
+                hint: "The order (commutative) property says changing the order of factors does not change the product.",
+                explanation: "Flipping the numbers in multiplication does not change the answer: 3 × 5 = 15 and 5 × 3 = 15."
             },
             {
                 question: "What is the product of 2 × 6?",
                 options: ["10", "12", "14", "16"],
-                correct: 1
+                correctText: "12",
+                hint: "Double 6, or count by 2s six times: 2, 4, 6, 8, 10...?",
+                explanation: "2 × 6 means 6 + 6, which equals 12."
             },
             {
                 question: "Liam has 4 packs of crayons with 5 crayons in each pack. How many crayons does he have?",
                 options: ["9", "15", "20", "25"],
-                correct: 2
+                correctText: "20",
+                hint: "Count by 5s four times: 5, 10, 15...?",
+                explanation: "4 packs × 5 crayons = 20 crayons total."
             },
             {
                 question: "Count by 10s: What is 3 × 10?",
                 options: ["13", "30", "33", "100"],
-                correct: 1
+                correctText: "30",
+                hint: "Count by 10 three times: 10, 20...?",
+                explanation: "3 × 10 = 10 + 10 + 10 = 30."
             },
             {
                 question: "Which picture represents 5 × 2?",
                 options: ["5 groups of 2 objects", "2 groups of 5 objects", "Both A and B", "5 objects added to 2 objects"],
-                correct: 2
+                correctText: "Both A and B",
+                hint: "Think if 5 groups of 2 (5 × 2) gives the same total as 2 groups of 5 (2 × 5).",
+                explanation: "5 × 2 = 10 and 2 × 5 = 10. Both represent equal groups that result in the total of 10."
             },
             {
                 question: "A box has 4 rows of eggs with 2 eggs in each row. How many eggs are there in total?",
                 options: ["6", "8", "10", "12"],
-                correct: 1
+                correctText: "8",
+                hint: "Multiply the number of rows (4) by eggs per row (2).",
+                explanation: "4 rows × 2 eggs = 8 eggs in total."
+            },
+
+            // 6 New Competency-Based Questions (CBQs)
+            {
+                question: "Maya puts 3 stickers on each of her 4 notebook covers. Which repeated addition sentence matches this situation?",
+                options: ["3 + 3 + 3 + 3 = 12", "4 + 4 + 4 = 12", "3 + 4 = 7", "3 × 3 = 9"],
+                correctText: "3 + 3 + 3 + 3 = 12",
+                hint: "There are 4 covers, and each cover gets 3 stickers. Add 3 four times.",
+                explanation: "4 groups of 3 stickers equals 3 + 3 + 3 + 3 = 12 stickers in total."
+            },
+            {
+                question: "An insect has 6 legs. How many legs do 3 insects have in total?",
+                options: ["9", "12", "18", "24"],
+                correctText: "18",
+                hint: "Multiply the number of insects (3) by the legs per insect (6). Count by 6s: 6, 12...?",
+                explanation: "3 insects × 6 legs each = 18 legs total."
+            },
+            {
+                question: "A farmer packs apples into boxes. Each box holds 10 apples. If he fills 5 boxes, how many apples did he pack?",
+                options: ["15", "50", "55", "105"],
+                correctText: "50",
+                hint: "Count by 10s five times: 10, 20, 30, 40...?",
+                explanation: "5 boxes × 10 apples per box = 50 apples."
+            },
+            {
+                question: "Sam has 2 bicycles. Each bicycle has 2 wheels. Which multiplication expression shows the total number of wheels?",
+                options: ["2 + 2 = 4", "2 × 2 = 4", "2 × 1 = 2", "4 × 2 = 8"],
+                correctText: "2 × 2 = 4",
+                hint: "Look for the multiplication expression (using the × symbol) for 2 groups of 2.",
+                explanation: "2 bicycles with 2 wheels each is written as the multiplication sentence 2 × 2 = 4."
+            },
+            {
+                question: "Tina has 5 gift bags. She puts 0 toys inside each bag. How many toys did Tina give in total?",
+                options: ["5", "1", "0", "10"],
+                correctText: "0",
+                hint: "If every bag is empty (0 toys), how many toys are there overall?",
+                explanation: "5 bags × 0 toys per bag = 0 toys total. Any number multiplied by 0 equals 0."
+            },
+            {
+                question: "A classroom arrangement has 3 rows of desks with 4 desks in each row. How many desks are in the classroom?",
+                options: ["7", "10", "12", "16"],
+                correctText: "12",
+                hint: "Add 4 three times: 4 + 4 + 4.",
+                explanation: "3 rows × 4 desks in each row = 12 desks in total."
             }
         ];
 
+        function shuffleArray(arr) {
+            const array = [...arr];
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        let activeQuestions = [];
         let currentQuestion = 0;
         let score = 0;
-        let answered = false;
+        let attempts = 0;
+        let lock = false;
+        let timer = null;
+        let timeLeft = 60;
+        let isMuted = false;
 
         const screenLogo = document.getElementById("screen-logo");
         const screenInstructions = document.getElementById("screen-instructions");
@@ -128,82 +255,233 @@
         const feedbackSection = document.getElementById("feedback-section");
         const feedbackText = document.getElementById("feedback-text");
         const progressBadge = document.getElementById("progress-badge");
-        const clapsAudio = document.getElementById("claps-audio");
-        const wrongAudio = document.getElementById("wrong-audio");
+        const timerBadge = document.getElementById("timer-badge");
+        const scoreBadge = document.getElementById("score-badge");
+        const nextBtn = document.getElementById("next-btn");
 
-        // 1. Logo Sequence timer (5 seconds)
+        // Logo Screen Transition
         window.onload = () => {
             setTimeout(() => {
                 screenLogo.classList.add("hidden");
                 screenInstructions.classList.remove("hidden");
-            }, 5000);
+            }, 1800);
         };
 
         function startQuiz() {
+            activeQuestions = shuffleArray(quizDatabase);
+            currentQuestion = 0;
+            score = 0;
+            
             screenInstructions.classList.add("hidden");
             screenQuiz.classList.remove("hidden");
+            screenQuiz.classList.add("flex");
             loadQuestion();
         }
 
         function loadQuestion() {
-            answered = false;
+            attempts = 0;
+            lock = false;
+            timeLeft = 60;
+
             feedbackSection.classList.add("hidden");
-            const q = quizData[currentQuestion];
-            questionText.textContent = q.question;
-            progressBadge.textContent = `Question ${currentQuestion + 1} of ${quizData.length}`;
-            
+            feedbackSection.className = "mt-4 p-3.5 rounded-xl text-sm font-medium hidden";
+            nextBtn.classList.add("hidden");
+
+            const qData = activeQuestions[currentQuestion];
+            questionText.textContent = qData.question;
+            progressBadge.textContent = `Question ${currentQuestion + 1} of ${activeQuestions.length}`;
+            scoreBadge.textContent = `Score: ${score}`;
+
+            const shuffledOptions = shuffleArray(qData.options);
             optionsContainer.innerHTML = "";
-            q.options.forEach((option, index) => {
+
+            shuffledOptions.forEach((optionText) => {
                 const btn = document.createElement("button");
-                btn.className = "w-full text-left p-3.5 rounded-xl border border-gray-200 hover:border-indigo-500 hover:bg-indigo-50 text-gray-700 font-medium transition duration-150 cursor-pointer";
-                btn.textContent = option;
-                btn.onclick = () => selectOption(index, btn);
+                btn.className = "option-btn w-full text-left p-3.5 rounded-xl border-2 border-gray-100 hover:border-indigo-400 hover:bg-indigo-50 text-gray-700 font-semibold transition duration-150 cursor-pointer text-sm sm:text-base";
+                btn.textContent = optionText;
+                btn.onclick = () => handleSelectOption(optionText, btn);
                 optionsContainer.appendChild(btn);
             });
+
+            startTimer();
         }
 
-        function selectOption(selectedIndex, selectedBtn) {
-            if (answered) return;
-            answered = true;
+        function startTimer() {
+            clearInterval(timer);
+            timerBadge.textContent = `⏱️ ${timeLeft}s`;
+            
+            timer = setInterval(() => {
+                timeLeft--;
+                timerBadge.textContent = `⏱️ ${timeLeft}s`;
 
-            const q = quizData[currentQuestion];
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    revealSolution(false, "Time's up! ");
+                }
+            }, 1000);
+        }
+
+        function handleSelectOption(selectedText, selectedBtn) {
+            if (lock) return;
+
+            const qData = activeQuestions[currentQuestion];
+            attempts++;
+
+            if (selectedText === qData.correctText) {
+                clearInterval(timer);
+                lock = true;
+                selectedBtn.className = "option-btn w-full text-left p-3.5 rounded-xl border-2 border-emerald-500 bg-emerald-100 text-emerald-900 font-bold transition duration-150 cursor-not-allowed text-sm sm:text-base";
+                
+                playSound("claps");
+                triggerWinEffects();
+
+                if (attempts === 1) score += 10;
+                else score += 5;
+                scoreBadge.textContent = `Score: ${score}`;
+
+                revealSolution(true, "🎉 Excellent! ");
+            } else {
+                selectedBtn.className = "option-btn w-full text-left p-3.5 rounded-xl border-2 border-rose-500 bg-rose-100 text-rose-900 font-bold transition duration-150 cursor-not-allowed opacity-80 text-sm sm:text-base";
+                selectedBtn.disabled = true;
+                playSound("wrong");
+
+                if (attempts === 1) {
+                    feedbackText.innerHTML = `💡 <strong>Hint:</strong> ${qData.hint}`;
+                    feedbackSection.className = "mt-4 p-3.5 rounded-xl text-sm font-medium feedback-hint block";
+                } else {
+                    clearInterval(timer);
+                    revealSolution(false, "Out of attempts! ");
+                }
+            }
+        }
+
+        function revealSolution(isCorrect, prefixText) {
+            lock = true;
+            clearInterval(timer);
+
+            const qData = activeQuestions[currentQuestion];
             const buttons = optionsContainer.getElementsByTagName("button");
 
-            if (selectedIndex === q.correct) {
-                selectedBtn.classList.add("bg-green-100", "border-green-500", "text-green-800");
-                feedbackText.textContent = "🎉 Correct! Great job!";
-                feedbackText.className = "text-green-600 font-bold text-center mb-4 text-lg";
-                score++;
-                clapsAudio.play().catch(() => {});
-            } else {
-                selectedBtn.classList.add("bg-red-100", "border-red-500", "text-red-800");
-                buttons[q.correct].classList.add("bg-green-100", "border-green-500", "text-green-800");
-                feedbackText.textContent = "❌ Oops! Not quite right.";
-                feedbackText.className = "text-red-600 font-bold text-center mb-4 text-lg";
-                wrongAudio.play().catch(() => {});
+            for (let btn of buttons) {
+                btn.disabled = true;
+                if (btn.textContent === qData.correctText) {
+                    btn.className = "option-btn w-full text-left p-3.5 rounded-xl border-2 border-emerald-500 bg-emerald-100 text-emerald-900 font-bold transition duration-150 cursor-not-allowed text-sm sm:text-base";
+                }
             }
 
-            feedbackSection.classList.remove("hidden");
+            feedbackText.innerHTML = `<strong>${prefixText}</strong>${qData.explanation}`;
+            feedbackSection.className = "mt-4 p-3.5 rounded-xl text-sm font-medium feedback-explanation block";
+            nextBtn.classList.remove("hidden");
         }
 
         function nextQuestion() {
             currentQuestion++;
-            if (currentQuestion < quizData.length) {
+            if (currentQuestion < activeQuestions.length) {
                 loadQuestion();
             } else {
+                clearInterval(timer);
                 screenQuiz.classList.add("hidden");
+                screenQuiz.classList.remove("flex");
                 screenComplete.classList.remove("hidden");
-                document.getElementById("final-score-text").textContent = `You scored ${score} out of ${quizData.length}!`;
-                if(score >= 7) clapsAudio.play().catch(() => {});
+
+                const maxPossible = activeQuestions.length * 10;
+                const percentage = Math.round((score / maxPossible) * 100);
+                
+                document.getElementById("final-score-text").textContent = `${percentage}%`;
+
+                let msg = "Keep practicing! You are on your way to becoming a math star.";
+                if (percentage >= 80) msg = "Spectacular job! You are a Multiplication Master! 🏆";
+                else if (percentage >= 50) msg = "Good effort! You have a solid understanding of multiplication.";
+
+                document.getElementById("final-msg").textContent = msg;
             }
         }
 
         function restartQuiz() {
-            currentQuestion = 0;
-            score = 0;
             screenComplete.classList.add("hidden");
-            screenQuiz.classList.remove("hidden");
-            loadQuestion();
+            startQuiz();
+        }
+
+        function toggleMute() {
+            isMuted = !isMuted;
+            document.getElementById("mute-btn").textContent = isMuted ? "🔈 Mute" : "🔊 Sound";
+        }
+
+        function playSound(type) {
+            if (isMuted) return;
+            const audio = document.getElementById(`${type}-audio`);
+            if (audio) {
+                audio.currentTime = 0;
+                audio.play().catch(() => playSynthFallback(type));
+            } else {
+                playSynthFallback(type);
+            }
+        }
+
+        function playSynthFallback(type) {
+            try {
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+
+                if (type === "claps") {
+                    osc.frequency.setValueAtTime(523.25, ctx.currentTime);
+                    osc.frequency.setValueAtTime(659.25, ctx.currentTime + 0.1);
+                    gain.gain.setValueAtTime(0.2, ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.3);
+                    osc.start();
+                    osc.stop(ctx.currentTime + 0.3);
+                } else {
+                    osc.type = "sawtooth";
+                    osc.frequency.setValueAtTime(220, ctx.currentTime);
+                    osc.frequency.setValueAtTime(140, ctx.currentTime + 0.15);
+                    gain.gain.setValueAtTime(0.2, ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.3);
+                    osc.start();
+                    osc.stop(ctx.currentTime + 0.3);
+                }
+            } catch (e) {}
+        }
+
+        function triggerWinEffects() {
+            const canvas = document.getElementById("fx-canvas");
+            const ctx = canvas.getContext("2d");
+            canvas.width = canvas.parentElement.clientWidth;
+            canvas.height = canvas.parentElement.clientHeight;
+
+            let particles = Array.from({ length: 35 }, () => ({
+                x: canvas.width / 2,
+                y: canvas.height / 2,
+                vx: (Math.random() - 0.5) * 8,
+                vy: (Math.random() - 0.5) * 8 - 2,
+                color: `hsl(${Math.random() * 360}, 80%, 60%)`,
+                radius: Math.random() * 4 + 2,
+                alpha: 1
+            }));
+
+            function animate() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                let ongoing = false;
+                particles.forEach(p => {
+                    p.x += p.vx;
+                    p.y += p.vy;
+                    p.vy += 0.12;
+                    p.alpha -= 0.025;
+                    if (p.alpha > 0) {
+                        ongoing = true;
+                        ctx.globalAlpha = p.alpha;
+                        ctx.beginPath();
+                        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                        ctx.fillStyle = p.color;
+                        ctx.fill();
+                    }
+                });
+                if (ongoing) requestAnimationFrame(animate);
+                else ctx.clearRect(0, 0, canvas.width, canvas.height);
+            }
+            animate();
         }
     </script>
 </body>
