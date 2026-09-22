@@ -47,7 +47,7 @@
             border: 4px solid var(--secondary);
         }
 
-        /* 5-Second Splash Screen */
+        /* --- STANDARDIZED SPLASH SCREEN & ASSET LOGO --- */
         #splash-screen {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -60,13 +60,21 @@
             transition: opacity 0.5s ease;
         }
 
-        .logo-placeholder {
-            max-width: 180px;
+        .standard-logo {
+            max-width: 200px;
+            max-height: 120px;
+            width: auto;
             height: auto;
-            margin-bottom: 20px;
+            object-fit: contain;
+            animation: pulse 2s infinite ease-in-out;
         }
 
-        /* Display Engine Screens */
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
         .screen { display: none; }
         .screen.active { display: block; }
 
@@ -85,7 +93,6 @@
             font-size: 1.1rem;
         }
 
-        /* Game HUD Layout */
         .hud {
             display: flex;
             justify-content: space-between;
@@ -99,11 +106,8 @@
             border: 2px dashed var(--primary);
         }
 
-        .timer-box {
-            color: var(--danger);
-        }
+        .timer-box { color: var(--danger); }
 
-        /* Question Box Styling */
         .question-text {
             font-size: 1.2rem;
             font-weight: bold;
@@ -154,7 +158,6 @@
             color: #7f1d1d;
         }
 
-        /* Grade 1 Context Boxes */
         .feedback-box {
             border-radius: 14px;
             padding: 14px;
@@ -177,7 +180,6 @@
             color: #166534;
         }
 
-        /* Next Navigation Action */
         .action-btn {
             display: block;
             width: 100%;
@@ -194,9 +196,7 @@
             box-shadow: 0 4px 10px rgba(219, 39, 119, 0.2);
         }
 
-        .action-btn:hover {
-            background: #be185d;
-        }
+        .action-btn:hover { background: #be185d; }
 
         .score-circle {
             width: 110px;
@@ -229,17 +229,16 @@
 </head>
 <body>
 
-    <canvas id="particle-canvas"></canvas>
-
+    <!-- Standardized Splash Screen with Asset Logo -->
     <div id="splash-screen">
-        <img src="grade-1/subject/chapter-12/assets/logo.png" alt="Innovine Logo" class="logo-placeholder" onerror="this.style.display='none'; document.getElementById('logo-text').style.display='block';">
-        <h2 id="logo-text" style="display:none; color: var(--primary);">Innovine</h2>
+        <img src="grade-1/subject/chapter-12/assets/logo.png" alt="Innovine Logo" class="standard-logo">
     </div>
 
     <audio id="audio-correct" src="grade-1/subject/chapter-12/assets/correct.mp3" preload="auto"></audio>
     <audio id="audio-wrong" src="grade-1/subject/chapter-12/assets/wrong.mp3" preload="auto"></audio>
 
     <div class="container">
+        <canvas id="particle-canvas"></canvas>
         
         <div id="welcome-screen" class="screen active">
             <h1>Fun Data Handling!</h1>
@@ -271,7 +270,6 @@
             <p class="description" id="final-status-msg">Gathering your shiny stars...</p>
             <button class="action-btn" onclick="resetInteractive()">Play Again! 🔄</button>
         </div>
-
     </div>
 
     <script>
@@ -279,12 +277,7 @@
             {
                 type: "Sorting by Type",
                 question: "Look at the animals on the field:\n🐈 Cat, 🐕 Dog, 🐈 Cat, 🐕 Dog, 🐕 Dog\n\nHow many Dogs are there in total when you sort them?",
-                options: [
-                    "2 Dogs",
-                    "3 Dogs",
-                    "5 Dogs",
-                    "4 Dogs"
-                ],
+                options: ["2 Dogs", "3 Dogs", "5 Dogs", "4 Dogs"],
                 answer: 1,
                 hint: "Count only the friendly puppies (🐕) that you see in the list!",
                 explanation: "When we sort the group, we count 2 Cats and 3 Dogs. So there are 3 Dogs!"
@@ -292,12 +285,7 @@
             {
                 type: "Sorting by Color",
                 question: "Tina has a toy basket with these blocks:\n🔴 Red, 🔵 Blue, 🔴 Red, 🔴 Red, 🔵 Blue\n\nHow many Red blocks does Tina have?",
-                options: [
-                    "2 Red blocks",
-                    "3 Red blocks",
-                    "5 Red blocks",
-                    "1 Red block"
-                ],
+                options: ["2 Red blocks", "3 Red blocks", "5 Red blocks", "1 Red block"],
                 answer: 1,
                 hint: "Count only the round red circles (🔴) one by one.",
                 explanation: "Sorting them gives 3 Red blocks and 2 Blue blocks. The answer is 3!"
@@ -305,12 +293,7 @@
             {
                 type: "Sorting by Shape",
                 question: "Look at the stickers on the paper:\n🔺 Triangle, 🟡 Circle, 🔺 Triangle, 🟡 Circle, 🟡 Circle\n\nWhich shape group has MORE items?",
-                options: [
-                    "🔺 Triangle has more",
-                    "🟡 Circle has more",
-                    "Both are exactly the same",
-                    "None have any items"
-                ],
+                options: ["🔺 Triangle has more", "🟡 Circle has more", "Both are exactly the same", "None have any items"],
                 answer: 1,
                 hint: "Count the Triangles, then count the Circles. Which number is bigger?",
                 explanation: "There are 2 Triangles and 3 Circles. Since 3 is bigger than 2, Circle has more!"
@@ -318,12 +301,7 @@
             {
                 type: "Reading a Pictograph",
                 question: "A picture chart shows favorite fruits of kids:\n🍎 Apple: 🍎 🍎 🍎\n🍌 Banana: 🍌 🍌\n\n(Each picture = 1 child)\nHow many children love Apples best?",
-                options: [
-                    "2 children",
-                    "3 children",
-                    "5 children",
-                    "1 child"
-                ],
+                options: ["2 children", "3 children", "5 children", "1 child"],
                 answer: 1,
                 hint: "Point and count the apple pictures (🍎) in that row.",
                 explanation: "There are exactly 3 apple pictures in the row, which means 3 children chose apples."
@@ -331,12 +309,7 @@
             {
                 type: "Comparing Pictograph Rows",
                 question: "Let's read this flower chart:\n🌹 Red Rose: 🌹 🌹 🌹 🌹\n🌻 Sunflower: 🌻 🌻 🌻 🌻 🌻\n\nWhich flower row has FEWER (less) pictures?",
-                options: [
-                    "Red Rose has fewer",
-                    "Sunflower has fewer",
-                    "Both rows are the same",
-                    "There are no flowers"
-                ],
+                options: ["Red Rose has fewer", "Sunflower has fewer", "Both rows are the same", "There are no flowers"],
                 answer: 0,
                 hint: "Fewer means the smaller group. Which row looks shorter?",
                 explanation: "Red Rose has 4 pictures and Sunflower has 5 pictures. 4 is less than 5, so Red Rose has fewer!"
@@ -344,12 +317,7 @@
             {
                 type: "Sorting Big vs Small",
                 question: "A playground has these balls scattered around:\n⚽ Big, 🥎 Small, ⚽ Big, 🥎 Small, 🥎 Small, 🥎 Small\n\nHow many Small balls are there?",
-                options: [
-                    "2 Small balls",
-                    "3 Small balls",
-                    "4 Small balls",
-                    "6 balls"
-                ],
+                options: ["2 Small balls", "3 Small balls", "4 Small balls", "6 balls"],
                 answer: 2,
                 hint: "Count only the tiny green tennis balls (🥎) in the playground.",
                 explanation: "There are 2 Big soccer balls and 4 Small tennis balls. The total number of small balls is 4."
@@ -357,25 +325,15 @@
             {
                 type: "Pictograph Total Math",
                 question: "Look at the pet chart tracking classroom fish tanks:\n🐠 Goldfish: 🐠 🐠\n🦀 Little Crab: 🦀 🦀 🦀\n\nHow many total animals are shown inside this chart?",
-                options: [
-                    "2 animals",
-                    "3 animals",
-                    "5 animals",
-                    "4 animals"
-                ],
+                options: ["2 animals", "3 animals", "5 animals", "4 animals"],
                 answer: 2,
                 hint: "Count all the fish and all the crab pictures together!",
-                explanation: "We add 2 goldfish and 3 crabs together: $2 + 3 = 5$ total animals."
+                explanation: "We add 2 goldfish and 3 crabs together: 2 + 3 = 5 total animals."
             },
             {
                 type: "Sorting Sweet Treats",
                 question: "Rohan sorts his candy wrappers:\n🍬 Candy, 🍦 Ice Cream, 🍬 Candy, 🍬 Candy\n\nWhich item was picked the LEAST (smallest count)?",
-                options: [
-                    "🍬 Candy",
-                    "🍦 Ice Cream",
-                    "Both are equal",
-                    "Donut"
-                ],
+                options: ["🍬 Candy", "🍦 Ice Cream", "Both are equal", "Donut"],
                 answer: 1,
                 hint: "Look for the treat that appears only once in the list.",
                 explanation: "Candy has 3 items and Ice Cream has only 1 item. 1 is the smallest, so Ice Cream is the least."
@@ -383,12 +341,7 @@
             {
                 type: "Understanding Chart Meaning",
                 question: "When we draw a picture chart (pictograph) with smiling faces, what does each happy face symbol usually stand for?",
-                options: [
-                    "A real person or object that we counted",
-                    "A funny storybook page",
-                    "A random color scribble",
-                    "A musical instrument score"
-                ],
+                options: ["A real person or object that we counted", "A funny storybook page", "A random color scribble", "A musical instrument score"],
                 answer: 0,
                 hint: "Think about why we draw fruits or stars on a tracking board.",
                 explanation: "In a pictograph, each picture represents a real thing or amount that we counted during our sorting game."
@@ -396,25 +349,15 @@
             {
                 type: "Assertion & Reason Logic",
                 question: "Assertion: If we sort 3 green cars and 2 blue cars, we have 5 cars altogether.\nReason: Sorting separates things into groups, but the total number stays the same.",
-                options: [
-                    "Both statements are true and make perfect sense together!",
-                    "The first part is true, but the reason makes no sense.",
-                    "The first part is wrong.",
-                    "Both parts are completely wrong."
-                ],
+                options: ["Both statements are true and make perfect sense together!", "The first part is true, but the reason makes no sense.", "The first part is wrong.", "Both parts are completely wrong."],
                 answer: 0,
                 hint: "Does grouping items change how many objects you started with?",
-                explanation: "Both parts are correct. Sorting groups things by a common trait like color, but the absolute total count ($3 + 2 = 5$) remains correct."
+                explanation: "Both parts are correct. Sorting groups things by a common trait like color, but the absolute total count (3 + 2 = 5) remains correct."
             },
             {
                 type: "Multi-Step Case Story (Part 1)",
                 question: "Case Story Part 1: Sam visits a park and writes down the vehicles he sees:\n🚗 Cars: 🚗 🚗 🚗 🚗\n🚲 Bicycles: 🚲 🚲\n\nHow many Cars did Sam see in the park?",
-                options: [
-                    "2 Cars",
-                    "4 Cars",
-                    "6 Cars",
-                    "3 Cars"
-                ],
+                options: ["2 Cars", "4 Cars", "6 Cars", "3 Cars"],
                 answer: 1,
                 hint: "Count the red car pictures (🚗) in the first row of Sam's list.",
                 explanation: "Sam's chart shows exactly 4 car pictures in that row, so he saw 4 cars."
@@ -422,15 +365,10 @@
             {
                 type: "Multi-Step Case Story (Part 2)",
                 question: "Case Story Part 2: Look at Sam's chart from Part 1 again (4 Cars, 2 Bicycles). How many MORE Cars did Sam see than Bicycles?",
-                options: [
-                    "2 more Cars",
-                    "4 more Cars",
-                    "6 more Cars",
-                    "1 more Car"
-                ],
+                options: ["2 more Cars", "4 more Cars", "6 more Cars", "1 more Car"],
                 answer: 0,
                 hint: "Take the 4 cars and subtract the 2 bicycles to find out the difference.",
-                explanation: "To find how many more cars there are, calculate: $4 - 2 = 2$. Sam saw 2 more cars than bicycles."
+                explanation: "To find how many more cars there are, calculate: 4 - 2 = 2. Sam saw 2 more cars than bicycles."
             }
         ];
 
@@ -445,7 +383,7 @@
                 const splash = document.getElementById('splash-screen');
                 splash.style.opacity = '0';
                 setTimeout(() => splash.style.display = 'none', 500);
-            }, 5000); // Strict 5-second brand screen configuration
+            }, 3000);
         });
 
         function startInteractive() {
@@ -486,7 +424,7 @@
             countdownTimer = setInterval(() => {
                 activeSeconds--;
                 document.getElementById('timer-counter').innerText = activeSeconds;
-                if(activeSeconds <= 0) {
+                if (activeSeconds <= 0) {
                     clearInterval(countdownTimer);
                     lockButtonsOnTimeout();
                 }
@@ -554,7 +492,7 @@
 
         function disableAllOptions() {
             const buttons = document.getElementsByClassName('option-btn');
-            for(let btn of buttons) {
+            for (let btn of buttons) {
                 btn.disabled = true;
             }
         }
@@ -604,7 +542,6 @@
             document.getElementById('welcome-screen').classList.add('active');
         }
 
-        // Kid-Friendly Bright Pink Sparkle Engine
         const canvas = document.getElementById('particle-canvas');
         const ctx = canvas.getContext('2d');
         let particles = [];
@@ -614,7 +551,6 @@
             canvas.height = canvas.parentElement.clientHeight;
         }
         window.addEventListener('resize', resizeCanvas);
-        resizeCanvas();
 
         function triggerSparkles() {
             resizeCanvas();
