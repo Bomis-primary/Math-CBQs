@@ -52,7 +52,6 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100%;
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
             background: white;
@@ -236,7 +235,7 @@
             color: #7f1d1d !important;
         }
 
-        .background-box, .feedback-box {
+        .feedback-box {
             padding: 14px 18px;
             border-radius: 10px;
             margin-bottom: 20px;
@@ -343,7 +342,7 @@
             </div>
 
             <div class="question-image-frame" id="img-frame">
-                <img id="q-img" class="question-image" src="" alt="Context Card">
+                <img id="q-img" class="question-image" src="" alt="Context Card" onerror="document.getElementById('img-frame').style.display='none'">
             </div>
             
             <div class="question-text" id="q-txt">Question Text Placeholder</div>
@@ -369,7 +368,6 @@
     <audio id="snd-wrong" src="assets/wrong.mp3" preload="auto"></audio>
 
     <script>
-        // DATABASE CONTAINING EXCLUSIVELY SUBTRACTION QUESTIONS
         const questionsDatabase = [
             {
                 text: "Four shops are counting their leftover toys. Which shop has the fewest toys left?",
