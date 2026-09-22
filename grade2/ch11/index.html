@@ -43,7 +43,9 @@
             box-shadow: 0 10px 25px rgba(0,0,0,0.1);
             overflow: hidden;
             position: relative;
-            min-height: 480px;
+            min-height: 520px;
+            display: flex;
+            flex-direction: column;
         }
 
         /* 5-second Splash / Logo Screen */
@@ -114,11 +116,13 @@
         .screen {
             display: none;
             padding: 24px;
+            height: 100%;
+            flex-direction: column;
+            justify-content: space-between;
         }
 
         .screen.active {
             display: flex;
-            flex-direction: column;
         }
 
         /* Top HUD Panel */
@@ -136,37 +140,39 @@
             padding: 10px;
             border-radius: 12px;
             font-size: 0.95rem;
+            color: var(--primary);
         }
 
         /* Question View Element */
         .question {
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             font-weight: bold;
-            margin-bottom: 20px;
+            margin-bottom: 16px;
             color: var(--text-main);
+            line-height: 1.4;
         }
 
         /* Options Vertical Grid Stack Layout */
         .options {
             display: grid;
             grid-template-columns: 1fr;
-            gap: 12px;
-            margin-bottom: 20px;
+            gap: 10px;
+            margin-bottom: 16px;
         }
 
         .btn {
-            padding: 14px 16px;
+            padding: 12px 16px;
             border-radius: 12px;
             border: 2px solid var(--primary);
             background: var(--card-bg);
-            font-size: 1rem;
+            font-size: 0.95rem;
             font-weight: 600;
             text-align: left;
             cursor: pointer;
             transition: all 0.2s ease;
             color: var(--text-main);
             width: 100%;
-            min-height: 56px;
+            min-height: 50px;
         }
 
         .btn:hover:not(:disabled) {
@@ -175,7 +181,7 @@
 
         .btn:disabled {
             cursor: not-allowed;
-            opacity: 0.75;
+            opacity: 0.8;
         }
 
         .btn.correct {
@@ -191,10 +197,33 @@
             color: #7f1d1d !important;
         }
 
+        /* Feedback Cards (Hint & Explanation) */
+        .feedback-box {
+            padding: 12px 14px;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            margin-bottom: 16px;
+            display: none;
+            line-height: 1.4;
+        }
+
+        .feedback-box.hint {
+            background-color: #fefce8;
+            border-left: 4px solid #eab308;
+            color: #854d0e;
+        }
+
+        .feedback-box.explanation {
+            background-color: #f8fafc;
+            border-left: 4px solid #64748b;
+            color: #1e293b;
+        }
+
         /* Control Button Container */
         .action-container {
             display: flex;
             justify-content: flex-end;
+            margin-top: auto;
         }
 
         .next {
@@ -217,8 +246,11 @@
         /* Summary Panel Formatting */
         .result-card {
             text-align: center;
-            padding: 40px 0;
+            padding: 40px 24px;
+            display: flex;
+            flex-direction: column;
             align-items: center;
+            justify-content: center;
         }
 
         .score-display {
@@ -229,7 +261,7 @@
         }
 
         .result-msg {
-            font-size: 1.3rem;
+            font-size: 1.2rem;
             font-weight: 700;
             margin-bottom: 30px;
             white-space: pre-line;
@@ -246,7 +278,7 @@
             cursor: pointer;
             transition: background 0.2s;
         }
-        
+
         .restart-btn:hover {
             background: var(--primary-hover);
         }
@@ -257,7 +289,7 @@
     <div class="container">
         <!-- Pure 5-second logo screen -->
         <div id="splash">
-            <img src="assets/logo.png" onerror="this.style.display='none'">
+            <img src="assets/logo.png" alt="Innovine Logo" onerror="this.onerror=null; this.src='assets/innovine-logo.png';">
         </div>
 
         <!-- Title screen appearing after 5 seconds -->
@@ -266,53 +298,169 @@
             <button class="start-btn" onclick="startGame()">Start Quiz</button>
         </div>
 
+        <!-- Quiz Gameplay Screen -->
         <div id="game" class="screen">
-            <div class="top">
-                <div class="box">Q: <span id="qno">1</span>/<span id="qtotal">18</span></div>
-                <div class="box">Score: <span id="score">0</span></div>
-                <div class="box">Time: <span id="time">60</span>s</div>
+            <div>
+                <div class="top">
+                    <div class="box">Q: <span id="qno">1</span>/<span id="qtotal">18</span></div>
+                    <div class="box">Score: <span id="score">0</span></div>
+                    <div class="box">Time: <span id="time">60</span>s</div>
+                </div>
+
+                <div class="question" id="question"></div>
+                <div class="options" id="options"></div>
+
+                <!-- Feedback Container for Hints and Explanations -->
+                <div id="feedbackBox" class="feedback-box"></div>
             </div>
 
-            <div class="question" id="question"></div>
-            <div class="options" id="options"></div>
-
             <div class="action-container">
-                <button class="next" onclick="nextQ()" id="nextBtn">Next</button>
+                <button class="next" onclick="nextQ()" id="nextBtn">Continue ➔</button>
             </div>
         </div>
 
+        <!-- Completion Screen -->
         <div id="result" class="screen result-card">
-            <h2>Chapter Complete!</h2>
+            <h2>Chapter Complete! 🎉</h2>
             <div class="score-display" id="final-score">0%</div>
             <div class="result-msg" id="resultText">Performance Review</div>
-            <button class="restart-btn" onclick="window.location.reload()">Play Again</button>
+            <button class="restart-btn" onclick="window.location.reload()">Play Again 🔄</button>
         </div>
     </div>
 
+    <!-- Audio Elements -->
     <audio id="correct" src="assets/claps.mp3" preload="auto"></audio>
     <audio id="wrong" src="assets/wrong.mp3" preload="auto"></audio>
 
     <script>
-        // MASTER COMPREHENSIVE DATASET
+        // MASTER COMPREHENSIVE DATASET WITH HINTS AND EXPLANATIONS
         const questionsDatabase = [
-            { q: "Fatima holds her ruler straight up. What kind of line does she make?", a: ["Standing line", "Sleeping line", "Slanting line", "Curved line"], c: 0 },
-            { q: "Jasbir holds a stick at a tilt. What kind of line does it show?", a: ["Slanting line", "Standing line", "Sleeping line", "Curved line"], c: 0 },
-            { q: "Raima places her pencil flat on the floor. What type of line is this?", a: ["Sleeping line", "Standing line", "Slanting line", "Curved line"], c: 0 },
-            { q: "What kind of line does the edge of a straight desk represent?", a: ["Straight line", "Curved line", "Zigzag line", "Wavy line"], c: 0 },
-            { q: "Ekta draws lines that are not straight. What are they called?", a: ["Curved lines", "Standing lines", "Sleeping lines", "Slanting lines"], c: 0 },
-            { q: "Can you make the number '3' using only straight matchsticks?", a: ["No, it needs curved lines", "Yes, easily", "Only with standing lines", "Only with slanting lines"], c: 0 },
-            { q: "Which of these letters can be drawn using ONLY straight lines?", a: ["A", "O", "S", "C"], c: 0 },
-            { q: "Which of these numbers is made entirely of straight lines in a digital clock?", a: ["7", "0", "8", "9"], c: 0 },
-            { q: "What type of line is formed by tracing around a round coin?", a: ["Curved line", "Standing line", "Sleeping line", "Slanting line"], c: 0 },
-            { q: "A traffic policeman waves his arm in a circular loop. What line is that?", a: ["Curved line", "Standing line", "Sleeping line", "Slanting line"], c: 0 },
-            { q: "Which letter has BOTH straight lines and curved lines?", a: ["B", "X", "O", "L"], c: 0 },
-            { q: "If you fold a piece of paper flat and unfold it, what does the crease make?", a: ["A straight line", "A curved line", "A circle", "No line"], c: 0 },
-            { q: "What kind of lines are used to draw a complete triangle?", a: ["Straight lines", "Curved lines", "Only sleeping lines", "Only standing lines"], c: 0 },
-            { q: "The letter 'E' consists of which types of straight lines?", a: ["Standing and Sleeping", "Standing and Slanting", "Sleeping and Slanting", "Only Slanting"], c: 0 },
-            { q: "What line is parallel to the ground surface?", a: ["Sleeping line", "Standing line", "Slanting line", "Curved line"], c: 0 },
-            { q: "The hands of a clock at 12:00 show what kind of line layout?", a: ["Standing line", "Sleeping line", "Slanting line", "Curved line"], c: 0 },
-            { q: "Which shape can be drawn using only curved lines?", a: ["Circle", "Square", "Rectangle", "Triangle"], c: 0 },
-            { q: "A lightning bolt pattern is an example of what type of lines?", a: ["Slanting and Zigzag", "Perfect Curved", "Only Sleeping", "Only Standing"], c: 0 }
+            { 
+                q: "Fatima holds her ruler straight up. What kind of line does she make?", 
+                a: ["Standing line", "Sleeping line", "Slanting line", "Curved line"], 
+                c: 0,
+                hint: "Think about how a person stands upright from top to bottom.",
+                explanation: "A vertical line pointing directly up and down is called a standing (vertical) line."
+            },
+            { 
+                q: "Jasbir holds a stick at a tilt. What kind of line does it show?", 
+                a: ["Slanting line", "Standing line", "Sleeping line", "Curved line"], 
+                c: 0,
+                hint: "The line is leaning to one side rather than standing or lying flat.",
+                explanation: "Lines that lean at an angle are called slanting (diagonal) lines."
+            },
+            { 
+                q: "Raima places her pencil flat on the floor. What type of line is this?", 
+                a: ["Sleeping line", "Standing line", "Slanting line", "Curved line"], 
+                c: 0,
+                hint: "Think about how your body lies down flat when you go to sleep.",
+                explanation: "A flat line that goes sideways parallel to the ground is called a sleeping (horizontal) line."
+            },
+            { 
+                q: "What kind of line does the edge of a straight desk represent?", 
+                a: ["Straight line", "Curved line", "Zigzag line", "Wavy line"], 
+                c: 0,
+                hint: "The edge goes directly from one corner to another without bending.",
+                explanation: "Desk edges follow a direct path without any bends, forming a straight line."
+            },
+            { 
+                q: "Ekta draws lines that are not straight. What are they called?", 
+                a: ["Curved lines", "Standing lines", "Sleeping lines", "Slanting lines"], 
+                c: 0,
+                hint: "These lines bend smoothly like the edge of a circle or a wave.",
+                explanation: "Lines that bend continuously without sharp corners are called curved lines."
+            },
+            { 
+                q: "Can you make the number '3' using only straight matchsticks?", 
+                a: ["No, it needs curved lines", "Yes, easily", "Only with standing lines", "Only with slanting lines"], 
+                c: 0,
+                hint: "Matchsticks are completely rigid and straight. Think about the rounded loops in '3'.",
+                explanation: "The standard written number '3' consists of smooth curved arcs, which cannot be formed by unbent straight matchsticks."
+            },
+            { 
+                q: "Which of these letters can be drawn using ONLY straight lines?", 
+                a: ["A", "O", "S", "C"], 
+                c: 0,
+                hint: "Check which letter is made of three straight sticks joined together.",
+                explanation: "The letter 'A' is made of two slanting lines and one sleeping line. 'O', 'S', and 'C' require curved lines."
+            },
+            { 
+                q: "Which of these numbers is made entirely of straight lines in a digital clock?", 
+                a: ["7", "0", "8", "9"], 
+                c: 0,
+                hint: "Digital displays use straight glowing segments to form characters.",
+                explanation: "In a standard digital display, '7' uses a top sleeping line and a standing/slanting line."
+            },
+            { 
+                q: "What type of line is formed by tracing around a round coin?", 
+                a: ["Curved line", "Standing line", "Sleeping line", "Curved line"], 
+                c: 0,
+                hint: "A coin is round, so its border bends all the way around.",
+                explanation: "Tracing the perimeter of a circular coin forms a smooth curved line."
+            },
+            { 
+                q: "A traffic policeman waves his arm in a circular loop. What line is that?", 
+                a: ["Curved line", "Standing line", "Sleeping line", "Slanting line"], 
+                c: 0,
+                hint: "Moving in a loop means changing direction continuously in a arc.",
+                explanation: "Any circular or looping motion follows a curved path."
+            },
+            { 
+                q: "Which letter has BOTH straight lines and curved lines?", 
+                a: ["B", "X", "O", "L"], 
+                c: 0,
+                hint: "Look for a letter with one straight vertical spine and rounded loops on the side.",
+                explanation: "The letter 'B' has one standing straight line on the left and two curved loops on the right."
+            },
+            { 
+                q: "If you fold a piece of paper flat and unfold it, what does the crease make?", 
+                a: ["A straight line", "A curved line", "A circle", "No line"], 
+                c: 0,
+                hint: "A flat paper fold travels directly across from edge to edge.",
+                explanation: "Folding a flat piece of paper creates a sharp, direct crease that forms a straight line."
+            },
+            { 
+                q: "What kind of lines are used to draw a complete triangle?", 
+                a: ["Straight lines", "Curved lines", "Only sleeping lines", "Only standing lines"], 
+                c: 0,
+                hint: "A triangle has 3 sharp corners and 3 straight sides.",
+                explanation: "A triangle is a closed 2D shape bounded by 3 straight line segments."
+            },
+            { 
+                q: "The letter 'E' consists of which types of straight lines?", 
+                a: ["Standing and Sleeping", "Standing and Slanting", "Sleeping and Slanting", "Only Slanting"], 
+                c: 0,
+                hint: "Look at the vertical spine and the 3 horizontal arms of 'E'.",
+                explanation: "The letter 'E' uses 1 vertical (standing) line and 3 horizontal (sleeping) lines."
+            },
+            { 
+                q: "What line is parallel to the ground surface?", 
+                a: ["Sleeping line", "Standing line", "Slanting line", "Curved line"], 
+                c: 0,
+                hint: "Think about the horizon line where the sky meets the earth.",
+                explanation: "Lines that run level with the ground surface are horizontal, or sleeping lines."
+            },
+            { 
+                q: "The hands of a clock at 12:00 show what kind of line layout?", 
+                a: ["Standing line", "Sleeping line", "Slanting line", "Curved line"], 
+                c: 0,
+                hint: "Both hands point directly straight up towards the top of the clock.",
+                explanation: "At 12:00, both hands point straight up, aligning along a standing (vertical) line."
+            },
+            { 
+                q: "Which shape can be drawn using only curved lines?", 
+                a: ["Circle", "Square", "Rectangle", "Triangle"], 
+                c: 0,
+                hint: "This shape has no corners or straight edges.",
+                explanation: "A circle is formed by a single continuous curved line that stays equal distance from the center."
+            },
+            { 
+                q: "A lightning bolt pattern is an example of what type of lines?", 
+                a: ["Slanting and Zigzag", "Perfect Curved", "Only Sleeping", "Only Standing"], 
+                c: 0,
+                hint: "Lightning turns sharply at angles from side to side.",
+                explanation: "Lightning tracks in sharp, angled turns consisting of slanting segments, forming a zigzag pattern."
+            }
         ];
 
         let runtimeQuestions = [];
@@ -320,11 +468,12 @@
 
         // FISHER-YATES RE-ALIGNMENT ENGINE
         function shuffleArray(array) {
-            for (let idx = array.length - 1; idx > 0; idx--) {
+            const arr = [...array];
+            for (let idx = arr.length - 1; idx > 0; idx--) {
                 const j = Math.floor(Math.random() * (idx + 1));
-                [array[idx], array[j]] = [array[j], array[idx]];
+                [arr[idx], arr[j]] = [arr[j], arr[idx]];
             }
-            return array;
+            return arr;
         }
 
         function bootstrapQuizData() {
@@ -338,11 +487,13 @@
                 return {
                     q: item.q,
                     a: shuffledAnswers,
-                    c: dynamicCorrectIdx
+                    c: dynamicCorrectIdx,
+                    hint: item.hint,
+                    explanation: item.explanation
                 };
             });
 
-            shuffleArray(runtimeQuestions);
+            runtimeQuestions = shuffleArray(runtimeQuestions);
             document.getElementById("qtotal").innerText = runtimeQuestions.length;
         }
 
@@ -381,6 +532,12 @@
             document.getElementById("qno").innerText = i + 1;
             document.getElementById("question").innerText = q.q;
 
+            // Reset feedback container
+            const feedbackBox = document.getElementById("feedbackBox");
+            feedbackBox.style.display = "none";
+            feedbackBox.className = "feedback-box";
+            feedbackBox.innerHTML = "";
+
             let html = "";
             q.a.forEach((o, idx) => {
                 html += `<button class="btn" onclick="check(this,${idx})">${o}</button>`;
@@ -405,7 +562,7 @@
                     document.getElementById("time").innerText = time;
                 } else {
                     clearInterval(timerInterval);
-                    autoRevealCorrect();
+                    autoRevealCorrect("Time's up! ");
                 }
             }, 1000);
         }
@@ -413,13 +570,23 @@
         function check(btn, ans) {
             if (lock) return;
 
+            const q = runtimeQuestions[i];
+            const feedbackBox = document.getElementById("feedbackBox");
+
             if (ans == currentCorrectIndex) {
                 clearInterval(timerInterval);
                 btn.classList.add("correct");
                 safePlayAudio("correct");
+                
                 score++;
                 document.getElementById("score").innerText = score;
                 lock = true;
+
+                // Display explanation on correct response
+                feedbackBox.innerHTML = `<strong>🎉 Correct!</strong> ${q.explanation}`;
+                feedbackBox.className = "feedback-box explanation";
+                feedbackBox.style.display = "block";
+
                 document.getElementById("nextBtn").style.display = "inline-block";
             } else {
                 attempt++;
@@ -427,16 +594,23 @@
                 btn.disabled = true;
                 safePlayAudio("wrong");
 
-                if (attempt >= 2) {
+                if (attempt === 1) {
+                    // Display hint on first incorrect attempt
+                    feedbackBox.innerHTML = `💡 <strong>Hint:</strong> ${q.hint}`;
+                    feedbackBox.className = "feedback-box hint";
+                    feedbackBox.style.display = "block";
+                } else if (attempt >= 2) {
                     clearInterval(timerInterval);
-                    autoRevealCorrect();
+                    autoRevealCorrect("Out of attempts! ");
                 }
             }
         }
 
-        function autoRevealCorrect() {
+        function autoRevealCorrect(prefix = "") {
             lock = true;
+            const q = runtimeQuestions[i];
             const buttons = document.querySelectorAll(".options .btn");
+            const feedbackBox = document.getElementById("feedbackBox");
             
             buttons.forEach((btn, idx) => {
                 btn.disabled = true;
@@ -444,6 +618,10 @@
                     btn.classList.add("correct");
                 }
             });
+
+            feedbackBox.innerHTML = `<strong>${prefix}</strong>${q.explanation}`;
+            feedbackBox.className = "feedback-box explanation";
+            feedbackBox.style.display = "block";
             
             document.getElementById("nextBtn").style.display = "inline-block";
         }
@@ -462,7 +640,7 @@
             document.getElementById("final-score").innerText = `${percent}%`;
 
             let msg = "";
-            if (percent >= 75) msg = "Good job 🎉";
+            if (percent >= 75) msg = "Great job! 🎉";
             else if (percent >= 40) msg = "Review this chapter 🙂";
             else msg = "Let’s practise more 📘";
 
@@ -473,8 +651,38 @@
             const audio = document.getElementById(id);
             if (audio) {
                 audio.currentTime = 0;
-                audio.play().catch(() => {});
+                audio.play().catch(() => playSynthFallback(id));
+            } else {
+                playSynthFallback(id);
             }
+        }
+
+        // Web Audio API Synthetic Fallback for guaranteed sound feedback
+        function playSynthFallback(type) {
+            try {
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+
+                if (type === "correct") {
+                    osc.frequency.setValueAtTime(523.25, ctx.currentTime);
+                    osc.frequency.setValueAtTime(659.25, ctx.currentTime + 0.1);
+                    gain.gain.setValueAtTime(0.2, ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.3);
+                    osc.start();
+                    osc.stop(ctx.currentTime + 0.3);
+                } else {
+                    osc.type = "sawtooth";
+                    osc.frequency.setValueAtTime(220, ctx.currentTime);
+                    osc.frequency.setValueAtTime(140, ctx.currentTime + 0.15);
+                    gain.gain.setValueAtTime(0.2, ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.3);
+                    osc.start();
+                    osc.stop(ctx.currentTime + 0.3);
+                }
+            } catch (e) {}
         }
 
         window.onload = () => appEngine.init();
