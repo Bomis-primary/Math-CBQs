@@ -261,7 +261,6 @@
     <script>
         const questionBank = [
             {
-                type: "Competency Skill: Critical Tool Selection",
                 question: "Riya wants to measure the perimeter of her classroom's rectangular whiteboard to frame it with colorful tape. Which tool should she pick?",
                 options: [
                     "A short 15-centimeter pencil box ruler",
@@ -274,7 +273,6 @@
                 explanation: "A long measuring tape or meter rod is ideal for measuring larger objects like whiteboards efficiently without repetitive adjustments."
             },
             {
-                type: "Competency Skill: Real-World Estimation",
                 question: "If you lift a full, unopened medium-sized water bottle intended for personal daily sports use, what is its actual capacity usually measured as?",
                 options: [
                     "1 liter",
@@ -287,7 +285,6 @@
                 explanation: "A standard personal sports water bottle typically holds 1 liter of liquid."
             },
             {
-                type: "Competency Skill: Unit Conversion Application",
                 question: "Kabir's toy train track is 2 meters and 50 centimeters long. How can he express this entire length purely in centimeters?",
                 options: [
                     "205 centimeters",
@@ -300,7 +297,6 @@
                 explanation: "Since 1 meter = 100 cm, 2 meters = 200 cm. Adding 200 cm to 50 cm gives 250 centimeters."
             },
             {
-                type: "Competency Skill: Analytical Reasoning",
                 question: "Three children estimate the length of a classroom desk:\n- Tina: 10 meters\n- Sam: 1 meter\n- John: 10 centimeters\nWho made the most reasonable estimation?",
                 options: [
                     "Tina, because desks are very long.",
@@ -313,7 +309,6 @@
                 explanation: "Sam's estimate of 1 meter is the most reasonable. 10 meters is way too long, and 10 centimeters is too short."
             },
             {
-                type: "Competency Skill: Logical Problem Solving",
                 question: "A fruit vendor weighs a bunch of bananas and the scale pointer stops exactly at 1 kg 500 g. How many total grams is that?",
                 options: [
                     "150 grams",
@@ -326,7 +321,6 @@
                 explanation: "1 kg is equal to 1,000 g. Adding the extra 500 g gives 1,500 grams in total."
             },
             {
-                type: "Competency Skill: Comparative Judgment",
                 question: "Which of the following animals or objects has a mass closest to 1 kilogram?",
                 options: [
                     "A tiny newborn house mouse",
@@ -339,7 +333,6 @@
                 explanation: "A standard thick hardcover school textbook generally weighs close to 1 kilogram."
             },
             {
-                type: "Competency Skill: Everyday Contextual Math",
                 question: "A juice carton contains 500 mL of apple juice. Priya drinks 200 mL of it. How much juice is left inside the carton?",
                 options: [
                     "700 milliliters",
@@ -352,7 +345,6 @@
                 explanation: "500 mL minus 200 mL leaves exactly 300 milliliters of juice remaining."
             },
             {
-                type: "Competency Skill: Multi-Step Word Problem",
                 question: "Anu walks 400 meters from her house to the park, and then walks another 600 meters from the park to the grocery store. What is her total distance covered in kilometers?",
                 options: [
                     "1,000 kilometers",
@@ -365,7 +357,6 @@
                 explanation: "400 m + 600 m = 1,000 meters. Since 1,000 meters = 1 kilometer, she traveled 1 km."
             },
             {
-                type: "Competency Skill: Error Analysis",
                 question: "A teacher asks the class to identify the incorrect statement about units of measurement. Which option should the students point out?",
                 options: [
                     "Liquid medicine is measured in milliliters.",
@@ -378,7 +369,6 @@
                 explanation: "Measuring an elephant in grams is incorrect because grams are meant for light objects; heavy animals like elephants use kilograms or tonnes."
             },
             {
-                type: "Competency Skill: Conceptual Application",
                 question: "If you want to bake a cake and the recipe asks for 2 kg of flour, but your kitchen scale only measures in grams, how many grams should you measure out?",
                 options: [
                     "200 grams",
@@ -391,7 +381,6 @@
                 explanation: "Since 1 kg = 1,000 g, 2 kilograms is equal to 2 × 1,000 = 2,000 grams."
             },
             {
-                type: "Competency Skill: Real-World Scenario",
                 question: "A swimming pool contains 5,000 liters of water. If a family uses buckets to drain out 2,000 liters, how many liters of water remain in the pool?",
                 options: [
                     "3,000 liters",
@@ -404,7 +393,6 @@
                 explanation: "5,000 liters minus 2,000 liters leaves 3,000 liters of water in the pool."
             },
             {
-                type: "Competency Skill: Synthesis & Reasoning",
                 question: "Look at the pattern: 1 meter = 100 cm. 2 meters = 200 cm. Following this rule, what would 7 meters and 80 centimeters equal in total centimeters?",
                 options: [
                     "78 centimeters",
@@ -452,7 +440,7 @@
 
             let qData = questionBank[currentIndex];
             document.getElementById('progress-text').innerText = `Question: ${currentIndex + 1}/${questionBank.length}`;
-            document.getElementById('target-question').innerText = `[${qData.type}] ${qData.question}`;
+            document.getElementById('target-question').innerText = qData.question;
             
             const optionsBox = document.getElementById('target-options');
             optionsBox.innerHTML = '';
