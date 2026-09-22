@@ -3,19 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Grade 2 Maths - Number System Upto 500</title>
+    <title>Math Quiz App</title>
     <style>
-        :root {
-            --primary: #4f46e5;
-            --primary-hover: #4338ca;
-            --success: #16a34a;
-            --error: #dc2626;
-            --bg-color: #f8fafc;
-            --card-bg: #ffffff;
-            --text-main: #1e293b;
-            --text-muted: #64748b;
-        }
-
         * {
             box-sizing: border-box;
             margin: 0;
@@ -24,641 +13,496 @@
         }
 
         body {
-            background-color: var(--bg-color);
-            color: var(--text-main);
+            background-color: #f5f7fa;
+            color: #333;
             display: flex;
-            flex-direction: column;
-            align-items: center;
             justify-content: center;
+            align-items: center;
             min-height: 100vh;
-            padding: 16px;
+            padding: 20px;
         }
 
-        .container {
+        .quiz-container {
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
             width: 100%;
-            max-width: 650px;
-            background: var(--card-bg);
-            border-radius: 16px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-            padding: 24px;
-            position: relative;
-            overflow: hidden;
-            min-height: 480px; /* Fixed minimum height to prevent collapsing */
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-
-        /* Splash Screen Fixes */
-        #splash-screen {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: #ffffff;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            z-index: 10;
-            transition: opacity 0.5s ease;
+            max-width: 600px;
             padding: 30px;
-            box-sizing: border-box;
-            text-align: center;
         }
 
-        .logo-wrapper {
-            width: 100%;
-            max-width: 220px;
-            min-height: 80px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 20px;
-        }
-
-        #splash-screen img {
-            max-width: 100%;
-            max-height: 90px;
-            width: auto;
-            height: auto;
-            object-fit: contain;
-            display: block;
-        }
-
-        #splash-screen h2 {
-            font-size: 22px;
-            color: var(--text-main);
-            margin-bottom: 6px;
-        }
-
-        #splash-screen p {
-            color: var(--text-muted);
-            font-size: 15px;
-        }
-
-        /* Header Controls */
-        .app-header {
+        .quiz-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 20px;
-            border-bottom: 1px solid #e2e8f0;
-            padding-bottom: 12px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #eef2f5;
         }
 
-        .progress-indicator {
-            font-size: 14px;
+        .question-count {
             font-weight: 600;
-            color: var(--text-muted);
+            color: #6c757d;
         }
 
-        .timer-badge {
-            background: #e0e7ff;
-            color: var(--primary);
+        .timer {
+            font-weight: 600;
+            color: #e63946;
+            background-color: #ffe6e6;
             padding: 6px 12px;
             border-radius: 20px;
+            font-size: 0.9rem;
+        }
+
+        .question-text {
+            font-size: 1.25rem;
             font-weight: 600;
-            font-size: 14px;
-        }
-
-        .audio-btn {
-            background: none;
-            border: 1px solid #cbd5e1;
-            padding: 6px 10px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 14px;
-        }
-
-        /* Question Layout */
-        .question-image {
-            width: 100%;
-            max-height: 220px;
-            object-fit: contain;
-            border-radius: 12px;
-            margin-bottom: 16px;
-            background: #f1f5f9;
-        }
-
-        .question-box {
-            font-size: 18px;
-            font-weight: 600;
-            margin-bottom: 20px;
+            margin-bottom: 10px;
+            color: #1d3557;
             line-height: 1.4;
         }
 
-        .options-grid {
+        .question-type-notice {
+            font-size: 0.85rem;
+            color: #457b9d;
+            font-weight: 600;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .options-container {
             display: flex;
             flex-direction: column;
             gap: 12px;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
         }
 
         .option-btn {
-            background: #ffffff;
-            border: 2px solid #cbd5e1;
-            padding: 14px 16px;
-            border-radius: 10px;
-            font-size: 16px;
+            background-color: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 14px 18px;
             text-align: left;
+            font-size: 1rem;
             cursor: pointer;
             transition: all 0.2s ease;
-            color: var(--text-main);
+            color: #2b2d42;
         }
 
         .option-btn:hover:not(:disabled) {
-            border-color: var(--primary);
-            background: #f1f5f9;
+            background-color: #e8f4f8;
+            border-color: #a8dadc;
+        }
+
+        .option-btn.selected {
+            background-color: #e1f5fe;
+            border-color: #0288d1;
         }
 
         .option-btn.correct {
-            background: #dcfce7 !important;
-            border-color: var(--success) !important;
-            color: #166534;
+            background-color: #d4edda;
+            border-color: #28a745;
+            color: #155724;
         }
 
         .option-btn.incorrect {
-            background: #fee2e2 !important;
-            border-color: var(--error) !important;
-            color: #991b1b;
+            background-color: #f8d7da;
+            border-color: #dc3545;
+            color: #721c24;
         }
 
-        /* Feedback Area */
-        .feedback-area {
-            min-height: 40px;
-            font-size: 14px;
-            font-weight: 600;
-            margin-bottom: 16px;
+        .option-btn:disabled {
+            cursor: default;
         }
 
-        .footer-nav {
+        .controls {
             display: flex;
-            justify-content: flex-end;
+            justify-content: space-between;
+            align-items: center;
         }
 
-        .action-btn {
-            background: var(--primary);
-            color: white;
+        .btn {
+            padding: 10px 20px;
             border: none;
-            padding: 10px 24px;
-            border-radius: 8px;
-            font-size: 16px;
+            border-radius: 6px;
+            font-size: 0.95rem;
             font-weight: 600;
             cursor: pointer;
-            transition: background 0.2s;
+            transition: background-color 0.2s ease;
         }
 
-        .action-btn:hover {
-            background: var(--primary-hover);
+        .btn-primary {
+            background-color: #457b9d;
+            color: white;
         }
 
-        .action-btn:disabled {
-            background: #94a3b8;
+        .btn-primary:hover {
+            background-color: #1d3557;
+        }
+
+        .btn-secondary {
+            background-color: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background-color: #495057;
+        }
+
+        .btn-submit {
+            background-color: #2a9d8f;
+            color: white;
+            margin-top: 10px;
+            width: 100%;
+        }
+
+        .btn-submit:hover {
+            background-color: #218377;
+        }
+
+        .btn:disabled {
+            background-color: #cccccc;
             cursor: not-allowed;
         }
 
-        /* Results Screen */
-        .result-screen {
-            text-align: center;
+        .hint-container {
+            margin-top: 15px;
+            padding: 12px;
+            background-color: #fff3cd;
+            border-left: 4px solid #ffc107;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            color: #856404;
             display: none;
         }
 
-        .result-screen h2 {
-            font-size: 24px;
-            margin-bottom: 12px;
+        .score-container {
+            text-align: center;
+            padding: 20px 0;
         }
 
-        .score-display {
-            font-size: 48px;
-            font-weight: bold;
-            color: var(--primary);
-            margin-bottom: 16px;
+        .score-title {
+            font-size: 1.8rem;
+            color: #1d3557;
+            margin-bottom: 10px;
         }
 
-        .result-message {
-            font-size: 16px;
-            color: var(--text-muted);
-            margin-bottom: 24px;
+        .score-val {
+            font-size: 3rem;
+            font-weight: 700;
+            color: #2a9d8f;
+            margin-bottom: 20px;
+        }
+
+        .hidden {
+            display: none !important;
         }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <!-- Splash Screen with Guaranteed Logo Sizing & Fallback -->
-        <div id="splash-screen">
-            <div class="logo-wrapper">
-                <img src="assets/logo.png" alt="Innovine Logo" onerror="this.onerror=null; this.src='https://via.placeholder.com/150x50?text=Innovine';">
-            </div>
-            <h2>Grade 2 | Mathematics</h2>
-            <p>Chapter 1: Number System Upto 500</p>
+<div class="quiz-container">
+    <div id="quiz-screen">
+        <div class="quiz-header">
+            <span class="question-count" id="question-count">Question 1 of 10</span>
+            <span class="timer" id="timer">Time: 30s</span>
         </div>
 
-        <!-- Quiz Interface -->
-        <div id="quiz-app" style="display: none;">
-            <div class="app-header">
-                <span class="progress-indicator" id="progress-text">Question 1 of 10</span>
-                <span class="timer-badge" id="timer-text">⏳ 60s</span>
-                <button class="audio-btn" id="audio-toggle" onclick="toggleAudio()">🔊 Sound: ON</button>
-            </div>
+        <div class="question-text" id="question-text">Loading question...</div>
+        <div class="question-type-notice hidden" id="type-notice">Select all that apply</div>
 
-            <div class="question-box" id="question-text">Loading question...</div>
-
-            <div class="options-grid" id="options-container">
-                <!-- Dynamic options injected here -->
-            </div>
-
-            <div class="feedback-area" id="feedback-text"></div>
-
-            <div class="footer-nav">
-                <button class="action-btn" id="next-btn" onclick="handleNext()" disabled>Next Question</button>
-            </div>
+        <div class="options-container" id="options-container">
+            <!-- Dynamic Options -->
         </div>
 
-        <!-- Result Screen -->
-        <div id="result-screen" class="result-screen">
-            <h2>Activity Completed!</h2>
-            <div class="score-display" id="final-score">0/10</div>
-            <div class="result-message" id="result-message-text">Evaluating performance...</div>
-            <button class="action-btn" onclick="restartQuiz()">Try Again</button>
+        <button class="btn btn-submit hidden" id="submit-multi-btn" onclick="submitMultiAnswer()">Submit Selection</button>
+
+        <div class="hint-container" id="hint-container">
+            <strong>Hint:</strong> <span id="hint-text"></span>
+        </div>
+
+        <div class="controls" style="margin-top: 20px;">
+            <button class="btn btn-secondary" id="hint-btn" onclick="toggleHint()">Show Hint</button>
+            <button class="btn btn-primary" id="next-btn" onclick="nextQuestion()" disabled>Next</button>
         </div>
     </div>
 
-    <!-- Audio elements -->
-    <audio id="sound-correct" src="assets/correct.mp3"></audio>
-    <audio id="sound-wrong" src="assets/wrong.mp3"></audio>
+    <div id="score-screen" class="hidden">
+        <div class="score-container">
+            <h2 class="score-title">Quiz Completed!</h2>
+            <p>Your Final Score:</p>
+            <div class="score-val" id="final-score">0 / 10</div>
+            <button class="btn btn-primary" onclick="restartQuiz()">Restart Quiz</button>
+        </div>
+    </div>
+</div>
 
-    <script>
-        const rawQuestions = [
-            {
-                question: "A library has a book with the page number 314. How is this number read in words?",
-                options: [
-                    "Three hundred forty-one",
-                    "Three hundred fourteen",
-                    "Three hundred four",
-                    "Thirteen-fourteen"
-                ],
-                correct: 1,
-                hint: "Remember to read the hundreds place first, followed by the tens and ones digits together."
-            },
-            {
-                question: "Amit represented the number 273 on an abacus as: Hundreds = 2, Tens = 3, Ones = 7. What mistake did he make?",
-                options: [
-                    "He swapped the tens and ones places",
-                    "He wrote the hundreds place incorrectly",
-                    "He added an extra bead to the hundreds",
-                    "No mistake was made"
-                ],
-                correct: 0,
-                hint: "Check the bead counts carefully: tens should be 7 and ones should be 3."
-            },
-            {
-                question: "In the number 478, what is the face value and place value of the digit 4?",
-                options: [
-                    "Face value is 4, Place value is 40",
-                    "Face value is 400, Place value is 4",
-                    "Face value is 4, Place value is 400",
-                    "Face value is 78, Place value is 400"
-                ],
-                correct: 2,
-                hint: "Face value is the digit itself, while place value depends on its position (Hundreds place)."
-            },
-            {
-                question: "Which of the following statements is incorrect regarding numbers just before and after?",
-                options: [
-                    "The number just before 450 is 449",
-                    "The number just after 340 is 341",
-                    "The number just before 231 is 230",
-                    "The number just after 136 is 135"
-                ],
-                correct: 3,
-                hint: "The number *after* 136 should be 137, not 135."
-            },
-            {
-                question: "Assertion: The expanded form of 459 is written as 400 + 50 + 9. Reason: Each digit's place value is added together to form the number.",
-                options: [
-                    "Both are correct and reason explains assertion",
-                    "Both are correct but reason does not explain",
-                    "Assertion is correct, reason is wrong",
-                    "Both are wrong"
-                ],
-                correct: 0,
-                hint: "Expanded form represents a number as the sum of the place values of its digits."
-            },
-            {
-                question: "Riya has 332 beads and Aman has 411 beads. Who has more beads and which comparison symbol is correct?",
-                options: [
-                    "Riya, 332 > 411",
-                    "Aman, 332 < 411",
-                    "Aman, 332 > 411",
-                    "Both have equal beads, 332 = 411"
-                ],
-                correct: 1,
-                hint: "Compare the hundreds place first: 4 is greater than 3, so 411 is greater than 332."
-            },
-            {
-                question: "A teacher asks students to arrange these scores in ascending order: 238, 78, 147, 318, 409. Which sequence is correct?",
-                options: [
-                    "409, 318, 238, 147, 78",
-                    "78, 147, 238, 318, 409",
-                    "78, 238, 147, 318, 409",
-                    "147, 78, 238, 318, 409"
-                ],
-                correct: 1,
-                hint: "Ascending order means arranging numbers from smallest to largest."
-            },
-            {
-                question: "Four students collect cards: Tina (421), Sam (178), John (440), and Maya (325). If they arrange themselves from highest to lowest score, who comes first?",
-                image: "assets/ordering-numbers.png",
-                options: [
-                    "Tina",
-                    "John",
-                    "Maya",
-                    "Sam"
-                ],
-                correct: 1,
-                hint: "Compare the hundreds and tens of 421 and 440 to find the highest score."
-            },
-            {
-                question: "Rahul classified the numbers 431, 246, 183, 354 into even and odd. Which numbers did he misclassify? (Select all that apply)",
-                options: [
-                    "183 is odd",
-                    "246 is odd",
-                    "354 is even",
-                    "431 is odd"
-                ],
-                correct: [1, 3],
-                hint: "Check both 246 (ends in 6, so it's even) and 431 (ends in 1, so it's odd)."
-            },
-            {
-                question: "Look at the skip counting pattern: 5, 10, 15, ___, 25, ___. What are the missing numbers?",
-                options: [
-                    "18 and 28",
-                    "20 and 30",
-                    "20 and 35",
-                    "12 and 22"
-                ],
-                correct: 1,
-                hint: "Count forward by fives: 15 + 5 = 20, and 25 + 5 = 30."
-            }
-        ];
-
-        let questions = [];
-        let currentQuestion = 0;
-        let score = 0;
-        let attempts = 0;
-        let timer;
-        let timeLeft = 60;
-        let soundEnabled = true;
-        let selectedOptions = [];
-
-        function shuffleArray(array) {
-            for (let i = array.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [array[i], array[j]] = [array[j], array[i]];
-            }
-            return array;
+<script>
+    const originalQuestions = [
+        {
+            question: "What is 15 + 27?",
+            options: ["32", "42", "43", "52"],
+            correct: 1,
+            hint: "Break it down: 15 + 20 = 35, then add 7."
+        },
+        {
+            question: "Which of the following are prime numbers?",
+            options: ["4", "7", "11", "15"],
+            correct: [1, 2],
+            hint: "A prime number has only two factors: 1 and itself."
+        },
+        {
+            question: "Solve for x: 3x - 5 = 10",
+            options: ["3", "4", "5", "6"],
+            correct: 2,
+            hint: "Add 5 to both sides, then divide by 3."
+        },
+        {
+            question: "What is the area of a rectangle with length 8 cm and width 5 cm?",
+            options: ["13 cm²", "26 cm²", "40 cm²", "45 cm²"],
+            correct: 2,
+            hint: "Area of a rectangle = length × width."
+        },
+        {
+            question: "Which fraction is equivalent to 1/2?",
+            options: ["2/3", "3/6", "4/10", "5/8"],
+            correct: 1,
+            hint: "Multiply numerator and denominator by the same number."
+        },
+        {
+            question: "What is 20% of 150?",
+            options: ["20", "25", "30", "35"],
+            correct: 2,
+            hint: "Find 10% first by moving the decimal point left once, then double it."
+        },
+        {
+            question: "Which of these geometric shapes have 4 sides?",
+            options: ["Square", "Triangle", "Rectangle", "Pentagon"],
+            correct: [0, 2],
+            hint: "Look for quadrilaterals."
+        },
+        {
+            question: "What is the value of 2³?",
+            options: ["6", "8", "9", "16"],
+            correct: 1,
+            hint: "2³ means 2 × 2 × 2."
+        },
+        {
+            // FIXED: Corrected Rahul's classification statements and key mapping
+            question: "Rahul made errors classifying numbers. Which of his statements are INCORRECT?",
+            options: [
+                "246 is odd",
+                "431 is even",
+                "183 is odd",
+                "354 is even"
+            ],
+            correct: [0, 1],
+            hint: "Check 246 (ends in 6 = even) and 431 (ends in 1 = odd)."
+        },
+        {
+            question: "If a train travels at 60 km/h, how far will it go in 2.5 hours?",
+            options: ["120 km", "140 km", "150 km", "180 km"],
+            correct: 2,
+            hint: "Distance = Speed × Time (60 × 2.5)."
         }
+    ];
 
-        function initQuizData() {
-            let clonedQuestions = JSON.parse(JSON.stringify(rawQuestions));
-            questions = clonedQuestions.map(q => {
-                let originalCorrects = Array.isArray(q.correct) ? q.correct : [q.correct];
-                let correctTexts = originalCorrects.map(idx => q.options[idx]);
-                
-                let shuffledOptions = shuffleArray([...q.options]);
+    let quizData = [];
+    let currentQuestionIndex = 0;
+    let score = 0;
+    let timerInterval = null;
+    let timeLeft = 30;
+    let selectedMultiIndices = [];
+
+    function shuffleArray(array) {
+        return array.map(value => ({ value, sort: Math.random() }))
+                    .sort((a, b) => a.sort - b.sort)
+                    .map(item => item.value);
+    }
+
+    function initQuizData() {
+        quizData = originalQuestions.map(q => {
+            let shuffledOptions = shuffleArray([...q.options]);
+
+            if (Array.isArray(q.correct)) {
+                let correctTexts = q.correct.map(idx => q.options[idx]);
                 let newCorrectIndices = correctTexts.map(text => shuffledOptions.indexOf(text));
+                return { ...q, options: shuffledOptions, correct: newCorrectIndices };
+            } else {
+                let correctText = q.options[q.correct];
+                let newCorrectIndex = shuffledOptions.indexOf(correctText);
+                return { ...q, options: shuffledOptions, correct: newCorrectIndex };
+            }
+        });
+    }
 
-                return {
-                    ...q,
-                    options: shuffledOptions,
-                    correct: Array.isArray(q.correct) ? newCorrectIndices : newCorrectIndices[0]
-                };
-            });
-            questions = shuffleArray(questions);
+    function startTimer() {
+        clearInterval(timerInterval);
+        timeLeft = 30;
+        document.getElementById('timer').innerText = `Time: ${timeLeft}s`;
+
+        timerInterval = setInterval(() => {
+            timeLeft--;
+            document.getElementById('timer').innerText = `Time: ${timeLeft}s`;
+            if (timeLeft <= 0) {
+                clearInterval(timerInterval);
+                handleTimeout();
+            }
+        }, 1000);
+    }
+
+    function loadQuestion() {
+        clearInterval(timerInterval);
+        document.getElementById('hint-container').style.display = 'none';
+        document.getElementById('hint-btn').innerText = 'Show Hint';
+        document.getElementById('next-btn').disabled = true;
+
+        const q = quizData[currentQuestionIndex];
+        document.getElementById('question-count').innerText = `Question ${currentQuestionIndex + 1} of ${quizData.length}`;
+        document.getElementById('question-text').innerText = q.question;
+        document.getElementById('hint-text').innerText = q.hint;
+
+        const optionsContainer = document.getElementById('options-container');
+        optionsContainer.innerHTML = '';
+        selectedMultiIndices = [];
+
+        const isMulti = Array.isArray(q.correct);
+        const typeNotice = document.getElementById('type-notice');
+        const submitBtn = document.getElementById('submit-multi-btn');
+
+        if (isMulti) {
+            typeNotice.classList.remove('hidden');
+            submitBtn.classList.remove('hidden');
+        } else {
+            typeNotice.classList.add('hidden');
+            submitBtn.classList.add('hidden');
         }
 
-        window.addEventListener('DOMContentLoaded', () => {
-            initQuizData();
-            setTimeout(() => {
-                const splash = document.getElementById('splash-screen');
-                splash.style.opacity = '0';
-                setTimeout(() => {
-                    splash.style.display = 'none';
-                    document.getElementById('quiz-app').style.display = 'block';
-                    loadQuestion();
-                }, 500);
-            }, 3500);
+        q.options.forEach((opt, index) => {
+            const btn = document.createElement('button');
+            btn.className = 'option-btn';
+            btn.innerText = opt;
+            btn.onclick = () => isMulti ? toggleMultiOption(index, btn) : handleSingleSelect(index);
+            optionsContainer.appendChild(btn);
         });
 
-        function toggleAudio() {
-            soundEnabled = !soundEnabled;
-            document.getElementById('audio-toggle').innerText = soundEnabled ? "🔊 Sound: ON" : "🔇 Sound: OFF";
-        }
+        startTimer();
+    }
 
-        function playSound(type) {
-            if (!soundEnabled) return;
-            const audio = document.getElementById(type === 'correct' ? 'sound-correct' : 'sound-wrong');
-            if (audio) {
-                audio.currentTime = 0;
-                audio.play().catch(e => console.log("Audio play blocked", e));
-            }
-        }
+    function handleSingleSelect(selectedIndex) {
+        clearInterval(timerInterval);
+        const q = quizData[currentQuestionIndex];
+        const buttons = document.querySelectorAll('.option-btn');
 
-        function startTimer() {
-            clearInterval(timer);
-            timeLeft = 60;
-            document.getElementById('timer-text').innerText = `⏳ ${timeLeft}s`;
-            
-            timer = setInterval(() => {
-                timeLeft--;
-                document.getElementById('timer-text').innerText = `⏳ ${timeLeft}s`;
-                if (timeLeft <= 0) {
-                    clearInterval(timer);
-                    handleTimeout();
-                }
-            }, 1000);
-        }
-
-        function loadQuestion() {
-            attempts = 0;
-            selectedOptions = [];
-            const q = questions[currentQuestion];
-            document.getElementById('progress-text').innerText = `Question ${currentQuestion + 1} of ${questions.length}`;
-            document.getElementById('question-text').innerText = q.question;
-            document.getElementById('feedback-text').innerText = "";
-            document.getElementById('next-btn').disabled = true;
-
-            const questionBox = document.getElementById('question-text');
-            const existingImg = document.getElementById('dynamic-question-img');
-            if (existingImg) existingImg.remove();
-
-            if (q.image) {
-                const img = document.createElement('img');
-                img.src = q.image;
-                img.id = 'dynamic-question-img';
-                img.className = 'question-image';
-                questionBox.parentNode.insertBefore(img, questionBox);
-            }
-
-            const optionsContainer = document.getElementById('options-container');
-            optionsContainer.innerHTML = '';
-
-            q.options.forEach((opt, index) => {
-                const btn = document.createElement('button');
-                btn.className = 'option-btn';
-                btn.innerText = opt;
-                btn.onclick = () => selectOption(index, btn);
-                optionsContainer.appendChild(btn);
-            });
-
-            startTimer();
-        }
-
-        function selectOption(index, btn) {
-            const q = questions[currentQuestion];
-            const isMulti = Array.isArray(q.correct);
-
-            if (isMulti) {
-                if (btn.disabled) return;
-                
-                if (selectedOptions.includes(index)) {
-                    selectedOptions = selectedOptions.filter(i => i !== index);
-                    btn.style.borderColor = '#cbd5e1';
-                    btn.style.background = '#ffffff';
-                } else {
-                    selectedOptions.push(index);
-                    btn.style.borderColor = 'var(--primary)';
-                    btn.style.background = '#eef2ff';
-                }
-
-                if (selectedOptions.length > 0) {
-                    validateMultiAnswer();
-                }
-                return;
-            }
-
-            clearInterval(timer);
-            const options = document.querySelectorAll('.option-btn');
-
+        buttons.forEach((btn, index) => {
+            btn.disabled = true;
             if (index === q.correct) {
                 btn.classList.add('correct');
-                playSound('correct');
-                options.forEach(b => b.disabled = true);
-                
-                if (attempts === 0) {
-                    score++;
-                }
+            } else if (index === selectedIndex) {
+                btn.classList.add('incorrect');
+            }
+        });
 
-                document.getElementById('feedback-text').style.color = "var(--success)";
-                document.getElementById('feedback-text').innerText = "Correct! Great job.";
-                document.getElementById('next-btn').disabled = false;
+        if (selectedIndex === q.correct) {
+            score++;
+        }
+
+        document.getElementById('next-btn').disabled = false;
+    }
+
+    function toggleMultiOption(index, btn) {
+        if (selectedMultiIndices.includes(index)) {
+            selectedMultiIndices = selectedMultiIndices.filter(i => i !== index);
+            btn.classList.remove('selected');
+        } else {
+            selectedMultiIndices.push(index);
+            btn.classList.add('selected');
+        }
+    }
+
+    function submitMultiAnswer() {
+        clearInterval(timerInterval);
+        const q = quizData[currentQuestionIndex];
+        const buttons = document.querySelectorAll('.option-btn');
+        document.getElementById('submit-multi-btn').classList.add('hidden');
+
+        let isCorrect = selectedMultiIndices.length === q.correct.length &&
+            selectedMultiIndices.every(val => q.correct.includes(val));
+
+        buttons.forEach((btn, index) => {
+            btn.disabled = true;
+            btn.classList.remove('selected');
+            if (q.correct.includes(index)) {
+                btn.classList.add('correct');
+            } else if (selectedMultiIndices.includes(index)) {
+                btn.classList.add('incorrect');
+            }
+        });
+
+        if (isCorrect) {
+            score++;
+        }
+
+        document.getElementById('next-btn').disabled = false;
+    }
+
+    function handleTimeout() {
+        const q = quizData[currentQuestionIndex];
+        const buttons = document.querySelectorAll('.option-btn');
+        document.getElementById('submit-multi-btn').classList.add('hidden');
+
+        buttons.forEach((btn, index) => {
+            btn.disabled = true;
+            if (Array.isArray(q.correct)) {
+                if (q.correct.includes(index)) btn.classList.add('correct');
             } else {
-                attempts++;
-                if (attempts === 1) {
-                    playSound('wrong');
-                    btn.classList.add('incorrect');
-                    btn.disabled = true;
-                    document.getElementById('feedback-text').style.color = "var(--error)";
-                    document.getElementById('feedback-text').innerText = `Incorrect. Hint: ${q.hint} (1 retry left)`;
-                    startTimer();
-                } else {
-                    playSound('wrong');
-                    btn.classList.add('incorrect');
-                    options.forEach((b, idx) => {
-                        b.disabled = true;
-                        if (idx === q.correct) b.classList.add('correct');
-                    });
-                    document.getElementById('feedback-text').style.color = "var(--error)";
-                    document.getElementById('feedback-text').innerText = `Incorrect. The correct answer is highlighted.`;
-                    document.getElementById('next-btn').disabled = false;
-                }
+                if (index === q.correct) btn.classList.add('correct');
             }
+        });
+
+        document.getElementById('next-btn').disabled = false;
+    }
+
+    function toggleHint() {
+        const hintEl = document.getElementById('hint-container');
+        const btn = document.getElementById('hint-btn');
+        if (hintEl.style.display === 'none' || hintEl.style.display === '') {
+            hintEl.style.display = 'block';
+            btn.innerText = 'Hide Hint';
+        } else {
+            hintEl.style.display = 'none';
+            btn.innerText = 'Show Hint';
         }
+    }
 
-        function validateMultiAnswer() {
-            const q = questions[currentQuestion];
-            const options = document.querySelectorAll('.option-btn');
-            
-            if (selectedOptions.length === q.correct.length) {
-                clearInterval(timer);
-                let allCorrect = q.correct.every(idx => selectedOptions.includes(idx));
-
-                options.forEach((b, idx) => {
-                    b.disabled = true;
-                    if (q.correct.includes(idx)) {
-                        b.classList.add('correct');
-                    } else if (selectedOptions.includes(idx)) {
-                        b.classList.add('incorrect');
-                    }
-                });
-
-                if (allCorrect) {
-                    playSound('correct');
-                    if (attempts === 0) score++;
-                    document.getElementById('feedback-text').style.color = "var(--success)";
-                    document.getElementById('feedback-text').innerText = "Correct! Great job.";
-                } else {
-                    playSound('wrong');
-                    document.getElementById('feedback-text').style.color = "var(--error)";
-                    document.getElementById('feedback-text').innerText = `Incorrect. The correct answers are highlighted.`;
-                }
-                document.getElementById('next-btn').disabled = false;
-            }
-        }
-
-        function handleTimeout() {
-            const q = questions[currentQuestion];
-            const options = document.querySelectorAll('.option-btn');
-            const corrects = Array.isArray(q.correct) ? q.correct : [q.correct];
-            
-            options.forEach((b, idx) => {
-                b.disabled = true;
-                if (corrects.includes(idx)) b.classList.add('correct');
-            });
-            playSound('wrong');
-            document.getElementById('feedback-text').style.color = "var(--error)";
-            document.getElementById('feedback-text').innerText = "Time's up! Moving to next step.";
-            document.getElementById('next-btn').disabled = false;
-        }
-
-        function handleNext() {
-            currentQuestion++;
-            if (currentQuestion < questions.length) {
-                loadQuestion();
-            } else {
-                showResults();
-            }
-        }
-
-        function showResults() {
-            document.getElementById('quiz-app').style.display = 'none';
-            const resultScreen = document.getElementById('result-screen');
-            resultScreen.style.display = 'block';
-
-            const percentage = (score / questions.length) * 100;
-            document.getElementById('final-score').innerText = `${score}/${questions.length}`;
-
-            const msgText = document.getElementById('result-message-text');
-            if (percentage >= 75) {
-                msgText.innerText = "Good job!";
-            } else if (percentage >= 40) {
-                msgText.innerText = "Review this chapter and try again.";
-            } else {
-                msgText.innerText = "Let’s practise more.";
-            }
-        }
-
-        function restartQuiz() {
-            currentQuestion = 0;
-            score = 0;
-            initQuizData();
-            document.getElementById('result-screen').style.display = 'none';
-            document.getElementById('quiz-app').style.display = 'block';
+    function nextQuestion() {
+        currentQuestionIndex++;
+        if (currentQuestionIndex < quizData.length) {
             loadQuestion();
+        } else {
+            showScore();
         }
-    </script>
+    }
+
+    function showScore() {
+        document.getElementById('quiz-screen').classList.add('hidden');
+        document.getElementById('score-screen').classList.remove('hidden');
+        document.getElementById('final-score').innerText = `${score} / ${quizData.length}`;
+    }
+
+    function restartQuiz() {
+        currentQuestionIndex = 0;
+        score = 0;
+        initQuizData();
+        document.getElementById('score-screen').classList.add('hidden');
+        document.getElementById('quiz-screen').classList.remove('hidden');
+        loadQuestion();
+    }
+
+    // Start application
+    initQuizData();
+    loadQuestion();
+</script>
 </body>
 </html>
