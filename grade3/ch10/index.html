@@ -1,713 +1,803 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Grade 3 Maths - Fractions Interactive</title>
-    <style>
-        :root {
-            --primary-color: #4A90E2;
-            --secondary-color: #F5A623;
-            --success-color: #2ECC71;
-            --error-color: #E74C3C;
-            --bg-color: #F4F7F6;
-            --text-color: #2C3E50;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Grade 3 Fractions Interactive Practice</title>
+  <style>
+    :root {
+      --primary-color: #4A90E2;
+      --secondary-color: #F5A623;
+      --success-color: #7ED321;
+      --danger-color: #D0021B;
+      --bg-color: #F0F4F8;
+      --card-bg: #FFFFFF;
+      --text-color: #333333;
+      --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            -webkit-user-select: none;
-            user-select: none;
-        }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
-        body {
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            padding: 15px;
-        }
+    body {
+      font-family: var(--font-family);
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
 
-        #game-container {
-            background: white;
-            width: 100%;
-            max-width: 600px;
-            border-radius: 16px;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.1);
-            overflow: hidden;
-            position: relative;
-            min-height: 500px;
-            display: flex;
-            flex-direction: column;
-        }
+    #app-container {
+      background: var(--card-bg);
+      border-radius: 16px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 750px;
+      overflow: hidden;
+      position: relative;
+    }
 
-        /* Screens management */
-        .screen {
-            display: none;
-            padding: 30px 24px;
-            flex-direction: column;
-            flex-grow: 1;
-            justify-content: center;
-            align-items: center;
-        }
+    /* Branding / Splash Screen */
+    #splash-screen {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+      text-align: center;
+    }
 
-        .screen.active {
-            display: flex;
-        }
+    #splash-screen svg {
+      width: 120px;
+      height: 120px;
+      margin-bottom: 20px;
+      animation: bounce 2s infinite;
+    }
 
-        /* Logo Screen */
-        #logo-screen {
-            background: #ffffff;
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 100;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
 
-        #logo-screen img {
-            max-width: 210px;
-            height: auto;
-        }
+    .btn-primary {
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+      padding: 14px 28px;
+      font-size: 1.1rem;
+      font-weight: bold;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+    }
 
-        /* Header / Stats panel */
-        #stats-bar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: #EEF2F5;
-            padding: 12px 20px;
-            font-size: 14px;
-            font-weight: 600;
-            border-bottom: 2px solid #E2E8F0;
-        }
+    .btn-primary:hover {
+      background-color: #357ABD;
+      transform: translateY(-2px);
+    }
 
-        .timer-container {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
+    /* Main Quiz View */
+    #quiz-screen {
+      display: none;
+      padding: 30px;
+    }
 
-        #timer-bar-outer {
-            width: 100px;
-            height: 10px;
-            background: #CBD5E1;
-            border-radius: 5px;
-            overflow: hidden;
-        }
+    .header-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      font-weight: bold;
+    }
 
-        #timer-bar-inner {
-            height: 100%;
-            width: 100%;
-            background: var(--secondary-color);
-            transition: width 1s linear;
-        }
+    .score-badge {
+      background: #EBF3FA;
+      color: var(--primary-color);
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 1rem;
+    }
 
-        /* Typography & Content UI */
-        h2 {
-            font-size: 22px;
-            margin-bottom: 16px;
-            text-align: center;
-            color: #1A2530;
-        }
+    /* Progress Bar */
+    .timer-container {
+      width: 100%;
+      background-color: #E0E0E0;
+      height: 10px;
+      border-radius: 5px;
+      margin-bottom: 25px;
+      overflow: hidden;
+    }
 
-        p.context-text {
-            font-size: 16px;
-            line-height: 1.5;
-            text-align: left;
-            margin-bottom: 20px;
-            color: #4A5568;
-            background: #F8FAFC;
-            padding: 14px;
-            border-radius: 10px;
-            border-left: 4px solid var(--primary-color);
-            width: 100%;
-            white-space: pre-line;
-        }
+    .timer-bar {
+      height: 100%;
+      width: 100%;
+      background-color: var(--secondary-color);
+      transition: width 1s linear, background-color 0.3s;
+    }
 
-        /* Visual Aids Container */
-        .visual-aid {
-            margin: 5px 0 15px 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            width: 100%;
-            min-height: 70px;
-        }
+    /* Question Container */
+    .question-title {
+      font-size: 1.25rem;
+      margin-bottom: 15px;
+      line-height: 1.4;
+    }
 
-        .pizza-img {
-            max-width: 130px;
-            height: auto;
-            object-fit: contain;
-            display: block;
-        }
+    .svg-visual-container {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 15px 0 25px 0;
+      min-height: 180px;
+      background-color: #FAFAFA;
+      border: 2px dashed #E2E8F0;
+      border-radius: 12px;
+      padding: 15px;
+    }
 
-        /* Buttons & Options Layout */
-        .options-container {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            width: 100%;
-            margin-top: 5px;
-        }
+    .svg-visual-container svg {
+      max-width: 100%;
+      max-height: 220px;
+      height: auto;
+    }
 
-        .option-btn {
-            background: white;
-            border: 2px solid #E2E8F0;
-            padding: 14px 20px;
-            border-radius: 12px;
-            font-size: 16px;
-            font-weight: 500;
-            text-align: left;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            width: 100%;
-            outline: none;
-            display: flex;
-            align-items: center;
-        }
+    /* Options */
+    .options-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-bottom: 20px;
+    }
 
-        .option-btn:hover:not(:disabled) {
-            border-color: var(--primary-color);
-            background: #F0F7FF;
-        }
+    @media (max-width: 500px) {
+      .options-grid {
+        grid-template-columns: 1fr;
+      }
+    }
 
-        .option-btn.correct {
-            background: #E8F8F0 !important;
-            border-color: var(--success-color) !important;
-            color: #1E7E34;
-            font-weight: 600;
-        }
+    .option-btn {
+      background: #F8FAFC;
+      border: 2px solid #E2E8F0;
+      padding: 14px;
+      border-radius: 8px;
+      font-size: 1rem;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.2s;
+    }
 
-        .option-btn.wrong {
-            background: #FCE8E6 !important;
-            border-color: var(--error-color) !important;
-            color: #BD2130;
-        }
+    .option-btn:hover:not([disabled]) {
+      border-color: var(--primary-color);
+      background-color: #F0F7FF;
+    }
 
-        /* System Messages / Feedback Box */
-        .feedback-box {
-            margin-top: 15px;
-            padding: 14px;
-            border-radius: 10px;
-            text-align: left;
-            font-weight: 500;
-            width: 100%;
-            display: none;
-            line-height: 1.4;
-            animation: popIn 0.3s ease;
-        }
+    .option-btn.correct {
+      background-color: #E6F4EA !important;
+      border-color: var(--success-color) !important;
+      color: #137333;
+      font-weight: bold;
+    }
 
-        .feedback-box.hint {
-            background: #FFF9E6;
-            color: #8A6D3B;
-            border: 1px dashed var(--secondary-color);
-            text-align: center;
-            font-weight: 600;
-        }
+    .option-btn.incorrect {
+      background-color: #FCE8E6 !important;
+      border-color: var(--danger-color) !important;
+      color: #C5221F;
+    }
 
-        .feedback-box.reveal {
-            background: #E8F8F0;
-            color: #1E7E34;
-            border-left: 4px solid var(--success-color);
-        }
+    /* Feedback & Hint Box */
+    .feedback-box {
+      display: none;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      font-size: 0.95rem;
+      line-height: 1.4;
+    }
 
-        /* Action Buttons */
-        .action-btn {
-            background: var(--primary-color);
-            color: white;
-            border: none;
-            padding: 14px 35px;
-            font-size: 16px;
-            font-weight: 600;
-            border-radius: 12px;
-            cursor: pointer;
-            transition: background 0.2s;
-            margin-top: 15px;
-            box-shadow: 0 4px 6px rgba(74, 144, 226, 0.2);
-            width: 100%;
-            text-align: center;
-        }
+    .feedback-box.hint {
+      background-color: #FFF8E6;
+      border: 1px solid #FFE0B2;
+      color: #8C6B00;
+    }
 
-        .action-btn:hover {
-            background: #357ABD;
-        }
+    .feedback-box.explanation {
+      background-color: #E8F0FE;
+      border: 1px solid #D2E3FC;
+      color: #174EA6;
+    }
 
-        #confetti-canvas {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 99;
-        }
+    /* Results Screen */
+    #results-screen {
+      display: none;
+      padding: 40px 30px;
+      text-align: center;
+    }
 
-        @keyframes popIn {
-            from { transform: scale(0.95); opacity: 0; }
-            to { transform: scale(1); opacity: 1; }
-        }
+    .final-score {
+      font-size: 2.5rem;
+      font-weight: bold;
+      color: var(--primary-color);
+      margin: 15px 0;
+    }
 
-        @media (max-width: 480px) {
-            h2 { font-size: 19px; }
-            p.context-text { font-size: 14px; padding: 10px; }
-            .option-btn { padding: 12px 16px; font-size: 15px; }
-            .screen { padding: 20px 16px; }
-        }
-    </style>
+    /* Canvas Confetti overlay */
+    #confetti-canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 99;
+    }
+  </style>
 </head>
 <body>
 
-    <div id="game-container">
-        <canvas id="confetti-canvas"></canvas>
+<div id="app-container">
+  <canvas id="confetti-canvas"></canvas>
 
-        <div id="logo-screen">
-            <img src="assets/logo.png" alt="Innovine Logo" onerror="this.style.display='none'; document.getElementById('logo-fallback').style.display='block';">
-            <h1 id="logo-fallback" style="display:none; color: #4A90E2; font-weight: 800; font-size: 32px;">INNOVINE</h1>
-        </div>
+  <!-- SPLASH SCREEN -->
+  <div id="splash-screen">
+    <svg viewBox="0 0 100 100">
+      <circle cx="50" cy="50" r="45" fill="#4A90E2" />
+      <path d="M 50 50 L 50 5 A 45 45 0 0 1 95 50 Z" fill="#F5A623" />
+      <text x="50" y="65" text-anchor="middle" fill="#FFFFFF" font-size="28" font-weight="bold">½</text>
+    </svg>
+    <h1 style="margin-bottom: 10px; color: #2C3E50;">Fraction Adventure!</h1>
+    <p style="margin-bottom: 25px; color: #7F8C8D;">Grade 3 Math Practice & Learning Challenge</p>
+    <button class="btn-primary" onclick="startGame()">Start Practice</button>
+  </div>
 
-        <div id="intro-screen" class="screen">
-            <h2 style="color: var(--primary-color);">Welcome to Fractions Adventure! 🍰</h2>
-            <p class="context-text" style="border-left-color: var(--secondary-color); text-align: left;">
-                Help your friends share food, fix windows, and count treats using fractions! <br><br>
-                <strong>Rules of Play:</strong><br>
-                • You have 60 seconds per question.<br>
-                • If you make a mistake, you get 1 retry with a helpful hint!
-            </p>
-            <button class="action-btn" onclick="startQuiz()">Start Exploring</button>
-        </div>
-
-        <div id="quiz-module" style="display: none; flex-direction: column; flex-grow: 1;">
-            <div id="stats-bar">
-                <div>Question: <span id="current-q-num">1</span>/10</div>
-                <div>Score: <span id="current-score">0</span></div>
-                <div class="timer-container">
-                    ⏳ <div id="timer-bar-outer"><div id="timer-bar-inner"></div></div>
-                </div>
-            </div>
-
-            <div id="question-screen" class="screen active" style="padding-top: 15px; justify-content: flex-start;">
-                <p id="q-context" class="context-text"></p>
-                
-                <div id="visual-aid-box" class="visual-aid"></div>
-
-                <div id="options-box" class="options-container"></div>
-                <div id="feedback-message" class="feedback-box"></div>
-                <button id="next-btn" class="action-btn" style="display: none;" onclick="loadNextQuestion()">Next Question ➜</button>
-            </div>
-        </div>
-
-        <div id="result-screen" class="screen">
-            <h2 id="result-title">Quiz Completed!</h2>
-            <div id="result-emoji" style="font-size: 64px; margin: 15px 0;">🏆</div>
-            <p id="result-score-text" style="font-size: 18px; font-weight: 600; margin-bottom: 10px;"></p>
-            <p id="result-feedback" style="font-size: 16px; color: #4A5568; margin-bottom: 25px; text-align: center; max-width: 80%;"></p>
-            <button class="action-btn" style="background: var(--secondary-color);" onclick="resetQuiz()">Play Again 🔄</button>
-        </div>
+  <!-- QUIZ SCREEN -->
+  <div id="quiz-screen">
+    <div class="header-bar">
+      <span id="question-tracker">Question 1 of 10</span>
+      <span class="score-badge" id="score-display">Score: 0</span>
     </div>
 
-    <audio id="audio-claps" src="assets/claps.mp3" preload="auto"></audio>
-    <audio id="audio-wrong" src="assets/wrong.mp3" preload="auto"></audio>
+    <div class="timer-container">
+      <div class="timer-bar" id="timer-bar"></div>
+    </div>
 
-    <script>
-        const masterDatabase = [
-            {
-                context: "Mini brings a full round pizza to school. She wants to share it equally with her friend Rohan. Into how many equal parts should she cut the pizza so that both of them get an exact half?",
-                visualType: "pizza",
-                options: ["1 part", "2 parts", "3 parts", "4 parts"],
-                correctText: "2 parts",
-                hint: "Think about how many total people want to eat an equal share of the pizza.",
-                explanation: "When 1 whole object is divided into 2 equal parts, each part is called a half (1/2)."
-            },
-            {
-                context: "Look at the square window frame. It has 4 small equal square blocks. 2 of the blocks are covered completely by a blue cloud curtain. What fraction of the window is covered?",
-                visualType: "window",
-                options: ["One-fourth (1/4)", "One-half (1/2)", "Three-fourths (3/4)", "Four-fourths (4/4)"],
-                correctText: "One-half (1/2)",
-                hint: "Count how many blocks are covered out of 4. Is 2 exactly half of 4?",
-                explanation: "Covering 2 out of 4 equal parts (2/4) covers exactly one-half (1/2) of the whole window frame."
-            },
-            {
-                context: "Kabir has a long chocolate bar divided structurally into 4 equal pieces. He breaks it apart and gives 3 pieces to his younger sister. What fraction of the chocolate bar did his sister get?",
-                visualType: "chocolate",
-                options: ["One-fourth (1/4)", "Two-fourths (2/4)", "Three-fourths (3/4)", "The whole chocolate"],
-                correctText: "Three-fourths (3/4)",
-                hint: "Count how many equal pieces his sister received out of the 4 total matching pieces.",
-                explanation: "Giving 3 out of 4 equal parts represents three-fourths (3/4) of the entire chocolate bar."
-            },
-            {
-                context: "Simran writes four fractions on the blackboard: 1/4, 3/4, 2/4, and 1/2. Which fraction does NOT belong to the same group of 'like fractions' as the other three?",
-                visualType: null,
-                options: ["1/4", "3/4", "2/4", "1/2"],
-                correctText: "1/2",
-                hint: "Look closely at the bottom numbers (denominators) of all four fractions written on the board.",
-                explanation: "Like fractions always share the exact same denominator. 1/4, 3/4, and 2/4 all have 4 at the bottom, while 1/2 does not."
-            },
-            {
-                context: "Three friends measure how much of their identical drawing sheets they have colored in class: Riya colored 1/3, Amit colored 2/3, and Sana colored 3/3. Who colored the largest part of their sheet?",
-                visualType: null,
-                options: ["Riya", "Amit", "Sana", "They all colored the same amount"],
-                correctText: "Sana",
-                hint: "When the bottom numbers are identical, compare the top numbers to see who completed more parts.",
-                explanation: "3/3 means Sana colored 3 out of 3 equal parts, which is equal to finishing 1 whole drawing sheet."
-            },
-            {
-                context: "Arjun wants to show 1/4 of a paper circle. He draws lines to cut it into 4 pieces and colors 1 piece yellow. Look at his shape. What mistake did Arjun make?",
-                visualType: "unequal-circle",
-                options: ["He made no mistake.", "The 4 parts are not equal in size.", "He should have made only 2 parts.", "He colored too many parts."],
-                correctText: "The 4 parts are not equal in size.",
-                hint: "Fractions can only show parts of a whole if all the broken parts are completely fair and identical.",
-                explanation: "Fractions must always represent equal parts of a whole. Because Arjun's pieces are different sizes, it cannot represent 1/4."
-            },
-            {
-                context: "Read both statements carefully:\n\nAssertion (A): 1/4 of a school ribbon is shorter than 1/2 of the exact same ribbon.\n\nReason (R): Cutting a whole into 4 equal pieces makes each piece smaller than cutting it into 2 equal pieces.",
-                visualType: null,
-                options: [
-                    "Both A and R are correct, and R explains A perfectly.",
-                    "Both A and R are correct, but R does not explain A.",
-                    "A is correct, but R is wrong.",
-                    "Both A and R are wrong."
-                ],
-                correctText: "Both A and R are correct, and R explains A perfectly.",
-                hint: "If you share a single ribbon among 4 people instead of 2 people, do the shares get smaller or larger?",
-                explanation: "The larger the denominator, the more pieces the whole object is divided into, making each single piece smaller."
-            },
-            {
-                context: "Mother baked 12 identical cookies for the snack box. Rohan eats 1/4 of the total cookies, and Meera eats 2/4 of the total cookies. How many cookies did Meera eat from the box?",
-                visualType: null,
-                options: ["3 cookies", "4 cookies", "6 cookies", "8 cookies"],
-                correctText: "6 cookies",
-                hint: "Divide 12 cookies into 4 equal groups. Each group has 3 cookies. Meera took 2 of those groups.",
-                explanation: "Dividing 12 cookies into 4 equal groups gives 3 cookies per group (1/4 = 3). Since Meera ate 2 groups, she ate 3 + 3 = 6 cookies."
-            },
-            {
-                context: "In a box of snacks, Rohan eats 1/4 of the cookies and Meera eats 2/4 of the cookies. What total fraction of the cookie box did both children finish together?",
-                visualType: null,
-                options: ["1/4 of the box", "2/4 of the box", "3/4 of the box", "4/4 of the box"],
-                correctText: "3/4 of the box",
-                hint: "Since they are like fractions sharing the same bottom number, simply add the top numbers together.",
-                explanation: "Adding 1/4 and 2/4 directly gives 3/4. Together they ate three-fourths of the full cookie box."
-            },
-            {
-                context: "A full cookie box is represented by the fraction 4/4. If some children finish eating a combined total fraction of 3/4 of the box, what remaining fraction of cookies is left over for Papa?",
-                visualType: null,
-                options: ["1/4 of the box", "2/4 of the box", "3/4 of the box", "No cookies are left"],
-                correctText: "1/4 of the box",
-                hint: "Start with the complete whole box fraction (4/4) and subtract the part that was already eaten (3/4).",
-                explanation: "The full box is 1 whole (4/4). Subtracting the eaten share leaves 4/4 - 3/4 = 1/4 of the box for Papa."
-            }
-        ];
+    <div class="question-title" id="question-text"></div>
 
-        let database = [];
-        let state = {
-            currentIdx: 0,
-            score: 0,
-            attempts: 0,
-            timer: null,
-            timeLeft: 60
-        };
+    <div class="svg-visual-container" id="visual-container"></div>
 
-        window.addEventListener('DOMContentLoaded', () => {
-            setTimeout(() => {
-                const splash = document.getElementById('logo-screen');
-                splash.style.transition = 'opacity 0.5s ease';
-                splash.style.opacity = '0';
-                setTimeout(() => {
-                    splash.style.display = 'none';
-                    document.getElementById('intro-screen').classList.add('active');
-                }, 500);
-            }, 2000);
-        });
+    <div class="options-grid" id="options-container"></div>
 
-        function shuffleArray(arr) {
-            for (let i = arr.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [arr[i], arr[j]] = [arr[j], arr[i]];
-            }
-            return arr;
+    <div class="feedback-box" id="feedback-box"></div>
+
+    <div style="display: flex; justify-content: flex-end;">
+      <button class="btn-primary" id="next-btn" style="display: none;" onclick="handleNextQuestion()">Next Question</button>
+    </div>
+  </div>
+
+  <!-- RESULTS SCREEN -->
+  <div id="results-screen">
+    <h2>Activity Complete! 🎉</h2>
+    <div class="final-score" id="final-score-text">0 / 100</div>
+    <p id="performance-message" style="margin-bottom: 25px; font-size: 1.1rem; color: #555;"></p>
+    <button class="btn-primary" onclick="resetGame()">Play Again</button>
+  </div>
+</div>
+
+<script>
+  // QUESTION BANK WITH EMBEDDED DYNAMIC SVG VISUALS
+  const questionBank = [
+    {
+      id: 1,
+      title: "1. Equal Sharing (Halves)",
+      question: "Saman and Riya want to share a single pizza equally. Into how many equal parts must the pizza be divided?",
+      svg: `<svg viewBox="0 0 200 200" width="180" height="180">
+              <circle cx="100" cy="100" r="80" fill="#F4D03F" stroke="#D68910" stroke-width="8"/>
+              <path d="M 100 20 A 80 80 0 0 1 100 180 Z" fill="#E74C3C"/>
+              <line x1="100" y1="20" x2="100" y2="180" stroke="#FFFFFF" stroke-width="4" stroke-dasharray="6,6"/>
+              <!-- Toppings Left -->
+              <circle cx="60" cy="70" r="8" fill="#C0392B"/>
+              <circle cx="70" cy="130" r="8" fill="#C0392B"/>
+              <!-- Toppings Right -->
+              <circle cx="140" cy="70" r="8" fill="#A93226"/>
+              <circle cx="130" cy="130" r="8" fill="#A93226"/>
+            </svg>`,
+      options: ["1 part", "2 equal parts", "3 equal parts", "4 equal parts"],
+      correct: 1,
+      hint: "Sharing equally between 2 people means splitting something into halves.",
+      explanation: "To share something equally between two people, it must be divided into 2 equal parts (halves)."
+    },
+    {
+      id: 2,
+      title: "2. Identifying Fractions",
+      question: "Look at the window grid below. What fraction of the window panes are tinted blue?",
+      svg: `<svg viewBox="0 0 200 160" width="200" height="160">
+              <rect x="20" y="10" width="160" height="140" fill="#FFFFFF" stroke="#34495E" stroke-width="6" rx="4"/>
+              <rect x="25" y="15" width="72" height="62" fill="#3498DB" opacity="0.85"/>
+              <rect x="103" y="15" width="72" height="62" fill="#EAEDED"/>
+              <rect x="25" y="83" width="72" height="62" fill="#EAEDED"/>
+              <rect x="103" y="83" width="72" height="62" fill="#3498DB" opacity="0.85"/>
+              <line x1="100" y1="10" x2="100" y2="150" stroke="#34495E" stroke-width="6"/>
+              <line x1="20" y1="80" x2="180" y2="80" stroke="#34495E" stroke-width="6"/>
+            </svg>`,
+      options: ["1/4", "2/4 (or 1/2)", "3/4", "4/4"],
+      correct: 1,
+      hint: "Count the total number of window panes first, then count how many are shaded blue.",
+      explanation: "There are 4 equal window panes in total and 2 are tinted blue. The fraction is 2/4, which simplifies to 1/2."
+    },
+    {
+      id: 3,
+      title: "3. Fractional Parts of a Whole",
+      question: "A chocolate bar is split into equal blocks. What fraction of the chocolate bar remains after 1 block is eaten?",
+      svg: `<svg viewBox="0 0 220 100" width="220" height="100">
+              <g stroke="#5D4037" stroke-width="3">
+                <rect x="10" y="20" width="45" height="60" fill="#795548" rx="3"/>
+                <rect x="60" y="20" width="45" height="60" fill="#795548" rx="3"/>
+                <rect x="110" y="20" width="45" height="60" fill="#795548" rx="3"/>
+                <rect x="160" y="20" width="45" height="60" fill="none" stroke-dasharray="4,4"/>
+              </g>
+              <text x="182" y="55" text-anchor="middle" fill="#A1887F" font-size="20">Eaten</text>
+            </svg>`,
+      options: ["1/4", "2/4", "3/4", "4/4"],
+      correct: 2,
+      hint: "Count how many blocks are left out of the original 4 total blocks.",
+      explanation: "The chocolate bar was originally divided into 4 equal blocks. With 1 eaten, 3 blocks remain, which represents 3/4."
+    },
+    {
+      id: 4,
+      title: "4. Unit Fractions",
+      question: "Which of the following fractions represents a single unit fraction?",
+      svg: `<svg viewBox="0 0 280 90" width="280" height="90">
+              <!-- Circle 1/2 -->
+              <g transform="translate(10, 5)">
+                <circle cx="35" cy="35" r="30" fill="#E2E8F0" stroke="#475569" stroke-width="2"/>
+                <path d="M 35 5 A 30 30 0 0 1 35 65 Z" fill="#3B82F6"/>
+                <text x="35" y="80" text-anchor="middle" font-weight="bold" fill="#333">1/2</text>
+              </g>
+              <!-- Circle 2/4 -->
+              <g transform="translate(100, 5)">
+                <circle cx="35" cy="35" r="30" fill="#E2E8F0" stroke="#475569" stroke-width="2"/>
+                <path d="M 35 5 A 30 30 0 0 1 65 35 L 35 35 Z" fill="#10B981"/>
+                <path d="M 35 35 L 35 65 A 30 30 0 0 1 5 35 Z" fill="#10B981"/>
+                <line x1="35" y1="5" x2="35" y2="65" stroke="#475569" stroke-width="2"/>
+                <line x1="5" y1="35" x2="65" y2="35" stroke="#475569" stroke-width="2"/>
+                <text x="35" y="80" text-anchor="middle" font-weight="bold" fill="#333">2/4</text>
+              </g>
+              <!-- Circle 3/4 -->
+              <g transform="translate(190, 5)">
+                <circle cx="35" cy="35" r="30" fill="#3B82F6" stroke="#475569" stroke-width="2"/>
+                <path d="M 35 35 L 35 65 A 30 30 0 0 1 5 35 Z" fill="#E2E8F0"/>
+                <line x1="35" y1="5" x2="35" y2="65" stroke="#475569" stroke-width="2"/>
+                <line x1="5" y1="35" x2="65" y2="35" stroke="#475569" stroke-width="2"/>
+                <text x="35" y="80" text-anchor="middle" font-weight="bold" fill="#333">3/4</text>
+              </g>
+            </svg>`,
+      options: ["2/4", "3/4", "1/2", "3/3"],
+      correct: 2,
+      hint: "A unit fraction always has a numerator (top number) of 1.",
+      explanation: "A unit fraction represents one single equal part of a whole, meaning its numerator is always 1 (e.g., 1/2)."
+    },
+    {
+      id: 5,
+      title: "5. Comparing Fractions with Same Denominator",
+      question: "Aman ate 2/3 of a cake and Sana ate 3/3 of a cake. Who ate the whole cake?",
+      svg: `<svg viewBox="0 0 260 100" width="260" height="100">
+              <!-- Aman -->
+              <g transform="translate(20, 10)">
+                <circle cx="40" cy="40" r="35" fill="#E2E8F0" stroke="#64748B" stroke-width="3"/>
+                <path d="M 40 40 L 40 5 A 35 35 0 0 1 70.3 57.5 Z" fill="#F59E0B"/>
+                <path d="M 40 40 L 70.3 57.5 A 35 35 0 0 1 9.7 57.5 Z" fill="#F59E0B"/>
+                <text x="40" y="90" text-anchor="middle" font-size="12" font-weight="bold">Aman (2/3)</text>
+              </g>
+              <!-- Sana -->
+              <g transform="translate(150, 10)">
+                <circle cx="40" cy="40" r="35" fill="#F59E0B" stroke="#64748B" stroke-width="3"/>
+                <line x1="40" y1="40" x2="40" y2="5" stroke="#FFFFFF" stroke-width="2"/>
+                <line x1="40" y1="40" x2="70.3" y2="57.5" stroke="#FFFFFF" stroke-width="2"/>
+                <line x1="40" y1="40" x2="9.7" y2="57.5" stroke="#FFFFFF" stroke-width="2"/>
+                <text x="40" y="90" text-anchor="middle" font-size="12" font-weight="bold">Sana (3/3)</text>
+              </g>
+            </svg>`,
+      options: ["Aman", "Sana", "Both ate equal amounts", "Neither ate the whole cake"],
+      correct: 1,
+      hint: "When numerator and denominator are equal (like 3/3), it equals 1 whole.",
+      explanation: "3/3 is equal to 1 whole. Therefore, Sana ate the entire cake."
+    },
+    {
+      id: 6,
+      title: "6. Concept of Equal Parts",
+      question: "Which circle shows a shape that is NOT divided into equal fractional parts?",
+      svg: `<svg viewBox="0 0 240 100" width="240" height="100">
+              <!-- Equal halves -->
+              <g transform="translate(20, 10)">
+                <circle cx="40" cy="40" r="35" fill="#E0F2FE" stroke="#0284C7" stroke-width="3"/>
+                <line x1="40" y1="5" x2="40" y2="75" stroke="#0284C7" stroke-width="3"/>
+                <text x="40" y="92" text-anchor="middle" font-size="12" font-weight="bold">Shape A</text>
+              </g>
+              <!-- Unequal split -->
+              <g transform="translate(140, 10)">
+                <circle cx="40" cy="40" r="35" fill="#FEF2F2" stroke="#EF4444" stroke-width="3"/>
+                <line x1="65" y1="15" x2="65" y2="65" stroke="#EF4444" stroke-width="3"/>
+                <text x="40" y="92" text-anchor="middle" font-size="12" font-weight="bold">Shape B</text>
+              </g>
+            </svg>`,
+      options: ["Shape A", "Shape B", "Both show equal parts", "Neither shows equal parts"],
+      correct: 1,
+      hint: "Fractions require every part to be identical in size.",
+      explanation: "Shape B is cut off-center, making the two sections unequal in size. Therefore, it does not show valid fractional parts."
+    },
+    {
+      id: 7,
+      title: "7. Comparing Unit Fractions",
+      question: "Assertion (A): 1/2 is larger than 1/4.\nReason (R): When a whole is divided into fewer equal parts, each part is larger.",
+      svg: `<svg viewBox="0 0 240 100" width="240" height="100">
+              <!-- 1/2 -->
+              <g transform="translate(20, 10)">
+                <rect x="0" y="10" width="80" height="40" fill="#E2E8F0" stroke="#334155" stroke-width="2"/>
+                <rect x="0" y="10" width="40" height="40" fill="#3B82F6"/>
+                <text x="40" y="70" text-anchor="middle" font-size="12" font-weight="bold">1/2</text>
+              </g>
+              <!-- 1/4 -->
+              <g transform="translate(140, 10)">
+                <rect x="0" y="10" width="80" height="40" fill="#E2E8F0" stroke="#334155" stroke-width="2"/>
+                <rect x="0" y="10" width="20" height="40" fill="#10B981"/>
+                <line x1="40" y1="10" x2="40" y2="50" stroke="#334155" stroke-width="1"/>
+                <line x1="60" y1="10" x2="60" y2="50" stroke="#334155" stroke-width="1"/>
+                <text x="40" y="70" text-anchor="middle" font-size="12" font-weight="bold">1/4</text>
+              </g>
+            </svg>`,
+      options: [
+        "Both A and R are correct, and R explains A",
+        "A is correct, but R is incorrect",
+        "A is incorrect, but R is correct",
+        "Both A and R are incorrect"
+      ],
+      correct: 0,
+      hint: "Think about sharing a pizza with 2 people versus 4 people. Which slice is bigger?",
+      explanation: "Both statements are correct. Dividing a whole into 2 parts gives bigger slices than dividing the same whole into 4 parts."
+    },
+    {
+      id: 8,
+      title: "8. Fraction of a Set",
+      question: "There are 12 cookies in a box. What is 2/4 (or 1/2) of the cookies?",
+      svg: `<svg viewBox="0 0 240 110" width="240" height="110">
+              <g fill="#D97706" stroke="#78350F" stroke-width="2">
+                <!-- Row 1 -->
+                <circle cx="30" cy="25" r="14"/><circle cx="70" cy="25" r="14"/><circle cx="110" cy="25" r="14"/>
+                <circle cx="150" cy="25" r="14"/><circle cx="190" cy="25" r="14"/><circle cx="230" cy="25" r="14"/>
+                <!-- Row 2 -->
+                <circle cx="30" cy="65" r="14"/><circle cx="70" cy="65" r="14"/><circle cx="110" cy="65" r="14"/>
+                <circle cx="150" cy="65" r="14"/><circle cx="190" cy="65" r="14"/><circle cx="230" cy="65" r="14"/>
+              </g>
+              <!-- Highlight half -->
+              <rect x="12" y="8" width="116" height="74" fill="none" stroke="#2563EB" stroke-width="3" rx="8" stroke-dasharray="4,4"/>
+            </svg>`,
+      options: ["4 cookies", "6 cookies", "8 cookies", "3 cookies"],
+      correct: 1,
+      hint: "Divide the 12 cookies into 2 equal groups.",
+      explanation: "Half of 12 cookies (12 ÷ 2) is 6 cookies."
+    },
+    {
+      id: 9,
+      title: "9. Addition of Like Fractions",
+      question: "Rohan ate 1/4 of a box of cereal in the morning and 2/4 in the evening. How much did he eat altogether?",
+      svg: `<svg viewBox="0 0 260 80" width="260" height="80">
+              <g transform="translate(10, 15)">
+                <rect x="0" y="0" width="70" height="35" fill="#E2E8F0" stroke="#475569" stroke-width="2"/>
+                <rect x="0" y="0" width="17.5" height="35" fill="#F59E0B"/>
+                <text x="35" y="55" text-anchor="middle" font-size="12" font-weight="bold">1/4</text>
+              </g>
+              <text x="95" y="40" font-size="22" font-weight="bold">+</text>
+              <g transform="translate(120, 15)">
+                <rect x="0" y="0" width="70" height="35" fill="#E2E8F0" stroke="#475569" stroke-width="2"/>
+                <rect x="0" y="0" width="35" height="35" fill="#F59E0B"/>
+                <text x="35" y="55" text-anchor="middle" font-size="12" font-weight="bold">2/4</text>
+              </g>
+              <text x="205" y="40" font-size="22" font-weight="bold">=</text>
+              <text x="235" y="42" font-size="22" font-weight="bold" fill="#2563EB">?</text>
+            </svg>`,
+      options: ["1/4 of the box", "2/4 of the box", "3/4 of the box", "4/4 of the box"],
+      correct: 2,
+      hint: "When adding fractions with the same denominator, add the top numbers together.",
+      explanation: "1/4 + 2/4 = (1 + 2) / 4 = 3/4 of the box."
+    },
+    {
+      id: 10,
+      title: "10. Subtraction of Like Fractions",
+      question: "A juice carton was full (4/4). Tina drank 3/4 of it. How much juice is left?",
+      svg: `<svg viewBox="0 0 200 120" width="200" height="120">
+              <rect x="70" y="10" width="60" height="100" fill="#E2E8F0" stroke="#334155" stroke-width="3" rx="4"/>
+              <!-- Remaining 1/4 -->
+              <rect x="70" y="85" width="60" height="25" fill="#10B981" rx="2"/>
+              <!-- Grid dividers -->
+              <line x1="70" y1="35" x2="130" y2="35" stroke="#334155" stroke-width="1" stroke-dasharray="2,2"/>
+              <line x1="70" y1="60" x2="130" y2="60" stroke="#334155" stroke-width="1" stroke-dasharray="2,2"/>
+              <line x1="70" y1="85" x2="130" y2="85" stroke="#334155" stroke-width="1" stroke-dasharray="2,2"/>
+              <text x="145" y="60" font-size="12" font-weight="bold" fill="#10B981">Left: ?</text>
+            </svg>`,
+      options: ["1/4 of the carton", "2/4 of the carton", "3/4 of the carton", "0"],
+      correct: 0,
+      hint: "Subtract the numerators: 4 - 3.",
+      explanation: "4/4 - 3/4 = (4 - 3) / 4 = 1/4 of the carton left."
+    }
+  ];
+
+  // GAME STATE VARIABLES
+  let shuffledQuestions = [];
+  let currentQuestionIndex = 0;
+  let score = 0;
+  let timerInterval = null;
+  let timeLeft = 60;
+  let currentAttempt = 1;
+
+  // SOUND EFFECTS (Web Audio API Synthesizer)
+  const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  
+  function playSound(type) {
+    if (audioCtx.state === 'suspended') {
+      audioCtx.resume();
+    }
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+
+    if (type === 'correct') {
+      osc.frequency.setValueAtTime(523.25, audioCtx.currentTime); // C5
+      osc.frequency.setValueAtTime(659.25, audioCtx.currentTime + 0.1); // E5
+      gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+      osc.start();
+      osc.stop(audioCtx.currentTime + 0.3);
+    } else if (type === 'wrong') {
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(220, audioCtx.currentTime); // A3
+      osc.frequency.setValueAtTime(174.61, audioCtx.currentTime + 0.15); // F3
+      gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.4);
+      osc.start();
+      osc.stop(audioCtx.currentTime + 0.4);
+    }
+  }
+
+  // UTILITY: Fisher-Yates Array Shuffle
+  function shuffleArray(array) {
+    const arr = [...array];
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+  }
+
+  // GAME CONTROLLER FUNCTIONS
+  function startGame() {
+    document.getElementById('splash-screen').style.display = 'none';
+    document.getElementById('quiz-screen').style.display = 'block';
+    shuffledQuestions = shuffleArray(questionBank);
+    currentQuestionIndex = 0;
+    score = 0;
+    updateScoreDisplay();
+    loadQuestion();
+  }
+
+  function resetGame() {
+    document.getElementById('results-screen').style.display = 'none';
+    document.getElementById('splash-screen').style.display = 'flex';
+  }
+
+  function updateScoreDisplay() {
+    document.getElementById('score-display').innerText = `Score: ${score}`;
+  }
+
+  function loadQuestion() {
+    clearInterval(timerInterval);
+    currentAttempt = 1;
+    
+    const q = shuffledQuestions[currentQuestionIndex];
+    
+    // Header & Question Info
+    document.getElementById('question-tracker').innerText = `Question ${currentQuestionIndex + 1} of ${shuffledQuestions.length}`;
+    document.getElementById('question-text').innerText = q.question;
+    document.getElementById('visual-container').innerHTML = q.svg;
+    
+    // Feedback & Controls Reset
+    const feedbackBox = document.getElementById('feedback-box');
+    feedbackBox.style.display = 'none';
+    feedbackBox.className = 'feedback-box';
+    document.getElementById('next-btn').style.display = 'none';
+
+    // Render Options
+    const optionsContainer = document.getElementById('options-container');
+    optionsContainer.innerHTML = '';
+    
+    q.options.forEach((opt, index) => {
+      const btn = document.createElement('button');
+      btn.className = 'option-btn';
+      btn.innerText = opt;
+      btn.onclick = () => selectAnswer(index);
+      optionsContainer.appendChild(btn);
+    });
+
+    // Start Timer
+    startTimer();
+  }
+
+  function startTimer() {
+    timeLeft = 60;
+    const timerBar = document.getElementById('timer-bar');
+    timerBar.style.width = '100%';
+    timerBar.style.backgroundColor = 'var(--secondary-color)';
+
+    timerInterval = setInterval(() => {
+      timeLeft--;
+      const percentage = (timeLeft / 60) * 100;
+      timerBar.style.width = `${percentage}%`;
+
+      if (timeLeft <= 15) {
+        timerBar.style.backgroundColor = 'var(--danger-color)';
+      }
+
+      if (timeLeft <= 0) {
+        clearInterval(timerInterval);
+        handleTimeout();
+      }
+    }, 1000);
+  }
+
+  function selectAnswer(selectedIndex) {
+    const q = shuffledQuestions[currentQuestionIndex];
+    const optionBtns = document.querySelectorAll('.option-btn');
+    const feedbackBox = document.getElementById('feedback-box');
+
+    if (selectedIndex === q.correct) {
+      // CORRECT ANSWER
+      clearInterval(timerInterval);
+      playSound('correct');
+      optionBtns[selectedIndex].classList.add('correct');
+      disableAllOptions();
+
+      // Points Logic: 10 pts first try, 5 pts second try
+      const pointsEarned = currentAttempt === 1 ? 10 : 5;
+      score += pointsEarned;
+      updateScoreDisplay();
+
+      feedbackBox.className = 'feedback-box explanation';
+      feedbackBox.innerHTML = `<strong>Correct! (+${pointsEarned} pts)</strong><br>${q.explanation}`;
+      feedbackBox.style.display = 'block';
+
+      document.getElementById('next-btn').style.display = 'block';
+      triggerConfetti();
+
+    } else {
+      // INCORRECT ANSWER
+      playSound('wrong');
+      optionBtns[selectedIndex].classList.add('incorrect');
+      optionBtns[selectedIndex].disabled = true;
+
+      if (currentAttempt === 1) {
+        // First Retry / Hint
+        currentAttempt = 2;
+        feedbackBox.className = 'feedback-box hint';
+        feedbackBox.innerHTML = `<strong>Not quite! Try again.</strong><br>💡 <em>Hint:</em> ${q.hint}`;
+        feedbackBox.style.display = 'block';
+      } else {
+        // Second Failure -> Reveal Explanation
+        clearInterval(timerInterval);
+        disableAllOptions();
+        optionBtns[q.correct].classList.add('correct');
+
+        feedbackBox.className = 'feedback-box explanation';
+        feedbackBox.innerHTML = `<strong>Incorrect.</strong><br>${q.explanation}`;
+        feedbackBox.style.display = 'block';
+
+        document.getElementById('next-btn').style.display = 'block';
+      }
+    }
+  }
+
+  function handleTimeout() {
+    disableAllOptions();
+    const q = shuffledQuestions[currentQuestionIndex];
+    const optionBtns = document.querySelectorAll('.option-btn');
+    optionBtns[q.correct].classList.add('correct');
+
+    const feedbackBox = document.getElementById('feedback-box');
+    feedbackBox.className = 'feedback-box explanation';
+    feedbackBox.innerHTML = `<strong>⏰ Time's up!</strong><br>${q.explanation}`;
+    feedbackBox.style.display = 'block';
+
+    document.getElementById('next-btn').style.display = 'block';
+  }
+
+  function disableAllOptions() {
+    const optionBtns = document.querySelectorAll('.option-btn');
+    optionBtns.forEach(btn => btn.disabled = true);
+  }
+
+  function handleNextQuestion() {
+    currentQuestionIndex++;
+    if (currentQuestionIndex < shuffledQuestions.length) {
+      loadQuestion();
+    } else {
+      showResults();
+    }
+  }
+
+  function showResults() {
+    document.getElementById('quiz-screen').style.display = 'none';
+    document.getElementById('results-screen').style.display = 'block';
+
+    const maxScore = shuffledQuestions.length * 10;
+    document.getElementById('final-score-text').innerText = `${score} / ${maxScore}`;
+
+    let msg = "";
+    const percentage = (score / maxScore) * 100;
+    if (percentage >= 90) {
+      msg = "Outstanding work! You're a Fraction Master! 🌟";
+      triggerConfetti();
+    } else if (percentage >= 70) {
+      msg = "Great job! You have a solid grasp of fractions! 👍";
+    } else {
+      msg = "Good effort! Keep practicing to strengthen your fraction skills! 💪";
+    }
+    document.getElementById('performance-message').innerText = msg;
+  }
+
+  // CANVAS CONFETTI EFFECT
+  function triggerConfetti() {
+    const canvas = document.getElementById('confetti-canvas');
+    const ctx = canvas.getContext('2d');
+    canvas.width = canvas.parentElement.clientWidth;
+    canvas.height = canvas.parentElement.clientHeight;
+
+    const particles = [];
+    const colors = ['#4A90E2', '#F5A623', '#7ED321', '#E74C3C', '#9B59B6'];
+
+    for (let i = 0; i < 50; i++) {
+      particles.push({
+        x: canvas.width / 2,
+        y: canvas.height / 2,
+        vx: (Math.random() - 0.5) * 12,
+        vy: (Math.random() - 0.5) * 12 - 3,
+        size: Math.random() * 6 + 4,
+        color: colors[Math.floor(Math.random() * colors.length)],
+        life: 100
+      });
+    }
+
+    function animate() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      let active = false;
+
+      particles.forEach(p => {
+        if (p.life > 0) {
+          active = true;
+          p.x += p.vx;
+          p.y += p.vy;
+          p.vy += 0.2; // gravity
+          p.life -= 2;
+          ctx.fillStyle = p.color;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+          ctx.fill();
         }
+      });
 
-        function prepareQuizData() {
-            database = masterDatabase.map(item => {
-                return {
-                    context: item.context,
-                    visualType: item.visualType,
-                    options: [...item.options],
-                    correctText: item.correctText,
-                    hint: item.hint,
-                    explanation: item.explanation
-                };
-            });
-            shuffleArray(database);
-        }
+      if (active) {
+        requestAnimationFrame(animate);
+      } else {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
+    }
 
-        function startQuiz() {
-            prepareQuizData();
-            document.getElementById('intro-screen').classList.remove('active');
-            document.getElementById('quiz-module').style.display = 'flex';
-            loadQuestion();
-        }
+    animate();
+  }
+</script>
 
-        function loadQuestion() {
-            clearInterval(state.timer);
-            state.timeLeft = 60;
-            state.attempts = 0;
-            
-            document.getElementById('current-q-num').innerText = state.currentIdx + 1;
-            document.getElementById('current-score').innerText = state.score;
-            document.getElementById('next-btn').style.display = 'none';
-            
-            const feedback = document.getElementById('feedback-message');
-            feedback.style.display = 'none';
-            feedback.className = 'feedback-box';
-
-            const qData = database[state.currentIdx];
-            document.getElementById('q-context').innerText = qData.context;
-
-            const aidBox = document.getElementById('visual-aid-box');
-            aidBox.innerHTML = '';
-            
-            if(qData.visualType === 'pizza') {
-                aidBox.innerHTML = `<img src="assets/pizza.png" alt="Whole Pizza" class="pizza-img" onerror="this.style.display='none'; this.parentElement.innerHTML='🍕';">`;
-            } else if(qData.visualType === 'window') {
-                aidBox.innerHTML = `
-                    <svg width="120" height="120" viewBox="0 0 100 100" style="background:#334155; border-radius:8px; padding:6px;">
-                        <rect x="2" y="2" width="46" height="46" fill="#3B82F6" stroke="#0284C7" stroke-width="1"/>
-                        <text x="25" y="30" font-size="16" text-anchor="middle">☁️</text>
-                        <rect x="52" y="2" width="46" height="46" fill="#3B82F6" stroke="#0284C7" stroke-width="1"/>
-                        <text x="75" y="30" font-size="16" text-anchor="middle">☁️</text>
-                        <rect x="2" y="52" width="46" height="46" fill="#BAE6FD" stroke="#0284C7" stroke-width="1"/>
-                        <rect x="52" y="52" width="46" height="46" fill="#BAE6FD" stroke="#0284C7" stroke-width="1"/>
-                    </svg>`;
-            } else if(qData.visualType === 'chocolate') {
-                aidBox.innerHTML = `
-                    <svg width="180" height="55" viewBox="0 0 160 45" style="filter: drop-shadow(0px 2px 4px rgba(0,0,0,0.15));">
-                        <rect x="2" y="2" width="36" height="40" rx="4" fill="#7A431D" stroke="#5C3214" stroke-width="1.5"/>
-                        <rect x="7" y="6" width="26" height="32" rx="2" fill="#8B4F26"/>
-                        <rect x="41" y="2" width="36" height="40" rx="4" fill="#7A431D" stroke="#5C3214" stroke-width="1.5"/>
-                        <rect x="46" y="6" width="26" height="32" rx="2" fill="#8B4F26"/>
-                        <rect x="80" y="2" width="36" height="40" rx="4" fill="#7A431D" stroke="#5C3214" stroke-width="1.5"/>
-                        <rect x="85" y="6" width="26" height="32" rx="2" fill="#8B4F26"/>
-                        <rect x="119" y="2" width="36" height="40" rx="4" fill="#7A431D" stroke="#5C3214" stroke-width="1.5"/>
-                        <rect x="124" y="6" width="26" height="32" rx="2" fill="#8B4F26"/>
-                    </svg>`;
-            } else if(qData.visualType === 'unequal-circle') {
-                aidBox.innerHTML = `
-                    <svg width="140" height="140" viewBox="0 0 100 100" style="overflow: visible;">
-                        <circle cx="50" cy="50" r="44" fill="#EAEFF8" stroke="#52627A" stroke-width="3"/>
-                        
-                        <path d="M 37.5 50 A 44 44 0 0 1 50 6 L 50 50 Z" fill="#FCCA1B" />
-                        
-                        <line x1="37.5" y1="2" x2="37.5" y2="98" stroke="#52627A" stroke-width="3"/>
-                        <line x1="2" y1="50" x2="98" y2="50" stroke="#52627A" stroke-width="3"/>
-                    </svg>`;
-            }
-
-            const optBox = document.getElementById('options-box');
-            optBox.innerHTML = '';
-            qData.options.forEach((opt) => {
-                const btn = document.createElement('button');
-                btn.className = 'option-btn';
-                btn.innerText = opt;
-                btn.onclick = () => handleSelection(opt, btn);
-                optBox.appendChild(btn);
-            });
-
-            startTimer();
-        }
-
-        function startTimer() {
-            const bar = document.getElementById('timer-bar-inner');
-            bar.style.width = '100%';
-            
-            state.timer = setInterval(() => {
-                state.timeLeft--;
-                bar.style.width = `${(state.timeLeft / 60) * 100}%`;
-                
-                if(state.timeLeft <= 0) {
-                    clearInterval(state.timer);
-                    forceRevealTimeout();
-                }
-            }, 1000);
-        }
-
-        function handleSelection(selectedText, selectedBtn) {
-            const qData = database[state.currentIdx];
-            const feedback = document.getElementById('feedback-message');
-            
-            if(selectedText === qData.correctText) {
-                clearInterval(state.timer);
-                playSound('claps');
-                triggerConfetti();
-                selectedBtn.classList.add('correct');
-                disableAllOptions();
-                
-                if(state.attempts === 0) state.score += 10;
-                else state.score += 5;
-                
-                document.getElementById('current-score').innerText = state.score;
-                feedback.className = 'feedback-box reveal';
-                feedback.style.borderLeft = '4px solid var(--success-color)';
-                feedback.innerHTML = `<strong>🌟 Correct!</strong> ${qData.explanation}`;
-                feedback.style.display = 'block';
-                document.getElementById('next-btn').style.display = 'inline-block';
-            } else {
-                state.attempts++;
-                selectedBtn.classList.add('wrong');
-                selectedBtn.disabled = true;
-                playSound('wrong');
-
-                if(state.attempts === 1) {
-                    feedback.className = 'feedback-box hint';
-                    feedback.innerHTML = `<strong>Hint:</strong> ${qData.hint}`;
-                    feedback.style.display = 'block';
-                } else {
-                    clearInterval(state.timer);
-                    disableAllOptions();
-                    
-                    const buttons = document.querySelectorAll('.option-btn');
-                    buttons.forEach(b => {
-                        if(b.innerText === qData.correctText) b.classList.add('correct');
-                    });
-
-                    feedback.className = 'feedback-box reveal';
-                    feedback.style.borderLeft = '4px solid var(--error-color)';
-                    feedback.innerHTML = `<strong>Let's learn:</strong> The correct answer is <strong>${qData.correctText}</strong>.<br><br>${qData.explanation}`;
-                    feedback.style.display = 'block';
-                    document.getElementById('next-btn').style.display = 'inline-block';
-                }
-            }
-        }
-
-        function forceRevealTimeout() {
-            disableAllOptions();
-            const qData = database[state.currentIdx];
-            const feedback = document.getElementById('feedback-message');
-            
-            const buttons = document.querySelectorAll('.option-btn');
-            buttons.forEach(b => {
-                if(b.innerText === qData.correctText) b.classList.add('correct');
-            });
-
-            feedback.className = 'feedback-box reveal';
-            feedback.style.borderLeft = '4px solid var(--secondary-color)';
-            feedback.innerHTML = `<strong>⏰ Time's up!</strong> The correct answer is <strong>${qData.correctText}</strong>.<br><br>${qData.explanation}`;
-            feedback.style.display = 'block';
-            document.getElementById('next-btn').style.display = 'inline-block';
-        }
-
-        function disableAllOptions() {
-            const buttons = document.querySelectorAll('.option-btn');
-            buttons.forEach(btn => btn.disabled = true);
-        }
-
-        function playSound(type) {
-            const snd = document.getElementById(`audio-${type}`);
-            if(snd) {
-                snd.currentTime = 0;
-                snd.play().catch(() => {});
-            }
-        }
-
-        function loadNextQuestion() {
-            state.currentIdx++;
-            if(state.currentIdx < database.length) {
-                loadQuestion();
-            } else {
-                showResults();
-            }
-        }
-
-        function showResults() {
-            document.getElementById('quiz-module').style.display = 'none';
-            const screen = document.getElementById('result-screen');
-            screen.classList.add('active');
-
-            const scorePct = (state.score / 100) * 100;
-            document.getElementById('result-score-text').innerText = `Your Total Score: ${state.score} Points`;
-
-            const emoji = document.getElementById('result-emoji');
-            const txt = document.getElementById('result-feedback');
-
-            if(scorePct >= 75) {
-                emoji.innerText = "🏆";
-                txt.innerText = "Good job! You are a fractions master!";
-                triggerConfetti();
-            } else if(scorePct >= 40) {
-                emoji.innerText = "🔄";
-                txt.innerText = "Review this chapter and try again.";
-            } else {
-                emoji.innerText = "📚";
-                txt.innerText = "Let’s practise more together.";
-            }
-        }
-
-        function resetQuiz() {
-            state.currentIdx = 0;
-            state.score = 0;
-            document.getElementById('result-screen').classList.remove('active');
-            startQuiz();
-        }
-
-        function triggerConfetti() {
-            const canvas = document.getElementById('confetti-canvas');
-            const ctx = canvas.getContext('2d');
-            canvas.width = canvas.parentElement.clientWidth;
-            canvas.height = canvas.parentElement.clientHeight;
-
-            let particles = [];
-            for (let i = 0; i < 40; i++) {
-                particles.push({
-                    x: Math.random() * canvas.width,
-                    y: Math.random() * canvas.height - canvas.height,
-                    r: Math.random() * 6 + 4,
-                    d: Math.random() * canvas.height,
-                    color: `hsl(${Math.random() * 360}, 90%, 60%)`,
-                    tilt: Math.random() * 10 - 5,
-                    tiltAngleIncremental: Math.random() * 0.07 + 0.02,
-                    tiltAngle: 0
-                });
-            }
-
-            let animationFrameId;
-            function draw() {
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                let remaining = false;
-                
-                particles.forEach((p) => {
-                    p.tiltAngle += p.tiltAngleIncremental;
-                    p.y += (Math.cos(p.d) + 3 + p.r / 2) / 2;
-                    p.x += Math.sin(p.tiltAngle);
-                    p.tilt = Math.sin(p.tiltAngle - p.r/2) * 5;
-
-                    if (p.y <= canvas.height) remaining = true;
-
-                    ctx.beginPath();
-                    ctx.lineWidth = p.r;
-                    ctx.strokeStyle = p.color;
-                    ctx.moveTo(p.x + p.tilt + p.r/2, p.y);
-                    ctx.lineTo(p.x + p.tilt, p.y + p.tilt + p.r/2);
-                    ctx.stroke();
-                });
-
-                if (remaining) {
-                    animationFrameId = requestAnimationFrame(draw);
-                } else {
-                    ctx.clearRect(0, 0, canvas.width, canvas.height);
-                    cancelAnimationFrame(animationFrameId);
-                }
-            }
-            draw();
-        }
-    </script>
 </body>
 </html>
