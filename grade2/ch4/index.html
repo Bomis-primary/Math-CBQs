@@ -47,7 +47,6 @@
             min-height: 500px;
         }
 
-        /* 5-second Splash Screen Configuration */
         #intro-view {
             display: flex;
             justify-content: center;
@@ -57,7 +56,7 @@
             background: white;
             z-index: 100;
             opacity: 1;
-            transition: opacity 1s ease-out;
+            transition: opacity 0.8s ease-out;
         }
 
         #intro-view.fade-out {
@@ -362,192 +361,163 @@
     <audio id="snd-wrong" src="assets/wrong.mp3" preload="auto"></audio>
 
     <script>
-        // FULL GR2 COMPREHENSIVE REVISED DATABASE
         const questionsDatabase = [
             {
-                text: "A cinema hall has seat numbers printed on the chairs. Amit sits on seat 248, and his father sits on seat 250. Amit's younger brother wants to sit exactly between them. Which seat number will Amit's brother sit on?",
+                text: "A cinema hall has seat numbers printed on the chairs. Amit sits on seat 248, and his father sits on seat 250. Amit's brother wants to sit exactly between them. Which seat number will he sit on?",
                 options: ["247", "249", "251", "240"],
-                answer: 1,
+                correctText: "249",
                 image: "assets/chair.png",
                 hint: "Think about what counting number comes right after 248 and just before 250.",
                 explanation: "249 comes exactly between 248 and 250."
             },
             {
-                text: "A school principal is counting the donation money. She counts 6 hundreds, 0 tens, and 8 ones. How should the principal write this total amount?",
+                text: "A school principal is counting donation money. She counts 6 hundreds, 0 tens, and 8 ones. How should she write this total amount?",
                 options: ["68", "680", "608", "806"],
-                answer: 2,
+                correctText: "608",
                 hint: "Place 6 in the hundreds spot, 0 in the tens spot, and 8 in the ones spot.",
                 explanation: "6 hundreds (600) + 0 tens (0) + 8 ones (8) forms the number 608."
             },
             {
                 text: "The school library received 734 new storybooks. How can this number be broken down into expanded form?",
                 options: ["700 + 30 + 4", "70 + 3 + 4", "700 + 40 + 3", "7 + 3 + 4"],
-                answer: 0,
-                hint: "Break the number 734 down into separate values for hundreds, tens, and ones.",
+                correctText: "700 + 30 + 4",
+                hint: "Break 734 down into separate values for hundreds, tens, and ones.",
                 explanation: "734 is made of 7 hundreds (700), 3 tens (30), and 4 ones (4)."
             },
             {
                 text: "Rahul wrote the place value of 7 in 872 as '7'. What mistake did he make?",
                 options: ["He wrote the face value instead of the place value.", "He wrote the hundreds value instead of the tens.", "He ignored the ones place.", "He made no mistake."],
-                answer: 0,
+                correctText: "He wrote the face value instead of the place value.",
                 hint: "Since 7 is in the middle column (tens position), what is its actual value in 872?",
-                explanation: "7 is in the tens place, so its place value is 70. Writing just '7' is giving its face value."
+                explanation: "7 is in the tens place, so its place value is 70. Writing just '7' gives its face value."
             },
             {
-                text: "Class 3A collected 452 bottles, and Class 3B collected 425 bottles. Which statement about their collections is correct?",
-                options: ["Class 3A < Class 3B", "Class 3A = Class 3B", "Class 3A > Class 3B", "Class 3B > Class 3A"],
-                answer: 2,
-                hint: "Compare the tens place of both numbers. Class 3A has 5 tens (52) and Class 3B has 2 tens (25). Which class collected more?",
-                explanation: "Class 3A collected 452 bottles and Class 3B collected 425 bottles. Since 452 is greater than 425, Class 3A > Class 3B is the correct statement."
+                text: "Section 2A collected 452 bottles, and Section 2B collected 425 bottles. Which statement about their collections is correct?",
+                options: ["Section 2A < Section 2B", "Section 2A = Section 2B", "Section 2A > Section 2B", "Section 2B > Section 2A"],
+                correctText: "Section 2A > Section 2B",
+                hint: "Compare the tens place of both numbers: 452 has 5 tens and 425 has 2 tens.",
+                explanation: "Section 2A collected 452 bottles and Section 2B collected 425 bottles. Since 452 is greater than 425, Section 2A > Section 2B."
             },
             {
                 text: "Sita wants to write the number 'Nine hundred fifteen' using digits. Help her choose the correct form.",
                 options: ["905", "915", "951", "90015"],
-                answer: 1,
+                correctText: "915",
                 hint: "Nine hundred means a 9 in the hundreds spot, followed by fifteen (15).",
                 explanation: "'Nine hundred fifteen' is written numerically as 915."
             },
             {
                 text: "Look at the pattern: 110, 120, 130, 140, ___. What number comes next?",
                 options: ["141", "145", "150", "200"],
-                answer: 2,
+                correctText: "150",
                 hint: "The numbers are increasing by counting in tens. Add 10 to 140.",
                 explanation: "This pattern counts up by 10s. 140 + 10 = 150."
             },
             {
                 text: "Which of the following numbers has a 4 in the hundreds place, 9 in the tens place, and 2 in the ones place?",
                 options: ["294", "492", "942", "429"],
-                answer: 1,
-                hint: "Match the digits to the places: H T O configuration.",
+                correctText: "492",
+                hint: "Match the digits to the places: Hundreds-Tens-Ones configuration.",
                 explanation: "4 hundreds, 9 tens, and 2 ones makes 492."
             },
             {
                 text: "Rohan has an odd number of chocolates. Which of these could be the total number of chocolates Rohan has?",
                 options: ["342", "560", "789", "124"],
-                answer: 2,
-                hint: "An odd number always ends in a 1, 3, 5, 7, or 9.",
+                correctText: "789",
+                hint: "An odd number always ends in 1, 3, 5, 7, or 9.",
                 explanation: "789 ends with a 9, which makes it an odd number."
             },
             {
                 text: "What is the standard form of the number 800 + 70?",
                 options: ["87", "807", "870", "80070"],
-                answer: 2,
+                correctText: "870",
                 hint: "Add 800 and 70 together. There are 0 ones.",
                 explanation: "800 + 70 + 0 = 870."
             },
             {
                 text: "Which list shows the numbers sorted from smallest to largest?",
                 options: ["123, 321, 231", "123, 231, 321", "321, 231, 123", "231, 123, 321"],
-                answer: 1,
+                correctText: "123, 231, 321",
                 hint: "Look at the hundreds digit to find the smallest number first.",
-                explanation: "123 (one hundred) < 231 (two hundreds) < 321 (three hundreds)."
+                explanation: "123 (1 hundred) < 231 (2 hundreds) < 321 (3 hundreds)."
             },
             {
                 text: "What is the face value of the digit 5 in the number 591?",
                 options: ["500", "50", "5", "9"],
-                answer: 2,
-                hint: "Face value is simply what the digit looks like, no matter its position.",
-                explanation: "The face value of a digit is always the digit itself. So, it is 5."
+                correctText: "5",
+                hint: "Face value is simply what the digit itself is, regardless of its place.",
+                explanation: "The face value of a digit is always the digit itself, which is 5."
             },
             {
-                text: "A postman is delivering letters to houses on a street. He jumps houses by skip counting by 5s: 505, 510, 515, ___. What house is next?",
+                text: "A postman is skip counting house numbers by 5s: 505, 510, 515, ___. What house number comes next?",
                 options: ["516", "520", "525", "530"],
-                answer: 1,
+                correctText: "520",
                 hint: "Add 5 to the last number 515.",
                 explanation: "Skip counting by 5s means 515 + 5 = 520."
             },
             {
                 text: "What is the largest 3-digit number you can form using the digits 3, 8, and 1 only once?",
                 options: ["138", "813", "831", "381"],
-                answer: 2,
-                hint: "To make the largest number, place the biggest digit in the hundreds spot, then the next biggest.",
+                correctText: "831",
+                hint: "To make the largest number, place the largest digit in the hundreds spot.",
                 explanation: "Arranging digits from greatest to least gives 8, 3, 1, forming 831."
-            },
-            {
-                text: "How many tens are there in total in the number 360?",
-                options: ["3", "6", "36", "0"],
-                answer: 2,
-                hint: "Think about how many bundles of 10 go into 360, or break down 300 into tens too.",
-                explanation: "300 contains 30 tens, and 60 contains 6 tens. Combined, 360 contains 36 tens."
             },
             {
                 text: "Meera counts backwards by 2s starting from 200. What is the next number she will say?",
                 options: ["202", "199", "198", "190"],
-                answer: 2,
+                correctText: "198",
                 hint: "Subtract 2 from 200.",
                 explanation: "Counting backwards by 2s from 200 gives 198."
             },
             {
-                text: "Which number is exactly 100 more than 459?",
-                options: ["469", "559", "359", "549"],
-                answer: 1,
-                hint: "Increase only the digit in the hundreds place by 1.",
-                explanation: "Adding 100 to 459 changes the 4 hundreds to 5 hundreds, resulting in 559."
-            },
-            {
                 text: "Which number comes right before the smallest 3-digit number?",
                 options: ["101", "100", "99", "9"],
-                answer: 2,
+                correctText: "99",
                 hint: "The smallest 3-digit number is 100. What is 1 less than 100?",
-                explanation: "The smallest 3-digit number is 100, and the number immediately before it is 99."
-            },
-            {
-                text: "If a number has 0 in its ones place, it is always a/an:",
-                options: ["Odd number", "Even number", "Single digit number", "Greater than 500"],
-                answer: 1,
-                hint: "Numbers ending in 0, 2, 4, 6, or 8 can always be split into equal pairs.",
-                explanation: "Any number that ends in 0 is divisible by 2, meaning it is an even number."
+                explanation: "The smallest 3-digit number is 100, and 1 less than 100 is 99."
             },
             {
                 text: "What is the value of 4 hundreds + 12 tens + 5 ones?",
                 options: ["4125", "425", "525", "417"],
-                answer: 2,
-                hint: "12 tens is the same as 1 hundred and 2 tens. Combine everything carefully!",
+                correctText: "525",
+                hint: "12 tens is equal to 120 (1 hundred and 2 tens). Add all parts together!",
                 explanation: "4 hundreds (400) + 12 tens (120) + 5 ones (5) = 525."
             },
             {
-                text: "If you arrange these numbers in descending order (largest to smallest), which number will come 4th? Numbers: 511, 529, 597, 500, 503",
+                text: "If you arrange these numbers in descending order (largest to smallest), which number comes 4th? Numbers: 511, 529, 597, 500, 503",
                 options: ["511", "500", "503", "529"],
-                answer: 2,
-                hint: "Descending order means counting down from the biggest number to the smallest number. Line them up from greatest to least first!",
-                explanation: "Arranging from largest to smallest gives: 597, 529, 511, 503, and 500. The 4th number in this list is 503."
+                correctText: "503",
+                hint: "Descending order goes from largest to smallest. Line them up first!",
+                explanation: "Descending order: 597, 529, 511, 503, 500. The 4th number is 503."
             },
             {
-                text: "A toy chest has the following numbers painted on it: 672, 674, 675, 676, 678, and 772. Which of the following number names does NOT belong to this given collection of numbers?",
-                options: ["Six hundred seventy two", "Seven hundred seventy two", "Six hundred seventy five", "Seven hundred sixty four"],
-                answer: 3,
-                image: "assets/toy-chest.png",
-                hint: "Read the word choices carefully and compare each one to the actual numbers painted on the toy chest.",
-                explanation: "The number 764 (Seven hundred sixty four) is not painted anywhere on the toy chest, making it the odd one out."
-            },
-            {
-                text: "How many numbers are there on the piggy bank which are more than 400 but less than 700? Numbers listed: 750, 400, 521, 699, 315, 612",
+                text: "How many numbers on the piggy bank are greater than 400 but less than 700? Numbers: 750, 400, 521, 699, 315, 612",
                 options: ["2", "3", "4", "5"],
-                answer: 1,
+                correctText: "3",
                 image: "assets/piggy-bank.png",
-                hint: "Look for numbers that start with a 4, 5, or 6 in the hundreds place, but remember that exactly 400 is not 'more than' 400!",
-                explanation: "The numbers that fit the rule are 521, 699, and 612. That makes exactly 3 numbers total."
+                hint: "Look for numbers between 401 and 699 inclusive.",
+                explanation: "The matching numbers are 521, 699, and 612 (3 numbers total)."
             },
             {
-                text: "An abacus shows a 3-digit number. It has 6 beads in the Hundreds column, 3 beads in the Tens column, and 4 beads in the Ones column. Which of the following numbers is greater than the number shown on the abacus?",
+                text: "An abacus shows 6 beads in Hundreds, 3 beads in Tens, and 4 beads in Ones. Which number is greater than the abacus value?",
                 options: ["629", "599", "631", "712"],
-                answer: 3,
+                correctText: "712",
                 image: "assets/abacus.png",
-                hint: "First find the value of the abacus (6 hundreds, 3 tens, 4 ones). Then look for an option that is a bigger number than that value.",
-                explanation: "The abacus shows the number 634. Comparing the options, 712 is the only number that is greater than 634."
-            },
-            {
-                text: "Four bowls are filled with soup, and each bowl shows a different place value. Bowl W has 24 tens, Bowl X has 32 tens, Bowl Y has 4 hundreds, and Bowl Z has 90 ones. Which bowl shows the largest value?",
-                options: ["Bowl W", "Bowl X", "Bowl Y", "Bowl Z"],
-                answer: 2,
-                image: "assets/bowls.png",
-                hint: "Convert each value into a standard number: 1 hundred = 100, 1 ten = 10, and 1 one = 1. Then compare them!",
-                explanation: "Let's find the values: Bowl W = 240 (24 x 10), Bowl X = 320 (32 x 10), Bowl Y = 400 (4 x 100), and Bowl Z = 90 (90 x 1). 400 is the biggest number, so Bowl Y has the largest value."
+                hint: "The abacus shows 634. Look for an option that is larger than 634.",
+                explanation: "The abacus shows 634. 712 is the only option greater than 634."
             }
         ];
 
-        // GAME OPERATIONS MANAGEMENT OBJECT
+        function shuffleArray(arr) {
+            const array = [...arr];
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
         const gameEngine = {
+            activeQuestions: [],
             currentQuestionIndex: 0,
             score: 0,
             attempts: 0,
@@ -556,7 +526,6 @@
             isMuted: false,
 
             init() {
-                // Fixed 5-second entry configuration framework
                 setTimeout(() => {
                     const intro = document.getElementById('intro-view');
                     intro.classList.add('fade-out');
@@ -565,10 +534,15 @@
                     intro.addEventListener('transitionend', () => {
                         intro.style.display = 'none';
                     });
-                }, 5000);
+                }, 1200);
             },
 
             startQuiz() {
+                // Shuffle questions each time a quiz begins
+                this.activeQuestions = shuffleArray(questionsDatabase);
+                this.currentQuestionIndex = 0;
+                this.score = 0;
+
                 document.getElementById('instruction-view').classList.remove('active');
                 document.getElementById('game-view').classList.add('active');
                 this.loadQuestion();
@@ -582,12 +556,11 @@
                 document.getElementById('feedback-display').className = 'feedback-box';
                 document.getElementById('btn-next').style.display = 'none';
                 
-                const qData = questionsDatabase[this.currentQuestionIndex];
-                document.getElementById('q-counter').innerText = `Question: ${this.currentQuestionIndex + 1}/${questionsDatabase.length}`;
+                const qData = this.activeQuestions[this.currentQuestionIndex];
+                document.getElementById('q-counter').innerText = `Question: ${this.currentQuestionIndex + 1}/${this.activeQuestions.length}`;
                 document.getElementById('score-counter').innerText = `Score: ${this.score}`;
                 document.getElementById('q-txt').innerText = qData.text;
 
-                // Handle visual media rendering logic blocks
                 const imgContainer = document.getElementById('q-img-container');
                 const imgElem = document.getElementById('q-img');
                 
@@ -602,11 +575,14 @@
                 const optionsBox = document.getElementById('options-box');
                 optionsBox.innerHTML = '';
 
-                qData.options.forEach((opt, idx) => {
+                // Dynamically shuffle options per question
+                const shuffledOptions = shuffleArray(qData.options);
+
+                shuffledOptions.forEach((optText) => {
                     const btn = document.createElement('button');
                     btn.className = 'option-btn';
-                    btn.innerText = opt;
-                    btn.onclick = () => this.handleAnswer(idx, btn);
+                    btn.innerText = optText;
+                    btn.onclick = () => this.handleAnswer(optText, btn);
                     optionsBox.appendChild(btn);
                 });
 
@@ -628,11 +604,11 @@
                 }, 1000);
             },
 
-            handleAnswer(selectedIndex, selectedBtn) {
-                const qData = questionsDatabase[this.currentQuestionIndex];
+            handleAnswer(selectedText, selectedBtn) {
+                const qData = this.activeQuestions[this.currentQuestionIndex];
                 this.attempts++;
 
-                if (selectedIndex === qData.answer) {
+                if (selectedText === qData.correctText) {
                     clearInterval(this.timer);
                     selectedBtn.classList.add('correct');
                     this.playSound('correct');
@@ -661,13 +637,13 @@
             },
 
             revealSystemExplanation(isCorrect) {
-                const qData = questionsDatabase[this.currentQuestionIndex];
+                const qData = this.activeQuestions[this.currentQuestionIndex];
                 const feedback = document.getElementById('feedback-display');
                 
                 const buttons = document.querySelectorAll('.option-btn');
-                buttons.forEach((btn, idx) => {
+                buttons.forEach((btn) => {
                     btn.disabled = true;
-                    if (idx === qData.answer) {
+                    if (btn.innerText === qData.correctText) {
                         btn.classList.add('correct');
                     }
                 });
@@ -681,7 +657,7 @@
 
             nextQuestion() {
                 this.currentQuestionIndex++;
-                if (this.currentQuestionIndex < questionsDatabase.length) {
+                if (this.currentQuestionIndex < this.activeQuestions.length) {
                     this.loadQuestion();
                 } else {
                     this.endQuiz();
@@ -693,8 +669,7 @@
                 document.getElementById('game-view').classList.remove('active');
                 document.getElementById('result-view').classList.add('active');
 
-                // Dynamic raw percentage calculation system based on maximum threshold variables
-                const maxPossibleScore = questionsDatabase.length * 5; 
+                const maxPossibleScore = this.activeQuestions.length * 5; 
                 const percentage = Math.round((this.score / maxPossibleScore) * 100);
                 document.getElementById('final-score').innerText = `${percentage}%`;
 
