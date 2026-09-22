@@ -2,413 +2,460 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Grade 2 Maths - Division Quiz</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Grade 2 Division Challenge</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <style>
-        :root {
-            --primary-color: #4f46e5;
-            --primary-hover: #4338ca;
-            --bg-color: #f8fafc;
-            --card-bg: #ffffff;
-            --text-color: #1e293b;
-            --border-color: #e2e8f0;
-            --success-color: #22c55e;
-            --error-color: #ef4444;
+        .feedback-hint {
+            background-color: #fefce8;
+            border-left: 4px solid #eab308;
+            color: #854d0e;
         }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        .feedback-explanation {
+            background-color: #f8fafc;
+            border-left: 4px solid #64748b;
+            color: #1e293b;
         }
-
-        body {
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            padding: 20px;
-        }
-
-        /* Splash Screen - Blank white screen showing only the logo */
-        #splash-screen {
-            position: fixed;
+        #fx-canvas {
+            position: absolute;
             top: 0;
             left: 0;
-            width: 100vw;
-            height: 100vh;
-            background-color: #ffffff;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
-            transition: opacity 0.5s ease;
-        }
-
-        #splash-screen img {
-            max-width: 280px;
-            height: auto;
-            display: block;
-        }
-
-        .quiz-container {
-            background-color: var(--card-bg);
-            border-radius: 12px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
             width: 100%;
-            max-width: 600px;
-            padding: 30px;
-            display: none;
-        }
-
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            border-bottom: 2px solid var(--border-color);
-            padding-bottom: 15px;
-        }
-
-        .timer {
-            font-weight: bold;
-            color: var(--primary-color);
-            background: #eef2ff;
-            padding: 6px 12px;
-            border-radius: 20px;
-        }
-
-        .progress {
-            font-size: 14px;
-            color: #64748b;
-        }
-
-        .question-box {
-            margin-bottom: 20px;
-        }
-
-        .question-title {
-            font-size: 18px;
-            font-weight: 600;
-            margin-bottom: 15px;
-        }
-
-        .options-list {
-            list-style: none;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .option-item {
-            padding: 12px 16px;
-            border: 2px solid var(--border-color);
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            background-color: #fff;
-        }
-
-        .option-item:hover {
-            border-color: var(--primary-color);
-            background-color: #f1f5f9;
-        }
-
-        .option-item.correct {
-            border-color: var(--success-color);
-            background-color: #f0fdf4;
-            color: #166534;
-        }
-
-        .option-item.incorrect {
-            border-color: var(--error-color);
-            background-color: #fef2f2;
-            color: #991b1b;
-        }
-
-        .feedback-box {
-            margin-top: 15px;
-            padding: 10px;
-            border-radius: 6px;
-            font-size: 14px;
-            display: none;
-        }
-
-        .feedback-box.hint {
-            background-color: #fefce8;
-            color: #854d0e;
-            border: 1px solid #fef08a;
-            display: block;
-        }
-
-        .footer {
-            display: flex;
-            justify-content: flex-end;
-            margin-top: 25px;
-        }
-
-        .btn {
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
-            padding: 10px 24px;
-            border-radius: 6px;
-            font-size: 16px;
-            cursor: pointer;
-            transition: background-color 0.2s;
-        }
-
-        .btn:hover {
-            background-color: var(--primary-hover);
-        }
-
-        .btn:disabled {
-            background-color: #cbd5e1;
-            cursor: not-allowed;
-        }
-
-        .results-container {
-            text-align: center;
-            display: none;
-        }
-
-        .results-container h2 {
-            margin-bottom: 15px;
-            font-size: 24px;
-        }
-
-        .results-score {
-            font-size: 48px;
-            font-weight: bold;
-            color: var(--primary-color);
-            margin-bottom: 20px;
+            height: 100%;
+            pointer-events: none;
+            z-index: 50;
         }
     </style>
 </head>
-<body>
+<body class="bg-indigo-50 flex items-center justify-center min-h-screen p-4">
 
-    <!-- Splash Screen: Blank screen showing only the logo from the assets folder -->
-    <div id="splash-screen">
-        <img src="assets/logo.png" alt="Innovine Logo">
-    </div>
+    <div class="bg-white shadow-xl rounded-2xl p-6 sm:p-8 max-w-lg w-full relative overflow-hidden border border-indigo-100 min-h-[520px] flex flex-col justify-between">
+        <canvas id="fx-canvas"></canvas>
 
-    <!-- Quiz Container -->
-    <div class="quiz-container" id="quiz-container">
-        <div class="header">
-            <span class="progress" id="progress">Question 1 of 12</span>
-            <span class="timer" id="timer">60s</span>
-        </div>
-        
-        <div class="question-box" id="question-box">
-            <h3 class="question-title" id="question-title"></h3>
-            <ul class="options-list" id="options-list"></ul>
-            <div class="feedback-box" id="feedback-box"></div>
+        <!-- ================= 1. BRANDING SCREEN (Logo Splash) ================= -->
+        <div id="screen-logo" class="flex flex-col items-center justify-center my-auto py-12 text-center">
+            <img src="assets/logo.png" alt="Innovine Logo" class="w-36 h-36 object-contain mx-auto" onerror="this.style.display='none'">
+            <h1 class="text-2xl font-bold text-indigo-900 mt-4">Innovine Learning</h1>
         </div>
 
-        <div class="footer">
-            <button class="btn" id="next-btn" onclick="handleNext()" disabled>Next</button>
+        <!-- ================= 2. INSTRUCTIONS SCREEN ================= -->
+        <div id="screen-instructions" class="hidden my-auto text-center py-4">
+            <h1 class="text-2xl font-bold text-indigo-900 mb-3">Division Quest! ➗</h1>
+            <p class="text-gray-600 mb-6 text-sm sm:text-base leading-relaxed">
+                Welcome to Grade 2 Division! Read each question carefully and pick the correct option.
+            </p>
+            
+            <div class="bg-indigo-50/70 p-4 rounded-xl text-left text-sm mb-6 border border-indigo-100 space-y-2">
+                <p class="font-semibold text-indigo-900">Game Rules:</p>
+                <ul class="list-disc list-inside text-gray-700 space-y-1">
+                    <li>There are <strong>12 questions</strong> in total.</li>
+                    <li>You have <strong>60 seconds</strong> for each question.</li>
+                    <li>If your 1st attempt is wrong, you'll get a <strong>helpful hint</strong>!</li>
+                    <li>You get <strong>2 attempts</strong> per question before the full explanation is shown.</li>
+                </ul>
+            </div>
+
+            <button onclick="startQuiz()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3.5 rounded-xl transition duration-200 shadow-md cursor-pointer">
+                Start Challenge 🌟
+            </button>
+        </div>
+
+        <!-- ================= 3. QUIZ GAMEPLAY SCREEN ================= -->
+        <div id="screen-quiz" class="hidden flex-col h-full justify-between">
+            <div>
+                <!-- Header / HUD -->
+                <div class="flex items-center justify-between mb-4 pb-3 border-b border-gray-100">
+                    <span id="progress-badge" class="text-xs bg-indigo-100 text-indigo-800 font-semibold px-3 py-1.5 rounded-full">Question 1 of 12</span>
+                    <div class="flex items-center gap-2">
+                        <span id="timer-badge" class="text-xs bg-amber-100 text-amber-800 font-bold px-3 py-1.5 rounded-full">⏱️ 60s</span>
+                        <button id="mute-btn" onclick="toggleMute()" class="text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold px-2.5 py-1.5 rounded-lg transition cursor-pointer">🔊 Sound</button>
+                    </div>
+                    <span id="score-badge" class="text-xs bg-emerald-100 text-emerald-800 font-bold px-3 py-1.5 rounded-full">Score: 0</span>
+                </div>
+
+                <!-- Quiz Container -->
+                <div id="quiz-container">
+                    <h2 id="question-text" class="text-base sm:text-lg font-bold text-gray-800 mb-4 leading-snug"></h2>
+                    <div id="options-container" class="space-y-2.5"></div>
+                </div>
+
+                <!-- Feedback Section -->
+                <div id="feedback-section" class="mt-4 p-3.5 rounded-xl text-sm font-medium hidden">
+                    <p id="feedback-text" class="leading-relaxed"></p>
+                </div>
+            </div>
+
+            <!-- Next Button -->
+            <div class="mt-6">
+                <button id="next-btn" onclick="nextQuestion()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-xl transition duration-200 shadow-md hidden cursor-pointer">
+                    Continue ➔
+                </button>
+            </div>
+        </div>
+
+        <!-- ================= 4. COMPLETION SCREEN ================= -->
+        <div id="screen-complete" class="hidden my-auto text-center py-6">
+            <h2 class="text-2xl font-bold text-indigo-900 mb-2">Quest Completed! 🎉</h2>
+            <div id="final-score-text" class="text-4xl font-extrabold text-indigo-600 my-4">0%</div>
+            <p id="final-msg" class="text-gray-600 mb-6 font-medium text-sm sm:text-base"></p>
+            <button onclick="restartQuiz()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3.5 rounded-xl shadow-md transition cursor-pointer">
+                Play Again 🔄
+            </button>
         </div>
     </div>
 
-    <!-- Results Container -->
-    <div class="quiz-container results-container" id="results-container">
-        <h2>Quiz Completed!</h2>
-        <p>Your Final Score:</p>
-        <div class="results-score" id="final-score">0 / 12</div>
-        <button class="btn" onclick="restartQuiz()">Restart Quiz</button>
-    </div>
+    <!-- Audio Elements -->
+    <audio id="claps-audio" src="assets/claps.mp3" preload="auto"></audio>
+    <audio id="wrong-audio" src="assets/wrong.mp3" preload="auto"></audio>
 
     <script>
-        const questions = [
+        const quizDatabase = [
             {
                 question: "Riya has 12 chocolates and wants to distribute them equally among 3 children. How many chocolates will each child get?",
-                options: ["a) 3 chocolates", "b) 4 chocolates", "c) 5 chocolates", "d) 6 chocolates"],
-                correct: 1,
-                hint: "Think about dividing 12 into 3 equal groups (12 ÷ 3)."
+                options: ["3 chocolates", "4 chocolates", "5 chocolates", "6 chocolates"],
+                correctText: "4 chocolates",
+                hint: "Think about dividing 12 into 3 equal groups (12 ÷ 3).",
+                explanation: "12 chocolates divided equally among 3 children means 12 ÷ 3 = 4 chocolates each."
             },
             {
                 question: "Karan has 12 bones and gives 4 bones to each puppy until none are left. How many puppies receive bones?",
-                options: ["a) 2 puppies", "b) 3 puppies", "c) 4 puppies", "d) 6 puppies"],
-                correct: 1,
-                hint: "Count how many times you subtract 4 from 12."
+                options: ["2 puppies", "3 puppies", "4 puppies", "6 puppies"],
+                correctText: "3 puppies",
+                hint: "Count how many times you subtract 4 from 12.",
+                explanation: "Subtracting 4 from 12 repeatedly (12 - 4 - 4 - 4 = 0) shows 12 ÷ 4 = 3 puppies."
             },
             {
                 question: "A teacher has 9 storybooks and gives all of them to 1 single student. How many books does the student receive?",
-                options: ["a) 0 books", "b) 1 book", "c) 9 books", "d) 10 books"],
-                correct: 2,
-                hint: "Any number divided by 1 gives the number itself as the quotient."
+                options: ["0 books", "1 book", "9 books", "10 books"],
+                correctText: "9 books",
+                hint: "Any number divided by 1 gives the number itself as the quotient.",
+                explanation: "When you divide any number by 1, the answer is always the number itself (9 ÷ 1 = 9)."
             },
             {
                 question: "7 children share 7 pencils equally among themselves. How many pencils does each child get?",
-                options: ["a) 0 pencils", "b) 1 pencil", "c) 7 pencils", "d) 14 pencils"],
-                correct: 1,
-                hint: "When a number is divided by itself, the quotient is always 1."
+                options: ["0 pencils", "1 pencil", "7 pencils", "14 pencils"],
+                correctText: "1 pencil",
+                hint: "When a number is divided by itself, the quotient is always 1.",
+                explanation: "Sharing 7 items among 7 people gives 7 ÷ 7 = 1 pencil for each child."
             },
             {
                 question: "Aman has 0 marbles in his bag and decides to divide them equally among 4 friends. How many marbles does each friend get?",
-                options: ["a) 0 marbles", "b) 1 marble", "c) 4 marbles", "d) Cannot be divided"],
-                correct: 0,
-                hint: "When zero is divided by any number, the quotient is always zero."
+                options: ["0 marbles", "1 marble", "4 marbles", "Cannot be divided"],
+                correctText: "0 marbles",
+                hint: "When zero is divided by any number, the quotient is always zero.",
+                explanation: "Starting with 0 items means everyone gets 0 items (0 ÷ 4 = 0)."
             },
             {
                 question: "A florist makes 4 flower bunches, each containing 5 flowers, giving a total of 20 flowers. If she wants to repack all 20 flowers equally into 5 bunches, how many flowers will be in each bunch?",
-                options: ["a) 3 flowers", "b) 4 flowers", "c) 5 flowers", "d) 20 flowers"],
-                correct: 1,
-                hint: "Use the multiplication and division fact family (20 ÷ 5)."
+                options: ["3 flowers", "4 flowers", "5 flowers", "20 flowers"],
+                correctText: "4 flowers",
+                hint: "Use the multiplication and division fact family (20 ÷ 5).",
+                explanation: "Since 4 × 5 = 20, dividing 20 total flowers into 5 bunches gives 20 ÷ 5 = 4 flowers in each bunch."
             },
             {
                 question: "48 mangoes are packed equally into 8 baskets. How many mangoes are there in each basket?",
-                options: ["a) 6 mangoes", "b) 7 mangoes", "c) 8 mangoes", "d) 9 mangoes"],
-                correct: 0,
-                hint: "Recall the multiplication table of 8."
+                options: ["6 mangoes", "7 mangoes", "8 mangoes", "9 mangoes"],
+                correctText: "6 mangoes",
+                hint: "Recall the multiplication table of 8.",
+                explanation: "48 mangoes ÷ 8 baskets = 6 mangoes in each basket because 8 × 6 = 48."
             },
             {
                 question: "Teena has 9 strawberries and distributes them equally among 4 friends. How many strawberries are left undistributed (remainder)?",
-                options: ["a) 0 strawberries", "b) 1 strawberry", "c) 2 strawberries", "d) 3 strawberries"],
-                correct: 1,
-                hint: "Find the closest product to 9 in the 4 times table."
+                options: ["0 strawberries", "1 strawberry", "2 strawberries", "3 strawberries"],
+                correctText: "1 strawberry",
+                hint: "Find the closest product to 9 in the 4 times table.",
+                explanation: "4 friends get 2 strawberries each (4 × 2 = 8). 9 - 8 leaves 1 strawberry remaining."
             },
             {
                 question: "Rahul solved 58 ÷ 7 and wrote: Quotient = 8, Remainder = 5. Why is his answer incorrect?",
-                options: ["a) The quotient should be 7 instead of 8.", "b) The product 7 × 8 is 56, leaving a remainder of 2, not 5.", "c) Division cannot have a remainder.", "d) No mistake was made."],
-                correct: 1,
-                hint: "Check the subtraction step: 58 - (7 × 8)."
+                options: [
+                    "The quotient should be 7 instead of 8.",
+                    "The product 7 × 8 is 56, leaving a remainder of 2, not 5.",
+                    "Division cannot have a remainder.",
+                    "No mistake was made."
+                ],
+                correctText: "The product 7 × 8 is 56, leaving a remainder of 2, not 5.",
+                hint: "Check the subtraction step: 58 - (7 × 8).",
+                explanation: "7 × 8 = 56. When subtracted from 58 (58 - 56), the remainder is 2, not 5."
             },
             {
                 question: "In the division problem 337 ÷ 8 = 42 with a remainder of 1, which of the following terms does not belong to the parts of this division expression?",
-                options: ["a) Divisor (8)", "b) Dividend (337)", "c) Product (24)", "d) Quotient (42)"],
-                correct: 2,
-                hint: "Recall the four primary terms associated with division."
+                options: ["Divisor (8)", "Dividend (337)", "Product (24)", "Quotient (42)"],
+                correctText: "Product (24)",
+                hint: "Recall the four primary terms associated with division.",
+                explanation: "'Product' is a term used in multiplication. The parts of division are Dividend, Divisor, Quotient, and Remainder."
             },
             {
                 question: "Sarah has 18 crayons. She puts an equal number of crayons into 3 boxes. How many crayons are there in each box?",
-                options: ["a) 4 crayons", "b) 5 crayons", "c) 6 crayons", "d) 9 crayons"],
-                correct: 2,
-                hint: "Divide the total number of crayons by the number of boxes (18 ÷ 3)."
+                options: ["4 crayons", "5 crayons", "6 crayons", "9 crayons"],
+                correctText: "6 crayons",
+                hint: "Divide the total number of crayons by the number of boxes (18 ÷ 3).",
+                explanation: "18 crayons divided into 3 boxes equals 18 ÷ 3 = 6 crayons per box."
             },
             {
                 question: "A gardener has 24 flowers and plants them in rows of 6 flowers each. How many rows of flowers does he make?",
-                options: ["a) 3 rows", "b) 4 rows", "c) 6 rows", "d) 8 rows"],
-                correct: 1,
-                hint: "Count how many groups of 6 fit into 24 (24 ÷ 6)."
+                options: ["3 rows", "4 rows", "6 rows", "8 rows"],
+                correctText: "4 rows",
+                hint: "Count how many groups of 6 fit into 24 (24 ÷ 6).",
+                explanation: "24 total flowers divided into groups of 6 gives 24 ÷ 6 = 4 rows."
             }
         ];
 
+        function shuffleArray(arr) {
+            const array = [...arr];
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        let activeQuestions = [];
         let currentQuestion = 0;
         let score = 0;
         let attempts = 0;
-        let timer;
+        let lock = false;
+        let timer = null;
         let timeLeft = 60;
+        let isMuted = false;
 
-        window.addEventListener('load', () => {
+        const screenLogo = document.getElementById("screen-logo");
+        const screenInstructions = document.getElementById("screen-instructions");
+        const screenQuiz = document.getElementById("screen-quiz");
+        const screenComplete = document.getElementById("screen-complete");
+
+        const questionText = document.getElementById("question-text");
+        const optionsContainer = document.getElementById("options-container");
+        const feedbackSection = document.getElementById("feedback-section");
+        const feedbackText = document.getElementById("feedback-text");
+        const progressBadge = document.getElementById("progress-badge");
+        const timerBadge = document.getElementById("timer-badge");
+        const scoreBadge = document.getElementById("score-badge");
+        const nextBtn = document.getElementById("next-btn");
+
+        // Splash screen auto-transition
+        window.onload = () => {
             setTimeout(() => {
-                const splash = document.getElementById('splash-screen');
-                const quiz = document.getElementById('quiz-container');
-                splash.style.opacity = '0';
-                setTimeout(() => {
-                    splash.style.display = 'none';
-                    quiz.style.display = 'block';
-                    loadQuestion();
-                }, 500);
-            }, 3000); // Set splash screen display duration to 3 seconds
-        });
+                screenLogo.classList.add("hidden");
+                screenInstructions.classList.remove("hidden");
+            }, 1800);
+        };
+
+        function startQuiz() {
+            activeQuestions = shuffleArray(quizDatabase);
+            currentQuestion = 0;
+            score = 0;
+            
+            screenInstructions.classList.add("hidden");
+            screenQuiz.classList.remove("hidden");
+            screenQuiz.classList.add("flex");
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            attempts = 0;
+            lock = false;
+            timeLeft = 60;
+
+            feedbackSection.classList.add("hidden");
+            feedbackSection.className = "mt-4 p-3.5 rounded-xl text-sm font-medium hidden";
+            nextBtn.classList.add("hidden");
+
+            const qData = activeQuestions[currentQuestion];
+            questionText.textContent = qData.question;
+            progressBadge.textContent = `Question ${currentQuestion + 1} of ${activeQuestions.length}`;
+            scoreBadge.textContent = `Score: ${score}`;
+
+            const shuffledOptions = shuffleArray(qData.options);
+            optionsContainer.innerHTML = "";
+
+            shuffledOptions.forEach((optionText) => {
+                const btn = document.createElement("button");
+                btn.className = "option-btn w-full text-left p-3.5 rounded-xl border-2 border-gray-100 hover:border-indigo-400 hover:bg-indigo-50 text-gray-700 font-semibold transition duration-150 cursor-pointer text-sm sm:text-base";
+                btn.textContent = optionText;
+                btn.onclick = () => handleSelectOption(optionText, btn);
+                optionsContainer.appendChild(btn);
+            });
+
+            startTimer();
+        }
 
         function startTimer() {
             clearInterval(timer);
-            timeLeft = 60;
-            document.getElementById('timer').innerText = timeLeft + 's';
+            timerBadge.textContent = `⏱️ ${timeLeft}s`;
+            
             timer = setInterval(() => {
                 timeLeft--;
-                document.getElementById('timer').innerText = timeLeft + 's';
+                timerBadge.textContent = `⏱️ ${timeLeft}s`;
+
                 if (timeLeft <= 0) {
                     clearInterval(timer);
-                    handleTimeout();
+                    revealSolution(false, "Time's up! ");
                 }
             }, 1000);
         }
 
-        function loadQuestion() {
-            startTimer();
-            attempts = 0;
-            const q = questions[currentQuestion];
-            document.getElementById('progress').innerText = `Question ${currentQuestion + 1} of ${questions.length}`;
-            document.getElementById('question-title').innerText = q.question;
-            
-            const optionsList = document.getElementById('options-list');
-            optionsList.innerHTML = '';
-            
-            q.options.forEach((opt, index) => {
-                const li = document.createElement('li');
-                li.className = 'option-item';
-                li.innerText = opt;
-                li.onclick = () => selectOption(index);
-                optionsList.appendChild(li);
-            });
+        function handleSelectOption(selectedText, selectedBtn) {
+            if (lock) return;
 
-            document.getElementById('feedback-box').style.display = 'none';
-            document.getElementById('next-btn').disabled = true;
-        }
+            const qData = activeQuestions[currentQuestion];
+            attempts++;
 
-        function selectOption(index) {
-            const q = questions[currentQuestion];
-            const optionItems = document.querySelectorAll('.option-item');
-            const feedbackBox = document.getElementById('feedback-box');
-
-            if (index === q.correct) {
+            if (selectedText === qData.correctText) {
                 clearInterval(timer);
-                optionItems[index].classList.add('correct');
-                optionItems.forEach(item => item.onclick = null);
-                if (attempts === 0) score++;
-                feedbackBox.style.display = 'none';
-                document.getElementById('next-btn').disabled = false;
+                lock = true;
+                selectedBtn.className = "option-btn w-full text-left p-3.5 rounded-xl border-2 border-emerald-500 bg-emerald-100 text-emerald-900 font-bold transition duration-150 cursor-not-allowed text-sm sm:text-base";
+                
+                playSound("claps");
+                triggerWinEffects();
+
+                if (attempts === 1) score += 10;
+                else score += 5;
+                scoreBadge.textContent = `Score: ${score}`;
+
+                revealSolution(true, "🎉 Excellent! ");
             } else {
-                attempts++;
+                selectedBtn.className = "option-btn w-full text-left p-3.5 rounded-xl border-2 border-rose-500 bg-rose-100 text-rose-900 font-bold transition duration-150 cursor-not-allowed opacity-80 text-sm sm:text-base";
+                selectedBtn.disabled = true;
+                playSound("wrong");
+
                 if (attempts === 1) {
-                    optionItems[index].classList.add('incorrect');
-                    optionItems[index].onclick = null;
-                    feedbackBox.className = 'feedback-box hint';
-                    feedbackBox.innerText = `Hint: ${q.hint}`;
-                    feedbackBox.style.display = 'block';
+                    feedbackText.innerHTML = `💡 <strong>Hint:</strong> ${qData.hint}`;
+                    feedbackSection.className = "mt-4 p-3.5 rounded-xl text-sm font-medium feedback-hint block";
                 } else {
                     clearInterval(timer);
-                    optionItems[index].classList.add('incorrect');
-                    optionItems[q.correct].classList.add('correct');
-                    optionItems.forEach(item => item.onclick = null);
-                    feedbackBox.style.display = 'none';
-                    document.getElementById('next-btn').disabled = false;
+                    revealSolution(false, "Out of attempts! ");
                 }
             }
         }
 
-        function handleTimeout() {
-            const q = questions[currentQuestion];
-            const optionItems = document.querySelectorAll('.option-item');
-            optionItems[q.correct].classList.add('correct');
-            optionItems.forEach(item => item.onclick = null);
-            document.getElementById('next-btn').disabled = false;
+        function revealSolution(isCorrect, prefixText) {
+            lock = true;
+            clearInterval(timer);
+
+            const qData = activeQuestions[currentQuestion];
+            const buttons = optionsContainer.getElementsByTagName("button");
+
+            for (let btn of buttons) {
+                btn.disabled = true;
+                if (btn.textContent === qData.correctText) {
+                    btn.className = "option-btn w-full text-left p-3.5 rounded-xl border-2 border-emerald-500 bg-emerald-100 text-emerald-900 font-bold transition duration-150 cursor-not-allowed text-sm sm:text-base";
+                }
+            }
+
+            feedbackText.innerHTML = `<strong>${prefixText}</strong>${qData.explanation}`;
+            feedbackSection.className = "mt-4 p-3.5 rounded-xl text-sm font-medium feedback-explanation block";
+            nextBtn.classList.remove("hidden");
         }
 
-        function handleNext() {
+        function nextQuestion() {
             currentQuestion++;
-            if (currentQuestion < questions.length) {
+            if (currentQuestion < activeQuestions.length) {
                 loadQuestion();
             } else {
                 clearInterval(timer);
-                document.getElementById('quiz-container').style.display = 'none';
-                document.getElementById('results-container').style.display = 'block';
-                document.getElementById('final-score').innerText = `${score} / ${questions.length}`;
+                screenQuiz.classList.add("hidden");
+                screenQuiz.classList.remove("flex");
+                screenComplete.classList.remove("hidden");
+
+                const maxPossible = activeQuestions.length * 10;
+                const percentage = Math.round((score / maxPossible) * 100);
+                
+                document.getElementById("final-score-text").textContent = `${percentage}%`;
+
+                let msg = "Keep practicing! You are on your way to becoming a division master.";
+                if (percentage >= 80) msg = "Spectacular job! You are a Division Master! 🏆";
+                else if (percentage >= 50) msg = "Good effort! You have a solid understanding of division.";
+
+                document.getElementById("final-msg").textContent = msg;
             }
         }
 
         function restartQuiz() {
-            currentQuestion = 0;
-            score = 0;
-            document.getElementById('results-container').style.display = 'none';
-            document.getElementById('quiz-container').style.display = 'block';
-            loadQuestion();
+            screenComplete.classList.add("hidden");
+            startQuiz();
+        }
+
+        function toggleMute() {
+            isMuted = !isMuted;
+            document.getElementById("mute-btn").textContent = isMuted ? "🔈 Mute" : "🔊 Sound";
+        }
+
+        function playSound(type) {
+            if (isMuted) return;
+            const audio = document.getElementById(`${type}-audio`);
+            if (audio) {
+                audio.currentTime = 0;
+                audio.play().catch(() => playSynthFallback(type));
+            } else {
+                playSynthFallback(type);
+            }
+        }
+
+        function playSynthFallback(type) {
+            try {
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+
+                if (type === "claps") {
+                    osc.frequency.setValueAtTime(523.25, ctx.currentTime);
+                    osc.frequency.setValueAtTime(659.25, ctx.currentTime + 0.1);
+                    gain.gain.setValueAtTime(0.2, ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.3);
+                    osc.start();
+                    osc.stop(ctx.currentTime + 0.3);
+                } else {
+                    osc.type = "sawtooth";
+                    osc.frequency.setValueAtTime(220, ctx.currentTime);
+                    osc.frequency.setValueAtTime(140, ctx.currentTime + 0.15);
+                    gain.gain.setValueAtTime(0.2, ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.3);
+                    osc.start();
+                    osc.stop(ctx.currentTime + 0.3);
+                }
+            } catch (e) {}
+        }
+
+        function triggerWinEffects() {
+            const canvas = document.getElementById("fx-canvas");
+            const ctx = canvas.getContext("2d");
+            canvas.width = canvas.parentElement.clientWidth;
+            canvas.height = canvas.parentElement.clientHeight;
+
+            let particles = Array.from({ length: 35 }, () => ({
+                x: canvas.width / 2,
+                y: canvas.height / 2,
+                vx: (Math.random() - 0.5) * 8,
+                vy: (Math.random() - 0.5) * 8 - 2,
+                color: `hsl(${Math.random() * 360}, 80%, 60%)`,
+                radius: Math.random() * 4 + 2,
+                alpha: 1
+            }));
+
+            function animate() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                let ongoing = false;
+                particles.forEach(p => {
+                    p.x += p.vx;
+                    p.y += p.vy;
+                    p.vy += 0.12;
+                    p.alpha -= 0.025;
+                    if (p.alpha > 0) {
+                        ongoing = true;
+                        ctx.globalAlpha = p.alpha;
+                        ctx.beginPath();
+                        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                        ctx.fillStyle = p.color;
+                        ctx.fill();
+                    }
+                });
+                if (ongoing) requestAnimationFrame(animate);
+                else ctx.clearRect(0, 0, canvas.width, canvas.height);
+            }
+            animate();
         }
     </script>
 </body>
