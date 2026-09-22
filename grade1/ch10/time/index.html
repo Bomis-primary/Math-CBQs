@@ -27,6 +27,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-direction: column;
 }
 
 #logoScreen {
@@ -36,6 +37,7 @@ body {
 .logo {
   max-width: 260px;
   width: 70%;
+  height: auto;
 }
 
 .card {
@@ -319,11 +321,11 @@ body {
 
 <body>
 
-<div id="logoScreen" class="screen">
+<div id="logoScreen" class="screen active">
   <img src="assets/logo.png" alt="Innovine Logo" class="logo" />
 </div>
 
-<div id="quizScreen" class="screen active">
+<div id="quizScreen" class="screen">
   <div class="card">
     <div class="topbar">
       <div class="badge">Question <span id="qNo">1</span>/12</div>
@@ -357,13 +359,13 @@ body {
 <audio id="wrongSound" src="assets/wrong.mp3" preload="auto"></audio>
 
 <script>
-const questions = [
+const questionPool = [
   {
     q: "Which of these activities usually takes the most time?",
     visual: "🍱",
     visualText: "Think about how long daily activities take.",
     options: ["Blinking your eyes", "Eating your lunch", "Sneezing", "Writing your name"],
-    answer: 1,
+    answerText: "Eating your lunch",
     hint: "Which activity cannot be completed in just a few seconds?",
     explanation: "Eating lunch takes several minutes, whereas blinking, sneezing, or writing your name is finished very quickly."
   },
@@ -374,7 +376,7 @@ const questions = [
     hourDeg: 270,
     minuteDeg: 0,
     options: ["The long hand", "The thin ticking hand", "The short hand", "The numbers pattern"],
-    answer: 2,
+    answerText: "The short hand",
     hint: "The long hand tracks the minutes. What hand tells us the hour?",
     explanation: "The short hand on an analog clock face is specifically responsible for indicating the hour value."
   },
@@ -385,7 +387,7 @@ const questions = [
     hourDeg: 90,
     minuteDeg: 0,
     options: ["12:03", "3:00", "3:12", "6:00"],
-    answer: 1,
+    answerText: "3:00",
     hint: "When the long minute hand points directly to 12, it represents an 'o'clock' time.",
     explanation: "An hour hand on 3 and a minute hand on 12 means it is exactly 3 o'clock or 3:00."
   },
@@ -394,7 +396,7 @@ const questions = [
     visual: "digital",
     visualText: "10:30 AM",
     options: ["Sleeping in bed", "Eating dinner with family", "Having a morning recess or class", "Watching the sunset"],
-    answer: 2,
+    answerText: "Having a morning recess or class",
     hint: "'AM' means it is in the morning, a few hours after you wake up.",
     explanation: "10:30 AM is mid-morning, which is a common time to be in a school classroom or taking a short recess break."
   },
@@ -403,7 +405,7 @@ const questions = [
     visual: "calendar",
     visualText: "Weekly Schedule",
     options: ["Tomorrow", "Yesterday", "Two days later", "Next week"],
-    answer: 1,
+    answerText: "Yesterday",
     hint: "Think about how Monday stands in relation to Tuesday.",
     explanation: "Monday is the day immediately preceding Tuesday, which is referred to as yesterday."
   },
@@ -412,7 +414,7 @@ const questions = [
     visual: "calendar",
     visualText: "Planning the week",
     options: ["Saturday", "Thursday", "Sunday", "Monday"],
-    answer: 0,
+    answerText: "Saturday",
     hint: "Think about the very next day that comes right after Friday finishes.",
     explanation: "The day that follows Friday is Saturday, which marks the start of the weekend."
   },
@@ -421,7 +423,7 @@ const questions = [
     visual: "calendar",
     visualText: "Days of the Week",
     options: ["5 days", "6 days", "7 days", "12 days"],
-    answer: 2,
+    answerText: "7 days",
     hint: "Count all the school days plus all the holiday weekend days together.",
     explanation: "A full week consists of 5 weekdays and 2 weekend days, making 7 total days."
   },
@@ -430,7 +432,7 @@ const questions = [
     visual: "months",
     visualText: "Calendar Timeline",
     options: ["May", "August", "July", "January"],
-    answer: 2,
+    answerText: "July",
     hint: "Recite the months of the year. Which month follows directly after June?",
     explanation: "July comes immediately after June in our standard calendar year."
   },
@@ -439,7 +441,7 @@ const questions = [
     visual: "🌅",
     visualText: "Morning routine",
     options: ["Going to sleep for the night", "Seeing the stars", "Brushing our teeth after waking up", "Having dinner"],
-    answer: 2,
+    answerText: "Brushing our teeth after waking up",
     hint: "What is one of the very first things you do right after waking up?",
     explanation: "We brush our teeth right after waking up to start our morning cleanly."
   },
@@ -448,7 +450,7 @@ const questions = [
     visual: "months",
     visualText: "Yearly Cycle",
     options: ["7 months", "10 months", "12 months", "30 months"],
-    answer: 2,
+    answerText: "12 months",
     hint: "Count the total number of months that make up one full calendar year.",
     explanation: "A complete calendar year cycle from one birthday to the next lasts for exactly 12 months."
   },
@@ -457,7 +459,7 @@ const questions = [
     visual: "days",
     visualText: "Weekly Routine",
     options: ["Tuesday", "Thursday", "Saturday", "Monday"],
-    answer: 1,
+    answerText: "Thursday",
     hint: "What day comes after Wednesday and before Friday?",
     explanation: "Thursday is the day positioned directly between Wednesday and Friday."
   },
@@ -468,12 +470,13 @@ const questions = [
     hourDeg: 0,
     minuteDeg: 0,
     options: ["6:00", "12:00", "12:12", "1:12"],
-    answer: 1,
+    answerText: "12:00",
     hint: "If the short hour hand is pointing at 12, what hour value does that represent?",
     explanation: "When both structural hands line up together straight at the top marker, it reads exactly 12:00."
   }
 ];
 
+let questions = [];
 let current = 0;
 let score = 0;
 let attempts = 0;
@@ -496,17 +499,37 @@ const nextBtn = document.getElementById("nextBtn");
 const correctSound = document.getElementById("correctSound");
 const wrongSound = document.getElementById("wrongSound");
 
-// Safe DOM initialization to bypass splash screen errors completely
+// Utility function to shuffle an array in place
+function shuffle(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
+}
+
+// Initial branding splash screen handling (5-second display)
 window.addEventListener('DOMContentLoaded', () => {
-  logoScreen.classList.remove("active");
-  quizScreen.classList.add("active");
-  startQuiz();
+  setTimeout(() => {
+    logoScreen.classList.remove("active");
+    quizScreen.classList.add("active");
+    startQuiz();
+  }, 5000);
 });
 
 function startQuiz() {
   current = 0;
   score = 0;
   scoreBox.textContent = score;
+
+  // Clone and randomize questions pool
+  questions = shuffle(JSON.parse(JSON.stringify(questionPool)));
+
+  // Randomize options inside each question
+  questions.forEach(q => {
+    shuffle(q.options);
+  });
+
   loadQuestion();
 }
 
@@ -543,11 +566,11 @@ function loadQuestion() {
   optionsBox.innerHTML = "";
   renderVisual(item);
 
-  item.options.forEach((option, index) => {
+  item.options.forEach((optionText) => {
     const btn = document.createElement("button");
     btn.className = "option";
-    btn.textContent = option;
-    btn.onclick = () => checkAnswer(btn, index);
+    btn.textContent = optionText;
+    btn.onclick = () => checkAnswer(btn, optionText);
     optionsBox.appendChild(btn);
   });
 
@@ -596,13 +619,12 @@ function renderVisual(item) {
   }
 }
 
-function checkAnswer(button, selected) {
+function checkAnswer(button, selectedText) {
   if (answered) return;
 
   const currentQuestion = questions[current];
-  const correctIndex = currentQuestion.answer;
 
-  if (selected === correctIndex) {
+  if (selectedText === currentQuestion.answerText) {
     clearInterval(timerInterval);
     answered = true;
     score++;
@@ -636,11 +658,13 @@ function checkAnswer(button, selected) {
 }
 
 function showCorrectAnswer() {
-  const correctIndex = questions[current].answer;
+  const currentQuestion = questions[current];
   const allOptions = document.querySelectorAll(".option");
-  if (allOptions[correctIndex]) {
-    allOptions[correctIndex].classList.add("correct");
-  }
+  allOptions.forEach(btn => {
+    if (btn.textContent === currentQuestion.answerText) {
+      btn.classList.add("correct");
+    }
+  });
 }
 
 function disableOptions() {
