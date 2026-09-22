@@ -88,6 +88,7 @@
             border: 1px solid var(--border);
             font-weight: bold;
         }
+
         .timer-badge {
             color: var(--danger);
         }
@@ -222,16 +223,6 @@
             margin: 1rem 0;
         }
 
-        #confetti-canvas {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 99;
-        }
-
         #brand-splash {
             display: flex;
             flex-direction: column;
@@ -245,20 +236,21 @@
             background-color: var(--surface);
             z-index: 9999;
         }
-        #brand-splash img {
-            max-width: 250px;
-            height: auto;
+
+        .splash-logo-fallback {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--primary);
         }
     </style>
 </head>
 <body>
 
 <div id="brand-splash">
-    <img src="assets/logo.png" alt="Innovine Logo">
+    <div class="splash-logo-fallback">Innovine Assessment</div>
 </div>
 
 <div class="container" id="main-content" style="display: none;">
-    <canvas id="confetti-canvas"></canvas>
 
     <div class="controls-header">
         <div></div>
@@ -400,7 +392,7 @@
             explanation: "376 is smaller than 398, so it is out of place. The right order is 345, 376, 398, 410."
         },
         {
-            text: "Assertion (A): The number 840 is greater than 480. \nReason (R): 8 hundreds is greater than 4 hundreds.",
+            text: "Assertion (A): The number 840 is greater than 480.\nReason (R): 8 hundreds is greater than 4 hundreds.",
             hasSvg: false,
             options: ["Both A and R are true, and R correctly explains A", "Both true but R does not explain A", "A is true, R is false", "Both statements are false"],
             answer: 0,
@@ -428,7 +420,7 @@
         setTimeout(() => {
             document.getElementById('brand-splash').style.display = 'none';
             document.getElementById('main-content').style.display = 'block';
-        }, 5000);
+        }, 1500);
     });
 
     function toggleMute() {
@@ -454,15 +446,22 @@
     }
 
     function startTimer() {
-        clearInterval(timerId);
+        stopTimer();
         timerId = setInterval(() => {
             secondsLeft--;
             document.getElementById('hud-timer').textContent = secondsLeft;
-            if(secondsLeft <= 0) {
-                clearInterval(timerId);
+            if (secondsLeft <= 0) {
+                stopTimer();
                 revealCorrectAnswerAutomatically();
             }
         }, 1000);
+    }
+
+    function stopTimer() {
+        if (timerId) {
+            clearInterval(timerId);
+            timerId = null;
+        }
     }
 
     function renderQuestionBlock() {
@@ -483,7 +482,7 @@
                 <svg viewBox="0 0 800 240" width="100%">
                     <rect width="800" height="240" fill="none" rx="12" stroke="#cbd5e1" stroke-width="2"/>
                     <defs>
-                        <g id="cube-u"><rect width="10" height="10" fill="#38bdf8" stroke="#0284c7"/></g>
+                        <g id="cube-u"><rect width="12" height="12" fill="#38bdf8" stroke="#0284c7" stroke-width="1"/></g>
                         <g id="rod-t">
                             ${Array.from({length:10}, (_,i)=>`<g transform="translate(0,${i*11})"><use href="#cube-u"/></g>`).join('')}
                         </g>
@@ -505,11 +504,14 @@
                         <g transform="translate(60,0)"><use href="#rod-t"/></g>
                     </g>
                     <g transform="translate(580, 40)">
-                        <text x="30" y="-10" font-size="14" font-weight="bold" fill="#475569">Ones (6)</text>
+                        <text x="20" y="-10" font-size="14" font-weight="bold" fill="#475569">Ones (6)</text>
+                        <!-- Grid layout: 2 columns x 3 rows = 6 unit cubes -->
                         <g transform="translate(0,0)"><use href="#cube-u"/></g>
-                        <g transform="translate(20,20)"><use href="#cube-u"/></g>
-                        <g transform="translate(40,40)"><use href="#cube-u"/></g>
-                        <g transform="translate(0,60)"><use href="#cube-u"/></g>
+                        <g transform="translate(18,0)"><use href="#cube-u"/></g>
+                        <g transform="translate(0,18)"><use href="#cube-u"/></g>
+                        <g transform="translate(18,18)"><use href="#cube-u"/></g>
+                        <g transform="translate(0,36)"><use href="#cube-u"/></g>
+                        <g transform="translate(18,36)"><use href="#cube-u"/></g>
                     </g>
                 </svg>`;
             } else if (q.svgType === 'timeline-250') {
@@ -525,7 +527,6 @@
                     <text x="690" y="95" font-weight="bold" fill="#475569">300</text>
                 </svg>`;
             } else if (q.svgType === 'stacks-coins') {
-                // Label coordinates realigned cleanly beneath the matching stack columns
                 svgMarkup = `
                 <svg viewBox="0 0 800 170" width="100%">
                     <rect width="800" height="170" fill="none" rx="12" stroke="#cbd5e1" stroke-width="2"/>
@@ -585,7 +586,7 @@
         const buttons = document.querySelectorAll('.option-btn');
 
         if (selectedIdx === q.answer) {
-            clearInterval(timerId);
+            stopTimer();
             element.classList.add('correct');
             triggerAudioEffect('win');
             buttons.forEach(btn => btn.disabled = true);
@@ -606,7 +607,7 @@
                 hintBox.textContent = "Hint: " + q.hint;
                 hintBox.style.display = 'block';
             } else if (currentQuestionAttempts >= 2) {
-                clearInterval(timerId);
+                stopTimer();
                 buttons.forEach(btn => {
                     btn.disabled = true;
                     if (parseInt(btn.getAttribute('data-index')) === q.answer) {
@@ -647,7 +648,7 @@
     }
 
     function showFinalResultsSummary() {
-        clearInterval(timerId);
+        stopTimer();
         document.getElementById('game-container').style.display = 'none';
         document.getElementById('quiz-header').style.display = 'block';
         
