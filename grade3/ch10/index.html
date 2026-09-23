@@ -92,16 +92,25 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 20px;
+      margin-bottom: 15px;
       font-weight: bold;
+    }
+
+    .timer-badge {
+      background: #FFF3E0;
+      color: #E65100;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 0.95rem;
+      border: 1px solid #FFE0B2;
     }
 
     .score-badge {
       background: #EBF3FA;
       color: var(--primary-color);
-      padding: 8px 16px;
+      padding: 6px 14px;
       border-radius: 20px;
-      font-size: 1rem;
+      font-size: 0.95rem;
     }
 
     /* Progress Bar */
@@ -259,6 +268,7 @@
   <div id="quiz-screen">
     <div class="header-bar">
       <span id="question-tracker">Question 1 of 10</span>
+      <span class="timer-badge" id="timer-text">⏱️ 60s</span>
       <span class="score-badge" id="score-display">Score: 0</span>
     </div>
 
@@ -299,10 +309,8 @@
               <circle cx="100" cy="100" r="80" fill="#F4D03F" stroke="#D68910" stroke-width="8"/>
               <path d="M 100 20 A 80 80 0 0 1 100 180 Z" fill="#E74C3C"/>
               <line x1="100" y1="20" x2="100" y2="180" stroke="#FFFFFF" stroke-width="4" stroke-dasharray="6,6"/>
-              <!-- Toppings Left -->
               <circle cx="60" cy="70" r="8" fill="#C0392B"/>
               <circle cx="70" cy="130" r="8" fill="#C0392B"/>
-              <!-- Toppings Right -->
               <circle cx="140" cy="70" r="8" fill="#A93226"/>
               <circle cx="130" cy="130" r="8" fill="#A93226"/>
             </svg>`,
@@ -352,13 +360,11 @@
       title: "4. Unit Fractions",
       question: "Which of the following fractions represents a single unit fraction?",
       svg: `<svg viewBox="0 0 280 90" width="280" height="90">
-              <!-- Circle 1/2 -->
               <g transform="translate(10, 5)">
                 <circle cx="35" cy="35" r="30" fill="#E2E8F0" stroke="#475569" stroke-width="2"/>
                 <path d="M 35 5 A 30 30 0 0 1 35 65 Z" fill="#3B82F6"/>
                 <text x="35" y="80" text-anchor="middle" font-weight="bold" fill="#333">1/2</text>
               </g>
-              <!-- Circle 2/4 -->
               <g transform="translate(100, 5)">
                 <circle cx="35" cy="35" r="30" fill="#E2E8F0" stroke="#475569" stroke-width="2"/>
                 <path d="M 35 5 A 30 30 0 0 1 65 35 L 35 35 Z" fill="#10B981"/>
@@ -367,7 +373,6 @@
                 <line x1="5" y1="35" x2="65" y2="35" stroke="#475569" stroke-width="2"/>
                 <text x="35" y="80" text-anchor="middle" font-weight="bold" fill="#333">2/4</text>
               </g>
-              <!-- Circle 3/4 -->
               <g transform="translate(190, 5)">
                 <circle cx="35" cy="35" r="30" fill="#3B82F6" stroke="#475569" stroke-width="2"/>
                 <path d="M 35 35 L 35 65 A 30 30 0 0 1 5 35 Z" fill="#E2E8F0"/>
@@ -386,14 +391,12 @@
       title: "5. Comparing Fractions with Same Denominator",
       question: "Aman ate 2/3 of a cake and Sana ate 3/3 of a cake. Who ate the whole cake?",
       svg: `<svg viewBox="0 0 260 100" width="260" height="100">
-              <!-- Aman -->
               <g transform="translate(20, 10)">
                 <circle cx="40" cy="40" r="35" fill="#E2E8F0" stroke="#64748B" stroke-width="3"/>
                 <path d="M 40 40 L 40 5 A 35 35 0 0 1 70.3 57.5 Z" fill="#F59E0B"/>
                 <path d="M 40 40 L 70.3 57.5 A 35 35 0 0 1 9.7 57.5 Z" fill="#F59E0B"/>
                 <text x="40" y="90" text-anchor="middle" font-size="12" font-weight="bold">Aman (2/3)</text>
               </g>
-              <!-- Sana -->
               <g transform="translate(150, 10)">
                 <circle cx="40" cy="40" r="35" fill="#F59E0B" stroke="#64748B" stroke-width="3"/>
                 <line x1="40" y1="40" x2="40" y2="5" stroke="#FFFFFF" stroke-width="2"/>
@@ -412,13 +415,11 @@
       title: "6. Concept of Equal Parts",
       question: "Which circle shows a shape that is NOT divided into equal fractional parts?",
       svg: `<svg viewBox="0 0 240 100" width="240" height="100">
-              <!-- Equal halves -->
               <g transform="translate(20, 10)">
                 <circle cx="40" cy="40" r="35" fill="#E0F2FE" stroke="#0284C7" stroke-width="3"/>
                 <line x1="40" y1="5" x2="40" y2="75" stroke="#0284C7" stroke-width="3"/>
                 <text x="40" y="92" text-anchor="middle" font-size="12" font-weight="bold">Shape A</text>
               </g>
-              <!-- Unequal split -->
               <g transform="translate(140, 10)">
                 <circle cx="40" cy="40" r="35" fill="#FEF2F2" stroke="#EF4444" stroke-width="3"/>
                 <line x1="65" y1="15" x2="65" y2="65" stroke="#EF4444" stroke-width="3"/>
@@ -435,13 +436,11 @@
       title: "7. Comparing Unit Fractions",
       question: "Assertion (A): 1/2 is larger than 1/4.\nReason (R): When a whole is divided into fewer equal parts, each part is larger.",
       svg: `<svg viewBox="0 0 240 100" width="240" height="100">
-              <!-- 1/2 -->
               <g transform="translate(20, 10)">
                 <rect x="0" y="10" width="80" height="40" fill="#E2E8F0" stroke="#334155" stroke-width="2"/>
                 <rect x="0" y="10" width="40" height="40" fill="#3B82F6"/>
                 <text x="40" y="70" text-anchor="middle" font-size="12" font-weight="bold">1/2</text>
               </g>
-              <!-- 1/4 -->
               <g transform="translate(140, 10)">
                 <rect x="0" y="10" width="80" height="40" fill="#E2E8F0" stroke="#334155" stroke-width="2"/>
                 <rect x="0" y="10" width="20" height="40" fill="#10B981"/>
@@ -466,14 +465,11 @@
       question: "There are 12 cookies in a box. What is 2/4 (or 1/2) of the cookies?",
       svg: `<svg viewBox="0 0 240 110" width="240" height="110">
               <g fill="#D97706" stroke="#78350F" stroke-width="2">
-                <!-- Row 1 -->
                 <circle cx="30" cy="25" r="14"/><circle cx="70" cy="25" r="14"/><circle cx="110" cy="25" r="14"/>
                 <circle cx="150" cy="25" r="14"/><circle cx="190" cy="25" r="14"/><circle cx="230" cy="25" r="14"/>
-                <!-- Row 2 -->
                 <circle cx="30" cy="65" r="14"/><circle cx="70" cy="65" r="14"/><circle cx="110" cy="65" r="14"/>
                 <circle cx="150" cy="65" r="14"/><circle cx="190" cy="65" r="14"/><circle cx="230" cy="65" r="14"/>
               </g>
-              <!-- Highlight half -->
               <rect x="12" y="8" width="116" height="74" fill="none" stroke="#2563EB" stroke-width="3" rx="8" stroke-dasharray="4,4"/>
             </svg>`,
       options: ["4 cookies", "6 cookies", "8 cookies", "3 cookies"],
@@ -511,9 +507,7 @@
       question: "A juice carton was full (4/4). Tina drank 3/4 of it. How much juice is left?",
       svg: `<svg viewBox="0 0 200 120" width="200" height="120">
               <rect x="70" y="10" width="60" height="100" fill="#E2E8F0" stroke="#334155" stroke-width="3" rx="4"/>
-              <!-- Remaining 1/4 -->
               <rect x="70" y="85" width="60" height="25" fill="#10B981" rx="2"/>
-              <!-- Grid dividers -->
               <line x1="70" y1="35" x2="130" y2="35" stroke="#334155" stroke-width="1" stroke-dasharray="2,2"/>
               <line x1="70" y1="60" x2="130" y2="60" stroke="#334155" stroke-width="1" stroke-dasharray="2,2"/>
               <line x1="70" y1="85" x2="130" y2="85" stroke="#334155" stroke-width="1" stroke-dasharray="2,2"/>
@@ -533,11 +527,13 @@
   let timerInterval = null;
   let timeLeft = 60;
   let currentAttempt = 1;
+  let audioCtx = null;
 
   // SOUND EFFECTS (Web Audio API Synthesizer)
-  const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-  
   function playSound(type) {
+    if (!audioCtx) {
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    }
     if (audioCtx.state === 'suspended') {
       audioCtx.resume();
     }
@@ -630,11 +626,16 @@
   function startTimer() {
     timeLeft = 60;
     const timerBar = document.getElementById('timer-bar');
+    const timerText = document.getElementById('timer-text');
+
     timerBar.style.width = '100%';
     timerBar.style.backgroundColor = 'var(--secondary-color)';
+    timerText.innerText = `⏱️ ${timeLeft}s`;
 
     timerInterval = setInterval(() => {
       timeLeft--;
+      timerText.innerText = `⏱️ ${timeLeft}s`;
+      
       const percentage = (timeLeft / 60) * 100;
       timerBar.style.width = `${percentage}%`;
 
@@ -655,13 +656,11 @@
     const feedbackBox = document.getElementById('feedback-box');
 
     if (selectedIndex === q.correct) {
-      // CORRECT ANSWER
       clearInterval(timerInterval);
       playSound('correct');
       optionBtns[selectedIndex].classList.add('correct');
       disableAllOptions();
 
-      // Points Logic: 10 pts first try, 5 pts second try
       const pointsEarned = currentAttempt === 1 ? 10 : 5;
       score += pointsEarned;
       updateScoreDisplay();
@@ -674,19 +673,16 @@
       triggerConfetti();
 
     } else {
-      // INCORRECT ANSWER
       playSound('wrong');
       optionBtns[selectedIndex].classList.add('incorrect');
       optionBtns[selectedIndex].disabled = true;
 
       if (currentAttempt === 1) {
-        // First Retry / Hint
         currentAttempt = 2;
         feedbackBox.className = 'feedback-box hint';
         feedbackBox.innerHTML = `<strong>Not quite! Try again.</strong><br>💡 <em>Hint:</em> ${q.hint}`;
         feedbackBox.style.display = 'block';
       } else {
-        // Second Failure -> Reveal Explanation
         clearInterval(timerInterval);
         disableAllOptions();
         optionBtns[q.correct].classList.add('correct');
@@ -752,8 +748,10 @@
   function triggerConfetti() {
     const canvas = document.getElementById('confetti-canvas');
     const ctx = canvas.getContext('2d');
-    canvas.width = canvas.parentElement.clientWidth;
-    canvas.height = canvas.parentElement.clientHeight;
+    const container = document.getElementById('app-container');
+
+    canvas.width = container.clientWidth;
+    canvas.height = container.clientHeight;
 
     const particles = [];
     const colors = ['#4A90E2', '#F5A623', '#7ED321', '#E74C3C', '#9B59B6'];
@@ -779,7 +777,7 @@
           active = true;
           p.x += p.vx;
           p.y += p.vy;
-          p.vy += 0.2; // gravity
+          p.vy += 0.2;
           p.life -= 2;
           ctx.fillStyle = p.color;
           ctx.beginPath();
