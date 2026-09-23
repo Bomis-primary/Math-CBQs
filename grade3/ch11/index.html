@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Grade 3 Math - Patterns and Symmetry Interactive CBQ</title>
+    <!-- Canvas Confetti Library for visual rewards -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <style>
         :root {
             --primary: #4f46e5;
@@ -70,7 +72,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
+            margin-bottom: 12px;
             border-bottom: 2px solid #f1f5f9;
             padding-bottom: 12px;
         }
@@ -79,6 +81,29 @@
             font-size: 0.95rem;
             font-weight: 600;
             color: #64748b;
+        }
+
+        /* 60-Second Timer Elements */
+        .timer-container {
+            width: 100%;
+            background-color: #e2e8f0;
+            border-radius: 8px;
+            height: 10px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .timer-bar {
+            height: 100%;
+            width: 100%;
+            background-color: var(--primary);
+            transition: width 1s linear, background-color 0.3s;
+        }
+
+        .timer-text {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--primary);
         }
 
         /* Question Card */
@@ -183,8 +208,15 @@
         <div id="quiz-container" class="hidden">
             <div class="quiz-header">
                 <span class="progress" id="progress-indicator">Question 1 of 12</span>
+                <span class="timer-text" id="timer-text">⏳ 60s</span>
                 <span class="progress" id="attempts-indicator">Attempts: 2/2</span>
             </div>
+
+            <!-- Timer Progress Bar -->
+            <div class="timer-container">
+                <div class="timer-bar" id="timer-bar"></div>
+            </div>
+
             <div id="question-box">
                 <div class="question-text" id="question-text">Question goes here</div>
                 <div class="options-grid" id="options-grid"></div>
@@ -208,27 +240,26 @@
     <audio id="sound-wrong" src="assets/wrong.mp3"></audio>
 
     <script>
-        // 12 CBQ Questions Database based on Chapter 11 (Patterns and Symmetry)
         const quizData = [
             {
                 question: "What comes next in the repeating sequence: Red, Blue, Red, Blue, Red, ...?",
                 options: ["Red", "Blue", "Green", "Yellow"],
-                answer: 1 // Blue
+                answer: 1
             },
             {
                 question: "Identify the missing number in the growing pattern: 2, 4, 6, 8, ...?",
                 options: ["9", "10", "12", "11"],
-                answer: 1 // 10
+                answer: 1
             },
             {
                 question: "Which of the following shapes can be used to tile a floor without any gaps or overlaps?",
                 options: ["Circle", "Square", "Oval", "Curved triangle"],
-                answer: 1 // Square
+                answer: 1
             },
             {
                 question: "Complete the number pattern: 95, 85, 75, 65, 55, ...?",
                 options: ["45", "50", "35", "40"],
-                answer: 0 // 45
+                answer: 0
             },
             {
                 question: "What is a line of symmetry?",
@@ -238,17 +269,17 @@
                     "A line drawn only on the outside border",
                     "A line that makes a shape disappear"
                 ],
-                answer: 1 // A line that divides a figure into exact mirror-image halves
+                answer: 1
             },
             {
                 question: "Which shape pattern follows an alternating sequence rule?",
                 options: ["Circle, Circle, Circle", "Square, Square, Circle", "Circle, Square, Circle, Square", "Triangle, Triangle, Triangle"],
-                answer: 2 // Circle, Square, Circle, Square
+                answer: 2
             },
             {
                 question: "Complete the sequence: 1, 2, 3, 1, 2, 3, 1, 2, ...?",
                 options: ["1", "2", "3", "4"],
-                answer: 2 // 3
+                answer: 2
             },
             {
                 question: "Why can't circles be used to form a tiling pattern?",
@@ -258,27 +289,27 @@
                     "They have straight edges",
                     "They are always colourful"
                 ],
-                answer: 1 // They leave gaps when arranged together
+                answer: 1
             },
             {
                 question: "What type of pattern is represented by numbers increasing or decreasing by a constant amount?",
                 options: ["Repeating pattern", "Growing pattern", "Symmetric pattern", "Tiling pattern"],
-                answer: 1 // Growing pattern
+                answer: 1
             },
             {
                 question: "How many lines of symmetry can be drawn for a standard regular square?",
                 options: ["1", "2", "4", "Infinite"],
-                answer: 2 // 4
+                answer: 2
             },
             {
                 question: "Complete the backward counting number sequence: 50, 45, 40, 35, 30, ...?",
                 options: ["20", "25", "28", "22"],
-                answer: 1 // 25
+                answer: 1
             },
             {
                 question: "Which everyday item uses patterns made of lines and spaces that computers can read to identify products?",
                 options: ["Barcodes", "Digital Clocks", "Lightbulbs", "Windows"],
-                answer: 0 // Barcodes
+                answer: 0
             }
         ];
 
@@ -286,8 +317,12 @@
         let score = 0;
         let attemptsLeft = 2;
         let lockAnswer = false;
+        
+        // Timer Variables
+        const QUESTION_TIME_LIMIT = 60;
+        let timeLeft = QUESTION_TIME_LIMIT;
+        let timerInterval = null;
 
-        // Splash Screen Timer (5 seconds)
         window.addEventListener('DOMContentLoaded', () => {
             setTimeout(() => {
                 document.getElementById('splash-screen').classList.add('hidden');
@@ -295,6 +330,67 @@
                 loadQuestion();
             }, 5000);
         });
+
+        function startTimer() {
+            clearInterval(timerInterval);
+            timeLeft = QUESTION_TIME_LIMIT;
+            updateTimerDisplay();
+
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                updateTimerDisplay();
+
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    handleTimeOut();
+                }
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const timerText = document.getElementById('timer-text');
+            const timerBar = document.getElementById('timer-bar');
+            
+            timerText.innerText = `⏳ ${timeLeft}s`;
+            const percentage = (timeLeft / QUESTION_TIME_LIMIT) * 100;
+            timerBar.style.width = `${percentage}%`;
+
+            if (timeLeft <= 10) {
+                timerBar.style.backgroundColor = 'var(--danger)';
+                timerText.style.color = 'var(--danger)';
+            } else {
+                timerBar.style.backgroundColor = 'var(--primary)';
+                timerText.style.color = 'var(--primary)';
+            }
+        }
+
+        function handleTimeOut() {
+            if (lockAnswer) return;
+            lockAnswer = true;
+
+            const feedbackBox = document.getElementById('feedback-box');
+            const soundWrong = document.getElementById('sound-wrong');
+
+            soundWrong.currentTime = 0;
+            soundWrong.play().catch(() => {});
+
+            feedbackBox.style.color = 'var(--danger)';
+            feedbackBox.innerText = '⏰ Time is up! Question expired.';
+
+            highlightCorrectAnswer();
+            disableAllOptions();
+            document.getElementById('next-btn').classList.remove('hidden');
+        }
+
+        function triggerConfetti() {
+            if (typeof confetti === 'function') {
+                confetti({
+                    particleCount: 100,
+                    spread: 70,
+                    origin: { y: 0.6 }
+                });
+            }
+        }
 
         function loadQuestion() {
             lockAnswer = false;
@@ -317,6 +413,8 @@
                 btn.onclick = () => selectOption(index, btn);
                 optionsGrid.appendChild(btn);
             });
+
+            startTimer();
         }
 
         function selectOption(selectedIndex, btnElement) {
@@ -330,9 +428,14 @@
             if (selectedIndex === currentData.answer) {
                 // Correct Answer
                 lockAnswer = true;
+                clearInterval(timerInterval);
                 btnElement.classList.add('correct');
+                
                 soundCorrect.currentTime = 0;
-                soundCorrect.play();
+                soundCorrect.play().catch(() => {});
+                
+                triggerConfetti();
+
                 feedbackBox.style.color = 'var(--success)';
                 feedbackBox.innerText = 'Correct! Great job!';
                 score++;
@@ -342,7 +445,7 @@
                 // Incorrect Answer
                 attemptsLeft--;
                 soundWrong.currentTime = 0;
-                soundWrong.play();
+                soundWrong.play().catch(() => {});
 
                 if (attemptsLeft > 0) {
                     btnElement.classList.add('incorrect');
@@ -353,6 +456,7 @@
                 } else {
                     // Out of attempts, reveal correct answer
                     lockAnswer = true;
+                    clearInterval(timerInterval);
                     btnElement.classList.add('incorrect');
                     feedbackBox.style.color = 'var(--danger)';
                     feedbackBox.innerText = `Incorrect! The correct answer was: "${currentData.options[currentData.answer]}"`;
@@ -387,9 +491,14 @@
         }
 
         function showResults() {
+            clearInterval(timerInterval);
             document.getElementById('quiz-container').classList.add('hidden');
             document.getElementById('results-screen').classList.remove('hidden');
             document.getElementById('score-text').innerText = `You scored ${score} out of ${quizData.length}`;
+            
+            if (score >= 8) {
+                triggerConfetti();
+            }
         }
 
         function restartQuiz() {
