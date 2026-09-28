@@ -33,6 +33,7 @@
             justify-content: center;
             align-items: center;
             min-height: 100vh;
+            min-height: 100dvh;
             padding: 16px;
         }
 
@@ -47,7 +48,7 @@
             min-height: 480px;
         }
 
-        /* 5-second Splash Screen */
+        /* Splash Screen */
         #intro-view {
             display: flex;
             justify-content: center;
@@ -184,10 +185,9 @@
             border: 1px dashed var(--border);
             border-radius: 12px;
             margin-bottom: 20px;
-            display: flex;
+            display: none;
             justify-content: center;
             align-items: center;
-            display: none;
         }
 
         .question-image {
@@ -314,7 +314,7 @@
 
         <div id="intro-view">
             <div class="logo-container">
-                <img src="assets/logo.png" onerror="this.style.display='none'" alt="Innovine Logo">
+                <img src="assets/logo.png" onerror="this.parentElement.style.display='none'" alt="Innovine Logo">
             </div>
         </div>
 
@@ -349,7 +349,7 @@
 
             <div class="options-grid" id="options-box"></div>
 
-            <div id="feedback-display" class="feedback-box"></div>
+            <div id="feedback-display" class="feedback-box" aria-live="polite"></div>
 
             <div class="action-container">
                 <button id="btn-next" class="next-btn" onclick="gameEngine.nextQuestion()">Continue</button>
@@ -377,12 +377,11 @@
                 explanation: "Shop C has 300 - 50 = 250 toys left, which matches the smallest leftover item count."
             },
             {
-                text: "Look at the flying kites containing math expressions. Which kite gives the smallest answer after subtracting?",
-                image: "assets/kites.png",
-                options: ["Kite A", "Kite B", "Kite C", "Kite D"],
+                text: "Four kites are flying with math problems on them. Which kite has the smallest answer?",
+                options: ["Kite A: 250 - 110", "Kite B: 500 - 200", "Kite C: 450 - 150", "Kite D: 300 - 50"],
                 answer: 0,
-                hint: "Let's change these to subtraction checks! If Kite A was 250 - 110, it equals 140. Check which one drops the lowest.",
-                explanation: "Kite A results in the lowest leftover value after evaluating our subtraction step."
+                hint: "Subtract each expression: 250 - 110 = 140, 500 - 200 = 300, 450 - 150 = 300, and 300 - 50 = 250. Check which one is the lowest.",
+                explanation: "Kite A results in 140, which is the smallest answer."
             },
             {
                 text: "A student subtracts: 450 - 215. Is the final answer less than 250?",
@@ -406,24 +405,21 @@
                 explanation: "450 - 210 = 240 crates left in the room."
             },
             {
-                text: "Examine Zayan's puzzle card. Jar X has 190 marbles. He gives 140 marbles away to Jar Y. He says he has 50 marbles left. Is his answer correct?",
-                image: "assets/jars.png",
+                text: "Jar X has 190 marbles. Zayan gives 140 marbles away to Jar Y. He says he has 50 marbles left. Is his answer correct?",
                 options: ["Yes, because 190 - 140 = 50", "No, because he should add", "No, it should be 40", "Yes, because 190 - 140 = 100"],
                 answer: 0,
                 hint: "Count backward from 190 by 140, or think: 19 tens minus 14 tens.",
                 explanation: "Zayan subtracted correctly. 190 - 140 leaves exactly 50 marbles left."
             },
             {
-                text: "Look at the visual unit blocks layout below. If we take away 120 blocks from 320 blocks, how many blocks are left?",
-                image: "assets/blocks-320.png",
+                text: "If you start with 320 blocks and take away 120 blocks, how many blocks are left?",
                 options: ["200 blocks", "100 blocks", "300 blocks", "220 blocks"],
                 answer: 0,
-                hint: "Start with 320 blocks. Take away the 20 blocks, then take away 100 blocks.",
-                explanation: "320 minus 120 leaves exactly 200 unit blocks behind."
+                hint: "Start with 320 blocks. Take away 20 blocks first to get 300, then take away 100 more blocks.",
+                explanation: "320 minus 120 leaves exactly 200 blocks."
             },
             {
-                text: "Examine the counting abacuses. If we start with the value on Abacus B (300) and subtract 100, what is the new number?",
-                image: "assets/abacus.png",
+                text: "If you start with 300 and subtract 100, what is the new number?",
                 options: ["200", "100", "400", "250"],
                 answer: 0,
                 hint: "Think about taking 1 hundred away from 3 hundreds.",
@@ -476,6 +472,7 @@
                 this.canvas = document.getElementById('fx-canvas');
                 this.ctx = this.canvas.getContext('2d');
                 this.particles = [];
+                this.animating = false;
             }
 
             shuffle(array) {
@@ -496,8 +493,6 @@
                     splash.classList.add('fade-out');
                     document.getElementById('instruction-view').classList.add('active');
                 }, 5000);
-
-                this.animateParticles();
             }
 
             resizeCanvas() {
@@ -670,6 +665,10 @@
                         alpha: 1
                     });
                 }
+                if (!this.animating) {
+                    this.animating = true;
+                    this.animateParticles();
+                }
             }
 
             animateParticles() {
@@ -691,7 +690,12 @@
                     this.ctx.fill();
                 }
                 this.ctx.globalAlpha = 1.0;
-                requestAnimationFrame(() => this.animateParticles());
+
+                if (this.particles.length > 0) {
+                    requestAnimationFrame(() => this.animateParticles());
+                } else {
+                    this.animating = false;
+                }
             }
 
             showResults() {
